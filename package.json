@@ -1,0 +1,25 @@
+{
+  "name": "farol-de-indicadores",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Central de Indicadores (CGB): site + sincronização dos relatórios do SIGA a partir do OneDrive",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env servidor.js",
+    "sync": "node --env-file-if-exists=.env scripts/sincronizar.js",
+    "testar-onedrive": "node --env-file-if-exists=.env scripts/testar-onedrive.js",
+    "importar-export": "node --env-file-if-exists=.env scripts/importar-export.js",
+    "importar-consolidado": "node --env-file-if-exists=.env scripts/importar-consolidado.js",
+    "test": "node --test test/*.test.js",
+    "criar-admin": "node --env-file-if-exists=.env scripts/criar-admin.js",
+    "importar-banco-site": "node --env-file-if-exists=.env scripts/importar-banco-site.js",
+    "build": "node scripts/montar-public.js",
+    "importar-dados-site": "node --env-file-if-exists=.env scripts/importar-dados-site.js"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.0",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+  }
+}

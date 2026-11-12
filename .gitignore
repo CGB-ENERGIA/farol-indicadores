@@ -1,0 +1,26 @@
+node_modules/
+.env
+.env.*
+!.env.example
+dados/
+banco2026*.json
+_versoes_anteriores_*/
+*.log
+.vercel/
+
+# gerado pelo build do Vercel
+public/
+farol/
+*.xlsx
+index_MESCLADO_*.html
+
+# ---- DADOS: o repositório é PÚBLICO, então nada disso sobe. Os dados ficam no Neon (npm run importar-dados-site) ----
+historico*.json
+config.json
+*_config.json
+ups_semclasse.json
+# notas internas do projeto
+ESTADO-DO-PROJETO.md
+MESCLA-*.md
+LEIA-ME.txt
+automacao/
