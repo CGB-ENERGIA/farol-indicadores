@@ -21,7 +21,8 @@ function estatico(raiz, req, res) {
   try { nome = decodeURIComponent(new URL(req.url, 'http://x').pathname); } catch (e) { res.statusCode = 400; return res.end('Pedido inválido'); }
   if (nome === '/') nome = '/index.html';
   const parte = nome.slice(1);
-  if (!parte || parte.includes('/') || parte.includes('\\') || BLOQUEADOS.test(parte) || !MIME[path.extname(parte).toLowerCase()]) { res.statusCode = 404; return res.end('Não encontrado'); }
+  const emIcons = /^icons\/[A-Za-z0-9._-]+$/.test(parte); // logos e favicon da tela de login
+  if (!parte || (parte.includes('/') && !emIcons) || parte.includes('\\') || BLOQUEADOS.test(parte) || !MIME[path.extname(parte).toLowerCase()]) { res.statusCode = 404; return res.end('Não encontrado'); }
   /* dados que não vão para o GitHub ficam em privado/ (só no PC): se existir lá, serve de lá */
   const priv = path.join(raiz, 'privado', parte);
   const arq = DADOS_PRIV.test(parte) && fs.existsSync(priv) ? priv : path.join(raiz, parte);

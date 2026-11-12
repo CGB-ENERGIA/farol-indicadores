@@ -68,7 +68,16 @@ npm run importar-banco-site -- banco2026_parte1de5.json banco2026_parte2de5.json
 
 O `npm install` instala poucos pacotes (`@neondatabase/serverless` e `xlsx`), então o `node_modules` é pequeno e pode ficar na pasta do OneDrive.
 
-Abra a URL do Vercel e entre. Os demais usuários você cria no site, no botão **Usuários** (canto inferior direito).
+Abra a URL do Vercel e entre com esse administrador.
+
+### 5. Primeiro acesso dos demais usuários
+1. Na tela de login, a pessoa clica em **Solicite seu cadastro aqui** e preenche **nome completo, matrícula, setor, usuário e senha**.
+2. O **usuário** é sempre **CGB + matrícula** (exemplo: `CGB12345`). O campo já é preenchido sozinho quando ela digita a matrícula.
+3. O cadastro fica **pendente**: ela não vê nenhum indicador, e se tentar entrar recebe "aguardando aprovação".
+4. O administrador abre **Usuários** (botão no canto inferior direito, com o número de pendentes), escolhe o **nível de acesso** e clica em **Aprovar** (ou **Recusar**).
+5. Só depois disso a pessoa entra com o usuário e a senha que cadastrou.
+
+A página **Usuários** também tem a aba **Todos os usuários** (buscar, **Editar** nome, matrícula, setor, nível, situação e senha, e **Excluir**) e o botão **+ Novo usuário**. Limites de segurança: 5 pedidos de cadastro por hora por computador, bloqueio de 15 min após 5 senhas erradas, o administrador não pode excluir nem rebaixar a si mesmo e o último administrador ativo não pode ser excluído.
 
 ## Atualizações depois do primeiro deploy
 - **Código** (`index.html`, `farol-web.js`, `lib/`…): `git push` na `main` gera deploy novo.

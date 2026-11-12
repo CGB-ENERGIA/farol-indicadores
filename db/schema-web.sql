@@ -29,3 +29,11 @@ create table if not exists tentativas_login (
   quando timestamptz not null default now()
 );
 create index if not exists ix_tentativas_login_chave on tentativas_login (chave, quando);
+
+-- Primeiro acesso: o usuário pede o cadastro (fica PENDENTE) e o administrador aprova ou recusa.
+-- Quem já existia fica ATIVO. Usuário no formato CGB + matrícula (ex.: CGB12345).
+alter table usuarios add column if not exists matricula text;
+alter table usuarios add column if not exists setor text;
+alter table usuarios add column if not exists status text not null default 'ATIVO';
+alter table usuarios add column if not exists decidido_por text;
+alter table usuarios add column if not exists decidido_em timestamptz;
