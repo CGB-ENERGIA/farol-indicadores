@@ -254,7 +254,7 @@
       } else {
         h = '<div class="fl-sec topo"><img src="icons/logo-login.png" alt="CGB Energia"><div class="fl-h6">Primeiro acesso</div><div class="fl-cap">Preencha seus dados. Um administrador vai aprovar o seu acesso.</div></div><div class="fl-sec">' +
           '<form id="fl-cad" novalidate>' + campo('fc-n', 'Nome completo', 'person', { attr: 'autocomplete="name"' }) + campo('fc-m', 'Matrícula', 'tag', { attr: 'inputmode="numeric" maxlength="10" autocomplete="off"' }) + campo('fc-set', 'Setor', 'apt', { attr: 'autocomplete="organization-title"' }) +
-          campo('fc-u', 'Usuário', 'badge', { attr: 'autocomplete="username" maxlength="13"', aj: 'Crie no formato <b>CGB + matrícula</b>, exemplo: <b>CGB12345</b>' }) +
+          campo('fc-u', 'Usuário', 'badge', { attr: 'autocomplete="username" maxlength="40" autocapitalize="none" spellcheck="false"', aj: 'Use o formato do seu e-mail corporativo (antes do @), exemplo: <b>joao.silva</b>' }) +
           campo('fc-s', 'Crie uma senha (mínimo 8 caracteres)', 'key', { attr: 'autocomplete="new-password" type="' + (mostrarSenha ? 'text' : 'password') + '"', olho: 1 }) + campo('fc-s2', 'Repita a senha', 'key', { attr: 'autocomplete="new-password" type="' + (mostrarSenha ? 'text' : 'password') + '"' }) +
           '<button class="fl-btn" type="submit" id="fc-env">Enviar cadastro ' + svg('fwd', 18) + '</button></form><div style="margin-top:12px"><button class="fl-btn plano" data-ir="login">' + svg('back', 18) + 'Voltar para o login</button></div></div>';
       }
@@ -280,9 +280,14 @@
       }
       var c = corpo.querySelector('#fl-cad');
       if (c) {
-        var m = c.querySelector('#fc-m'), u2 = c.querySelector('#fc-u'), tocouU = false;
-        m.oninput = function () { m.value = m.value.replace(/\D/g, ''); if (!tocouU) u2.value = m.value ? 'CGB' + m.value : ''; };
-        u2.oninput = function () { tocouU = true; u2.value = u2.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); };
+        var m = c.querySelector('#fc-m'), n = c.querySelector('#fc-n'), u2 = c.querySelector('#fc-u'), tocouU = false;
+        function sugestao(nome) {
+          var p = nome.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z\s-]/g, ' ').split(/\s+/).filter(function (x) { return x && ['da', 'de', 'do', 'das', 'dos', 'e'].indexOf(x) < 0; });
+          return p.length >= 2 ? p[0] + '.' + p[p.length - 1] : '';
+        }
+        m.oninput = function () { m.value = m.value.replace(/\D/g, ''); };
+        n.oninput = function () { if (!tocouU) u2.value = sugestao(n.value); };
+        u2.oninput = function () { tocouU = true; u2.value = u2.value.toLowerCase().replace(/[^a-z0-9.-]/g, ''); };
         c.onsubmit = function (ev) {
           ev.preventDefault();
           var d = { nome: c.querySelector('#fc-n').value, matricula: m.value, setor: c.querySelector('#fc-set').value, usuario: u2.value, senha: c.querySelector('#fc-s').value };

@@ -72,7 +72,7 @@ Abra a URL do Vercel e entre com esse administrador.
 
 ### 5. Primeiro acesso dos demais usuários
 1. Na tela de login, a pessoa clica em **Solicite seu cadastro aqui** e preenche **nome completo, matrícula, setor, usuário e senha**.
-2. O **usuário** é sempre **CGB + matrícula** (exemplo: `CGB12345`). O campo já é preenchido sozinho quando ela digita a matrícula.
+2. O **usuário** segue o **formato do e-mail corporativo, antes do @** (exemplo: `joao.silva`). O campo é sugerido sozinho a partir do nome (primeiro e último nome, sem acento) e pode ser ajustado.
 3. O cadastro fica **pendente**: ela não vê nenhum indicador, e se tentar entrar recebe "aguardando aprovação".
 4. O administrador abre **Usuários** (botão no canto inferior direito, com o número de pendentes), escolhe o **nível de acesso** e clica em **Aprovar** (ou **Recusar**).
 5. Só depois disso a pessoa entra com o usuário e a senha que cadastrou.
