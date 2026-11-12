@@ -375,7 +375,8 @@
     }
 
     /* ---------- aba Equipes: lista das equipes ativas + gerente/coordenador/supervisor (importa a planilha de alocações) ---------- */
-    var EQ = null, eqBusca = '', eqBase = '', eqSem = false, eqSujo = false;
+    var EQ = null, eqBusca = '', eqBase = '', eqSup = '', eqTipo = '', eqSem = false, eqSujo = false;
+    function filtrarEq() { return Object.keys(EQ.itens).sort().filter(function (p) { var e = EQ.itens[p], q = eqBusca.toLowerCase(); return (!q || [p, e.b, e.t, e.ger, e.coo, e.sup].join(' ').toLowerCase().indexOf(q) >= 0) && (!eqBase || e.b === eqBase) && (!eqTipo || e.t === eqTipo) && (!eqSup || e.sup === eqSup) && (!eqSem || !e.ger || !e.coo || !e.sup); }); }
     function semAcento(s) { return String(s == null ? '' : s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().trim(); }
     function carregarEq() { return api('doc?c=hierarquia&id=equipes').then(function (r) { EQ = r.existe && r.dados && r.dados.itens ? r.dados : { itens: {} }; eqSujo = false; }); }
     function salvarEq() {
@@ -389,14 +390,14 @@
       var linhas = XLSX.utils.sheet_to_json(wb.Sheets[nome], { defval: '' });
       if (!linhas.length) throw new Error('A planilha está vazia.');
       var mapa = {}; Object.keys(linhas[0]).forEach(function (k) { mapa[semAcento(k)] = k; });
-      if (!mapa.PREFIXO) throw new Error('Não achei a coluna PREFIXO. Use a planilha de alocações (colunas BASE, PREFIXO, TIPO EQUIPE, CHAPA).');
+      if (!mapa.PREFIXO) throw new Error('Não achei a coluna PREFIXO. Use a planilha de equipes do Gerenciador de Equipes (colunas BASE, PREFIXO, TIPO EQUIPE, SUPERVISOR, COORDENADOR).');
       var g = function (r, c) { return mapa[c] ? String(r[mapa[c]] == null ? '' : r[mapa[c]]).trim() : ''; };
       var eqs = {}, ignorados = 0;
       linhas.forEach(function (r) {
         var p = g(r, 'PREFIXO').toUpperCase().replace(/\s+/g, '');
         if (!/^[A-Z]{2}-[A-Z0-9]{2,5}-[A-Z0-9]+$/.test(p)) { if (p) ignorados++; return; }
         var e = eqs[p] || (eqs[p] = { b: g(r, 'BASE'), t: g(r, 'TIPO EQUIPE'), s: g(r, 'SETOR'), n: 0, ger: '', coo: '', sup: '' });
-        if (g(r, 'CHAPA')) { e.n++; (e.ch = e.ch || []).push(g(r, 'CHAPA')); }
+        if (mapa.CHAPA) { if (g(r, 'CHAPA')) { e.n++; (e.ch = e.ch || []).push(g(r, 'CHAPA')); } } else { /* planilha de equipes: uma coluna com a quantidade por função */ ['ENCARREGADO', 'ELETRICISTA', 'MOTORISTA', 'AUXILIAR DE ELETRICISTA', 'PODADOR', 'PEDREIROS'].forEach(function (c) { e.n += Number(g(r, c)) || 0; }); }
         ['GERENTE:ger', 'COORDENADOR:coo', 'SUPERVISOR:sup'].forEach(function (x) { var c = x.split(':'); var v = g(r, c[0]); if (v && !e[c[1]]) e[c[1]] = v; });
       });
       var ativas = {}; Object.keys(eqs).forEach(function (p) { if (eqs[p].n > 0) ativas[p] = eqs[p]; });
@@ -457,17 +458,14 @@
     }
     function desenharEquipes() {
       var todas = Object.keys(EQ.itens).sort(), bases = todas.map(function (p) { return EQ.itens[p].b; }).filter(function (b, i, a) { return b && a.indexOf(b) === i; }).sort();
-      var lista = todas.filter(function (p) {
-        var e = EQ.itens[p], q = eqBusca.toLowerCase();
-        return (!q || [p, e.b, e.t, e.ger, e.coo, e.sup].join(' ').toLowerCase().indexOf(q) >= 0) && (!eqBase || e.b === eqBase) && (!eqSem || !e.ger || !e.coo || !e.sup);
-      });
+      var lista = filtrarEq(), uni = function (k) { return todas.map(function (p) { return EQ.itens[p][k]; }).filter(function (v, i, a) { return v && a.indexOf(v) === i; }).sort(); }, tipos = uni('t'), sups = uni('sup');
       var nomes = function (k) { return Object.keys(EQ.itens).map(function (p) { return EQ.itens[p][k]; }).filter(function (v, i, a) { return v && a.indexOf(v) === i; }).sort(); };
       var dl = function (id, k) { return '<datalist id="' + id + '">' + nomes(k).map(function (n) { return '<option value="' + esc(n) + '">'; }).join('') + '</datalist>'; };
       var campo = function (p, k) { var e = EQ.itens[p]; return '<input class="fp-in' + ((e.sug || []).indexOf(k) >= 0 ? ' fp-sug' : '') + '" list="dl-' + k + '" data-p="' + esc(p) + '" data-k="' + k + '" value="' + esc(e[k] || '') + '"' + ((e.sug || []).indexOf(k) >= 0 ? ' title="Sugerido pela aba Ativos da planilha. Confira."' : '') + '>'; };
-      var h = '<div class="fp-card"><h2>Equipes ativas</h2><p class="fp-sub">Importe a planilha de alocações do Gerenciador de Equipes: ela traz as equipes ativas (prefixo, base, tipo). Se tiver colunas <b>GERENTE</b>, <b>COORDENADOR</b> e <b>SUPERVISOR</b>, os nomes são lidos dela; senão o sistema sugere pela aba Ativos quando só há uma pessoa possível, e você completa aqui. Esses nomes viram filtros em todos os indicadores por prefixo.</p>' +
+      var h = '<div class="fp-card"><h2>Equipes ativas</h2><p class="fp-sub">Importe a planilha de equipes do Gerenciador de Equipes: ela traz as equipes ativas (prefixo, base, tipo) com <b>SUPERVISOR</b> e <b>COORDENADOR</b>. Se tiver também uma coluna <b>GERENTE</b>, ela é lida; senão informe o gerente aqui (dá para aplicar a várias equipes de uma vez). Só entram equipes com pessoas alocadas. Esses nomes viram filtros em todos os indicadores por prefixo.</p>' +
         '<div class="fp-ac" style="margin-bottom:12px"><label class="fp-b pri" style="cursor:pointer">Importar planilha (.xlsx)<input type="file" id="eq-arq" accept=".xlsx,.xls" hidden></label>' + (todas.length ? '<button class="fp-b" data-baixar>Baixar lista em Excel</button>' : '') + '</div>';
       if (!todas.length) { corpo.innerHTML = h + '<div class="fp-vazio">Nenhuma equipe importada ainda.</div></div>'; return ligarEq(); }
-      h += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center"><input class="fp-in" id="eq-q" placeholder="Buscar prefixo, base, tipo ou nome" style="flex:1;min-width:220px" value="' + esc(eqBusca) + '"><select class="fp-in" id="eq-b"><option value="">Todas as bases</option>' + bases.map(function (b) { return '<option' + (b === eqBase ? ' selected' : '') + '>' + esc(b) + '</option>'; }).join('') + '</select><label style="display:flex;gap:6px;align-items:center;font-size:.8125rem"><input type="checkbox" id="eq-s"' + (eqSem ? ' checked' : '') + '> só as incompletas</label></div>' +
+      h += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center"><input class="fp-in" id="eq-q" placeholder="Buscar prefixo, base, tipo ou nome" style="flex:1;min-width:220px" value="' + esc(eqBusca) + '"><select class="fp-in" id="eq-b"><option value="">Todas as bases</option>' + bases.map(function (b) { return '<option' + (b === eqBase ? ' selected' : '') + '>' + esc(b) + '</option>'; }).join('') + '</select><select class="fp-in" id="eq-t"><option value="">Todos os tipos de equipe</option>' + tipos.map(function (b) { return '<option' + (b === eqTipo ? ' selected' : '') + '>' + esc(b) + '</option>'; }).join('') + '</select><select class="fp-in" id="eq-p"><option value="">Todos os supervisores</option>' + sups.map(function (b) { return '<option' + (b === eqSup ? ' selected' : '') + '>' + esc(b) + '</option>'; }).join('') + '</select><label style="display:flex;gap:6px;align-items:center;font-size:.8125rem"><input type="checkbox" id="eq-s"' + (eqSem ? ' checked' : '') + '> só as incompletas</label></div>' +
         '<div class="fp-card" style="background:#faf6f7;margin-bottom:10px;padding:10px 12px"><b style="font-size:.8125rem">Aplicar às ' + lista.length + ' equipes listadas:</b><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"><input class="fp-in" list="dl-ger" id="eq-mg" placeholder="Gerente"><input class="fp-in" list="dl-coo" id="eq-mc" placeholder="Coordenador"><input class="fp-in" list="dl-sup" id="eq-ms" placeholder="Supervisor"><button class="fp-b" data-lote>Aplicar</button></div></div>' +
         '<div style="overflow:auto"><table class="fp-t"><tr><th>Prefixo</th><th>Base</th><th>Tipo</th><th>Pessoas</th><th>Gerente</th><th>Coordenador</th><th>Supervisor</th></tr>' +
         lista.map(function (p) { var e = EQ.itens[p]; return '<tr><td><b>' + esc(p) + '</b></td><td>' + esc(e.b) + '</td><td>' + esc(e.t) + '</td><td>' + e.n + '</td><td>' + campo(p, 'ger') + '</td><td>' + campo(p, 'coo') + '</td><td>' + campo(p, 'sup') + '</td></tr>'; }).join('') + '</table></div>' +
@@ -481,13 +479,15 @@
       var q = corpo.querySelector('#eq-q'); if (!q) return;
       q.oninput = function () { eqBusca = q.value; var p = q.selectionStart; desenharEquipes(); var n = corpo.querySelector('#eq-q'); n.focus(); n.setSelectionRange(p, p); };
       corpo.querySelector('#eq-b').onchange = function (e) { eqBase = e.target.value; desenharEquipes(); };
+      corpo.querySelector('#eq-t').onchange = function (e) { eqTipo = e.target.value; desenharEquipes(); };
+      corpo.querySelector('#eq-p').onchange = function (e) { eqSup = e.target.value; desenharEquipes(); };
       corpo.querySelector('#eq-s').onchange = function (e) { eqSem = e.target.checked; desenharEquipes(); };
       var marca = function () { eqSujo = true; var b = corpo.querySelector('[data-salvar]'); if (b) b.disabled = false; };
       corpo.querySelectorAll('input[data-k]').forEach(function (i) { i.onchange = function () { var e = EQ.itens[i.getAttribute('data-p')], k = i.getAttribute('data-k'); e[k] = i.value.trim(); e.sug = (e.sug || []).filter(function (x) { return x !== k; }); i.classList.remove('fp-sug'); marca(); }; });
       corpo.querySelector('[data-lote]').onclick = function () {
         var v = { ger: corpo.querySelector('#eq-mg').value.trim(), coo: corpo.querySelector('#eq-mc').value.trim(), sup: corpo.querySelector('#eq-ms').value.trim() };
         if (!v.ger && !v.coo && !v.sup) return aviso('Preencha ao menos um dos nomes para aplicar.');
-        var alvo = Object.keys(EQ.itens).filter(function (p) { var e = EQ.itens[p], q2 = eqBusca.toLowerCase(); return (!q2 || [p, e.b, e.t, e.ger, e.coo, e.sup].join(' ').toLowerCase().indexOf(q2) >= 0) && (!eqBase || e.b === eqBase) && (!eqSem || !e.ger || !e.coo || !e.sup); });
+        var alvo = filtrarEq();
         if (!confirm('Aplicar esses nomes às ' + alvo.length + ' equipes listadas?')) return;
         alvo.forEach(function (p) { var e = EQ.itens[p]; ['ger', 'coo', 'sup'].forEach(function (k) { if (v[k]) { e[k] = v[k]; e.sug = (e.sug || []).filter(function (x) { return x !== k; }); } }); });
         eqSujo = true; aviso(''); desenharEquipes();
