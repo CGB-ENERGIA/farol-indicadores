@@ -16,6 +16,7 @@
     "criar-admin": "node --env-file-if-exists=.env scripts/criar-admin.js",
     "importar-banco-site": "node --env-file-if-exists=.env scripts/importar-banco-site.js",
     "build": "node scripts/montar-public.js",
+    "teste": "node scripts/servidor-teste.js",
     "importar-dados-site": "node --env-file-if-exists=.env scripts/importar-dados-site.js"
   },
   "dependencies": {

@@ -304,19 +304,16 @@
 
   function barra() {
     estilo(); estiloLogin(); fechar('.fw-bar');
-    var b = el('<div class="fw-bar"><span>' + esc(sessao.nome) + ' <small>· ' + esc(sessao.nivel_rotulo) + (sessao.pode_editar ? '' : ' · só visualização') + '</small></span>' +
-      (sessao.gerencia_usuarios ? '<button class="fw-btn" data-a="usu">Usuários <span class="fw-bdg" id="fw-bdg" hidden></span></button>' : '') + '<button class="fw-btn" data-a="senha">Senha</button><button class="fw-btn" data-a="sair">Sair</button></div>');
-    document.body.appendChild(b);
-    b.onclick = function (ev) {
-      var a = ev.target.closest && ev.target.closest('[data-a]'); a = a && a.getAttribute('data-a');
-      if (a === 'sair') api('logout', { method: 'POST' }).finally(function () { location.reload(); });
-      if (a === 'senha') painelSenha();
-      if (a === 'usu') paginaUsuarios();
+    window.FAROL_CONTA = {
+      sessao: sessao,
+      usuarios: function () { paginaUsuarios(); },
+      senha: painelSenha,
+      sair: function () { api('logout', { method: 'POST' }).finally(function () { location.reload(); }); }
     };
     if (sessao.gerencia_usuarios) { atualizarBadge(); setInterval(function () { if (sessao && !document.hidden) atualizarBadge(); }, 60000); }
   }
   function atualizarBadge(n) {
-    function pinta(v) { var x = document.getElementById('fw-bdg'); if (!x) return; x.textContent = v; x.hidden = !v; }
+    function pinta(v) { ['fw-bdg', 'fw-bdg2'].forEach(function (id) { var x = document.getElementById(id); if (!x) return; x.textContent = v; x.hidden = !v; }); }
     if (n != null) return pinta(n);
     api('sessao').then(function (r) { pinta(r.pendentes || 0); }).catch(function () {});
   }
@@ -354,7 +351,8 @@
     '.fp-vazio{padding:28px;text-align:center;color:#6b6a6a;border:1px dashed #dedadb;border-radius:12px}.fp-erro{background:#fbe5e5;color:#b3261e;border-radius:9px;padding:8px 12px;font-size:.8125rem}' +
     '.fp-mod{position:fixed;inset:0;z-index:1900;display:grid;place-items:center;padding:16px;background:rgba(37,30,32,.55)}.fp-m{background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.35);padding:22px;width:min(520px,100%);max-height:92vh;overflow:auto;display:grid;gap:12px}.fp-m h2{margin:0;font-size:1.1rem;font-weight:800;color:#4f1723}' +
     '.fp-m label{display:grid;gap:4px;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6b6a6a}.fp-m .fp-in{width:100%;font-size:.9rem;text-transform:none;letter-spacing:0;font-weight:500;color:#2d2527}.fp-lin{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:520px){.fp-lin{grid-template-columns:1fr}}' +
-    '.fw-bdg{display:inline-block;min-width:18px;padding:0 5px;margin-left:4px;border-radius:999px;background:#c8102e;color:#fff;font-size:.68rem;line-height:18px;text-align:center}';
+    '.fw-bdg{display:inline-block;min-width:18px;padding:0 5px;margin-left:4px;border-radius:999px;background:#c8102e;color:#fff;font-size:.68rem;line-height:18px;text-align:center}' +
+    '.fp-t input.fp-in{padding:5px 8px;min-width:140px;font-size:.8125rem}.fp-t input.fp-sug{background:#fff6dc;border-color:#e0b64a;font-style:italic}';
   function dataBR(s) { if (!s) return '—'; var d = new Date(s); return isNaN(d) ? '—' : d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); }
   function rotuloSituacao(u) { return u.status === 'PENDENTE' ? 'PENDENTE' : u.status === 'RECUSADO' ? 'RECUSADO' : u.ativo ? 'ATIVO' : 'INATIVO'; }
   var TXT_SIT = { ATIVO: 'Ativo', PENDENTE: 'Pendente', RECUSADO: 'Recusado', INATIVO: 'Desativado' };
@@ -375,11 +373,132 @@
         niveis = r.niveis; dados = r.usuarios; atualizarBadge(dados.filter(function (u) { return u.status === 'PENDENTE'; }).length); desenhar();
       }).catch(function (e) { corpo.innerHTML = ''; aviso(e.message); });
     }
+
+    /* ---------- aba Equipes: lista das equipes ativas + gerente/coordenador/supervisor (importa a planilha de alocações) ---------- */
+    var EQ = null, eqBusca = '', eqBase = '', eqSem = false, eqSujo = false;
+    function semAcento(s) { return String(s == null ? '' : s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().trim(); }
+    function carregarEq() { return api('doc?c=hierarquia&id=equipes').then(function (r) { EQ = r.existe && r.dados && r.dados.itens ? r.dados : { itens: {} }; eqSujo = false; }); }
+    function salvarEq() {
+      EQ.em = new Date().toISOString();
+      return api('doc?c=hierarquia', { method: 'POST', body: { id: 'equipes', dados: EQ } }).then(function () { eqSujo = false; });
+    }
+    function lerPlanilhaEquipes(buf) {
+      if (typeof XLSX === 'undefined') throw new Error('Leitor de planilhas indisponível. Recarregue a página.');
+      var wb = XLSX.read(buf, { type: 'array' });
+      var nome = wb.SheetNames.filter(function (n) { return /aloca/i.test(n); })[0] || wb.SheetNames[0];
+      var linhas = XLSX.utils.sheet_to_json(wb.Sheets[nome], { defval: '' });
+      if (!linhas.length) throw new Error('A planilha está vazia.');
+      var mapa = {}; Object.keys(linhas[0]).forEach(function (k) { mapa[semAcento(k)] = k; });
+      if (!mapa.PREFIXO) throw new Error('Não achei a coluna PREFIXO. Use a planilha de alocações (colunas BASE, PREFIXO, TIPO EQUIPE, CHAPA).');
+      var g = function (r, c) { return mapa[c] ? String(r[mapa[c]] == null ? '' : r[mapa[c]]).trim() : ''; };
+      var eqs = {}, ignorados = 0;
+      linhas.forEach(function (r) {
+        var p = g(r, 'PREFIXO').toUpperCase().replace(/\s+/g, '');
+        if (!/^[A-Z]{2}-[A-Z0-9]{2,5}-[A-Z0-9]+$/.test(p)) { if (p) ignorados++; return; }
+        var e = eqs[p] || (eqs[p] = { b: g(r, 'BASE'), t: g(r, 'TIPO EQUIPE'), s: g(r, 'SETOR'), n: 0, ger: '', coo: '', sup: '' });
+        if (g(r, 'CHAPA')) { e.n++; (e.ch = e.ch || []).push(g(r, 'CHAPA')); }
+        ['GERENTE:ger', 'COORDENADOR:coo', 'SUPERVISOR:sup'].forEach(function (x) { var c = x.split(':'); var v = g(r, c[0]); if (v && !e[c[1]]) e[c[1]] = v; });
+      });
+      var ativas = {}; Object.keys(eqs).forEach(function (p) { if (eqs[p].n > 0) ativas[p] = eqs[p]; });
+      /* sugestão pela aba Ativos: só quando há uma única pessoa possível na base e no tipo da equipe */
+      var sugeridos = 0;
+      if (wb.Sheets['Ativos']) {
+        var at = XLSX.utils.sheet_to_json(wb.Sheets['Ativos'], { defval: '' }), am = {}; if (at.length) Object.keys(at[0]).forEach(function (k) { am[semAcento(k)] = k; });
+        var ga = function (r, c) { return am[c] ? String(r[am[c]] == null ? '' : r[am[c]]).trim() : ''; };
+        var pes = at.filter(function (r) { return /^ATIVO|^FERIAS/.test(semAcento(ga(r, 'SITUACAO'))) || !ga(r, 'SITUACAO'); }).map(function (r) { return { n: ga(r, 'NOME'), c: ga(r, 'CHAPA'), g: ga(r, 'GRPCCUSTO'), f: semAcento(ga(r, 'FUNCAO')), b: semAcento(ga(r, 'SECAO')), t: semAcento(ga(r, 'TIPO_CCUSTO')) }; });
+        var apoio = /PLANEJ|QUALIDADE|SEG |LOGIST|FROTA|ADMINIST|ALMOX/;
+        var sups = pes.filter(function (x) { return /^SUPERVISOR/.test(x.f) && !apoio.test(x.f); }), coos = pes.filter(function (x) { return /^COORDENADOR/.test(x.f) && !apoio.test(x.f); }), gers = pes.filter(function (x) { return /^GERENTE/.test(x.f); });
+        var unico = function (lista, b, t) {
+          var m = lista.filter(function (x) { return x.b === semAcento(b) && x.t && (semAcento(t).indexOf(x.t) >= 0 || x.t.indexOf(semAcento(t)) >= 0); });
+          var nomes = m.map(function (x) { return x.n; }).filter(function (n, i, a) { return a.indexOf(n) === i; }); return nomes.length === 1 ? nomes[0] : '';
+        };
+        var chG = {}; pes.forEach(function (x) { if (x.c) chG[x.c] = x.g; });
+        /* gerente: o do contrato (grupo de custo) onde a maioria da equipe está lotada */
+        var gerDe = function (e) {
+          var c = {}; (e.ch || []).forEach(function (h) { var g = chG[h]; if (g) c[g] = (c[g] || 0) + 1; });
+          var top = Object.keys(c).sort(function (a, b) { return c[b] - c[a]; })[0]; if (!top) return '';
+          var m = gers.filter(function (x) { return x.g === top; }); return m.length === 1 ? m[0].n : '';
+        };
+        Object.keys(ativas).forEach(function (p) {
+          var e = ativas[p]; e.sug = [];
+          if (!e.sup) { var v = unico(sups, e.b, e.t); if (v) { e.sup = v; e.sug.push('sup'); sugeridos++; } }
+          if (!e.coo) { var v2 = unico(coos, e.b, e.t); if (v2) { e.coo = v2; e.sug.push('coo'); sugeridos++; } }
+          if (!e.ger) { var v3 = gerDe(e); if (v3) { e.ger = v3; e.sug.push('ger'); sugeridos++; } }
+        });
+      }
+      Object.keys(ativas).forEach(function (p) { delete ativas[p].ch; });
+      return { ativas: ativas, ignorados: ignorados, sugeridos: sugeridos, aba: nome };
+    }
+    function importarEquipes(arq) {
+      aviso('');
+      var fr = new FileReader();
+      fr.onload = function () {
+        var r; try { r = lerPlanilhaEquipes(new Uint8Array(fr.result)); } catch (e) { return aviso(e.message); }
+        var antes = (EQ && EQ.itens) || {}, novos = {}, removidas = 0;
+        Object.keys(r.ativas).forEach(function (p) {
+          var n = r.ativas[p], a = antes[p] || {};
+          n.sug = n.sug || []; ['ger', 'coo', 'sup'].forEach(function (k) { var sg = n.sug.indexOf(k) >= 0; if (a[k] && (!n[k] || sg)) { n[k] = a[k]; n.sug = n.sug.filter(function (x) { return x !== k; }); if ((a.sug || []).indexOf(k) >= 0) n.sug.push(k); } });
+          novos[p] = n;
+        });
+        Object.keys(antes).forEach(function (p) { if (!novos[p]) removidas++; });
+        EQ = { itens: novos, arquivo: arq.name }; var sem = Object.keys(novos).filter(function (p) { return !novos[p].sup || !novos[p].coo || !novos[p].ger; }).length;
+        salvarEq().then(function () {
+          msg.innerHTML = '<div class="fp-erro" style="background:#e6f4ea;color:#1e6b34">' + Object.keys(novos).length + ' equipes ativas importadas de “' + esc(arq.name) + '”' + (r.sugeridos ? ' · ' + r.sugeridos + ' preenchimentos sugeridos pela aba Ativos (em amarelo, confira)' : '') + ' · ' + sem + ' equipe(s) ainda sem gerente, coordenador ou supervisor' + (removidas ? ' · ' + removidas + ' equipe(s) fora da planilha foram retiradas da lista' : '') + (r.ignorados ? ' · ' + r.ignorados + ' linha(s) sem prefixo de equipe ignoradas' : '') + '.</div>';
+          desenhar();
+        }).catch(function (e) { aviso(e.message); });
+      };
+      fr.readAsArrayBuffer(arq);
+    }
+    function baixarEquipes() {
+      var L = [['PREFIXO', 'BASE', 'TIPO EQUIPE', 'GERENTE', 'COORDENADOR', 'SUPERVISOR']];
+      Object.keys(EQ.itens).sort().forEach(function (p) { var e = EQ.itens[p]; L.push([p, e.b, e.t, e.ger, e.coo, e.sup]); });
+      var ws = XLSX.utils.aoa_to_sheet(L); ws['!cols'] = [16, 18, 20, 26, 26, 26].map(function (w) { return { wch: w }; });
+      var wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Equipes'); XLSX.writeFile(wb, 'Equipes - hierarquia.xlsx');
+    }
+    function desenharEquipes() {
+      var todas = Object.keys(EQ.itens).sort(), bases = todas.map(function (p) { return EQ.itens[p].b; }).filter(function (b, i, a) { return b && a.indexOf(b) === i; }).sort();
+      var lista = todas.filter(function (p) {
+        var e = EQ.itens[p], q = eqBusca.toLowerCase();
+        return (!q || [p, e.b, e.t, e.ger, e.coo, e.sup].join(' ').toLowerCase().indexOf(q) >= 0) && (!eqBase || e.b === eqBase) && (!eqSem || !e.ger || !e.coo || !e.sup);
+      });
+      var nomes = function (k) { return Object.keys(EQ.itens).map(function (p) { return EQ.itens[p][k]; }).filter(function (v, i, a) { return v && a.indexOf(v) === i; }).sort(); };
+      var dl = function (id, k) { return '<datalist id="' + id + '">' + nomes(k).map(function (n) { return '<option value="' + esc(n) + '">'; }).join('') + '</datalist>'; };
+      var campo = function (p, k) { var e = EQ.itens[p]; return '<input class="fp-in' + ((e.sug || []).indexOf(k) >= 0 ? ' fp-sug' : '') + '" list="dl-' + k + '" data-p="' + esc(p) + '" data-k="' + k + '" value="' + esc(e[k] || '') + '"' + ((e.sug || []).indexOf(k) >= 0 ? ' title="Sugerido pela aba Ativos da planilha. Confira."' : '') + '>'; };
+      var h = '<div class="fp-card"><h2>Equipes ativas</h2><p class="fp-sub">Importe a planilha de alocações do Gerenciador de Equipes: ela traz as equipes ativas (prefixo, base, tipo). Se tiver colunas <b>GERENTE</b>, <b>COORDENADOR</b> e <b>SUPERVISOR</b>, os nomes são lidos dela; senão o sistema sugere pela aba Ativos quando só há uma pessoa possível, e você completa aqui. Esses nomes viram filtros em todos os indicadores por prefixo.</p>' +
+        '<div class="fp-ac" style="margin-bottom:12px"><label class="fp-b pri" style="cursor:pointer">Importar planilha (.xlsx)<input type="file" id="eq-arq" accept=".xlsx,.xls" hidden></label>' + (todas.length ? '<button class="fp-b" data-baixar>Baixar lista em Excel</button>' : '') + '</div>';
+      if (!todas.length) { corpo.innerHTML = h + '<div class="fp-vazio">Nenhuma equipe importada ainda.</div></div>'; return ligarEq(); }
+      h += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center"><input class="fp-in" id="eq-q" placeholder="Buscar prefixo, base, tipo ou nome" style="flex:1;min-width:220px" value="' + esc(eqBusca) + '"><select class="fp-in" id="eq-b"><option value="">Todas as bases</option>' + bases.map(function (b) { return '<option' + (b === eqBase ? ' selected' : '') + '>' + esc(b) + '</option>'; }).join('') + '</select><label style="display:flex;gap:6px;align-items:center;font-size:.8125rem"><input type="checkbox" id="eq-s"' + (eqSem ? ' checked' : '') + '> só as incompletas</label></div>' +
+        '<div class="fp-card" style="background:#faf6f7;margin-bottom:10px;padding:10px 12px"><b style="font-size:.8125rem">Aplicar às ' + lista.length + ' equipes listadas:</b><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"><input class="fp-in" list="dl-ger" id="eq-mg" placeholder="Gerente"><input class="fp-in" list="dl-coo" id="eq-mc" placeholder="Coordenador"><input class="fp-in" list="dl-sup" id="eq-ms" placeholder="Supervisor"><button class="fp-b" data-lote>Aplicar</button></div></div>' +
+        '<div style="overflow:auto"><table class="fp-t"><tr><th>Prefixo</th><th>Base</th><th>Tipo</th><th>Pessoas</th><th>Gerente</th><th>Coordenador</th><th>Supervisor</th></tr>' +
+        lista.map(function (p) { var e = EQ.itens[p]; return '<tr><td><b>' + esc(p) + '</b></td><td>' + esc(e.b) + '</td><td>' + esc(e.t) + '</td><td>' + e.n + '</td><td>' + campo(p, 'ger') + '</td><td>' + campo(p, 'coo') + '</td><td>' + campo(p, 'sup') + '</td></tr>'; }).join('') + '</table></div>' +
+        dl('dl-ger', 'ger') + dl('dl-coo', 'coo') + dl('dl-sup', 'sup') +
+        '<div class="fp-ac" style="margin-top:12px;position:sticky;bottom:0"><button class="fp-b pri" data-salvar' + (eqSujo ? '' : ' disabled') + '>Salvar alterações</button><span class="fp-sub" style="margin:0">' + todas.length + ' equipes · ' + (eqSujo ? 'há alterações não salvas' : 'tudo salvo') + (EQ.arquivo ? ' · origem: ' + esc(EQ.arquivo) : '') + '</span></div></div>';
+      corpo.innerHTML = h; ligarEq();
+    }
+    function ligarEq() {
+      var arq = corpo.querySelector('#eq-arq'); if (arq) arq.onchange = function () { if (arq.files[0]) importarEquipes(arq.files[0]); };
+      var bx = corpo.querySelector('[data-baixar]'); if (bx) bx.onclick = baixarEquipes;
+      var q = corpo.querySelector('#eq-q'); if (!q) return;
+      q.oninput = function () { eqBusca = q.value; var p = q.selectionStart; desenharEquipes(); var n = corpo.querySelector('#eq-q'); n.focus(); n.setSelectionRange(p, p); };
+      corpo.querySelector('#eq-b').onchange = function (e) { eqBase = e.target.value; desenharEquipes(); };
+      corpo.querySelector('#eq-s').onchange = function (e) { eqSem = e.target.checked; desenharEquipes(); };
+      var marca = function () { eqSujo = true; var b = corpo.querySelector('[data-salvar]'); if (b) b.disabled = false; };
+      corpo.querySelectorAll('input[data-k]').forEach(function (i) { i.onchange = function () { var e = EQ.itens[i.getAttribute('data-p')], k = i.getAttribute('data-k'); e[k] = i.value.trim(); e.sug = (e.sug || []).filter(function (x) { return x !== k; }); i.classList.remove('fp-sug'); marca(); }; });
+      corpo.querySelector('[data-lote]').onclick = function () {
+        var v = { ger: corpo.querySelector('#eq-mg').value.trim(), coo: corpo.querySelector('#eq-mc').value.trim(), sup: corpo.querySelector('#eq-ms').value.trim() };
+        if (!v.ger && !v.coo && !v.sup) return aviso('Preencha ao menos um dos nomes para aplicar.');
+        var alvo = Object.keys(EQ.itens).filter(function (p) { var e = EQ.itens[p], q2 = eqBusca.toLowerCase(); return (!q2 || [p, e.b, e.t, e.ger, e.coo, e.sup].join(' ').toLowerCase().indexOf(q2) >= 0) && (!eqBase || e.b === eqBase) && (!eqSem || !e.ger || !e.coo || !e.sup); });
+        if (!confirm('Aplicar esses nomes às ' + alvo.length + ' equipes listadas?')) return;
+        alvo.forEach(function (p) { var e = EQ.itens[p]; ['ger', 'coo', 'sup'].forEach(function (k) { if (v[k]) { e[k] = v[k]; e.sug = (e.sug || []).filter(function (x) { return x !== k; }); } }); });
+        eqSujo = true; aviso(''); desenharEquipes();
+      };
+      corpo.querySelector('[data-salvar]').onclick = function (ev) { ev.target.disabled = true; salvarEq().then(function () { aviso(''); desenharEquipes(); }).catch(function (e) { aviso(e.message); ev.target.disabled = false; }); };
+    }
     function optNiveis(sel) { return niveis.map(function (n) { return '<option value="' + n.nivel + '"' + (n.nivel === sel ? ' selected' : '') + '>' + esc(n.rotulo) + (n.editar ? ' (edita)' : ' (só visualiza)') + '</option>'; }).join(''); }
 
     function desenhar() {
       var pend = dados.filter(function (u) { return u.status === 'PENDENTE'; }), rec = dados.filter(function (u) { return u.status === 'RECUSADO'; });
-      pag.querySelector('#fp-abas').innerHTML = '<button class="fp-aba" aria-selected="' + (aba === 'pend') + '" data-aba="pend">Aguardando aprovação' + (pend.length ? '<span class="fp-n">' + pend.length + '</span>' : '') + '</button><button class="fp-aba" aria-selected="' + (aba === 'todos') + '" data-aba="todos">Todos os usuários <span class="fp-n" style="background:#8a7f82">' + dados.length + '</span></button>';
+      pag.querySelector('#fp-abas').innerHTML = '<button class="fp-aba" aria-selected="' + (aba === 'pend') + '" data-aba="pend">Aguardando aprovação' + (pend.length ? '<span class="fp-n">' + pend.length + '</span>' : '') + '</button><button class="fp-aba" aria-selected="' + (aba === 'todos') + '" data-aba="todos">Todos os usuários <span class="fp-n" style="background:#8a7f82">' + dados.length + '</span></button><button class="fp-aba" aria-selected="' + (aba === 'equipes') + '" data-aba="equipes">Equipes</button>';
       pag.querySelectorAll('[data-aba]').forEach(function (b) { b.onclick = function () { aba = b.getAttribute('data-aba'); aviso(''); desenhar(); }; });
       if (aba === 'pend') {
         var h = '<div class="fp-card"><h2>Cadastros aguardando aprovação</h2><p class="fp-sub">Escolha o nível de acesso e aprove. Só depois disso a pessoa consegue ver os indicadores com o usuário e a senha que cadastrou.</p>';
@@ -391,6 +510,9 @@
           return '<tr><td>' + esc(u.nome) + '</td><td>' + esc(u.matricula) + '</td><td>' + esc(u.usuario) + '</td><td>' + esc(u.setor) + '</td><td><select data-niv="' + u.id + '">' + optNiveis('SUPERVISOR') + '</select></td><td><div class="fp-ac"><button class="fp-b ok" data-apr="' + u.id + '">Aprovar</button><button class="fp-b del" data-exc="' + u.id + '">Excluir</button></div></td></tr>';
         }).join('') + '</table></div>';
         corpo.innerHTML = h;
+      } else if (aba === 'equipes') {
+        if (EQ === null) { corpo.innerHTML = 'Carregando…'; carregarEq().then(desenhar).catch(function (e) { aviso(e.message); }); return; }
+        desenharEquipes(); return;
       } else {
         var lista = dados.filter(function (u) { var q = filtro.toLowerCase(); return (!q || [u.nome, u.usuario, u.matricula, u.setor].join(' ').toLowerCase().indexOf(q) >= 0) && (!sit || rotuloSituacao(u) === sit); });
         corpo.innerHTML = '<div class="fp-card"><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><input class="fp-in" id="fp-q" placeholder="Buscar por nome, usuário, matrícula ou setor" style="flex:1;min-width:220px" value="' + esc(filtro) + '"><select class="fp-in" id="fp-sit"><option value="">Todas as situações</option>' + Object.keys(TXT_SIT).map(function (k) { return '<option value="' + k + '"' + (sit === k ? ' selected' : '') + '>' + TXT_SIT[k] + '</option>'; }).join('') + '</select></div>' +
