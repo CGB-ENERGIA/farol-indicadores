@@ -7,14 +7,14 @@ O repositório é **público** (como o `gerenciador-equipes` e o `Medidas-Discip
 
 - **Site** (`public/`, gerado por `npm run build`): só código (`index.html`, `farol-web.js`, `calc.js`, `ups.js`, `ups_ui.js`). Quem não fez login vê só a tela de login.
 - **API** (`/api/*`): uma função só, `api/index.js`, que chama `lib/rotas/index.js`. O `vercel.json` manda todo `/api/*` para ela.
-- **Dados do site** (`historico*.json`, `config.json`, `*_config.json`, `ups_semclasse.json`): **não vão para o GitHub** (estão no `.gitignore`). Ficam na tabela `documentos` do Neon (coleção `arquivos`) e saem por `/api/arquivo`, só para quem fez login.
+- **Dados do site** (`historico*.json`, `config.json`, `*_config.json`, `ups_semclasse.json`): ficam na subpasta `privado/`, que **não vai para o GitHub** (está no `.gitignore`). Ficam na tabela `documentos` do Neon (coleção `arquivos`) e saem por `/api/arquivo`, só para quem fez login.
 - **Banco** (Neon): `documentos` (dados do site, dias enviados, Banco SIGA), `usuarios` e `tentativas_login`. As tabelas são criadas sozinhas na primeira chamada da API.
 - **Login**: cookie `HttpOnly` assinado com `SECRET_KEY`, senha só como hash (scrypt), trocar a senha derruba as sessões abertas, bloqueio de 15 min após 5 erros.
 - **Níveis**: Administrador (envia relatórios, altera cadastros, gerencia usuários), Gerente, Coordenador e Supervisor (só visualizam).
 
 ## Por que o repositório é público
 O Vercel só faz deploy de repositório **privado** se o autor do commit tiver conta Vercel ligada ao GitHub e for membro do time. Em repositório público essa checagem não trava (foi o que bloqueou o primeiro deploy do Farol). Como o código não tem dado nem segredo, o público é seguro.
-**Regra:** nunca commitar `.env`, `historico*.json`, `*_config.json`, planilhas nem `banco2026*.json`. O `.gitignore` já bloqueia, e o `git status` antes do commit confirma.
+**Regra:** nunca commitar `.env`, nada de `privado/`, planilhas nem `banco2026*.json`. O `.gitignore` já bloqueia, e o `git status` antes do commit confirma.
 
 ## Passo a passo
 
@@ -50,8 +50,10 @@ git push -u origin main
    - `SECRET_KEY`: gere com `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`. Precisa ser **fixa**: trocar derruba todos os logins.
 4. **Deploy**. Abra `https://<projeto>.vercel.app/api/status`: deve responder `{"ok":true,"banco":true}`.
 
-### 4. Carregar dados e criar o administrador (no seu PC)
-O `npm install` cria milhares de arquivos: faça numa **cópia fora do OneDrive** (por exemplo `C:\dev\farol-indicadores`, copiando também os `historico*.json`, `config.json`, `*_config.json`, `ups_semclasse.json` e os `banco2026_*.json` da pasta original). Nela, crie um `.env` com a mesma `DATABASE_URL` e `SECRET_KEY` do Vercel e rode:
+### 4. Carregar dados e criar o administrador (na própria pasta do projeto)
+Tudo que não pode ser compartilhado fica na subpasta **`privado/`** (dados do site, `banco2026_*.json`, notas internas). Ela está no `.gitignore` e no `.vercelignore`: não vai para o GitHub nem para o Vercel. A pasta principal continua sendo a do OneDrive.
+
+Na pasta do projeto, crie um `.env` (também ignorado pelo Git) com a mesma `DATABASE_URL` e `SECRET_KEY` do Vercel e rode:
 
 ```powershell
 npm install
@@ -60,15 +62,17 @@ npm run criar-admin -- igor "Igor Carvalho" "uma-senha-forte-com-8-ou-mais"
 npm run importar-banco-site -- banco2026_parte1de5.json banco2026_parte2de5.json banco2026_parte3de5.json banco2026_parte4de5.json banco2026_parte5de5.json
 ```
 
-- `importar-dados-site`: grava no Neon os arquivos de dados do site. **Rode de novo sempre que atualizar um `historico*.json` ou `*_config.json`.**
+- `importar-dados-site`: grava no Neon os arquivos de `privado/` (histórico e configurações). **Rode de novo sempre que atualizar um deles.**
 - `criar-admin`: cria o administrador (ou redefine a senha dele).
-- `importar-banco-site`: carrega o Banco SIGA já exportado. Dias que já existem não são sobrescritos (`--substituir` troca todos).
+- `importar-banco-site`: carrega o Banco SIGA já exportado (procura os arquivos em `privado/`). Dias que já existem não são sobrescritos (`--substituir` troca todos).
+
+O `npm install` instala poucos pacotes (`@neondatabase/serverless` e `xlsx`), então o `node_modules` é pequeno e pode ficar na pasta do OneDrive.
 
 Abra a URL do Vercel e entre. Os demais usuários você cria no site, no botão **Usuários** (canto inferior direito).
 
 ## Atualizações depois do primeiro deploy
 - **Código** (`index.html`, `farol-web.js`, `lib/`…): `git push` na `main` gera deploy novo.
-- **Dados** (`historico*.json`, configs): rode `npm run importar-dados-site` na cópia fora do OneDrive. Não precisa de deploy.
+- **Dados** (`privado/historico*.json`, configs): rode `npm run importar-dados-site`. Não precisa de deploy.
 - **Dia a dia do SIGA**: aba **Atualizar com o SIGA** do site, como antes. Reenviar um dia substitui o dia inteiro.
 
 ## O que fica pendente
@@ -82,4 +86,4 @@ Abra a URL do Vercel e entre. Os demais usuários você cria no site, no botão 
 - **Tela de login diz "Ainda não há usuários"**: rode o `criar-admin`.
 - **"SECRET_KEY não configurada"**: variável faltando no Vercel; depois de criar, faça **Redeploy**.
 - **Site abre sem dados / `/api/arquivo` 404**: rode `npm run importar-dados-site`.
-- **`index.lock` ou `main.lock` no Git**: o OneDrive está sincronizando a pasta `.git`; trabalhe na cópia fora do OneDrive.
+- **`index.lock` ou `main.lock` no Git**: processo do Git parado ou o OneDrive sincronizando a pasta `.git`; encerre o `git.exe` parado e apague o arquivo `.lock`.

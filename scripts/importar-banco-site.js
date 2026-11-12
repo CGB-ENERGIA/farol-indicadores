@@ -1,11 +1,11 @@
 'use strict';
-/* npm run importar-banco-site -- banco2026_parte1de5.json … banco2026_parte5de5.json
+/* npm run importar-banco-site -- banco2026_parte1de5.json … banco2026_parte5de5.json  (os arquivos ficam em privado/)
    Carrega o Banco SIGA já exportado (as mesmas 5 partes do botão "Importar banco inicial") direto na tabela
    "documentos" do Neon, coleção "banco" + o índice. Dias que já existem não são sobrescritos (use --substituir para trocar). */
 const fs = require('fs');
 const pg = require('../lib/pg');
 (async () => {
-  const args = process.argv.slice(2), subst = args.includes('--substituir'), arqs = args.filter(a => !a.startsWith('--'));
+  const args = process.argv.slice(2), subst = args.includes('--substituir'), arqs = args.filter(a => !a.startsWith('--')).map(a => (fs.existsSync(a) ? a : require('path').join(__dirname, '..', 'privado', a))); // aceita só o nome: procura em privado/
   if (!arqs.length) { console.log('Informe os arquivos: npm run importar-banco-site -- banco2026_parte1de5.json …'); process.exitCode = 1; return; }
   const existente = await pg.q("select dados from documentos where colecao = 'config' and id = 'bancoIdx'");
   const idx = existente[0] ? JSON.parse(existente[0].dados.j) : { COI: {}, MAN: {}, FIS: {}, OBRAS: {} };

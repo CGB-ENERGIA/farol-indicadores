@@ -24,3 +24,6 @@ ESTADO-DO-PROJETO.md
 MESCLA-*.md
 LEIA-ME.txt
 automacao/
+
+# subpasta com tudo que não pode ser compartilhado (dados, banco, notas internas)
+privado/

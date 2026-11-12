@@ -13,6 +13,7 @@ const apiBanco = require('./lib/rotas/banco');
 const rotear = require('./lib/rotas');
 
 const MIME = { '.html': 'text/html; charset=utf-8', '.json': 'application/json; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.png': 'image/png', '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.txt': 'text/plain; charset=utf-8' };
+const DADOS_PRIV = /^(config|ader_config|def_config|ini_config|prod_config|ups_config|ups_semclasse|historico(_[a-z]+)?)\.json$/;
 const BLOQUEADOS = /^(package(-lock)?\.json|vercel\.json|\.env.*|banco2026.*|\.gitignore|\.vercelignore)$/i;
 
 function estatico(raiz, req, res) {
@@ -21,7 +22,9 @@ function estatico(raiz, req, res) {
   if (nome === '/') nome = '/index.html';
   const parte = nome.slice(1);
   if (!parte || parte.includes('/') || parte.includes('\\') || BLOQUEADOS.test(parte) || !MIME[path.extname(parte).toLowerCase()]) { res.statusCode = 404; return res.end('Não encontrado'); }
-  const arq = path.join(raiz, parte);
+  /* dados que não vão para o GitHub ficam em privado/ (só no PC): se existir lá, serve de lá */
+  const priv = path.join(raiz, 'privado', parte);
+  const arq = DADOS_PRIV.test(parte) && fs.existsSync(priv) ? priv : path.join(raiz, parte);
   fs.readFile(arq, (err, buf) => {
     if (err) { res.statusCode = 404; return res.end('Não encontrado'); }
     res.statusCode = 200;
