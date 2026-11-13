@@ -595,6 +595,8 @@ section[data-pag]>.panel,section[data-pag]>div>.panel{border-radius:var(--r-lg)}
 .utab .clq{display:inline-grid;place-items:center;width:24px;height:22px;border-radius:6px;font-weight:900}
 .xp{width:20px;height:20px;border-radius:5px;border:1px solid var(--line);background:var(--surface);font-weight:900;font-size:13px;line-height:1;margin-right:8px;vertical-align:-3px;color:#711424}
 .urec{max-height:620px;overflow:auto}
+.urec-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 2px 10px;font-size:12px;font-weight:700;color:var(--muted)}
+#modalEqp{z-index:86}.meqp{width:min(1000px,100%)}.meqp .modal-bd{max-height:75vh;overflow:auto}
 .ucol-r{align-content:stretch}
 .urit-t{font-size:14px;font-weight:700;color:var(--fg);text-align:center}
 .urit-t b{font-weight:900}
@@ -1129,7 +1131,7 @@ table.cardz{width:100%!important}table.cardz td,table.cardz td *{overflow-wrap:a
         <div class="ubases" id="upsBases"></div>
         <div class="panel ptab"><div class="tw"><table class="utab utipo"><thead><tr><th>Tipo de equipe</th><th class="n">Equipes</th><th class="n">UPS</th><th class="n">Meta</th><th class="n">%</th><th>Classe</th><th class="n">UPS/dia</th></tr></thead><tbody id="upsTipo"></tbody></table></div></div>
       </div>
-      <div class="panel ptab ucol-r"><div class="tw urec"><table class="utab"><thead><tr><th>Recurso</th><th class="n">Total</th><th class="n">Meta</th><th class="n">%</th><th>Classe</th></tr></thead><tbody id="upsRec"></tbody></table></div></div>
+      <div class="panel ptab ucol-r"><div class="urec-bar"><span id="urecN"></span><button type="button" class="btn sm" id="b-urec"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>Ver todas as equipes</span></button></div><div class="tw urec"><table class="utab"><thead><tr><th>Recurso</th><th class="n">Total</th><th class="n">Meta</th><th class="n">%</th><th>Classe</th></tr></thead><tbody id="upsRec"></tbody></table></div></div>
     </div>
     <div class="panel">
       <div class="phd"><h3 id="uBtit">Relatório diário de UPS</h3><button type="button" class="utgl" id="tglB" aria-pressed="false" aria-label="Alternar entre relatório diário e ritmo diário"><span>Diário</span><i></i><span>Ritmo</span></button></div>
@@ -1634,6 +1636,7 @@ table.cardz{width:100%!important}table.cardz td,table.cardz td *{overflow-wrap:a
   <div class="gaveta-ft"><button class="btn del" id="b-delPref" type="button">Excluir</button><button class="btn primary" id="b-salvaPref" type="button">Salvar</button></div>
 </aside>
 <div class="modal" id="modalPrint" hidden><div class="modal-c pmod"><div class="modal-hd"><h3>Print do painel · pronto para enviar</h3><button class="fecha" id="b-fechaPrint" type="button" aria-label="Fechar"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="pm-st" id="printMsg" role="status"></div><div class="modal-bd pm-bd" id="printBd"><div class="pm-load" id="printLoad"><i></i>Gerando o print…</div><div id="printPartes" hidden></div></div><div class="modal-ft pm-ft"><button class="btn" id="b-zoomPrint" type="button">Ampliar</button><button class="btn" id="b-umPrint" type="button">Juntar em 1 imagem</button><span style="flex:1"></span><button class="btn" id="b-sharePrint" type="button" hidden>Compartilhar…</button><button class="btn primary" id="b-baixaPrint" type="button">Baixar as 2 imagens</button></div></div></div>
+<div class="modal" id="modalEqp" hidden><div class="modal-c meqp"><div class="modal-hd"><h3 id="meTit">Todas as equipes</h3><button class="fecha" id="b-fechaEqp" type="button" aria-label="Fechar"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="modal-bd" id="meCorpo"></div></div></div>
 <div class="modal" id="modalDia" hidden><div class="modal-c mdia"><div class="modal-hd"><h3 id="mdTit">Detalhe do dia</h3><button class="fecha" id="b-fechaDia" type="button" aria-label="Fechar"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="modal-bd" id="mdCorpo"></div><div class="modal-ft"><button class="btn" id="b-mdFiltra" type="button">Filtrar o painel neste dia</button><button class="btn primary" id="b-mdPrint" type="button">Copiar print</button></div></div></div>
 <div class="modal" id="modalRg" hidden><div class="modal-c mlote"><div class="modal-hd"><h3 id="rgTit">Regra</h3><button class="fecha" id="b-fechaRg" type="button" aria-label="Fechar"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="modal-bd" id="rgCorpo"></div><div class="modal-ft"><span class="muted" id="rgMsg" style="margin-right:auto;font-size:12.5px"></span><button class="btn del" id="b-rgExclui" type="button" hidden>Excluir</button><button class="btn" id="b-rgCancela" type="button">Cancelar</button><button class="btn primary" id="b-rgSalva" type="button">Salvar</button></div></div></div>
 <div class="modal" id="modalLote" hidden><div class="modal-c mlote"><div class="modal-hd"><h3 id="ltTit">Cadastrar em lote</h3><button class="fecha" id="b-fechaLote" type="button" aria-label="Fechar"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="modal-bd" id="ltCorpo"></div><div class="modal-ft"><span class="muted" id="ltMsg" style="margin-right:auto;font-size:12.5px"></span><button class="btn" id="b-ltCancela" type="button">Cancelar</button><button class="btn primary" id="b-ltSalva" type="button">Salvar cadastros</button></div></div></div>
@@ -3381,6 +3384,7 @@ function renderUPS(){
   // recurso (direita)
   const tr=S.teams.slice().sort((a,b)=>a.rec<b.rec?-1:1);
   $('upsRec').innerHTML=tr.map(t=>'<tr data-urn="'+esc(t.rec)+'"><td><b>'+esc(t.rec)+'</b></td><td class="n">'+n1(t.ups)+'</td><td class="n">'+n0(t.meta)+'</td><td class="n">'+solCls(t.pct)+'</td><td>'+clq(t.classe)+'</td></tr>').join('')
+  {const n=tr.length;if($('urecN'))$('urecN').textContent=n+(n===1?' equipe':' equipes');if($('b-urec'))$('b-urec').hidden=!n}
     +(tr.length?'<tr class="tot"><td>Total</td><td class="n">'+n0(S.ups)+'</td><td class="n">'+n0(S.meta)+'</td><td class="n">'+solCls(S.pct)+'</td><td>'+clq(UPSCalc.classe(S.pct))+'</td></tr>':'<tr><td colspan="5"><div class="empty">Nenhuma equipe.</div></td></tr>');
   // % equipe / classe (barras 100%)
   $('upsStack').innerHTML=SIGLAS.map(s=>{const ts=base(s),n=ts.length;if(!n)return'';const c=contaClasses(ts);
@@ -3501,6 +3505,13 @@ function upsDet(rec,d){
       filtra:{txt:'Filtrar o painel em '+rec,fn:()=>{$('u-rec').value=rec;$('u-rec').classList.add('on');renderUPS()}}});
   }
 }
+(function(){const b=$('b-urec');if(!b)return;
+  b.onclick=()=>{const t=$('upsRec').closest('table');$('meTit').textContent='Todas as equipes · '+$('upsRec').children.length+' equipes';
+    $('meCorpo').innerHTML='<div class="tw"><table class="utab">'+t.querySelector('thead').outerHTML+'<tbody>'+$('upsRec').innerHTML.replace(/ data-urn="[^"]*"/g,'')+'</tbody></table></div>';$('modalEqp').hidden=false};
+  $('b-fechaEqp').onclick=()=>$('modalEqp').hidden=true;
+  $('modalEqp').addEventListener('click',ev=>{if(ev.target.id==='modalEqp')$('modalEqp').hidden=true});
+  document.addEventListener('keydown',ev=>{if(ev.key==='Escape')$('modalEqp').hidden=true});
+})();
 ['upsDiario','upsDiarioP','upsRec','t-upsPref'].forEach(id=>{const el=$(id);if(el)el.addEventListener('click',ev=>{const c=ev.target.closest('[data-ud]');if(c){const [r,d]=c.dataset.ud.split('|');upsDet(r,d);return}const n=ev.target.closest('[data-urn]');if(n)upsDet(n.dataset.urn,null)})});
 
 /* ---------- quadrante Faturamento × UPS ---------- */
