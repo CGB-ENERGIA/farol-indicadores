@@ -152,7 +152,7 @@
     '.fl-cartao{position:relative;z-index:1;width:100%;overflow:hidden;box-sizing:border-box;background:rgba(255,255,255,.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(0,0,0,.12);border-radius:4px;box-shadow:0 30px 60px -15px rgba(37,4,13,.45),0 12px 24px -8px rgba(37,4,13,.3)}' +
     '.fl-faixat{position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--marca) 0%,var(--marca-clara) 50%,#e57c94 100%)}.fl-sec{padding:16px}.fl-sec.topo{text-align:center;padding-bottom:0;padding-top:20px}' +
     '.fl-sec.topo img{height:56px;width:auto;margin-bottom:8px}.fl-h6{font-size:1.25rem;font-weight:700;line-height:2rem;letter-spacing:.0125em;color:var(--titulo)}.fl-cap{font-size:.75rem;color:#757575;line-height:1.25rem;letter-spacing:.03333em}' +
-    '.fl-campo{position:relative;margin-bottom:16px}.fl-campo input,.fl-campo select{width:100%;box-sizing:border-box;height:40px;border:1px solid rgba(0,0,0,.24);border-radius:4px;padding:0 12px 0 40px;font:inherit;font-size:1rem;color:var(--tinta);background:transparent;outline:0;transition:border-color .15s}' +
+    '.fl-campo{position:relative;margin-bottom:16px}div.fl-campo input,div.fl-campo select{width:100%;box-sizing:border-box;height:40px;border:1px solid rgba(0,0,0,.24);border-radius:4px;padding:0 12px 0 40px;font:inherit;font-size:1rem;color:var(--tinta);background:transparent;outline:0;transition:border-color .15s}' +
     '.fl-campo input.sem-ico{padding-left:12px}.fl-campo input:hover{border-color:rgba(0,0,0,.87)}.fl-campo input:focus{border:2px solid var(--marca);padding-left:39px}.fl-campo input.sem-ico:focus{padding-left:11px}' +
     '.fl-campo label{position:absolute;left:40px;top:10px;font-size:1rem;color:rgba(0,0,0,.6);pointer-events:none;transition:all .15s;background:transparent;padding:0 4px;margin-left:-4px}' +
     '.fl-campo input.sem-ico~label{left:12px}.fl-campo input:focus~label,.fl-campo input:not(:placeholder-shown)~label{top:-8px;font-size:.75rem;background:#fff;color:rgba(0,0,0,.6)}.fl-campo input:focus~label{color:var(--marca)}' +
@@ -302,6 +302,7 @@
     render();
   }
 
+  window.FAROL_API = function (rota, opc) { return api(rota, opc); };
   function barra() {
     estilo(); estiloLogin(); fechar('.fw-bar');
     window.FAROL_CONTA = {
