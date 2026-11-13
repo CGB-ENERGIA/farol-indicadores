@@ -224,6 +224,7 @@ section[data-pag="contingencia"] .ubar,section[data-pag="prazos"] .ubar{backgrou
 .ct-prog{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600}.ct-prog i{width:16px;height:16px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--accent);animation:ctGira .8s linear infinite}@keyframes ctGira{to{transform:rotate(360deg)}}
 .ct-res{border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.45}.ct-res.ok{background:#e3f3dc;color:#1f6a12;border:1px solid #bfe0b0}.ct-res.erro{background:#fbe5e5;color:#9b1226;border:1px solid #f1b9bf}
 .ct-res ul{margin:6px 0 0;padding-left:18px;display:grid;gap:3px}.ct-res li small{display:block;opacity:.85}.ct-res b{font-weight:800}
+.ct-teste{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;text-align:center;background:repeating-linear-gradient(135deg,#ffd43b 0 18px,#f5b400 18px 36px);color:#2d2200;border:2px solid #b8860b;border-radius:12px;padding:10px 16px;box-shadow:var(--sh-1)}.ct-teste b{font-size:18px;font-weight:900;letter-spacing:.14em;background:#2d2200;color:#ffd43b;border-radius:8px;padding:3px 12px}.ct-teste span{font-size:13px;font-weight:700}
 .ct-sem{border:1px dashed var(--line);border-radius:12px;padding:26px;text-align:center;color:var(--muted);background:var(--surface)}.ct-sem .btn{margin-top:10px}
 .ct-fil{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;padding:12px 14px}.ct-fil .fld{display:grid;gap:4px;min-width:170px;flex:1;max-width:260px}.ct-fil .fld label{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .ct-k3{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.ct-kp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;gap:2px;box-shadow:var(--sh-1);border-top:4px solid var(--accent)}.ct-kp small{font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}.ct-kp b{font-size:34px;font-weight:900;line-height:1.1;font-variant-numeric:tabular-nums}.ct-kp span{font-size:12px;color:var(--muted)}
@@ -1505,6 +1506,7 @@ table.cardz{width:100%!important}table.cardz td,table.cardz td *{overflow-wrap:a
 
   <!-- PÁGINA: GESTÃO DE CONTINGÊNCIA (réplica da aba "Contingência" do BI; base única e compartilhada, qualquer usuário logado importa) -->
   <section data-pag="contingencia" style="display:grid;gap:16px;min-width:0" hidden>
+    <div class="ct-teste" role="status"><b>TELA EM TESTE</b><span>Em validação: os números ainda estão sendo conferidos e podem mudar. Não use para decisões ou cobranças.</span></div>
     <div class="ubar"><div class="ubar-t"><h2>Gestão de Contingência</h2><span>Atividades em campo, clientes afetados e serviços acima de 24 h · base compartilhada, atualizada para todos sem recarregar</span></div></div>
     <div class="ct-topo">
       <div class="panel ct-ult"><div class="phd"><h3>Última atualização</h3><small id="ctSync"></small></div><div id="ctUlt" class="ct-ult-g"></div></div>
@@ -1539,6 +1541,7 @@ table.cardz{width:100%!important}table.cardz td,table.cardz td *{overflow-wrap:a
 
   <!-- PÁGINA: FAROL DE PRAZOS (réplica da aba "Farol de Prazos" do BI; usa a mesma base da Gestão de Contingência) -->
   <section data-pag="prazos" style="display:grid;gap:16px;min-width:0" hidden>
+    <div class="ct-teste" role="status"><b>TELA EM TESTE</b><span>Em validação: os números ainda estão sendo conferidos e podem mudar. Não use para decisões ou cobranças.</span></div>
     <div class="ubar"><div class="ubar-t"><h2>Farol de Prazos</h2><span>Monitoramento de prazos regulatórios · calculado a cada minuto pelo horário de Brasília</span></div></div>
     <div class="ct-sem" id="pzSem" hidden></div>
     <div id="pzPainel" style="display:grid;gap:16px;min-width:0">
