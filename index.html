@@ -2085,7 +2085,7 @@ function ctMapa(f,ag){
   $('ctMapaN').textContent=pts.length+' ponto(s)'+(gps.length>pts.length?' ('+(gps.length-pts.length)+' com GPS fora da região, ocultos)':'')+' · vermelho: prazo vencido · laranja: vence hoje · azul: demais · verde: concluído';
   if(pag().id!=='contingencia')return;
   ctLeaflet(()=>{
-    if(!CT.mapa){CT.mapa=L.map('ctMapa').setView([-5.3,-45.4],8);L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap'}).addTo(CT.mapa);CT.camada=L.layerGroup().addTo(CT.mapa)}
+    if(!CT.mapa){CT.mapa=L.map('ctMapa').setView([-5.3,-45.4],8);L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap',referrerPolicy:'origin'}).addTo(CT.mapa);CT.camada=L.layerGroup().addTo(CT.mapa)}
     CT.mapa.invalidateSize();CT.camada.clearLayers();const ll=[];
     for(const r of pts){const v=ctVenc(r,ag),c=v==='Concluído'?'#2f9e44':v==='Prazo Vencido'?'#c8102e':v==='Vencimento Hoje'?'#e8a100':'#2f6fe0';
       L.circleMarker([r.lat,r.lon],{radius:5,color:c,fillColor:c,fillOpacity:.8,weight:1}).bindPopup('<b>'+esc(r.rec)+'</b><br>'+esc(r.tipo)+'<br>OS '+esc(r.os)+'<br>'+esc(r.st)+(r.limTxt?'<br>Limite: '+ctDH(r.limTxt):'')).addTo(CT.camada);ll.push([r.lat,r.lon])}
