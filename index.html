@@ -597,7 +597,7 @@ section[data-pag]>.panel,section[data-pag]>div>.panel{border-radius:var(--r-lg)}
 .xp{width:20px;height:20px;border-radius:5px;border:1px solid var(--line);background:var(--surface);font-weight:900;font-size:13px;line-height:1;margin-right:8px;vertical-align:-3px;color:#711424}
 .urec{max-height:620px;overflow:auto}
 .urec-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 2px 10px;font-size:12px;font-weight:700;color:var(--muted)}
-#modalEqp{z-index:86}.meqp{width:min(1000px,100%)}.meqp .modal-bd{max-height:75vh;overflow:auto}
+#modalAGr{z-index:84}.magr{width:min(1800px,98vw)}.magr .modal-bd{max-height:84vh;overflow:auto}#modalEqp{z-index:86}.meqp{width:min(1000px,100%)}.meqp .modal-bd{max-height:75vh;overflow:auto}
 .ucol-r{align-content:stretch}
 .urit-t{font-size:14px;font-weight:700;color:var(--fg);text-align:center}
 .urit-t b{font-weight:900}
@@ -1200,7 +1200,7 @@ table.cardz{width:100%!important}table.cardz td,table.cardz td *{overflow-wrap:a
       <div class="panel ptab"><div class="acap">Aderência · bases</div><div class="tw"><table class="utab"><thead><tr><th>Base</th><th class="n">% Aderência</th><th>Classificação</th></tr></thead><tbody id="aBases"></tbody></table></div></div>
     </div>
     <div class="panel">
-      <div class="phd"><h3>Aderência à escala · horário do checklist de início do turno</h3><div class="busca"><input type="search" id="a-busca" placeholder="Buscar prefixo…" aria-label="Buscar prefixo"></div></div>
+      <div class="phd"><h3>Aderência à escala · horário do checklist de início do turno</h3><div class="busca" style="display:flex;gap:8px;align-items:center"><input type="search" id="a-busca" placeholder="Buscar prefixo…" aria-label="Buscar prefixo"><button type="button" class="btn sm" id="b-agr" title="Ver todos os prefixos em tela grande"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>Expandir</span></button></div></div>
       <div class="heat-leg"><span><i style="background:#3ae007"></i>Aderente (até 30 min depois ou até 2 h antes)</span><span><i style="background:#f50c05"></i>Fora do horário</span><span><i style="background:#f59105"></i>Ausente (sem checklist)</span></div>
       <div class="tw diario-w"><table class="diario agr" id="aGrade"></table></div>
     </div>
@@ -1638,6 +1638,7 @@ table.cardz{width:100%!important}table.cardz td,table.cardz td *{overflow-wrap:a
   <div class="gaveta-ft"><button class="btn del" id="b-delPref" type="button">Excluir</button><button class="btn primary" id="b-salvaPref" type="button">Salvar</button></div>
 </aside>
 <div class="modal" id="modalPrint" hidden><div class="modal-c pmod"><div class="modal-hd"><h3>Print do painel · pronto para enviar</h3><button class="fecha" id="b-fechaPrint" type="button" aria-label="Fechar"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="pm-st" id="printMsg" role="status"></div><div class="modal-bd pm-bd" id="printBd"><div class="pm-load" id="printLoad"><i></i>Gerando o print…</div><div id="printPartes" hidden></div></div><div class="modal-ft pm-ft"><button class="btn" id="b-zoomPrint" type="button">Ampliar</button><button class="btn" id="b-umPrint" type="button">Juntar em 1 imagem</button><span style="flex:1"></span><button class="btn" id="b-sharePrint" type="button" hidden>Compartilhar…</button><button class="btn primary" id="b-baixaPrint" type="button">Baixar as 2 imagens</button></div></div></div>
+<div class="modal" id="modalAGr" hidden><div class="modal-c magr"><div class="modal-hd"><h3 id="agrTit">Aderência à escala · todos os prefixos</h3><button class="fecha" id="b-fechaAGr" type="button" aria-label="Fechar"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="modal-bd" id="agrCorpo"></div></div></div>
 <div class="modal" id="modalEqp" hidden><div class="modal-c meqp"><div class="modal-hd"><h3 id="meTit">Todas as equipes</h3><button class="fecha" id="b-fechaEqp" type="button" aria-label="Fechar"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="modal-bd" id="meCorpo"></div></div></div>
 <div class="modal" id="modalDia" hidden><div class="modal-c mdia"><div class="modal-hd"><h3 id="mdTit">Detalhe do dia</h3><button class="fecha" id="b-fechaDia" type="button" aria-label="Fechar"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="modal-bd" id="mdCorpo"></div><div class="modal-ft"><button class="btn" id="b-mdFiltra" type="button">Filtrar o painel neste dia</button><button class="btn primary" id="b-mdPrint" type="button">Copiar print</button></div></div></div>
 <div class="modal" id="modalRg" hidden><div class="modal-c mlote"><div class="modal-hd"><h3 id="rgTit">Regra</h3><button class="fecha" id="b-fechaRg" type="button" aria-label="Fechar"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="modal-bd" id="rgCorpo"></div><div class="modal-ft"><span class="muted" id="rgMsg" style="margin-right:auto;font-size:12.5px"></span><button class="btn del" id="b-rgExclui" type="button" hidden>Excluir</button><button class="btn" id="b-rgCancela" type="button">Cancelar</button><button class="btn primary" id="b-rgSalva" type="button">Salvar</button></div></div></div>
@@ -2974,10 +2975,11 @@ async function gerarPrintPagina(alvo){
     if(L&&M&&R&&D&&G){const mv=[L,M,R,D].map(e=>[e,e.parentNode,e.nextSibling]);mesCols={mv,G};
       const mk=(...cols)=>{const w=document.createElement('div');w.className='capcols';cols.forEach(c=>{const d=document.createElement('div');d.append(...c);w.appendChild(d)});return w};
       const w1=mk([L,mesTit],[M]),w2=mk([R],[D]);G.after(w1);w1.after(w2);mesCols.w=w1;mesCols.w2=w2;mesCols.hint=w2}else sec.querySelector('.ucol-m')&&sec.querySelector('.ucol-m').appendChild(mesTit)}
-  printCorte=null;if(mesCols&&mesCols.hint)printCorte=Math.round((mesCols.hint.getBoundingClientRect().top-sec.getBoundingClientRect().top-7+24)*2);
+  printCorte=null;if(pg.id==='ader-painel'&&!alvo){const gp=sec.querySelector(':scope>.panel');if(gp)printCorte=Math.round((gp.getBoundingClientRect().top-sec.getBoundingClientRect().top-7+24)*2)}
+  if(mesCols&&mesCols.hint)printCorte=Math.round((mesCols.hint.getBoundingClientRect().top-sec.getBoundingClientRect().top-7+24)*2);
   try{
     const w=sec.offsetWidth,ht=alvo?Math.max(sec.scrollHeight,Math.ceil(sec.getBoundingClientRect().height))+(sec.classList.contains('pv-sheet')?72:0):sec.scrollHeight,pad=24;
-    const op={pixelRatio:2,backgroundColor:'#f4f4f4',width:w+pad*2,height:ht+pad*2,style:{padding:pad+'px',margin:'0',width:w+'px',boxSizing:'content-box'},filter:n=>!(n.classList&&(n.classList.contains('ufunil')||n.classList.contains('dmz-c')||n.classList.contains('dmz-h')))};
+    const op={pixelRatio:2,backgroundColor:'#f4f4f4',width:w+pad*2,height:ht+pad*2,style:{padding:pad+'px',margin:'0',width:w+'px',boxSizing:'content-box'},filter:n=>!(n.id==='b-agr'||n.classList&&(n.classList.contains('ufunil')||n.classList.contains('dmz-c')||n.classList.contains('dmz-h')))};
     let cv;try{cv=await h.toCanvas(sec,op)}catch(e){cv=await h.toCanvas(sec,{...op,skipFonts:true})}
     const f=document.createElement('canvas');f.width=cv.width;f.height=cv.height+70;const c=f.getContext('2d');c.fillStyle='#f4f4f4';c.fillRect(0,0,f.width,f.height);c.drawImage(cv,0,0);
     c.fillStyle='#711424';c.fillRect(pad*2,cv.height+8,f.width-pad*4,3);c.font='700 22px "Plus Jakarta Sans",Arial,sans-serif';c.fillStyle='#2b2a2a';
@@ -3512,6 +3514,14 @@ function upsDet(rec,d){
       filtra:{txt:'Filtrar o painel em '+rec,fn:()=>{$('u-rec').value=rec;$('u-rec').classList.add('on');renderUPS()}}});
   }
 }
+(function(){const b=$('b-agr');if(!b)return;
+  b.onclick=()=>{const t=$('aGrade'),n=t.querySelectorAll('tr[data-r],td.nm').length;$('agrTit').textContent='Aderência à escala · todos os prefixos';
+    $('agrCorpo').innerHTML=document.querySelector('section[data-pag="ader-painel"] .heat-leg').outerHTML+'<div class="tw" style="max-height:none;overflow:visible"><table class="diario agr" id="aGradeM">'+t.innerHTML+'</table></div>';$('modalAGr').hidden=false};
+  $('agrCorpo').addEventListener('click',ev=>{const c=ev.target.closest('[data-ar]');if(c){const [r,d]=c.dataset.ar.split('|');aderDet(r,d);return}const n=ev.target.closest('[data-arn]');if(n)aderDet(n.dataset.arn,null)});
+  $('b-fechaAGr').onclick=()=>$('modalAGr').hidden=true;
+  $('modalAGr').addEventListener('click',ev=>{if(ev.target.id==='modalAGr')$('modalAGr').hidden=true});
+  document.addEventListener('keydown',ev=>{if(ev.key==='Escape')$('modalAGr').hidden=true});
+})();
 (function(){const b=$('b-urec');if(!b)return;
   b.onclick=()=>{const t=$('upsRec').closest('table');$('meTit').textContent='Todas as equipes · '+$('upsRec').children.length+' equipes';
     $('meCorpo').innerHTML='<div class="tw"><table class="utab">'+t.querySelector('thead').outerHTML+'<tbody>'+$('upsRec').innerHTML.replace(/ data-urn="[^"]*"/g,'')+'</tbody></table></div>';$('modalEqp').hidden=false};
