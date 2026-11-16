@@ -100,7 +100,7 @@ select,input[type=search]{width:100%;min-width:0;border:1px solid var(--line);ba
 .msel{position:relative;min-width:0}.msel-b{width:100%;min-height:38px;border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:7px 10px;display:flex;align-items:center;justify-content:space-between;gap:6px;font:inherit;text-align:left;cursor:pointer}.msel-b span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.msel-b .ico{width:16px;height:16px;flex:none}
 .msel.on .msel-b{background:var(--accent-soft);border-color:var(--line-accent);color:var(--accent);font-weight:700}
 .msel-p{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:60;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 30px rgba(0,0,0,.18);padding:6px;max-height:none;overflow:auto}
-.msel-p label{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:7px;font-size:13px;text-transform:none;letter-spacing:0;color:var(--fg);font-weight:500;cursor:pointer}.msel-p label:hover{background:var(--sunken)}.msel-all{border-bottom:1px solid var(--line);margin-bottom:4px}.msel-p input{width:16px;height:16px;accent-color:#711424}
+.msel-p label{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:7px;font-size:13px;text-transform:none;letter-spacing:0;color:var(--fg);font-weight:500;cursor:pointer}.msel-p label:hover{background:var(--sunken)}.msel-all{border-bottom:1px solid var(--line);margin-bottom:4px}.msel-p input{width:16px;height:16px;accent-color:#711424}.msel-p input.msel-q{display:block;width:100%;height:auto;min-height:36px;box-sizing:border-box;margin:2px 0 6px;padding:7px 10px 7px 32px;font:inherit;font-size:13px;border:1px solid var(--line);border-radius:8px;background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-4-4'/%3E%3C/svg%3E") no-repeat 9px center/16px}.msel-p input.msel-q[hidden]{display:none}
 select.on{background:var(--accent-soft);border-color:var(--line-accent);color:var(--accent);font-weight:700}
 .limpar{align-self:end;min-height:38px;border:1px solid var(--line);background:var(--surface);border-radius:9px;font-weight:700;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:6px}
 .limpar:hover{border-color:var(--accent);color:var(--accent)}
@@ -216,6 +216,7 @@ body::after { content: ""; position: fixed; right: -60px; bottom: -80px; width: 
 .hier-bar select{font:inherit;font-size:13px;font-weight:600;text-transform:none;letter-spacing:0;color:var(--fg);border:1px solid var(--line);border-radius:9px;padding:7px 10px;background:var(--surface);min-width:170px;max-width:240px}
 .hier-bar .hb-n{font-size:12.5px;color:var(--muted);padding-bottom:9px;margin-left:auto}
 .ct-topo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:16px}@media(max-width:900px){.ct-topo{grid-template-columns:1fr}}
+.pu-g{background:#ccffcc}.pu-r{background:#ffcccc}.pu-f{display:inline-block;padding:2px 10px;border-radius:99px;font-weight:700;font-size:12px}.pu-f.a{background:#fff1b8;color:#7a5b00}.pu-f.d{background:#bff0d6;color:#0b6b3a}
 section[data-pag="contingencia"] .ubar,section[data-pag="prazos"] .ubar{background:linear-gradient(135deg,#7a1628,#3f0912)}
 .ct-ult-g{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;padding:4px 2px}.ct-ult-g div{display:grid;gap:2px;min-width:0}.ct-ult-g small{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.ct-ult-g b{font-size:14.5px;overflow-wrap:anywhere}.ct-ult-g .vz{grid-column:1/-1;color:var(--muted);font-size:13.5px}
 .ct-ult.novo{animation:ctPisca 1.6s ease}@keyframes ctPisca{0%,40%{box-shadow:0 0 0 3px rgba(47,129,247,.55)}100%{box-shadow:none}}
@@ -1551,6 +1552,10 @@ table.cardz{width:100%!important}table.cardz td,table.cardz td *{overflow-wrap:a
     <div id="pzPainel" style="display:grid;gap:16px;min-width:0">
       <div class="panel ct-fil"><div class="fld"><label>Situação do prazo</label><div class="msel" id="pf-venc" data-todos="Todas" data-nome="situação(ões)"></div></div><div class="fld"><label>Status da atividade</label><div class="msel" id="pf-st" data-todos="Todos" data-nome="status"></div></div><div class="fld"><label>Tipo de serviço (sigla)</label><div class="msel" id="pf-sg" data-todos="Todos" data-nome="tipo(s)"></div></div><div class="fld"><label>Tipo de atividade</label><div class="msel" id="pf-tipo" data-todos="Todos" data-nome="atividade(s)"></div></div><div class="fld"><label>Base</label><div class="msel" id="pf-base" data-todos="Todas" data-nome="base(s)"></div></div><div class="fld"><label>Tipo de equipe</label><div class="msel" id="pf-teq" data-todos="Todos" data-nome="tipo(s)"></div></div><div class="fld"><label>Cidade</label><div class="msel" id="pf-cid" data-todos="Todas" data-nome="cidade(s)"></div></div><div class="fld"><label>Equipe</label><div class="msel" id="pf-rec" data-todos="Todas" data-nome="equipe(s)"></div></div><button type="button" class="btn sm" id="pf-x" hidden>Limpar filtros</button></div>
       <div class="pz-top"><div class="ct-k3 pz-k" id="pzK"></div><div class="panel"><div class="phd"><h3>Atividades por cidade</h3><small id="pzCidN"></small></div><div id="pzCid" class="pz-tree"></div></div></div>
+      <div class="panel" id="pzUpsP"><div class="phd"><h3>UPS por equipe · meta, balde e produzido</h3><small id="pzUpsN"></small></div>
+        <div class="tw"><table class="ct-t" id="pzUpsT"></table></div>
+        <p class="muted" style="font-size:12px;margin:8px 4px 0">Balde = UPS já produzida + UPS estimada das atividades ainda não concluídas (quantidade pendente × UPS média por atividade da equipe). Farol: “Atenção” se o produzido estiver abaixo da meta.</p>
+      </div>
       <div class="panel"><div class="phd"><h3>Atividades e prazos</h3><small id="pzSub"></small></div>
         <div class="ct-bar"><input type="search" id="pz-q" placeholder="Buscar equipe, nota, cidade, atividade…" aria-label="Buscar"><span id="pzCont" class="muted"></span></div>
         <div class="tw"><table class="ct-t" id="pzTab"></table></div>
@@ -2103,6 +2108,24 @@ function ctMapa(f,ag){
     if(ll.length&&CT.ajusta){CT.mapa.fitBounds(ll,{padding:[20,20],maxZoom:13});CT.ajusta=false}
   });
 }
+/* Farol de Prazos: UPS por equipe (meta, balde, produzido, farol) com a UPS do site */
+function pzUps(base){
+  const T=$('pzUpsT'),N=$('pzUpsN');if(!T)return;
+  if(!UR||!UR.linhas||!UR.ultima){N.textContent='UPS ainda não carregada';T.innerHTML='';return}
+  const dia=UR.ultima,g={},med={};
+  for(const l of UR.linhas){if(l.n>0&&l.ups>0){const m=med[l.rec]||(med[l.rec]={u:0,n:0});m.u+=l.ups;m.n+=l.n}}
+  for(const l of UR.linhas){if(l.data!==dia||!l.cod||!(l.meta>0)||!ctSel('pf-sg',l.sigla)||!ctSel('pf-rec',l.rec))continue;
+    const a=g[l.rec]||(g[l.rec]={rec:l.rec,tipo:l.tipo||'',meta:0,prod:0});a.meta+=l.meta;a.prod+=l.ups}
+  const pen={};for(const r of base)if(!r.done)pen[r.rec]=(pen[r.rec]||0)+1;
+  const L=Object.values(g).map(a=>{const m=med[a.rec],mu=m&&m.n?m.u/m.n:0,pn=pen[a.rec]||0;return Object.assign(a,{pn,balde:a.prod+pn*mu})}).sort((x,y)=>y.balde-x.balde);
+  N.textContent='dia '+dataBR(dia)+' · '+L.length+' equipe(s)';
+  if(!L.length){T.innerHTML='<tr><td><div class="ct-vazio">Sem equipes com meta neste dia.</div></td></tr>';return}
+  const v=x=>x.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}),cor=(x,m)=>x>=m?'pu-g':'pu-r';
+  const tt=L.reduce((o,a)=>({meta:o.meta+a.meta,balde:o.balde+a.balde,prod:o.prod+a.prod}),{meta:0,balde:0,prod:0});
+  T.innerHTML='<tr><th>Equipe</th><th>Estrutura</th><th class="n">Meta diária</th><th class="n">Balde</th><th class="n">Pendentes</th><th class="n">Produzido</th><th>Farol da meta</th></tr>'
+   +L.map(a=>'<tr><td>'+esc(a.rec)+'</td><td>'+esc(a.tipo)+'</td><td class="n">'+v(a.meta)+'</td><td class="n '+cor(a.balde,a.meta)+'">'+v(a.balde)+'</td><td class="n">'+a.pn+'</td><td class="n '+cor(a.prod,a.meta)+'">'+v(a.prod)+'</td><td><span class="pu-f '+(a.prod<a.meta?'a':'d')+'">'+(a.prod<a.meta?'Atenção':'Aderente')+'</span></td></tr>').join('')
+   +'<tr class="tot"><td><b>Total</b></td><td></td><td class="n"><b>'+v(tt.meta)+'</b></td><td class="n"><b>'+v(tt.balde)+'</b></td><td class="n"><b>'+L.reduce((o,a)=>o+a.pn,0)+'</b></td><td class="n"><b>'+v(tt.prod)+'</b></td><td></td></tr>';
+}
 /* ---------- semelhante ao BI: Farol de Prazos ---------- */
 function ctRenderP(){
   const base=ctRows(),ag=ctAgora();base.forEach(r=>r._v=ctVenc(r,ag));
@@ -2123,6 +2146,7 @@ function ctRenderP(){
   $('pzSub').textContent=CT.meta?'versão '+CT.meta.versao+' · '+CT.meta.total+' registro(s) na base':'';
   /* colunas na mesma ordem do BI */
   $('pzTab').innerHTML='<tr>'+ctTh('pzTab','rec','Prefixo')+ctTh('pzTab','cidade','Cidade')+ctTh('pzTab','nota','Número da nota')+ctTh('pzTab','tipoAt','Tipo de atividade')+ctTh('pzTab','st','Status')+ctTh('pzTab','lim','Data limite')+ctTh('pzTab','tmp','Tempo para vencimento')+ctTh('pzTab','sit','Status de vencimento')+'</tr>'+vis.slice(0,CT.limP).map(r=>'<tr><td>'+esc(r.rec)+'</td><td>'+esc(r.cidade)+'</td><td>'+esc(r.nota||r.os)+'</td><td>'+esc(r.tipoAt)+'</td><td>'+ctIco(r.st)+esc(r.st)+'</td><td>'+ctDH(r.limTxt)+'</td><td>'+ctCelCd(r,ag,2)+'</td><td><span class="pz-b '+(cls[r._v]||'')+'">'+esc(r._v||'—')+'</span></td></tr>').join('');
+  try{pzUps(base)}catch(e){console.error(e)}
   $('pzCont').textContent=vis.length+' de '+base.length+' atividade(s)';$('pz-mais').hidden=vis.length<=CT.limP;$('pz-mais').textContent='Mostrar mais ('+(vis.length-CT.limP)+' restantes)';
 }
 function ctRender(){
@@ -2350,17 +2374,17 @@ function pintarCal(datas){
 function msInit(el){
   if(el.msel)return el.msel;
   const st={vals:[],lbl:null,sel:new Set()};el.msel=st;
-  el.innerHTML='<button type="button" class="msel-b"><span></span><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button><div class="msel-p" hidden><label class="msel-all"><input type="checkbox"> <b>Selecionar todos</b></label><input type="search" class="msel-q" placeholder="Buscar…" hidden><div class="msel-l"></div></div>';
+  el.innerHTML='<button type="button" class="msel-b"><span></span><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button><div class="msel-p" hidden><label class="msel-all"><input type="checkbox"> <b>Selecionar todos</b></label><input type="search" class="msel-q" placeholder="Digite para buscar…" autocomplete="off" hidden><div class="msel-l"></div></div>';
   const btn=el.querySelector('.msel-b'),pan=el.querySelector('.msel-p'),all=el.querySelector('.msel-all input'),lista=el.querySelector('.msel-l');
   const txt=v=>st.lbl?st.lbl(v):v;
   st.pintar=()=>{const n=st.sel.size;btn.querySelector('span').textContent=!n||n===st.vals.length?el.dataset.todos:n===1?txt([...st.sel][0]):n+' '+el.dataset.nome;
     el.classList.toggle('on',n>0&&n<st.vals.length);all.checked=!n||n===st.vals.length;lista.querySelectorAll('input').forEach(i=>i.checked=st.sel.has(i.value))};
   st.emit=()=>{if(st.sel.size===st.vals.length)st.sel.clear();st.pintar();el.dispatchEvent(new Event('change'))};
-  btn.onclick=e=>{e.stopPropagation();document.querySelectorAll('.msel-p').forEach(p=>{if(p!==pan)p.hidden=true});pan.hidden=!pan.hidden};
+  btn.onclick=e=>{e.stopPropagation();document.querySelectorAll('.msel-p').forEach(p=>{if(p!==pan)p.hidden=true});pan.hidden=!pan.hidden;if(!pan.hidden){const qq=el.querySelector('.msel-q');if(qq&&!qq.hidden)setTimeout(()=>qq.focus(),30)}};
   pan.onclick=e=>e.stopPropagation();const q=el.querySelector('.msel-q');q.oninput=()=>{const t=q.value.trim().toUpperCase();lista.querySelectorAll('label').forEach(l=>l.hidden=!!t&&!l.textContent.toUpperCase().includes(t))};
   all.onchange=e=>{e.stopPropagation();st.sel.clear();st.emit()};
   lista.onchange=e=>{e.stopPropagation();const v=e.target.value;if(e.target.checked)st.sel.add(v);else st.sel.delete(v);st.emit()};
-  st.setOpts=(vals,lbl)=>{st.vals=vals;st.lbl=lbl||null;for(const v of [...st.sel])if(!vals.includes(v))st.sel.delete(v);lista.innerHTML=vals.map(v=>'<label><input type="checkbox" value="'+esc(v)+'"> '+esc(txt(v))+'</label>').join('');const q=el.querySelector('.msel-q');q.hidden=vals.length<=10;q.value='';st.pintar()};
+  st.setOpts=(vals,lbl)=>{st.vals=vals;st.lbl=lbl||null;for(const v of [...st.sel])if(!vals.includes(v))st.sel.delete(v);lista.innerHTML=vals.map(v=>'<label><input type="checkbox" value="'+esc(v)+'"> '+esc(txt(v))+'</label>').join('');const q=el.querySelector('.msel-q');q.hidden=vals.length<=6;q.value='';st.pintar()};
   Object.defineProperty(el,'value',{get:()=>[...st.sel].map(txt).join(', '),set:v=>{st.sel.clear();if(v)st.sel.add(v);st.pintar()}});
   return st;
 }
@@ -2988,11 +3012,27 @@ async function gerarPrintPagina(alvo){
     return f;
   }finally{document.body.classList.remove('capt');for(const [x,h] of mesSalvos)x.hidden=h;if(mesTit){mesPai.insertBefore($('uMesW'),mesProx);if(mesCols){for(const [e,pa,nx] of mesCols.mv.slice().reverse())pa.insertBefore(e,nx&&nx.parentNode===pa?nx:null);mesCols.w.remove();mesCols.w2.remove()}mesTit.remove();$('uLtit').textContent=ltTxt;$('tglL').style.display=''}for(const [x,st] of colSalvos){if(st==null)x.removeAttribute('style');else x.setAttribute('style',st)}for(const [el,st] of salvos){if(st==null)el.removeAttribute('style');else el.setAttribute('style',st)}}
 }
+/* Início das atividades: 1 print com os quadros do topo + 1 print por base */
+async function printIniLista(){
+  const sec=document.querySelector('section[data-pag="ini-painel"]'),ig=sec.querySelector('.igrid'),gp=sec.querySelector(':scope>.panel');
+  const trs=[...$('iGrade').querySelectorAll('tbody tr')],bs=[];let at=null;
+  for(const tr of trs){if(tr.classList.contains('base-sep')){at={nome:tr.textContent.trim(),trs:[tr]};bs.push(at)}else if(at)at.trs.push(tr)}
+  const ocultar=(els,v)=>els.forEach(e=>{e.style.display=v?'none':''});
+  try{
+    const cvs=[],rot=[];
+    if(ig){ocultar([gp],true);try{cvs.push(await gerarPrintPagina(sec))}finally{ocultar([gp],false)}rot.push('Resumo geral')}
+    if(!bs.length){ocultar([ig],false)}
+    for(const b of bs){ocultar([ig],true);ocultar(trs,true);ocultar(b.trs,false);
+      try{cvs.push(await gerarPrintPagina(sec))}finally{ocultar([ig],false);ocultar(trs,false)}rot.push(b.nome)}
+    printLista=cvs;printRot=rot;printCv=cvs[0];await mostrarPartes()
+  }catch(e){ocultar([ig,gp],false);ocultar(trs,false);$('modalPrint').hidden=true;toast(e&&e.message?e.message:'Não foi possível gerar o print.')}
+}
 $('b-copiar').onclick=()=>{
   const ind=indAtual(),propria=false; /* Disponibilidade: print da tela inteira, como aparece */
   if(propria&&(ind==='ups'?!UR:!ULT)){toast('O painel ainda está carregando.');return}
   printUm=['def-painel','def-evolucao'].includes(pag().id); /* Defeitos: 1 imagem só (dá para separar no botão) */
   printCv=null;printLista=null;printRot=null;abrirModalPrint('Gerando o print da tela…','',false);
+  if(pag().id==='ini-painel'&&!printAlvo){printIniLista();return}
   const alvo=printAlvo;printAlvo=null;const cvP=propria&&!alvo?(ind==='ups'?gerarPrintUps():gerarPrint()):gerarPrintPagina(alvo);
   cvP.then(cv=>{printCv=cv;return mostrarPartes()}).catch(e=>{$('modalPrint').hidden=true;toast(e&&e.message?e.message:'Não foi possível gerar o print.')});
 };
@@ -3290,7 +3330,7 @@ function montarUPS(){
   const diasF=hierDias(dias);
   UR=UPSCalc.calcular(UCFG,escala,diasF,cfg.feriados,ferUps);
   UR.dias=diasF;UR.escala=escala;
-  preencherFiltrosUps();renderUPS();renderInicio();renderAvisosUps();renderSemClasse();renderRgUps();renderCadUps();renderRail();if(typeof montarAder==='function'&&ACFG)montarAder();atualizaTipos();
+  preencherFiltrosUps();renderUPS();renderInicio();renderAvisosUps();renderSemClasse();renderRgUps();renderCadUps();renderRail();if(typeof montarAder==='function'&&ACFG)montarAder();atualizaTipos();if(pag().id==='prazos'&&typeof CT!=='undefined'&&CT.meta)try{ctRenderP()}catch(e){}
 }
 const UF=['u-base','u-tipo','u-coord','u-rec','u-ate'];
 const UF_NOME={'u-base':'Base','u-tipo':'Tipo','u-coord':'Coordenador','u-rec':'Prefixo','u-ate':'Até'};
@@ -4249,7 +4289,7 @@ function renderSemClasse(){
 
 
 /* ---------- regras da UPS (administrador): ver, alterar e criar ---------- */
-let UCFG0=null,UOVR=null,rgTab='pont',rgBusca='',rgFb='',rgFe='',rgEdit=null;
+let UCFG0=null,UOVR=null,rgTab='pont',rgBusca='',rgFb=null,rgFe=null,rgEdit=null;
 const RG_VAZIO=()=>({tp:{},dp:{},regras:null});
 function rgLer(d){const o=RG_VAZIO();if(!d)return o;(d.tp||[]).forEach(([k,v])=>{o.tp[k]=v});(d.dp||[]).forEach(([k,c,pp])=>{o.dp[k]=c===undefined?null:{c:c===''?null:c,p:pp}});if(Array.isArray(d.regras)&&d.regras.length)o.regras=d.regras;o.em=d.editadoEm||null;return o}
 function rgSer(o){return {tp:Object.entries(o.tp),dp:Object.entries(o.dp).map(([k,v])=>v==null?[k]:[k,v.c==null?'':v.c,v.p]),regras:o.regras||[],editadoEm:new Date().toISOString()}}
@@ -4275,15 +4315,15 @@ function renderRgUps(){try{renderRgUps0()}catch(e){console.error('rg',e&&e.stack
 function renderRgUps0(){
   const el=$('rgUps');if(!el||!UCFG||!UCFG0)return;
   const o=UOVR||RG_VAZIO(),nAlt=Object.keys(o.tp).length+Object.keys(o.dp).length+(o.regras?1:0);
-  const bs=[...new Set(Object.values(UCFG0.base))].sort(),es=[...new Set(Object.values(UCFG0.processo))];
+  const bs=[...new Set(Object.values(UCFG0.base))].sort(),es=[...new Set(Object.values(UCFG0.processo))].sort();
   const abas=[['pont','Pontuação',Object.keys(UCFG.tabups).length],['depara','DE_PARA',Object.keys(UCFG.depara).length],['regras','Regras de chave',UCFG.regras.length]];
   let h='<div class="panel rgp"><div class="aviso-hd"><span class="ic i">'+AVI.i+'</span><div><h3>Como as regras funcionam</h3><p>O <b>serviço</b> da atividade vira uma <b>chave</b> pelas regras de chave; o <b>DE_PARA</b> traduz a chave em uma <b>classe</b>; a <b>pontuação</b> dá os pontos da classe para cada base e estrutura. Alterar a <b>pontuação</b> recalcula todos os dias. Alterar <b>DE_PARA</b> ou <b>regras de chave</b> vale para os próximos arquivos enviados: os dias já enviados guardam a classe de quando foram processados.</p></div></div>'
     +'<div class="rg-bar"><div class="tabs" role="group" aria-label="Regras">'+abas.map(([k,t,n])=>'<button type="button" data-rgt="'+k+'" aria-pressed="'+(rgTab===k)+'">'+t+' <small>'+n+'</small></button>').join('')+'</div>'
     +'<span class="muted" style="margin-left:auto;font-size:12.5px">'+(nAlt?'<b>'+nAlt+'</b> alteração(ões) em relação ao Estudo UPS'+(o.em?' · última em '+new Date(o.em).toLocaleDateString('pt-BR'):''):'Nenhuma alteração: regras iguais ao Estudo UPS')+'</span>'+(nAlt?'<button class="btn sm del" type="button" id="b-rgReset">Voltar ao original</button>':'')+'</div>';
   if(rgTab==='pont'){
     const q=rgBusca.trim().toUpperCase();
-    const L=Object.entries(UCFG.tabups).map(([k,v])=>Object.assign(rgDecomp(k),{k,v})).filter(x=>(!rgFb||x.b===rgFb)&&(!rgFe||x.e===rgFe)&&(!q||x.c.toUpperCase().includes(q))).sort((a,b)=>(a.b+a.e+a.c<b.b+b.e+b.c?-1:1));
-    h+='<div class="rg-bar"><select id="rgFb"><option value="">Todas as bases</option>'+bs.map(b=>'<option'+(rgFb===b?' selected':'')+'>'+esc(b)+'</option>').join('')+'</select><select id="rgFe"><option value="">Todas as estruturas</option>'+es.map(e=>'<option'+(rgFe===e?' selected':'')+'>'+esc(e)+'</option>').join('')+'</select><input type="search" id="rgBusca" placeholder="Buscar classe" value="'+esc(rgBusca)+'"><button class="btn primary sm" type="button" id="b-rgNovo">+ Nova pontuação</button></div>'
+    const L=Object.entries(UCFG.tabups).map(([k,v])=>Object.assign(rgDecomp(k),{k,v})).filter(x=>(!rgFb||rgFb.has(x.b))&&(!rgFe||rgFe.has(x.e))&&(!q||x.c.toUpperCase().includes(q))).sort((a,b)=>(a.b+a.e+a.c<b.b+b.e+b.c?-1:1));
+    h+='<div class="rg-bar"><div class="msel" id="rgFb" data-todos="Todas as bases" data-nome="base(s)"></div><div class="msel" id="rgFe" data-todos="Todas as estruturas" data-nome="estrutura(s)"></div><input type="search" id="rgBusca" placeholder="Buscar classe" value="'+esc(rgBusca)+'"><button class="btn primary sm" type="button" id="b-rgNovo">+ Nova pontuação</button></div>'
       +'<div class="tw" style="max-height:620px"><table class="utab" id="t-rg"><thead><tr><th>Base</th><th>Estrutura</th><th>Classe</th><th class="n">Pontos</th><th>Situação</th><th></th></tr></thead><tbody>'
       +(L.slice(0,400).map(x=>{const orig=UCFG0.tabups[x.k],alt=x.k in o.tp,nov=orig==null;return '<tr><td>'+esc(x.b)+'</td><td>'+esc(x.e)+'</td><td><b>'+esc(x.c)+'</b></td><td class="n"><input type="number" step="0.01" class="rg-n" data-rgk="'+esc(x.k)+'" value="'+(+(+x.v).toFixed(4))+'"></td><td>'+(nov?'<span class="rg-tag n">Nova</span>':alt?'<span class="rg-tag a" title="Original: '+orig+'">Alterada · era '+(+(+orig).toFixed(2))+'</span>':'<span class="muted">Original</span>')+'</td><td class="nw">'+(alt&&!nov?'<button class="btn sm" type="button" data-rgrest="'+esc(x.k)+'">Restaurar</button> ':'')+'<button class="btn sm del" type="button" data-rgdel="'+esc(x.k)+'">Excluir</button></td></tr>'}).join('')||'<tr><td colspan="6" class="empty">Nada com esses filtros.</td></tr>')+'</tbody></table></div>'+(L.length>400?'<p class="muted" style="margin:0;font-size:12px">Mostrando 400 de '+L.length+'. Use os filtros para achar o resto.</p>':'');
   }else if(rgTab==='depara'){
@@ -4302,7 +4342,7 @@ function renderRgUps0(){
   el.innerHTML=h+'</div>';
   el.querySelectorAll('[data-rgt]').forEach(b=>b.onclick=()=>{rgTab=b.dataset.rgt;rgBusca='';renderRgUps()});
   const bq=$('rgBusca');if(bq)bq.oninput=()=>{rgBusca=bq.value;const pos=bq.selectionStart;renderRgUps();const n=$('rgBusca');n.focus();n.setSelectionRange(pos,pos)};
-  if($('rgFb'))$('rgFb').onchange=e=>{rgFb=e.target.value;renderRgUps()};if($('rgFe'))$('rgFe').onchange=e=>{rgFe=e.target.value;renderRgUps()};
+  for(const [id,vals,cur,set] of [['rgFb',bs,rgFb,v=>{rgFb=v}],['rgFe',es,rgFe,v=>{rgFe=v}]]){const e1=$(id);if(!e1)continue;const st=msInit(e1);st.setOpts(vals);if(cur)for(const v of cur)if(vals.includes(v))st.sel.add(v);st.pintar();e1.addEventListener('change',()=>{set(msSel(id));renderRgUps()})}
   if($('b-rgReset'))$('b-rgReset').onclick=()=>{if(confirm('Voltar todas as regras ao que está no Estudo UPS? As alterações feitas aqui serão apagadas.'))rgGravar(x=>{x.tp={};x.dp={};x.regras=null},'Regras restauradas ao original.')};
   $('b-rgNovo').onclick=()=>rgForm(rgTab,null);
   el.querySelectorAll('.rg-n').forEach(i=>i.onchange=()=>{const v=parseFloat(String(i.value).replace(',','.'));if(isNaN(v)||v<0){toast('Informe um número de pontos válido.');renderRgUps();return}rgGravar(x=>{x.tp[i.dataset.rgk]=v},'Pontuação atualizada.')});
