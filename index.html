@@ -985,12 +985,12 @@ table.cardz{width:100%!important}table.cardz td,table.cardz td *{overflow-wrap:a
 
 /* ===== Tema escuro ===== */
 html[data-tema="escuro"]{color-scheme:dark;
-  --bg:#121213;--surface:#1c1c1e;--sunken:#29292c;--line:#38383c;
-  --fg:#ededef;--muted:#a8a8ad;--soft:#7c7c82;
+  --bg:#151517;--surface:#1f1f22;--sunken:#2a2a2e;--line:#37373c;
+  --fg:#d9d9dd;--muted:#9d9da3;--soft:#76767c;
   --accent:#dcdce0;--accent-2:#b4b4ba;--accent-bg:#3a3a3f;--accent-bg-2:#1b1b1e;--accent-soft:#2a2a2e;--line-accent:#444449;
-  --sup:#7bd653;--sup-soft:#1e3317;--ate:#62cc3c;--ate-soft:#1b2b15;
-  --par:#f2a640;--par-soft:#3b2b12;--nao:#ff6f6f;--nao-soft:#3d1d1f;--nd:#9d9da2;--nd-soft:#2b2b2e;
-  --info:#6eaaf2;--info-soft:#1b2a3f;
+  --sup:#86c96a;--sup-soft:#1f2e1a;--ate:#74c056;--ate-soft:#1c2819;
+  --par:#e0ae5c;--par-soft:#352b17;--nao:#e88282;--nao-soft:#372123;--nd:#9d9da2;--nd-soft:#2b2b2e;
+  --info:#7aa7e0;--info-soft:#1c2a3b;
   --sh-1:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.35)}
 html[data-tema="escuro"] body{background:var(--bg);color:var(--fg)}
 html[data-tema="escuro"] .top{background:linear-gradient(135deg,#2b2b2f 0%,#0b0b0c 100%);box-shadow:0 4px 16px rgba(0,0,0,.5)}
@@ -1021,6 +1021,14 @@ html[data-tema="escuro"] .ubases .bk.geral{background:linear-gradient(160deg,#4a
 html[data-tema="escuro"] .stk-b i{color:#2b2a2a}
 html[data-tema="escuro"] .icard .ic-v,html[data-tema="escuro"] .pz-big,html[data-tema="escuro"] .gauge-n{filter:brightness(1.45) saturate(1.05)}
 html[data-tema="escuro"] .tbtn.solid,html[data-tema="escuro"] .uprint,html[data-tema="escuro"] .tbtn .badge{color:#1b1b1e!important}
+html[data-tema="escuro"] .pu-g{background:rgba(110,190,90,.17)!important;color:#a8d99a}
+html[data-tema="escuro"] .pu-r{background:rgba(226,120,120,.17)!important;color:#eaa0a0}
+html[data-tema="escuro"] .pu-f.a{background:rgba(224,174,92,.2);color:#e8c27e}
+html[data-tema="escuro"] .pu-f.d{background:rgba(110,190,90,.2);color:#a8d99a}
+/* descanso de vista: cores vivas dos elementos gerados ficam mais suaves */
+html[data-tema="escuro"] [style*="background:#"],html[data-tema="escuro"] [style*="background: #"]{filter:saturate(.8) brightness(.9)}
+html[data-tema="escuro"] svg rect[fill^="#"],html[data-tema="escuro"] svg circle[fill^="#"],html[data-tema="escuro"] svg path[fill^="#"]{filter:saturate(.8) brightness(.9)}
+html[data-tema="escuro"] svg path[stroke^="#"][stroke-width]{filter:saturate(.85) brightness(.92)}
 /* botão de tema */
 .tbtn.tema{width:42px;height:42px;padding:0;display:grid;place-items:center}
 .tbtn.tema .i-lua{display:none}
@@ -1028,9 +1036,22 @@ html[data-tema="escuro"] .tbtn.tema .i-sol{display:none}
 html[data-tema="escuro"] .tbtn.tema .i-lua{display:block}
 
 /* fundos claros fixos */
+html[data-tema="escuro"] .cl-A{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .cl-B{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .cl-C{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .cl-D{filter:saturate(.78) brightness(.86)}
 html[data-tema="escuro"] .pct.cl-p-A{background:var(--sup-soft)!important}
+html[data-tema="escuro"] .pct.cl-p-B{background:var(--par-soft)!important}
 html[data-tema="escuro"] .pct.cl-p-C{background:var(--accent-soft)!important}
 html[data-tema="escuro"] .pct.cl-p-D{background:var(--accent-soft)!important}
+html[data-tema="escuro"] .cd-verde{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .cd-amarelo{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .cd-laranja{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .cd-vermelho{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .pu-g{background:var(--sup-soft)!important}
+html[data-tema="escuro"] .pu-r{background:var(--accent-soft)!important}
+html[data-tema="escuro"] .pu-f.a{background:var(--par-soft)!important}
+html[data-tema="escuro"] .pu-f.d{background:var(--sup-soft)!important}
 html[data-tema="escuro"] section[data-pag="contingencia"] .ubar{background:linear-gradient(135deg,#38383b,#2a2a2d)!important}
 html[data-tema="escuro"] section[data-pag="prazos"] .ubar{background:linear-gradient(135deg,#38383b,#2a2a2d)!important}
 html[data-tema="escuro"] .ct-res.ok{background:var(--sup-soft)!important}
@@ -1042,14 +1063,27 @@ html[data-tema="escuro"] .pz-b.c{background:var(--info-soft)!important}
 html[data-tema="escuro"] .lt-t tr.lt-err td{background:var(--accent-soft)!important}
 html[data-tema="escuro"] .pm-st.ok{background:var(--sup-soft)!important}
 html[data-tema="escuro"] .pm-st.av{background:var(--par-soft)!important}
+html[data-tema="escuro"] .heat td.c.par{filter:saturate(.78) brightness(.86)}
 html[data-tema="escuro"] .chipf button:hover{background:var(--surface)!important}
 html[data-tema="escuro"] .akpi span{background:linear-gradient(135deg,#363639,#2c2c2f)!important}
 html[data-tema="escuro"] .acap{background:linear-gradient(135deg,#363639,#2c2c2f)!important}
 html[data-tema="escuro"] .utab tr.sel td{background:var(--sunken)!important}
+html[data-tema="escuro"] .agr td.a-ok{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .agr td.a-fora{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .agr td.a-aus{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .agr td.a-livre{filter:saturate(.78) brightness(.86)}
 html[data-tema="escuro"] .imapa{background:var(--surface)!important}
 html[data-tema="escuro"] .imapa .im-hd{background:linear-gradient(135deg,#363639,#2c2c2f)!important}
+html[data-tema="escuro"] .agr td.i-g{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .idot.i-g{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .agr td.i-y{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .idot.i-y{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .ipill.i-g{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .ipill.i-y{filter:saturate(.78) brightness(.86)}
 html[data-tema="escuro"] .podio .p1{background:linear-gradient(160deg,#c9a227,#5d5d60)!important}
 html[data-tema="escuro"] .podio .p3{background:linear-gradient(160deg,#67676a,#4a4a4d)!important}
+html[data-tema="escuro"] .tg-g{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .tg-r{filter:saturate(.78) brightness(.86)}
 html[data-tema="escuro"] .utab tr.top10 td{background:var(--sup-soft)!important}
 html[data-tema="escuro"] .utab tr.pior10 td{background:var(--accent-soft)!important}
 html[data-tema="escuro"] /* ---- menu lateral no estilo do gerenciador-equipes-2: vinho{background:linear-gradient(180deg,#303033 0%,#363639 55%,#3f3f42 100%)!important}
@@ -1060,16 +1094,33 @@ html[data-tema="escuro"] .vgc-at{background:var(--par-soft)!important}
 html[data-tema="escuro"] .vgc-mal{background:var(--accent-soft)!important}
 html[data-tema="escuro"] .vgn-ok{background:var(--sup-soft)!important}
 html[data-tema="escuro"] .vgn-at{background:var(--par-soft)!important}
+html[data-tema="escuro"] .vgn-mal{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .vgl-ok .vgl-i{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .vgl-mal .vgl-i{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .vgl-at .vgl-i{filter:saturate(.78) brightness(.86)}
 html[data-tema="escuro"] .vgl-info .vgl-i{background:#363639!important}
 html[data-tema="escuro"] .vgfil button[aria-pressed="true"]{background:#363639!important}
 html[data-tema="escuro"] .phd h3{background:linear-gradient(135deg,#363639,#2c2c2f)!important}
 html[data-tema="escuro"] .ubar{background:linear-gradient(135deg,#363639,#2c2c2f)!important}
+html[data-tema="escuro"] .ufn{filter:saturate(.78) brightness(.86)}
 html[data-tema="escuro"] .utgl i{background:#363639!important}
 html[data-tema="escuro"] .qd-leg{background:var(--surface)!important}
 html[data-tema="escuro"] .qd-ctl select{background:var(--surface)!important}
+html[data-tema="escuro"] .umes tr.tot td.mc-g{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .umes tr.tot td.mc-b{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .umes tr.tot td.mc-o{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .umes tr.tot td.mc-r{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .mc-g{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .mc-b{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .mc-o{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .mc-r{filter:saturate(.78) brightness(.86)}
 html[data-tema="escuro"] .ubases .bk{background:linear-gradient(160deg,#363639,#2c2c2f)!important}
 html[data-tema="escuro"] .utab th{background:#363639!important}
 html[data-tema="escuro"] .utab tr.sub td{background:var(--sunken)!important}
+html[data-tema="escuro"] .sol-A{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .sol-B{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .sol-C{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .sol-D{filter:saturate(.78) brightness(.86)}
 html[data-tema="escuro"] .drop.over{background:var(--accent-soft)!important}
 html[data-tema="escuro"] .dkc::before{background:linear-gradient(90deg,#363639,#545457)!important}
 html[data-tema="escuro"] .dkc.dest{background:linear-gradient(160deg,var(--surface) 55%,var(--sunken))!important}
@@ -1085,6 +1136,8 @@ html[data-tema="escuro"] .dpri.P3{background:var(--accent-soft)!important}
 html[data-tema="escuro"] .dtat{background:var(--info-soft)!important}
 html[data-tema="escuro"] /* ---- Produção do dia ---- */
 .pz{background:radial-gradient(120% 140% at 100% 0%,#313134 0%,#28282b 55%,#1c070c 100%)!important}
+html[data-tema="escuro"] .pz-live i{background:var(--accent-soft)!important}
+html[data-tema="escuro"] .pz-live.on i{filter:saturate(.78) brightness(.86)}
 html[data-tema="escuro"] .pz-fill.mal{background:linear-gradient(90deg,#38383b,#ff6b7d)!important}
 html[data-tema="escuro"] .ph.ok{background:var(--sup-soft)!important}
 html[data-tema="escuro"] .ph.par{background:var(--par-soft)!important}
@@ -1096,6 +1149,7 @@ html[data-tema="escuro"] .bu-g .q3{background:var(--sunken)!important}
 html[data-tema="escuro"] .mu{background:color-mix(in srgb,var(--c) calc(var(--a)*100%),var(--surface))!important}
 html[data-tema="escuro"] .ptab2 thead th{background:#28282b!important}
 html[data-tema="escuro"] .pt-tot td{background:var(--sunken)!important}
+html[data-tema="escuro"] #pTab tr.pt-hl td{background:var(--par-soft)!important}
 html[data-tema="escuro"] .pv-seg button.on{background:#28282b!important}
 html[data-tema="escuro"] .pv-print{background:linear-gradient(135deg,#363639,#2c2c2f)!important}
 html[data-tema="escuro"] .pv-bases button.on{background:#363639!important}
@@ -1107,10 +1161,21 @@ html[data-tema="escuro"] .pv-tab th{background:var(--sunken)!important}
 html[data-tema="escuro"] .pv-tab tr:nth-child(even) td{background:var(--sunken)!important}
 html[data-tema="escuro"] .pv-pos span{background:var(--sunken)!important}
 html[data-tema="escuro"] .pv-ok .pv-pos span{background:var(--sup-soft)!important}
+html[data-tema="escuro"] .pv-st.ok{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .pv-st.par{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .pv-st.mal{filter:saturate(.78) brightness(.86)}
 html[data-tema="escuro"] .pv-pc>b.ok{background:var(--sup-soft)!important}
+html[data-tema="escuro"] .pv-pc>b.par{background:var(--par-soft)!important}
 html[data-tema="escuro"] .pv-pc>b.mal{background:var(--accent-soft)!important}
 html[data-tema="escuro"] .pv-bar{background:var(--sunken)!important}
+html[data-tema="escuro"] .pv-bar i.ok{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .pv-bar i.par{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .pv-bar i.mal{filter:saturate(.78) brightness(.86)}
 html[data-tema="escuro"] .pv-ft{background:var(--sunken)!important}
+html[data-tema="escuro"] .pv-ft i.ok{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .pv-ft i.par{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .pv-ft i.mal{filter:saturate(.78) brightness(.86)}
+html[data-tema="escuro"] .pv-tab tr.pt-hl td{background:var(--par-soft)!important!important}
 html[data-tema="escuro"] /* Disponibilidade: régua de turno */
 section[data-pag="painel"] .ubar{background:linear-gradient(135deg,#38383b,#2a2a2d)!important}
 html[data-tema="escuro"] section[data-pag="prefixos"] .ubar{background:linear-gradient(135deg,#38383b,#2a2a2d)!important}
@@ -1127,7 +1192,9 @@ html[data-tema="escuro"] section[data-pag^="tm-"] .ubar{background:repeating-con
 html[data-tema="escuro"] .icard[data-ind="tm"]::before{background:linear-gradient(90deg,#323235 0 55%,#c9a227 55% 75%,#323235 75%)!important}
 html[data-tema="escuro"] .tqp-c.cur{background:var(--sunken)!important}
 html[data-tema="escuro"] .tqp-b i.e{background:#363639!important}
+html[data-tema="escuro"] .tqp-b i.d{filter:saturate(.78) brightness(.86)}
 html[data-tema="escuro"] .tqa-t i.e{background:#363639!important}
+html[data-tema="escuro"] .tqa-t i.d{filter:saturate(.78) brightness(.86)}
 html[data-tema="escuro"] .tqt th.cur{background:#2c2c2f!important}
 html[data-tema="escuro"] .tqt td.tq-r{background:var(--accent-soft)!important}
 html[data-tema="escuro"] .tqt td.tq-g{background:var(--sup-soft)!important}
@@ -1148,6 +1215,7 @@ html[data-tema="escuro"] .tmc{background:linear-gradient(180deg,var(--surface),v
 html[data-tema="escuro"] .tc i{background:linear-gradient(180deg,#545457,#363639)!important}
 html[data-tema="escuro"] /* ---- Visão geral: central de comando ---- */
 .vgh{background:radial-gradient(70% 140% at 100% 0%,rgba(255,255,255,.07),transparent 60%),linear-gradient(135deg,#313134 0%,#28282b 60%,#1a060b 100%)!important}
+html[data-tema="escuro"] .vgh::after{filter:saturate(.78) brightness(.86)}
 html[data-tema="escuro"] .icard[data-ind]::before{background:linear-gradient(90deg,#363639,#2c2c2f)!important}
 html[data-tema="escuro"] .icard[data-ind="disp"]::before{background:repeating-linear-gradient(90deg,rgba(255,255,255,.55) 0 1px,transparent 1px 18px),linear-gradient(90deg,#38383b,#2a2a2d)!important}
 html[data-tema="escuro"] .icard[data-ind="ader"]::before{background:radial-gradient(rgba(255,255,255,.6) 1px,transparent 1.4px) 0 0/8px 7px,linear-gradient(90deg,#353538,#28282b)!important}
