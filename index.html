@@ -243,6 +243,7 @@ section[data-pag="contingencia"] .ubar,section[data-pag="prazos"] .ubar{backgrou
 .ct-lk{font:inherit;font-weight:800;color:var(--accent);background:none;border:0;border-bottom:1px dashed currentColor;cursor:pointer;padding:0 4px;font-variant-numeric:tabular-nums}.ct-lk:hover{background:var(--accent-soft)}.ct-lk.on{outline:2px solid var(--accent);border-radius:5px}
 .ct-bar-l.lk{cursor:pointer;border-radius:6px;padding:1px 4px}.ct-bar-l.lk:hover{background:var(--accent-soft)}.ct-bar-l.lk.on{outline:2px solid var(--accent)}
 .ct-bars.sm{gap:3px}.ct-bars.sm .ct-bar-l{font-size:11.5px;gap:8px}.ct-bars.sm .ct-bar-l i{height:8px}
+.ct-stf{display:flex;gap:8px;flex-wrap:wrap;padding:0 2px 10px}.ct-sb{font:inherit;font-size:12.5px;font-weight:700;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:5px 12px;cursor:pointer}.ct-sb b{color:var(--accent);margin-left:4px}.ct-sb:hover{background:var(--accent-soft)}.ct-sb.on{background:var(--accent);color:#fff;border-color:var(--accent)}.ct-sb.on b{color:#fff}
 .ct-chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.ct-chip{background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px}
 .ct-ic{font-style:normal;font-weight:900;margin-right:6px}.ct-ic.v{color:#2f9e44}.ct-ic.a{color:#e8a100}.ct-ic.r{color:#c8102e}
 .ct-cd.p.neg{color:#2d2527}
@@ -1529,12 +1530,13 @@ table.cardz{width:100%!important}table.cardz td,table.cardz td *{overflow-wrap:a
       <div class="ct-k3" id="ctK"></div>
       <div class="ct-grid">
         <div class="panel"><div class="phd"><h3>Status da atividade</h3><small>quantidade</small></div><div id="ctStat" class="ct-bars sm"></div></div>
-        <div class="panel"><div class="phd"><h3>Por tipo de serviço</h3><small>ocorrências, clientes e acima de 24 h</small></div><div class="tw"><table class="ct-t" id="ctTipo"></table></div></div>
+        <div class="panel"><div class="phd"><h3>Por tipo de serviço</h3><small>INC coletivo, individual e auxiliar de INC · ocorrências, clientes e acima de 24 h</small></div><div class="tw"><table class="ct-t" id="ctTipo"></table></div></div>
         <div class="panel"><div class="phd"><h3>Total de ocorrência por equipe</h3><small id="ctEqN"></small></div><div id="ctEq" class="ct-bars ct-rol"></div></div>
         <div class="panel"><div class="phd"><h3>Mapa das atividades</h3><small id="ctMapaN"></small></div><div id="ctMapa"></div></div>
       </div>
       <div class="panel" id="ctDados"><div class="phd"><h3>Atividades</h3><small id="ctSub"></small></div>
         <div class="ct-bar"><input type="search" id="ct-q" placeholder="Buscar equipe, ordem de serviço, tipo…" aria-label="Buscar"><span id="ctCont" class="muted"></span><span id="ctChip" class="ct-chips"></span></div>
+        <div class="ct-stf" id="ctStF" role="group" aria-label="Filtrar por status"></div>
         <div class="tw"><table class="ct-t" id="ctTab"></table></div>
         <div class="ct-mais"><button type="button" class="btn sm" id="ct-mais" hidden>Mostrar mais</button></div>
       </div>
@@ -2068,13 +2070,15 @@ function ctRenderC(){
   const st={},eq={},ti={};
   for(const r of f){st[r.st]=(st[r.st]||0)+1;eq[r.rec]=(eq[r.rec]||0)+1;const t=ti[r.tipo]||(ti[r.tipo]={n:0,c:0,a:0});t.n++;t.c+=r.cli;if(ctAcima24(r,ag))t.a++}
   ctBarras($('ctStat'),st,'st');ctBarras($('ctEq'),eq,'rec');$('ctEqN').textContent=Object.keys(eq).length+' equipe(s) · clique para filtrar a tabela';
-  const tl=Object.entries(ti).map(([k,t])=>({k,n:t.n,c:t.c,a:t.a})).sort(ctCmp('ctTipo',(r,k)=>r[k]));
+  const tl=Object.entries(ti).filter(([k])=>/coletiv|individual|auxiliar/i.test(k)).map(([k,t])=>({k,n:t.n,c:t.c,a:t.a})).sort(ctCmp('ctTipo',(r,k)=>r[k]));
   $('ctTipo').innerHTML='<tr>'+ctTh('ctTipo','k','Tipo de serviço')+ctTh('ctTipo','n','Ocorrências',1)+ctTh('ctTipo','c','Clientes afetados',1)+ctTh('ctTipo','a','Acima de 24 h',1)+'</tr>'+tl.map(t=>'<tr><td>'+esc(t.k)+'</td>'+ctLk(t.k,'oc',t.n)+ctLk(t.k,'cli',t.c)+ctLk(t.k,'a24',t.a)+'</tr>').join('');
   const fk=CT.fk,MOD={oc:'',cli:' · com clientes afetados',a24:' · acima de 24 h'},ch=[];
   if(fk.tipo)ch.push('Tipo: '+fk.tipo+(MOD[fk.modo]||''));if(fk.st!=null)ch.push('Status: '+fk.st);if(fk.rec!=null)ch.push('Prefixo: '+fk.rec);
   $('ctChip').innerHTML=ch.length?ch.map(c=>'<span class="ct-chip">'+esc(c)+'</span>').join('')+'<button type="button" class="btn sm" data-fkx="1">Limpar seleção</button>':'';
   const q=CT.busca.trim().toLowerCase(),pass=r=>(!fk.tipo||r.tipo===fk.tipo)&&(fk.modo!=='cli'||r.cli>0)&&(fk.modo!=='a24'||ctAcima24(r,ag))&&(fk.st==null||r.st===fk.st)&&(fk.rec==null||r.rec===fk.rec);
-  const vis=f.filter(r=>pass(r)&&(!q||[r.rec,r.os,r.st,r.tipo,r.cidade,r.nota].join(' ').toLowerCase().includes(q))).sort(ctCmp('ctTab',(r,k)=>k==='lim'?(r.done?null:r.lim):r[k]));
+  const SF=[['pendente','Pendente'],['conclu','Concluído'],['executad','Executado'],['deslocament','Em deslocamento']],sfOk=r=>!CT.sf||ctK(r.st).includes(CT.sf),fb=f.filter(r=>pass(r)&&(!q||[r.rec,r.os,r.st,r.tipo,r.cidade,r.nota].join(' ').toLowerCase().includes(q)));
+  $('ctStF').innerHTML='<button type="button" class="ct-sb'+(CT.sf?'':' on')+'" data-sf="">Todos <b>'+fb.length+'</b></button>'+SF.map(([k,n])=>'<button type="button" class="ct-sb'+(CT.sf===k?' on':'')+'" data-sf="'+k+'">'+n+' <b>'+fb.filter(r=>ctK(r.st).includes(k)).length+'</b></button>').join('');
+  const vis=fb.filter(sfOk).sort(ctCmp('ctTab',(r,k)=>k==='lim'?(r.done?null:r.lim):r[k]));
   $('ctSub').textContent=CT.meta?'versão '+CT.meta.versao+' · '+CT.meta.total+' registro(s) na base':'';
   /* colunas na mesma ordem do BI: Prefixo, Ordem de Serviço, Status, Serviço, Tempo Aberto, Cli Afetados */
   $('ctTab').innerHTML='<tr>'+ctTh('ctTab','rec','Prefixo')+ctTh('ctTab','os','Ordem de serviço')+ctTh('ctTab','st','Status')+ctTh('ctTab','tipo','Serviço')+ctTh('ctTab','lim','Tempo aberto')+ctTh('ctTab','cli','Cli. afetados',1)+'</tr>'+vis.slice(0,CT.lim).map(r=>'<tr><td>'+esc(r.rec)+'</td><td>'+esc(r.os)+'</td><td>'+ctIco(r.st)+esc(r.st)+'</td><td>'+esc(r.tipo)+'</td><td>'+ctCelCd(r,ag,1)+'</td><td class="n">'+r.cli+'</td></tr>').join('');
@@ -2205,6 +2209,7 @@ document.addEventListener('click',e=>{
   const bl=e.target.closest&&e.target.closest('.ct-bar-l.lk');
   if(bl){const k=bl.dataset.fk,v=bl.dataset.v;if(CT.fk[k]===v)delete CT.fk[k];else{CT.fk[k]=v;CT.lim=300}ctRender();if(CT.fk[k]!=null)$('ctDados').scrollIntoView({behavior:'smooth',block:'start'});return}
   if(e.target.closest&&e.target.closest('[data-fkx]')){CT.fk={};ctRender();return}
+  {const sb=e.target.closest&&e.target.closest('[data-sf]');if(sb){CT.sf=sb.dataset.sf||null;CT.lim=300;ctRender();return}}
   const tl=e.target.closest&&e.target.closest('#pzCid .lk');
   if(tl){CT.fcid=CT.fcid===tl.dataset.cid?null:tl.dataset.cid;CT.limP=300;ctRender()}
 });
