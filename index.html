@@ -1019,18 +1019,18 @@ table.cardz{width:100%!important}table.cardz td,table.cardz td *{overflow-wrap:a
     <div class="fld"><label for="a-mes">Mês</label><select id="a-mes"></select></div>
     <div class="fld"><label for="a-dia">Dia</label><select id="a-dia"></select></div>
     <div class="grp">Equipes</div>
-    <div class="fld"><label for="a-base">Base</label><select id="a-base"></select></div>
-    <div class="fld"><label for="a-est">Estrutura</label><select id="a-est"></select></div>
-    <div class="fld"><label for="a-tipo">Tipo de equipe</label><select id="a-tipo"></select></div>
-    <div class="fld"><label for="a-rec">Prefixo</label><select id="a-rec"></select></div>
+    <div class="fld"><label for="a-base">Base</label><div class="msel" id="a-base" data-todos="Todas" data-nome="base(s)"></div></div>
+    <div class="fld"><label for="a-est">Estrutura</label><div class="msel" id="a-est" data-todos="Todas" data-nome="estrutura(s)"></div></div>
+    <div class="fld"><label for="a-tipo">Tipo de equipe</label><div class="msel" id="a-tipo" data-todos="Todos" data-nome="tipo(s)"></div></div>
+    <div class="fld"><label for="a-rec">Prefixo</label><div class="msel" id="a-rec" data-todos="Todos" data-nome="prefixo(s)"></div></div>
     </div>
     <div id="fIni" style="display:grid;gap:14px" hidden>
     <div class="grp">Período</div>
     <div class="fld"><label for="i-mes">Mês</label><select id="i-mes"></select></div>
     <div class="grp">Equipes</div>
-    <div class="fld"><label for="i-base">Base</label><select id="i-base"></select></div>
-    <div class="fld"><label for="i-tipo">Tipo de equipe</label><select id="i-tipo"></select></div>
-    <div class="fld"><label for="i-rec">Prefixo</label><select id="i-rec"></select></div>
+    <div class="fld"><label for="i-base">Base</label><div class="msel" id="i-base" data-todos="Todas" data-nome="base(s)"></div></div>
+    <div class="fld"><label for="i-tipo">Tipo de equipe</label><div class="msel" id="i-tipo" data-todos="Todos" data-nome="tipo(s)"></div></div>
+    <div class="fld"><label for="i-rec">Prefixo</label><div class="msel" id="i-rec" data-todos="Todos" data-nome="prefixo(s)"></div></div>
     </div>
     <div id="fPrd" style="display:grid;gap:14px" hidden>
     <div class="grp">Período</div>
@@ -1046,16 +1046,16 @@ table.cardz{width:100%!important}table.cardz td,table.cardz td *{overflow-wrap:a
     <div class="grp">Período</div>
     <div class="fld"><label for="q-mes">Mês</label><select id="q-mes"></select></div>
     <div class="grp">Equipes</div>
-    <div class="fld"><label for="q-base">Base</label><select id="q-base"></select></div>
-    <div class="fld"><label for="q-tipo">Tipo de equipe</label><select id="q-tipo"></select></div>
+    <div class="fld"><label for="q-base">Base</label><div class="msel" id="q-base" data-todos="Todas" data-nome="base(s)"></div></div>
+    <div class="fld"><label for="q-tipo">Tipo de equipe</label><div class="msel" id="q-tipo" data-todos="Todos" data-nome="tipo(s)"></div></div>
     </div>
     <div id="fMix" style="display:grid;gap:14px" hidden>
     <div class="grp">Período</div>
     <div class="fld"><label for="x-mes">Mês</label><select id="x-mes"></select></div>
     <div class="fld"><label>Dias do mês</label><div style="display:flex;gap:8px;align-items:center"><select id="x-di" aria-label="Dia inicial"></select><span class="muted">a</span><select id="x-df" aria-label="Dia final"></select></div></div>
     <div class="grp">Equipes</div>
-    <div class="fld"><label for="x-base">Base</label><select id="x-base"></select></div>
-    <div class="fld"><label for="x-tipo">Tipo de equipe</label><select id="x-tipo"></select></div>
+    <div class="fld"><label for="x-base">Base</label><div class="msel" id="x-base" data-todos="Todas" data-nome="base(s)"></div></div>
+    <div class="fld"><label for="x-tipo">Tipo de equipe</label><div class="msel" id="x-tipo" data-todos="Todos" data-nome="tipo(s)"></div></div>
     <div class="grp">Corte</div>
     <div class="fld"><label for="x-loc">Local do corte</label><select id="x-loc"></select></div>
     </div>
@@ -1063,29 +1063,29 @@ table.cardz{width:100%!important}table.cardz td,table.cardz td *{overflow-wrap:a
     <div class="grp">Período</div>
     <div class="fld"><label for="t-mes">Mês do índice</label><select id="t-mes"></select></div>
     <div class="grp">Trafos</div>
-    <div class="fld"><label for="t-mun">Município</label><select id="t-mun"></select></div>
-    <div class="fld"><label for="t-ef">Efetividade</label><select id="t-ef"></select></div>
+    <div class="fld"><label for="t-mun">Município</label><div class="msel" id="t-mun" data-todos="Todos" data-nome="município(s)"></div></div>
+    <div class="fld"><label for="t-ef">Efetividade</label><div class="msel" id="t-ef" data-todos="Todas" data-nome="efetividade(s)"></div></div>
     </div>
     <div id="fDef" style="display:grid;gap:14px" hidden>
     <div class="grp">Período</div>
     <div class="fld"><label for="d-mes">Mês</label><select id="d-mes"></select></div>
     <div class="fld"><label for="d-dia">Data</label><select id="d-dia"></select></div>
     <div class="grp">Defeitos</div>
-    <div class="fld"><label for="d-pri">Prioridade</label><select id="d-pri"></select></div>
-    <div class="fld"><label for="d-tat">Prioridade de tratamento</label><select id="d-tat"></select></div>
-    <div class="fld"><label for="d-dist">Distrital</label><select id="d-dist"></select></div>
-    <div class="fld"><label for="d-tipo">Tipo de defeito</label><select id="d-tipo"></select></div>
-    <div class="fld"><label for="d-ger">Gerência</label><select id="d-ger"></select></div>
-    <div class="fld"><label for="d-pep">PEP</label><select id="d-pep"></select></div>
+    <div class="fld"><label for="d-pri">Prioridade</label><div class="msel" id="d-pri" data-todos="Todas" data-nome="prioridade(s)"></div></div>
+    <div class="fld"><label for="d-tat">Prioridade de tratamento</label><div class="msel" id="d-tat" data-todos="Todas" data-nome="prioridade(s)"></div></div>
+    <div class="fld"><label for="d-dist">Distrital</label><div class="msel" id="d-dist" data-todos="Todas" data-nome="distrital(is)"></div></div>
+    <div class="fld"><label for="d-tipo">Tipo de defeito</label><div class="msel" id="d-tipo" data-todos="Todos" data-nome="tipo(s)"></div></div>
+    <div class="fld"><label for="d-ger">Gerência</label><div class="msel" id="d-ger" data-todos="Todas" data-nome="gerência(s)"></div></div>
+    <div class="fld"><label for="d-pep">PEP</label><div class="msel" id="d-pep" data-todos="Todos" data-nome="PEP(s)"></div></div>
     </div>
     <div id="fUps" style="display:grid;gap:14px" hidden>
     <div class="grp">Período</div>
     <div class="fld"><label>Mês</label><div class="msel" id="u-mes" data-todos="Todos os meses" data-nome="meses"></div></div>
     <div class="grp">Equipes</div>
-    <div class="fld"><label for="u-base">Base</label><select id="u-base"></select></div>
-    <div class="fld"><label for="u-tipo">Tipo de equipe</label><select id="u-tipo"></select></div>
-    <div class="fld"><label for="u-coord">Coordenador</label><select id="u-coord"></select></div>
-    <div class="fld"><label for="u-rec">Prefixo</label><select id="u-rec"></select></div>
+    <div class="fld"><label for="u-base">Base</label><div class="msel" id="u-base" data-todos="Todas" data-nome="base(s)"></div></div>
+    <div class="fld"><label for="u-tipo">Tipo de equipe</label><div class="msel" id="u-tipo" data-todos="Todos" data-nome="tipo(s)"></div></div>
+    <div class="fld"><label for="u-coord">Coordenador</label><div class="msel" id="u-coord" data-todos="Todos" data-nome="coordenador(es)"></div></div>
+    <div class="fld"><label for="u-rec">Prefixo</label><div class="msel" id="u-rec" data-todos="Todos" data-nome="prefixo(s)"></div></div>
     <div class="fld"><label for="u-ate">Até o dia</label><select id="u-ate"></select></div>
     </div>
   </div>
@@ -2365,8 +2365,9 @@ function msInit(el){
 }
 /* valores escolhidos (null = todos) */
 function msSel(id){const st=$(id).msel;return st&&st.sel.size?st.sel:null}
+function msTxt(id){const s=msSel(id);return s?[...s].join(', '):''}
 document.addEventListener('click',()=>document.querySelectorAll('.msel-p').forEach(p=>p.hidden=true));document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.msel-p').forEach(p=>p.hidden=true)});
-['f-dia','f-base','f-ger','f-est','f-tipo','p-ct','p-base','p-tipo','p-rec','u-mes'].forEach(id=>msInit($(id)));
+['f-dia','f-base','f-ger','f-est','f-tipo','p-ct','p-base','p-tipo','p-rec','u-mes','a-base','a-est','a-tipo','a-rec','i-base','i-tipo','i-rec','q-base','q-tipo','x-base','x-tipo','t-mun','t-ef','d-pri','d-tat','d-dist','d-tipo','d-ger','d-pep','u-base','u-tipo','u-coord','u-rec'].forEach(id=>msInit($(id)));
 function opts(sel,vals,todos,lbl){
   if(sel.msel){sel.msel.setOpts(vals,lbl);return}
   const atual=sel.value;
@@ -3309,8 +3310,8 @@ function atualizaTipos(){try{
   if(typeof TM!=='undefined'&&TM&&TM.L)recOpts('q-tipo',tiposLista(TM.L.map(x=>x.rec)),'Todos');
   if(typeof MX!=='undefined'&&MX&&MX.ds){const rs=new Set();for(const d of MX.ds){const o=MX.dias[d];for(const k of ['n','m','c'])for(const r in o[k]||{})rs.add(r)}recOpts('x-tipo',tiposLista(rs),'Todos')}
 }catch(e){}}
-function recUpsOpts(){if(!UR)return;const b=$('u-base').value,t=$('u-tipo').value,co=$('u-coord').value;
-  recOpts('u-rec',[...new Set(UR.cadastros.filter(c=>(!b||c.sigla===b)&&(!t||c.tipo===t)&&(!co||c.coord===co)).map(c=>c.rec))].sort(),'Todos')}
+function recUpsOpts(){if(!UR)return;const b=msSel('u-base'),t=msSel('u-tipo'),co=msSel('u-coord');
+  recOpts('u-rec',[...new Set(UR.cadastros.filter(c=>(!b||b.has(c.sigla))&&(!t||t.has(c.tipo))&&(!co||co.has(c.coord))).map(c=>c.rec))].sort(),'Todos')}
 let uCls=new Set(), uAbertos=new Set(), uMesIni=false;
 /* meses escolhidos no filtro da UPS (vazio = todos os meses disponíveis), em ordem crescente */
 function mesesU(){const st=$('u-mes').msel;if(!st)return[];return (st.sel.size?[...st.sel]:st.vals.slice()).sort()}
@@ -3332,8 +3333,8 @@ function preencherFiltrosUps(){
 }
 function preencherAteUps(){const ms=mesesU(),v=$('u-ate').value;const ds=ms.length?diasComDados(ms):[];opts($('u-ate'),ds.slice().reverse(),ms.length>1?'Período inteiro':'Mês inteiro',d=>dataBR(d)+' · '+semana(d).slice(0,3));if(v&&ds.includes(v))$('u-ate').value=v}
 function filtrarUps(m){
-  const ms=new Set(m?[m]:mesesU());const b=$('u-base').value,t=$('u-tipo').value,co=$('u-coord').value,r=$('u-rec').value,ate=$('u-ate').value;
-  return UR.linhas.filter(l=>ms.has(l.mes)&&(!b||l.sigla===b)&&(!t||l.tipo===t)&&(!co||l.coord===co)&&(!r||l.rec===r)&&(!ate||l.data<=ate));
+  const ms=new Set(m?[m]:mesesU());const b=msSel('u-base'),t=msSel('u-tipo'),co=msSel('u-coord'),r=msSel('u-rec'),ate=$('u-ate').value;
+  return UR.linhas.filter(l=>ms.has(l.mes)&&(!b||b.has(l.sigla))&&(!t||t.has(l.tipo))&&(!co||co.has(l.coord))&&(!r||r.has(l.rec))&&(!ate||l.data<=ate));
 }
 function statsUps(L){
   let ups=0,meta=0,tem=false;for(const l of L){ups+=l.ups;meta+=l.meta;tem=tem||l.temUps}
@@ -3341,7 +3342,7 @@ function statsUps(L){
   return {ups,meta,pct:meta&&tem?ups/meta:null,teams};
 }
 function diasComDados(m){const ms=Array.isArray(m)?m:[m];return Object.keys(UR.dias).filter(d=>ms.includes(d.slice(0,7))&&d<=UR.ultima).sort()}
-function metaDoMes(m,recs){const msx=new Set(Array.isArray(m)?m:[m]);const b=$('u-base').value,t=$('u-tipo').value,co=$('u-coord').value,r=$('u-rec').value;const rc={};if(co)for(const c of UR.cadastros)rc[c.rec]=c.coord;let s=0;for(const k in UR.metaMes){const [mm,rec,sg,tp]=k.split('|');if(msx.has(mm)&&(!b||sg===b)&&(!t||tp===t)&&(!r||rec===r)&&(!co||rc[rec]===co)&&(!recs||recs.has(rec)))s+=UR.metaMes[k]}return s}
+function metaDoMes(m,recs){const msx=new Set(Array.isArray(m)?m:[m]);const b=msSel('u-base'),t=msSel('u-tipo'),co=msSel('u-coord'),r=msSel('u-rec');const rc={};if(co)for(const c of UR.cadastros)rc[c.rec]=c.coord;let s=0;for(const k in UR.metaMes){const [mm,rec,sg,tp]=k.split('|');if(msx.has(mm)&&(!b||b.has(sg))&&(!t||t.has(tp))&&(!r||r.has(rec))&&(!co||co.has(rc[rec]))&&(!recs||recs.has(rec)))s+=UR.metaMes[k]}return s}
 function contaClasses(teams){const c={A:0,B:0,C:0,D:0};for(const t of teams)c[t.classe]++;return c}
 function pctAB(teams){if(!teams.length)return null;return teams.filter(t=>t.classe==='A'||t.classe==='B').length/teams.length}
 /* linhas e equipes já com o filtro de classe aplicado */
@@ -3373,7 +3374,8 @@ function renderUPS(){
   $('upsClasses').innerHTML=['A','B','C','D'].map(c=>'<div class="ck" style="--c:'+CL_COR[c]+'"><span>Classe '+c+'</span><b>'+cl[c]+'</b><small>'+pct(cl[c]/tt)+'</small></div>').join('');
   // bases
   const base=s=>S.teams.filter(t=>t.siglas.has(s));
-  const bk=(nome,ts,geral)=>{const p=pctAB(ts),f=UPSCalc.faixaBase(p);return '<div class="bk '+f.cls+(geral?' geral':'')+'" title="'+ts.length+' equipes · '+f.txt+'"><span>'+nome+'</span><b>'+pct(p)+'</b><small>'+f.txt.replace(' esperado','')+'</small></div>'};
+  const pctUB=sg=>{let u=0,mt=0;for(const l of L){if(!l.cod||!l.sigla||(sg&&l.sigla!==sg))continue;u+=l.ups;mt+=l.meta}return mt?u/mt:null}; /* mesmo número da tabela "UPS por mês": UPS ÷ meta */
+  const bk=(nome,ts,geral)=>{const p=pctUB(geral?null:nome),f=UPSCalc.faixaBase(p);return '<div class="bk '+f.cls+(geral?' geral':'')+'" title="UPS ÷ meta · '+ts.length+' equipes · '+f.txt+' · '+pct(pctAB(ts))+' das equipes em A ou B"><span>'+nome+'</span><b>'+pct(p)+'</b><small>'+f.txt.replace(' esperado','')+'</small></div>'};
   $('upsBases').innerHTML=SIGLAS.map(s=>bk(s,base(s))).join('')+bk('GERAL',S.teams,true);
   // tipo de equipe ⊞ recurso
   const tipos={};for(const l of L.filter(x=>x.cod)){const a=tipos[l.tipo]||(tipos[l.tipo]={k:l.tipo,ups:0,meta:0,tem:false,recs:new Set(),ed:new Set()});a.ups+=l.ups;a.meta+=l.meta;a.tem=a.tem||l.temUps;if(l.n>0){a.recs.add(l.rec);a.ed.add(l.rec+'|'+l.data)}}
@@ -3397,13 +3399,13 @@ function renderUPS(){
     +'<div class="stk-ax"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div><div class="stk-leg" style="margin-left:62px">'+['A','B','C','D'].map(k=>'<span><i style="background:'+CL_COR[k]+'"></i>'+k+'</span>').join('')+'</div>';
   // UPS por mês (base × mês)
   const meses=[...new Set(UR.linhas.filter(l=>l.meta>0).map(l=>l.mes))].sort();
-  const tsel=$('u-tipo').value,csel=$('u-coord').value,rsel=$('u-rec').value,bsel=$('u-base').value;
-  const LM=UR.linhas.filter(l=>(!tsel||l.tipo===tsel)&&(!csel||l.coord===csel)&&(!rsel||l.rec===rsel)&&(!S.recs||S.recs.has(l.rec)));
-  const agM={};for(const l of LM){const ks=[];if(l.cod&&l.sigla){ks.push(l.mes+'|'+l.sigla);if(!bsel||l.sigla===bsel)ks.push(l.mes+'|TOTAL')}for(const k of ks){const a=agM[k]||(agM[k]=[0,0]);a[0]+=l.ups;a[1]+=l.meta}}
+  const tsel=msSel('u-tipo'),csel=msSel('u-coord'),rsel=msSel('u-rec'),bsel=msSel('u-base');
+  const LM=UR.linhas.filter(l=>(!tsel||tsel.has(l.tipo))&&(!csel||csel.has(l.coord))&&(!rsel||rsel.has(l.rec))&&(!S.recs||S.recs.has(l.rec)));
+  const agM={};for(const l of LM){const ks=[];if(l.cod&&l.sigla){ks.push(l.mes+'|'+l.sigla);if(!bsel||bsel.has(l.sigla))ks.push(l.mes+'|TOTAL')}for(const k of ks){const a=agM[k]||(agM[k]=[0,0]);a[0]+=l.ups;a[1]+=l.meta}}
   const vM=k=>{const a=agM[k];return a&&a[1]?a[0]/a[1]:null};
   const totB=s=>{let u=0,mt=0;for(const mm of meses){const a=agM[mm+'|'+s];if(a){u+=a[0];mt+=a[1]}}return mt?u/mt:null};
   const cel=p=>'<td class="mc '+mcCls(p)+'">'+pct(p)+'</td>';
-  const sgs=bsel?[bsel]:SIGLAS;
+  const sgs=bsel?SIGLAS.filter(x=>bsel.has(x)):SIGLAS;
   $('upsMes').innerHTML='<thead><tr><th>Sigla</th>'+meses.map(mm=>'<th>'+MESES[+mm.slice(5)-1].slice(0,3).toLowerCase()+'/'+mm.slice(2,4)+'</th>').join('')+'<th>Total</th></tr></thead><tbody>'
     +sgs.map(s=>'<tr><td><b>'+s+'</b></td>'+meses.map(mm=>cel(vM(mm+'|'+s))).join('')+cel(totB(s))+'</tr>').join('')
     +'<tr class="tot"><td>Total</td>'+meses.map(mm=>cel(vM(mm+'|TOTAL'))).join('')+cel(totB('TOTAL'))+'</tr></tbody>';
@@ -3432,12 +3434,12 @@ $('b-ufunil').onclick=()=>abrirGaveta();
 const SEM_NOME=['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'];
 function semanaUps(){
   const els=document.querySelectorAll('.uSemP');if(!els.length||!UR)return;
-  const b=$('u-base').value,t=$('u-tipo').value,co=$('u-coord').value,r=$('u-rec').value;
+  const b=msSel('u-base'),t=msSel('u-tipo'),co=msSel('u-coord'),r=msSel('u-rec');
   const ano=(UR.ultima||'2026').slice(0,4);
   const A=SEM_NOME.map(()=>({e:0,n:0,u:0,m:0,dias:new Set()}));
   for(const l of UR.linhas){
     if(!l.cod||l.data.slice(0,4)!==ano||l.data>UR.ultima)continue;
-    if((b&&l.sigla!==b)||(t&&l.tipo!==t)||(co&&l.coord!==co)||(r&&l.rec!==r))continue;
+    if((b&&!b.has(l.sigla))||(t&&!t.has(l.tipo))||(co&&!co.has(l.coord))||(r&&!r.has(l.rec)))continue;
     if(!(l.meta>0||l.n>0))continue;
     const w=(new Date(l.data+'T12:00:00Z').getUTCDay()+6)%7,a=A[w];a.e++;a.n+=l.n;a.u+=l.ups;a.m+=l.meta;a.dias.add(l.data)}
   const soma=ix=>ix.reduce((s,i)=>({e:s.e+A[i].e,n:s.n+A[i].n,u:s.u+A[i].u,m:s.m+A[i].m,dias:new Set([...s.dias,...A[i].dias])}),{e:0,n:0,u:0,m:0,dias:new Set()});
@@ -3714,9 +3716,9 @@ function preencherFiltrosIni(){
   keep('i-tipo',[...new Set(IR.linhas.map(l=>l.tipo))].sort(),'Todos');
   recIniOpts();atualizaTipos();
 }
-function recIniOpts(){if(!IR)return;const b=$('i-base').value,t=$('i-tipo').value;recOpts('i-rec',[...new Set(IR.linhas.filter(l=>(!b||l.base===b)&&(!t||l.tipo===t)).map(l=>l.rec))].sort(),'Todos')}
-function filtrarIni(){const m=$('i-mes').value,b=$('i-base').value,t=$('i-tipo').value,r=$('i-rec').value,q=($('i-busca').value||'').trim().toUpperCase();
-  return IR.linhas.filter(l=>l.mes===m&&(!b||l.base===b)&&(!t||l.tipo===t)&&(!r||l.rec===r)&&(!q||l.rec.toUpperCase().includes(q)))}
+function recIniOpts(){if(!IR)return;const b=msSel('i-base'),t=msSel('i-tipo');recOpts('i-rec',[...new Set(IR.linhas.filter(l=>(!b||b.has(l.base))&&(!t||t.has(l.tipo))).map(l=>l.rec))].sort(),'Todos')}
+function filtrarIni(){const m=$('i-mes').value,b=msSel('i-base'),t=msSel('i-tipo'),r=msSel('i-rec'),q=($('i-busca').value||'').trim().toUpperCase();
+  return IR.linhas.filter(l=>l.mes===m&&(!b||b.has(l.base))&&(!t||t.has(l.tipo))&&(!r||r.has(l.rec))&&(!q||l.rec.toUpperCase().includes(q)))}
 const iMed=L=>L.length?Math.floor(L.reduce((s,l)=>s+l.t,0)/L.length):null;
 const iDesl=L=>{const k=L.filter(l=>l.km!=null);if(!k.length)return{km:null,min:null};return{km:k.reduce((s,l)=>s+l.km,0)/k.length,min:Math.round(k.reduce((s,l)=>s+Math.round(l.km/ICFG.velocidade*60),0)/k.length)}};
 const iHmin=m=>m==null?'–':Math.floor(m/60)+'h'+String(m%60).padStart(2,'0');
@@ -3909,9 +3911,9 @@ function preencherFiltrosAder(){
   preencherDiaAder();
 }
 function preencherDiaAder(){const m=$('a-mes').value,v=$('a-dia').value;const ds=Object.keys(AR.dias).filter(d=>d.startsWith(m)).sort().reverse();opts($('a-dia'),ds,'Mês inteiro',d=>dataBR(d)+' · '+semana(d).slice(0,3));if(v&&ds.includes(v))$('a-dia').value=v}
-function recAderOpts(){if(!AR)return;const b=$('a-base').value,e=$('a-est').value,t=$('a-tipo').value;recOpts('a-rec',[...new Set(AR.linhas.filter(l=>(!b||l.base===b)&&(!e||l.est===e)&&(!t||tipoDe(l.rec)===t)).map(l=>l.rec))].sort(),'Todos')}
-function filtrarAder(semMes){const m=$('a-mes').value,dia=$('a-dia').value,b=$('a-base').value,e=$('a-est').value,t=$('a-tipo').value,r=$('a-rec').value;
-  return AR.linhas.filter(l=>(semMes||l.mes===m)&&(semMes||!dia||l.data===dia)&&(!b||l.base===b)&&(!e||l.est===e)&&(!t||tipoDe(l.rec)===t)&&(!r||l.rec===r))}
+function recAderOpts(){if(!AR)return;const b=msSel('a-base'),e=msSel('a-est'),t=msSel('a-tipo');recOpts('a-rec',[...new Set(AR.linhas.filter(l=>(!b||b.has(l.base))&&(!e||e.has(l.est))&&(!t||t.has(tipoDe(l.rec)))).map(l=>l.rec))].sort(),'Todos')}
+function filtrarAder(semMes){const m=$('a-mes').value,dia=$('a-dia').value,b=msSel('a-base'),e=msSel('a-est'),t=msSel('a-tipo'),r=msSel('a-rec');
+  return AR.linhas.filter(l=>(semMes||l.mes===m)&&(semMes||!dia||l.data===dia)&&(!b||b.has(l.base))&&(!e||e.has(l.est))&&(!t||t.has(tipoDe(l.rec)))&&(!r||r.has(l.rec)))}
 function statsAder(L){
   let ade=0,tot=0,aus=0,atS=0,atN=0,mS=0,mN=0;
   for(const l of L){if(l.st==='ADE'||l.st==='FORA'||l.st==='AUS'){tot++;if(l.st==='ADE')ade++}
@@ -4385,7 +4387,7 @@ async function baixarUps(){
     const fmt=(ws,cols,z)=>{const r=XLSX.utils.decode_range(ws['!ref']);for(let R=1;R<=r.e.r;R++)for(const C of cols){const c=ws[XLSX.utils.encode_cell({r:R,c:C})];if(c&&c.t==='n')c.z=z}};
     const wb=XLSX.utils.book_new();
     const cl=contaClasses(S.teams);
-    const res=[['RELATÓRIO DE UPS · '+mesesTxt(ms).toUpperCase()],['Produção até',dias.length?dataBR(dias[dias.length-1]):''],['Filtros',[['Base',$('u-base').value],['Tipo',$('u-tipo').value]].filter(x=>x[1]).map(x=>x[0]+': '+x[1]).join(' · ')||'Todas as equipes'],[],['UPS realizada',S.ups],['Meta acumulada',S.meta],['Atingimento',S.pct],['Classe',UPSCalc.classe(S.pct)||''],[],['CLASSE','EQUIPES'],['A',cl.A],['B',cl.B],['C',cl.C],['D',cl.D],[],['BASE','% EQUIPES A+B','EQUIPES']];
+    const res=[['RELATÓRIO DE UPS · '+mesesTxt(ms).toUpperCase()],['Produção até',dias.length?dataBR(dias[dias.length-1]):''],['Filtros',[['Base',msTxt('u-base')],['Tipo',msTxt('u-tipo')]].filter(x=>x[1]).map(x=>x[0]+': '+x[1]).join(' · ')||'Todas as equipes'],[],['UPS realizada',S.ups],['Meta acumulada',S.meta],['Atingimento',S.pct],['Classe',UPSCalc.classe(S.pct)||''],[],['CLASSE','EQUIPES'],['A',cl.A],['B',cl.B],['C',cl.C],['D',cl.D],[],['BASE','% EQUIPES A+B','EQUIPES']];
     for(const s of SIGLAS){const ts=S.teams.filter(t=>t.siglas.has(s));res.push([s,pctAB(ts),ts.length])}
     res.push(['GERAL',pctAB(S.teams),S.teams.length]);
     const wsR=XLSX.utils.aoa_to_sheet(res);wsR['!cols']=[{wch:28},{wch:16},{wch:12}];
@@ -4430,7 +4432,7 @@ async function gerarPrintUps(){
   const logo=document.querySelector('.logo-img');let lx=P;if(logo&&logo.naturalWidth){const lh=44,lw=logo.naturalWidth*lh/logo.naturalHeight;c.drawImage(logo,P,43,lw,lh);lx=P+lw+22;c.strokeStyle='rgba(255,255,255,.3)';c.beginPath();c.moveTo(lx-11,38);c.lineTo(lx-11,92);c.stroke()}
   c.fillStyle='rgba(255,255,255,.75)';c.font='700 12px '+F;c.fillText('SETOR DE MEDIÇÃO',lx,58);c.fillStyle='#fff';c.font='italic 900 30px '+F;c.fillText('Relatório de UPS',lx,92);
   c.textAlign='right';c.font='800 24px '+F;c.fillText(mesesTxt(ms).replace(/^./,x=>x.toUpperCase()),W-P,64);c.font='600 13px '+F;c.fillStyle='rgba(255,255,255,.85)';
-  const filt=[$('u-base').value,$('u-tipo').value].filter(Boolean).join(' · ');c.fillText((dias.length?'Produção até '+dataBR(dias[dias.length-1]):'')+(filt?' · '+filt:''),W-P,90);c.textAlign='left';
+  const filt=[msTxt('u-base'),msTxt('u-tipo')].filter(Boolean).join(' · ');c.fillText((dias.length?'Produção até '+dataBR(dias[dias.length-1]):'')+(filt?' · '+filt:''),W-P,90);c.textAlign='left';
   const card=(x,y,w,h)=>{c.save();c.shadowColor='rgba(43,42,42,.08)';c.shadowBlur=14;c.shadowOffsetY=3;rr(c,x,y,w,h,16);c.fillStyle='#fff';c.fill();c.restore();rr(c,x,y,w,h,16);c.strokeStyle='#dedadb';c.stroke()};
   // faixa de resumo
   let y=130+P;card(P,y,W-2*P,120);
@@ -4758,8 +4760,8 @@ function defAtivos(D){
   else r=DR.iv.filter(x=>x.i<=D&&(x.f==null||x.f>=D));
   return DR.cache[D]=r;
 }
-function defFiltro(){const v={};for(const id of DF){const x=$(id).value;if(x)v[id]=x}
-  return o=>(!v['d-pri']||o.pri===v['d-pri'])&&(!v['d-dist']||o.dist===v['d-dist'])&&(!v['d-tipo']||o.tipo===v['d-tipo'])&&(!v['d-tat']||o.tat===v['d-tat'])&&(!v['d-ger']||o.ger===v['d-ger'])&&(!v['d-pep']||o.pep===v['d-pep'])}
+function defFiltro(){const v={};for(const id of DF){const x=msSel(id);if(x)v[id]=x}
+  return o=>(!v['d-pri']||v['d-pri'].has(o.pri))&&(!v['d-dist']||v['d-dist'].has(o.dist))&&(!v['d-tipo']||v['d-tipo'].has(o.tipo))&&(!v['d-tat']||v['d-tat'].has(o.tat))&&(!v['d-ger']||v['d-ger'].has(o.ger))&&(!v['d-pep']||v['d-pep'].has(o.pep))}
 /* TOTAL TRATATIVA, DEFEITOS ENTRANTES e DEFEITOS RESOLVIDOS do Power BI */
 function defStats(D,F){
   const A=defAtivos(D).filter(r=>r.v&&F(r.o)),P=defAtivos(D-1).filter(r=>r.v&&F(r.o));
@@ -5146,13 +5148,13 @@ function tmPares(it,o){
 }
 function renderTm(){
   if(!TM)return;
-  const p=pag().id,F={mes:$('q-mes').value,base:$('q-base').value,tipo:$('q-tipo').value};
-  const at=[];if(F.mes)at.push(['q-mes','Mês',mesNome(F.mes)]);if(F.base)at.push(['q-base','Base',F.base]);if(F.tipo)at.push(['q-tipo','Tipo de equipe',F.tipo]);
+  const p=pag().id,F={mes:$('q-mes').value,base:msSel('q-base'),tipo:msSel('q-tipo')};
+  const at=[];if(F.mes)at.push(['q-mes','Mês',mesNome(F.mes)]);if(F.base)at.push(['q-base','Base',msTxt('q-base')]);if(F.tipo)at.push(['q-tipo','Tipo de equipe',msTxt('q-tipo')]);
   document.querySelectorAll('.ativosQ').forEach(x=>{x.innerHTML=at.map(c=>'<span class="chipf"><small>'+c[1]+'</small>'+esc(c[2])+'<button type="button" data-tiraq="'+c[0]+'" aria-label="Remover filtro">✕</button></span>').join('');x.querySelectorAll('[data-tiraq]').forEach(b=>b.onclick=()=>{$(b.dataset.tiraq).value='';$(b.dataset.tiraq).classList.remove('on');renderTm()})});
   const n=at.length;$('filtrosN').hidden=!n;$('filtrosN').textContent=n;document.querySelectorAll('[data-qfn]').forEach(x=>{x.hidden=!n;x.textContent=n});
   $('periodoTxt').textContent=F.mes?mesNome(F.mes):'2026';
   document.querySelectorAll('.qbarSub').forEach(x=>x.innerHTML='TME = média da Duração · TMD = média do Tempo de Deslocamento · '+(F.mes?mesNome(F.mes):'janeiro a '+mesNome(TM.meses[TM.meses.length-1]).toLowerCase())+' · base até <b>'+dataBR(TM.ult)+'</b>');
-  const okM=x=>!F.mes||x.m===F.mes,okB=x=>(!F.base||x.b===F.base)&&(!F.tipo||tipoDe(x.rec)===F.tipo),mlab=m=>mesNome(m).slice(0,3).toLowerCase();
+  const okM=x=>!F.mes||x.m===F.mes,okB=x=>(!F.base||F.base.has(x.b))&&(!F.tipo||F.tipo.has(tipoDe(x.rec))),mlab=m=>mesNome(m).slice(0,3).toLowerCase();
   const clickMes=el=>el.querySelectorAll('[data-tqk]').forEach(b=>{const f=()=>{$('q-mes').value=$('q-mes').value===b.dataset.tqk?'':b.dataset.tqk;$('q-mes').classList.toggle('on',!!$('q-mes').value);renderTm()};b.onclick=f;b.onkeydown=e=>{if(e.key==='Enter')f()}});
   if(p==='tm-geral'){
     const G=tmSoma(x=>okM(x)&&okB(x)?'g':null).g,A=tmSoma(x=>okM(x)&&okB(x)?x.a:null),mi=F.mes?TM.meses.indexOf(F.mes):-1,Pm=mi>0?TM.meses[mi-1]:null,P=Pm?tmSoma(x=>x.m===Pm&&okB(x)?'g':null).g:null;
@@ -5167,7 +5169,7 @@ function renderTm(){
     const BM=tmSoma(x=>x.b?x.b+'|'+x.m:null),GM=tmSoma(x=>x.m),bs=[...new Set(TM.L.map(x=>x.b).filter(Boolean))].sort(),ms=F.mes?[F.mes]:TM.meses;
     $('tqBase').innerHTML='<div class="tw"><table class="utab tqt"><thead><tr><th rowspan="2">Base</th>'+ms.map(m=>'<th colspan="2" class="c'+(m===F.mes?' cur':'')+'">'+mesNome(m).slice(0,3)+'</th>').join('')+'</tr><tr>'+ms.map(()=>'<th class="n">TME</th><th class="n">TMD</th>').join('')+'</tr></thead><tbody>'
       +'<tr class="tgr"><td><b>Média geral</b></td>'+ms.map(m=>tmCel(tmE(GM[m]))+tmCel(tmD(GM[m]))).join('')+'</tr>'
-      +bs.filter(b=>!F.base||b===F.base).map(b=>'<tr><td class="nw"><b>'+esc(tMun(b))+'</b></td>'+ms.map(m=>tmCel(tmE(BM[b+'|'+m]),tmE(GM[m]))+tmCel(tmD(BM[b+'|'+m]),tmD(GM[m]))).join('')+'</tr>').join('')+'</tbody></table></div>';
+      +bs.filter(b=>!F.base||F.base.has(b)).map(b=>'<tr><td class="nw"><b>'+esc(tMun(b))+'</b></td>'+ms.map(m=>tmCel(tmE(BM[b+'|'+m]),tmE(GM[m]))+tmCel(tmD(BM[b+'|'+m]),tmD(GM[m]))).join('')+'</tr>').join('')+'</tbody></table></div>';
     const ord=Object.entries(A).sort((a,b)=>b[1][1]-a[1][1]),mx=Math.max(1,...ord.map(([k,e])=>Math.max(tmE(e)||0,tmD(e)||0)));
     $('tqAtiv').innerHTML='<div class="tqa">'+ord.map(([a,e])=>'<button type="button" class="tqa-r" data-tqa="'+esc(a)+'" title="Ver o detalhamento de '+esc(tmCurto(a))+'"><span class="tqa-k"><b>'+esc(tmCurto(a))+'</b><small>'+dN(e[1])+' atividade(s)</small></span><span class="tqa-t"><i class="e" style="width:'+((tmE(e)||0)/mx*100).toFixed(1)+'%"></i><i class="d" style="width:'+((tmD(e)||0)/mx*100).toFixed(1)+'%"></i></span><span class="tqa-v"><b>'+tmF(tmE(e))+'</b><small>'+tmF(tmD(e))+'</small></span></button>').join('')+'</div>';
     $('tqAtiv').querySelectorAll('[data-tqa]').forEach(b=>b.onclick=()=>{tmAtiv=b.dataset.tqa;location.hash='#tm-detalhe'});
@@ -5285,7 +5287,7 @@ function preencherFiltrosMix(){
   const lv=$('x-loc').value;$('x-loc').innerHTML='<option value="">Disjuntor, medidor, poste e ramal</option>'+Object.entries(MX_LOC).map(([k,n])=>'<option value="'+k+'">'+n+'</option>').join('')+'<option value="T">Todos (inclui débito pago e não executado)</option>';$('x-loc').value=lv;
   const sel=(id,max)=>{const v=$(id).value;$(id).innerHTML=Array.from({length:31},(_,i)=>'<option value="'+(i+1)+'">'+(i+1)+'</option>').join('');$(id).value=v||String(max)};sel('x-di',1);sel('x-df',31);
 }
-function mxFiltro(){return{base:$('x-base').value,tipo:$('x-tipo').value,mes:$('x-mes').value,di:+$('x-di').value||1,df:+$('x-df').value||31,loc:$('x-loc').value}}
+function mxFiltro(){return{base:msSel('x-base'),tipo:msSel('x-tipo'),mes:$('x-mes').value,di:+$('x-di').value||1,df:+$('x-df').value||31,loc:$('x-loc').value}}
 /* percorre os dias do filtro; cb(dia, objeto, mês) */
 function mxDias(F,ignoraMes){const r=[];for(const d of MX.ds){if(!ignoraMes&&F.mes&&!d.startsWith(F.mes))continue;const dd=+d.slice(8);if(dd<F.di||dd>F.df)continue;r.push(d)}return r}
 const mxOkLoc=(F,L)=>F.loc==='T'?true:F.loc?L===F.loc:'DMPR'.includes(L);
@@ -5316,14 +5318,14 @@ function mxBarras(e,fmt,cor,max){
 function renderMix(){
   if(!MX)return;
   const p=pag().id,F=mxFiltro(),ds=mxDias(F),dsA=mxDias(F,true);
-  const at=[];if(F.base)at.push(['x-base','Base',F.base]);if(F.tipo)at.push(['x-tipo','Tipo de equipe',F.tipo]);if(F.mes)at.push(['x-mes','Mês',mesNome(F.mes)]);if(p==='mix-corte'&&F.loc)at.push(['x-loc','Local',F.loc==='T'?'Todos':MX_LOC[F.loc]]);
+  const at=[];if(F.base)at.push(['x-base','Base',msTxt('x-base')]);if(F.tipo)at.push(['x-tipo','Tipo de equipe',msTxt('x-tipo')]);if(F.mes)at.push(['x-mes','Mês',mesNome(F.mes)]);if(p==='mix-corte'&&F.loc)at.push(['x-loc','Local',F.loc==='T'?'Todos':MX_LOC[F.loc]]);
   const per=(F.di>1||F.df<31)?'<span class="chipf"><small>Dias</small>'+F.di+' a '+F.df+'<button type="button" data-tirax="dias" aria-label="Remover filtro">✕</button></span>':'';
   document.querySelectorAll('.ativosX').forEach(x=>{x.innerHTML=at.map(c=>'<span class="chipf"><small>'+c[1]+'</small>'+esc(c[2])+'<button type="button" data-tirax="'+c[0]+'" aria-label="Remover filtro">✕</button></span>').join('')+per;
     x.querySelectorAll('[data-tirax]').forEach(b=>b.onclick=()=>{const k=b.dataset.tirax;if(k==='dias'){$('x-di').value='1';$('x-df').value='31'}else{$(k).value='';$(k).classList.remove('on')}renderMix()})});
   const n=at.length+(per?1:0);$('filtrosN').hidden=!n;$('filtrosN').textContent=n;document.querySelectorAll('[data-xfn]').forEach(x=>{x.hidden=!n;x.textContent=n});
   $('periodoTxt').textContent=F.mes?mesNome(F.mes):'2026';
   document.querySelectorAll('.xbarSub').forEach(x=>x.innerHTML='Relatórios de Produção (Banco) · '+(F.mes?mesNome(F.mes):'janeiro a '+mesNome(MX.ult.slice(0,7)).toLowerCase())+' · base até <b>'+dataBR(MX.ult)+'</b>');
-  const okB=(b,r)=>b&&(!F.base||b===F.base)&&(!F.tipo||tipoDe(r)===F.tipo);
+  const okB=(b,r)=>b&&(!F.base||F.base.has(b))&&(!F.tipo||F.tipo.has(tipoDe(r)));
   const bases=new Set();for(const d of MX.ds){const o=MX.dias[d];for(const k of ['n','m','c'])for(const r in o[k]||{}){const b=mxBase(o,r);if(b)bases.add(b)}}
   const BC=mxBaseCor([...bases].sort());
   const mesesV=MX.meses,mlab=m=>mesNome(m).slice(0,3).toLowerCase();
@@ -5478,7 +5480,7 @@ function preencherFiltrosTrf(){
   const keep=(id,vals,todos,lb)=>{const v=$(id).value;opts($(id),vals,todos,lb);if(v&&vals.includes(v))$(id).value=v};
   const pm=$('t-mes').value,ms=TR.meses.slice().reverse();opts($('t-mes'),ms,null,mesNome);$('t-mes').value=pm&&ms.includes(pm)?pm:ms[0]||'';
   keep('t-mun',[...new Set(TR.eqs.map(e=>e.mun).concat(TR.bl.map(b=>b.mun)).filter(Boolean))].sort(),'Todos');
-  const ef=$('t-ef').value;$('t-ef').innerHTML='<option value="">Todas</option>'+Object.entries(T_EF).map(([k,o])=>'<option value="'+k+'">'+o.n+'</option>').join('')+'<option value="P">Não concluídos</option>';$('t-ef').value=ef;
+  {const ks=Object.keys(T_EF).concat(['P']);opts($('t-ef'),ks,'Todas',k=>k==='P'?'Não concluídos':T_EF[k].n)}
 }
 function tDonut(parts,size,centro,sub){
   const tot=parts.reduce((s,p)=>s+p.v,0),R=size/2-14,C=2*Math.PI*R;let off=0;
@@ -5487,16 +5489,16 @@ function tDonut(parts,size,centro,sub){
 }
 function renderTrf(){
   if(!TR)return;
-  const p=pag().id,F={};for(const id of TF){const v=$(id).value;if(v)F[id]=v}
-  const at=TF.filter(id=>F[id]).map(id=>[id,TF_NOME[id],id==='t-ef'?(T_EF[F[id]]?T_EF[F[id]].n:'Não concluídos'):F[id]]);
+  const p=pag().id,F={};for(const id of TF){const v=msSel(id);if(v)F[id]=v}
+  const at=TF.filter(id=>F[id]).map(id=>[id,TF_NOME[id],[...F[id]].map(k=>id==='t-ef'?(T_EF[k]?T_EF[k].n:'Não concluídos'):k).join(', ')]);
   const chips=(p==='trf-indice'?'<span class="chipf"><small>Mês</small>'+mesNome($('t-mes').value)+'</span>':'<span class="chipf"><small>Ações</small>'+TR.ano+'</span>')+at.map(c=>'<span class="chipf"><small>'+c[1]+'</small>'+esc(c[2])+'<button type="button" data-tirat="'+c[0]+'" aria-label="Remover filtro">✕</button></span>').join('');
   document.querySelectorAll('.ativosT').forEach(x=>{x.innerHTML=chips;x.querySelectorAll('[data-tirat]').forEach(b=>b.onclick=()=>{$(b.dataset.tirat).value='';$(b.dataset.tirat).classList.remove('on');renderTrf()})});
   const n=at.length;$('filtrosN').hidden=!n;$('filtrosN').textContent=n;document.querySelectorAll('[data-tfn]').forEach(x=>{x.hidden=!n;x.textContent=n});
   document.querySelectorAll('.tbarSub').forEach(x=>x.innerHTML='Seccional Bacabal · interrupções de trafo (2 ou mais clientes) de '+dataBR(TR.ini)+' a <b>'+dataBR(TR.ult)+'</b>');
-  const okM=m=>!F['t-mun']||m===F['t-mun'];
+  const okM=m=>!F['t-mun']||F['t-mun'].has(m);
   if(p==='trf-painel'){
     $('periodoTxt').textContent='Ações '+TR.ano;
-    const E0=TR.eqs.filter(e=>okM(e.mun)),E=E0.filter(e=>!F['t-ef']||(F['t-ef']==='P'?e.st!=='CONCLUIDO':e.ef===F['t-ef']));
+    const E0=TR.eqs.filter(e=>okM(e.mun)),E=E0.filter(e=>!F['t-ef']||[...F['t-ef']].some(k=>k==='P'?e.st!=='CONCLUIDO':e.ef===k));
     const cc=E0.filter(e=>e.st==='CONCLUIDO'),cR=cc.filter(e=>e.ef==='R').length,cA=cc.filter(e=>e.ef==='A').length,cN=cc.filter(e=>e.ef==='N').length;
     const par=E0.filter(e=>e.st==='PARCIAL').length,pen=E0.filter(e=>e.st==='PENDENTE').length,efi=cc.length?(cc.length-cR)/cc.length:null,BL=TR.bl.filter(b=>okM(b.mun));
     $('tKpis').innerHTML=dKpi({k:'total',t:'Trafos trabalhados',v:E0.length,dest:1,l:[['Concluídos',cc.length],['Parciais / pendentes',par+' / '+pen]]})
