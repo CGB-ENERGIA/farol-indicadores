@@ -2622,7 +2622,7 @@ $('ct-q').oninput=e=>{CT.busca=e.target.value;CT.lim=300;ctRender()};$('pz-q').o
 $('ct-mais').onclick=()=>{CT.lim+=500;ctRender()};$('pz-mais').onclick=()=>{CT.limP+=500;ctRender()};
 let modoEquipe=false;
 const ehAdm=()=>podeSalvar&&!modoEquipe;
-const visiveis=()=>PAGINAS.filter(p=>!p.adm||ehAdm());
+const visiveis=()=>PAGINAS.filter(p=>!p.adm||ehAdm());window.visiveis=visiveis;
 const pag=()=>{const h=location.hash.slice(1);return visiveis().find(p=>p.id===h)||PAGINAS[0]};
 const GRUPO_ICO={'Disponibilidade':'painel','UPS':'lista','Aderência à escala':'cal','Início das atividades':'sono','Produção do dia':'moeda','Atualização de defeitos':'chave','TME / TMD':'relogio','Mix GSTC':'mix','Trafos reincidentes':'raio','Gestão de Contingência':'alerta','Farol de Prazos':'cobra','Administração':'cad'};
 const GRUPO_SUB={'Disponibilidade':'Painel, prefixos e cobrança','UPS':'Painel, equipes, diário e cobrança','Aderência à escala':'Painel e ranking','Início das atividades':'Horário da 1ª atividade','Produção do dia':'Meta x realizado em tempo real','Atualização de defeitos':'Tratamento, evolução e lista','TME / TMD':'Execução e deslocamento','Mix GSTC':'OS Normal, miscelânea e tipo de corte','Trafos reincidentes':'Blindagem e índice de reincidência','Gestão de Contingência':'Atividades em campo e clientes afetados','Farol de Prazos':'Prazos regulatórios por atividade','Administração':'Envio, conferência e cadastros'};
