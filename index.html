@@ -1282,7 +1282,9 @@ html[data-tema="escuro"] .rg-tag.n{background:var(--sup-soft)!important}
     </div>
     <div id="fPrd" style="display:grid;gap:14px" hidden>
     <div class="grp">Período</div>
-    <div class="fld"><label for="p-dia">Dia</label><select id="p-dia"></select></div>
+    <div class="fld"><label for="p-modo">Período</label><select id="p-modo"><option value="dia">Dia</option><option value="mes">Acumulado do mês</option><option value="int">Intervalo de datas</option></select></div>
+    <div class="fld" id="p-de-w" hidden><label for="p-de">De</label><select id="p-de"></select></div>
+    <div class="fld"><label for="p-dia" id="p-dia-l">Dia</label><select id="p-dia"></select></div>
     <div class="grp">Equipes</div>
     <div class="fld"><label>Contrato</label><div class="msel" id="p-ct" data-todos="Todos" data-nome="contrato(s)"></div></div>
     <div class="fld"><label>Base</label><div class="msel" id="p-base" data-todos="Todas" data-nome="base(s)"></div></div>
@@ -4869,6 +4871,7 @@ function montarPrd(){
 }
 function preencherFiltrosPrd(){
   const v=$('p-dia').value;opts($('p-dia'),PR.ds.slice().reverse(),null,d=>dataBR(d)+' · '+semana(d));$('p-dia').value=prdEscolheu&&v&&PR.ds.includes(v)?v:PR.ult;
+  {const v2=$('p-de').value;opts($('p-de'),PR.ds.slice().reverse(),null,d=>dataBR(d)+' · '+semana(d));$('p-de').value=v2&&PR.ds.includes(v2)?v2:(PR.ds.find(x=>x.slice(0,7)===$('p-dia').value.slice(0,7))||PR.ds[0])}
   const ct=PCFG.ct||{};
   opts($('p-ct'),[...new Set(PCFG.prefixos.map(p=>String(ct[p[0]]||'(sem contrato)')))].sort(),'Todos');opts($('p-base'),[...new Set(PCFG.prefixos.map(p=>p[1]))].sort(),'Todas');atualizaTipos();opts($('p-rec'),PCFG.prefixos.map(p=>p[0]).sort(),'Todas');
 }
@@ -4881,6 +4884,22 @@ function prdFator(pre,d){
   const wd=(new Date(d+'T12:00:00Z').getUTCDay()+6)%7;
   const fer=!!((cfg&&cfg.feriados&&cfg.feriados[d])||(typeof cad!=='undefined'&&cad&&cad.feriados&&cad.feriados[d]));
   return UPSCalc.fatorMeta(pi.tipo==='AE116'&&!/MOTO/i.test(pi.est),wd,fer);
+}
+function prdLinhasPer(DIAS){
+  if(DIAS.length===1)return prdLinhasDia(DIAS[0]);
+  return PCFG.prefixos.map((p,i)=>{let meta=0,real=0,n=0,h=null,z=true;
+    for(const d of DIAS){const e=(PR.dias[d]||{})[p[0]],f=prdFator(p[0],d);meta+=p[3]*f;if(f>0)z=false;if(e){real+=e[0];n+=e[1];if(e[2]){h=h||new Array(24).fill(0);e[2].forEach((v,k)=>h[k]+=v)}}}
+    return{ord:i,pre:p[0],base:p[1],est:p[2],tipo:p[4],meta,fixa:p[3]===0,dia0:z,real,dif:real-meta,pct:(meta===0||real===0)?0:real/meta,n,h}});
+}
+function prdPeriodo(){
+  const m=$('p-modo').value||'dia',d=$('p-dia').value||PR.ult;
+  if(m==='mes'){const L=PR.ds.filter(x=>x.slice(0,7)===d.slice(0,7)&&x<=d);return L.length?L:[d]}
+  if(m==='int'){let a=$('p-de').value||d,b=d;if(a>b){const t=a;a=b;b=t}const L=PR.ds.filter(x=>x>=a&&x<=b);return L.length?L:[d]}
+  return [d];
+}
+function prdModoUI(){
+  const m=$('p-modo').value;$('p-de-w').hidden=m!=='int';$('p-dia-l').textContent=m==='dia'?'Dia':m==='mes'?'Até o dia':'Até';
+  if(m==='int'){const d=$('p-dia').value;if(!$('p-de').value||$('p-de').value>d)$('p-de').value=PR.ds.find(x=>x.slice(0,7)===d.slice(0,7))||PR.ds[0]}
 }
 function prdLinhasDia(d){
   const eq=PR.dias[d]||{};
@@ -4897,36 +4916,38 @@ const prdCor=p=>p>=1?'#2a8f30':p>=.85?'#d98a00':'#c8102e';
 const prdCls=p=>p>=1?'ok':p>=.85?'par':'mal';
 function renderPrd(){
   if(!PR)return;const d=$('p-dia').value||PR.ult,inf=PR.info[d]||{};
+  prdModoUI();const DIAS=prdPeriodo(),per=DIAS.length>1,perTx=per?dataBR(DIAS[0])+' a '+dataBR(DIAS[DIAS.length-1])+' · '+DIAS.length+' dias com produção':dataBR(d);
   {const b0=msSel('p-base'),t0=msSel('p-tipo'),c0=msSel('p-ct'),C0=PCFG.ct||{};recOpts('p-rec',PCFG.prefixos.filter(p=>(!b0||b0.has(p[1]))&&(!t0||t0.has(tipoDe(p[0])))&&(!c0||c0.has(String(C0[p[0]]||'(sem contrato)')))).map(p=>p[0]).sort(),'Todas')}
   const fb=msSel('p-base'),fe=null,fs=null,fc=msSel('p-ct'),fRec=msSel('p-rec'),fTp=msSel('p-tipo'),CTM=PCFG.ct||{};
   const at=PF.filter(id=>$(id).value).map(id=>{const v=$(id).value,n=$(id).msel.sel.size;return [id,PF_NOME[id],n>3?n+' selecionadas':v]});
   const chips=at.map(c=>'<span class="chipf"><small>'+c[1]+'</small>'+esc(c[2])+'<button type="button" data-tirap="'+c[0]+'" aria-label="Remover filtro">✕</button></span>').join('');
   document.querySelectorAll('.ativosP').forEach(x=>{x.innerHTML=chips;x.hidden=!at.length;x.querySelectorAll('[data-tirap]').forEach(b=>b.onclick=()=>{$(b.dataset.tirap).value='';$(b.dataset.tirap).classList.remove('on');renderPrd()})});
   const nf=at.length;$('filtrosN').hidden=!nf;$('filtrosN').textContent=nf;document.querySelectorAll('[data-pfn]').forEach(x=>{x.hidden=!nf;x.textContent=nf});
-  $('periodoTxt').textContent=dataBR(d);
+  $('periodoTxt').textContent=per?perTx:dataBR(d);
   const em=inf.em?new Date(inf.em):null,emIso=em?em.getFullYear()+'-'+String(em.getMonth()+1).padStart(2,'0')+'-'+String(em.getDate()).padStart(2,'0'):null;
-  const aoVivo=!!(em&&emIso===d&&inf.ultFim&&inf.ultFim[0]===d),agora=aoVivo?inf.ultFim[1]:null;
-  document.querySelectorAll('.pbarSub').forEach(x=>x.innerHTML=semana(d).replace(/^./,c=>c.toUpperCase())+', <b>'+dataBR(d)+'</b>'+(em?' · arquivo enviado em '+em.toLocaleDateString('pt-BR')+' às <b>'+em.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+'</b>':' · '+esc(inf.fonte||''))+(inf.local?' · <span class="pl-loc">ainda não salvo na base</span>':''));
+  const aoVivo=!per&&!!(em&&emIso===d&&inf.ultFim&&inf.ultFim[0]===d),agora=aoVivo?inf.ultFim[1]:null;
+  document.querySelectorAll('.pbarSub').forEach(x=>x.innerHTML=per?'<b>Acumulado</b> · '+perTx:semana(d).replace(/^./,c=>c.toUpperCase())+', <b>'+dataBR(d)+'</b>'+(em?' · arquivo enviado em '+em.toLocaleDateString('pt-BR')+' às <b>'+em.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+'</b>':' · '+esc(inf.fonte||''))+(inf.local?' · <span class="pl-loc">ainda não salvo na base</span>':''));
   const sit=x=>x.real===0?'Sem produção':x.real>=x.meta?'Acima da meta':'Abaixo da meta';
-  const L=prdLinhasDia(d).filter(x=>(!fb||fb.has(x.base))&&(!fe||fe.has(x.est))&&(!fs||fs.has(sit(x)))&&(!fc||fc.has(String(CTM[x.pre]||'(sem contrato)')))&&(!fRec||fRec.has(x.pre))&&(!fTp||fTp.has(tipoDe(x.pre))));
+  const L=prdLinhasPer(DIAS).filter(x=>(!fb||fb.has(x.base))&&(!fe||fe.has(x.est))&&(!fs||fs.has(sit(x)))&&(!fc||fc.has(String(CTM[x.pre]||'(sem contrato)')))&&(!fRec||fRec.has(x.pre))&&(!fTp||fTp.has(tipoDe(x.pre))));
   const meta=L.reduce((s,x)=>s+x.meta,0),real=L.reduce((s,x)=>s+x.real,0),dif=real-meta,pc=meta?real/meta:0,Lm=L.filter(x=>x.meta>0),acima=Lm.filter(x=>x.real>=x.meta).length,sem=Lm.filter(x=>x.real===0).length,nAt=L.reduce((s,x)=>s+x.n,0);
   const hs=new Array(24).fill(0);for(const x of L)if(x.h)x.h.forEach((v,i)=>hs[i]+=v);
-  const perf=prdPerfil(d),fr=t=>{if(!perf)return null;const h=Math.floor(t/60),m=t%60,a=h?perf[h-1]:0;return a+(perf[h]-a)*m/60};
+  const perf=per?null:prdPerfil(d),fr=t=>{if(!perf)return null;const h=Math.floor(t/60),m=t%60,a=h?perf[h-1]:0;return a+(perf[h]-a)*m/60};
   const esp=aoVivo&&perf?meta*fr(agora):null,proj=aoVivo&&perf&&fr(agora)>.05?real/fr(agora):null;
   /* ---- placar ---- */
   const mx=Math.max(meta,real,proj||0)*1.06||1,P=v=>Math.min(100,v/mx*100).toFixed(2);
-  $('pzStatus').innerHTML='<span class="pz-live '+(aoVivo?'on':'')+'"><i></i>'+(aoVivo?'Ao vivo · até '+hhmm(agora):'Dia fechado')+'</span>';
+  $('pzStatus').innerHTML='<span class="pz-live '+(aoVivo?'on':'')+'"><i></i>'+(aoVivo?'Ao vivo · até '+hhmm(agora):per?'Acumulado · '+DIAS.length+' dias':'Dia fechado')+'</span>';
   $('pPlacar').innerHTML='<div class="pz-main"><div class="pz-v"><small>Realizado</small><b>'+brl0(real)+'</b><span>de '+brl0(meta)+' de meta · <em class="'+prdCls(pc)+'">'+(pc*100).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%</em></span></div>'
     +'<div class="pz-st"><div><small>Diferença</small><b class="'+(dif>=0?'ok':'mal')+'">'+(dif>=0?'+':'−')+brl0(Math.abs(dif))+'</b></div>'
     +(aoVivo&&esp!=null?'<div><small>Ritmo esperado agora</small><b class="'+(real>=esp?'ok':'mal')+'">'+(real>=esp?'▲ ':'▼ ')+brl0(Math.abs(real-esp))+'</b><em>'+(real>=esp?'à frente':'atrás')+' do dia típico</em></div><div><small>Projeção de fechamento</small><b class="'+(proj>=meta?'ok':'mal')+'">'+brl0(proj)+'</b><em>'+Math.round(proj/meta*100)+'% da meta</em></div>':'<div><small>Equipes na meta</small><b>'+acima+' <i>/ '+Lm.length+'</i></b><em>'+sem+' sem produção</em></div><div><small>Atividades</small><b>'+dN(nAt)+'</b><em>concluídas e não concluídas</em></div>')
     +'</div></div>'
     +'<div class="pz-pista"><div class="pz-tr"><i class="pz-fill '+prdCls(pc)+'" style="width:'+P(real)+'%"></i>'+(esp!=null?'<span class="pz-esp" style="left:'+P(esp)+'%" title="Ritmo esperado agora"></span>':'')+(proj?'<span class="pz-proj" style="left:'+P(proj)+'%" title="Projeção"></span>':'')+'<span class="pz-meta" style="left:'+P(meta)+'%"><b>Meta</b></span></div>'
-    +'<div class="pz-leg"><span><i class="lf '+prdCls(pc)+'"></i>Realizado</span><span><i class="lm"></i>Meta do dia</span>'+(esp!=null?'<span><i class="le"></i>Esperado até agora (dia típico)</span>':'')+(proj?'<span><i class="lp"></i>Projeção</span>':'')+'</div></div>';
+    +'<div class="pz-leg"><span><i class="lf '+prdCls(pc)+'"></i>Realizado</span><span><i class="lm"></i>Meta '+(per?'do período':'do dia')+'</span>'+(esp!=null?'<span><i class="le"></i>Esperado até agora (dia típico)</span>':'')+(proj?'<span><i class="lp"></i>Projeção</span>':'')+'</div></div>';
   /* ---- quadro hora a hora ---- */
+  const mxh=Math.max(...hs);
   let h0=hs.findIndex(v=>v>0);if(h0<0)h0=7;h0=Math.min(h0,6);let h1=23;
   const hora=[];let ac=0;for(let h=h0;h<=h1;h++){ac+=hs[h];const eA=perf?meta*perf[h]:null,eH=perf?meta*(perf[h]-(h?perf[h-1]:0)):null;hora.push({h,v:hs[h],ac,eA,eH,fut:aoVivo&&h>Math.floor(agora/60)})}
   $('pHoras').innerHTML=hora.map(o=>{const r=o.eH?o.v/o.eH:null,cl=o.fut?'fut':r==null?'':r>=1?'ok':r>=.7?'par':'mal';
-    return '<div class="ph '+cl+'" data-h="'+o.h+'"><small>'+String(o.h).padStart(2,'0')+'h</small><b>'+(o.fut?'—':o.v>=1000?(o.v/1000).toLocaleString('pt-BR',{maximumFractionDigits:1})+'k':Math.round(o.v))+'</b><span class="ph-b"><i style="height:'+(o.eH?Math.min(100,o.v/(o.eH*1.6)*100):0).toFixed(0)+'%"></i></span></div>'}).join('');
+    return '<div class="ph '+cl+'" data-h="'+o.h+'"><small>'+String(o.h).padStart(2,'0')+'h</small><b>'+(o.fut?'—':o.v>=1000?(o.v/1000).toLocaleString('pt-BR',{maximumFractionDigits:1})+'k':Math.round(o.v))+'</b><span class="ph-b"><i style="height:'+(o.eH?Math.min(100,o.v/(o.eH*1.6)*100):per&&mxh?o.v/mxh*100:0).toFixed(0)+'%"></i></span></div>'}).join('');
   $('pHoras').querySelectorAll('.ph').forEach(el=>{const o=hora.find(x=>x.h===+el.dataset.h);el.onmousemove=e=>dTipShow(e,'<b>'+String(o.h).padStart(2,'0')+':00 às '+String(o.h+1).padStart(2,'0')+':00</b><small>'+(o.fut?'ainda não aconteceu':'atividades concluídas nessa hora')+'</small><div class="dtip-g"><span>Produzido na hora</span><b>'+brl0(o.v)+'</b>'+(o.eH!=null?'<span>Esperado na hora</span><b>'+brl0(o.eH)+'</b>':'')+'<span>Acumulado</span><b>'+brl0(o.ac)+'</b>'+(o.eA!=null?'<span>Esperado acumulado</span><b>'+brl0(o.eA)+'</b>':'')+'</div>');el.onmouseleave=dTipHide});
   prdCurva($('pCurva'),hora,meta,aoVivo?agora:null);
   /* ---- bases (gráfico de bala) ---- */
@@ -4936,7 +4957,7 @@ function renderPrd(){
   $('pBases').querySelectorAll('[data-pbase]').forEach(b=>b.onclick=()=>{const st=$('p-base').msel;st.sel.has(b.dataset.pbase)?st.sel.delete(b.dataset.pbase):st.sel.add(b.dataset.pbase);st.emit()});
   /* ---- mural das equipes ---- */
   const fAg=aoVivo&&perf?fr(agora):null;
-  $('pMuralSub').textContent=fAg?'Ao vivo: % do que cada equipe já deveria ter feito até '+hhmm(agora)+' (meta × ritmo do dia típico) · verde à frente, âmbar perto, vermelho atrás · sem meta (Seed Money e Moto): verde iniciou, vermelho não iniciou · cinza: dia sem meta (domingo ou feriado)':'Cada bloco é uma equipe · % da meta do dia · verde bateu, âmbar perto (85–99%), vermelho abaixo · cor mais forte = mais longe da meta · sem meta (Seed Money e Moto): verde iniciou, vermelho não iniciou · cinza: dia sem meta (domingo ou feriado)';
+  $('pMuralSub').textContent=fAg?'Ao vivo: % do que cada equipe já deveria ter feito até '+hhmm(agora)+' (meta × ritmo do dia típico) · verde à frente, âmbar perto, vermelho atrás · sem meta (Seed Money e Moto): verde iniciou, vermelho não iniciou · cinza: dia sem meta (domingo ou feriado)':'Cada bloco é uma equipe · % da meta '+(per?'do período acumulado':'do dia')+' · verde bateu, âmbar perto (85–99%), vermelho abaixo · cor mais forte = mais longe da meta · sem meta (Seed Money e Moto): verde iniciou, vermelho não iniciou · cinza: dia sem meta (domingo ou feriado)';
   const gb={};for(const x of L){(gb[x.base]||(gb[x.base]=[])).push(x)}
   $('pMural').innerHTML=Object.keys(gb).map(b=>'<div class="mu-g"><div class="mu-h"><b>'+esc(b)+'</b><small>'+gb[b].length+' equipes</small></div><div class="mu-t">'+gb[b].slice().sort((a,c)=>(c.meta?c.real/c.meta:c.n>0?-.5:-1)-(a.meta?a.real/a.meta:a.n>0?-.5:-1)).map(x=>{const ref=x.meta*(fAg||1),p=x.meta?x.real/ref:null,sm0=p==null,bg=sm0?(x.dia0?(x.n>0?'#2a8f30':'#8a7f82'):(x.n>0?'#2a8f30':'#c8102e')):prdCor(p),al=sm0?1:Math.min(1,.4+Math.abs(p-1)*1.3);
     return '<div class="mu'+(!sm0&&al<.72?' mu-cl':'')+'" data-pre="'+esc(x.pre)+'" style="--c:'+bg+';--a:'+al.toFixed(2)+'"><b>'+esc(x.pre.replace(/^MA-/,''))+'</b><small>'+(sm0?(x.dia0?(x.n>0?'produziu':'sem meta'):(x.n>0?'iniciou':'não iniciou')):Math.round(p*100)+'%')+'</small></div>'}).join('')+'</div></div>').join('')||'<div class="empty">Sem equipes neste filtro.</div>';
@@ -4944,7 +4965,7 @@ function renderPrd(){
   $('pMural').querySelectorAll('.mu').forEach(el=>{const x=byP[el.dataset.pre];el.onmousemove=e=>dTipShow(e,'<b>'+esc(x.pre)+'</b><small>'+esc(x.base)+' · '+esc(x.est)+'</small><div class="dtip-g"><span>Meta</span><b>'+brl(x.meta)+'</b><span>Realizado</span><b>'+brl(x.real)+'</b><span>Diferença</span><b>'+brl(x.dif)+'</b>'+(fAg?'<span>Esperado até agora</span><b>'+brl(x.meta*fAg)+'</b>':'')+'<span>Atividades</span><b>'+x.n+'</b></div>');el.onmouseleave=dTipHide;
     el.onclick=()=>{const tr=$('pvCorpo').querySelector('[data-pre="'+x.pre+'"]');if(tr){tr.scrollIntoView({block:'center',behavior:'smooth'});tr.classList.add('pt-hl');setTimeout(()=>tr.classList.remove('pt-hl'),1600)}}});
   /* ---- visão diária por equipe: folha por base, feita para enviar às equipes ---- */
-  const ultH=inf.ultFim&&inf.ultFim[0]===d?hhmm(inf.ultFim[1]):null;
+  const ultH=!per&&inf.ultFim&&inf.ultFim[0]===d?hhmm(inf.ultFim[1]):null;
   const basesTodas=[...new Set(PCFG.prefixos.map(p=>p[1]))];
   $('pvBases').innerHTML=['',...basesTodas].map(b=>'<button type="button" data-pvb="'+esc(b)+'" class="'+((b===''?!fb:fb&&fb.size===1&&fb.has(b))?'on':'')+'">'+(b?esc(b.split(' ').map(w=>w.charAt(0)+w.slice(1).toLowerCase()).join(' ')):'Todas')+'</button>').join('');
   $('pvBases').querySelectorAll('[data-pvb]').forEach(bt=>bt.onclick=()=>{const st=$('p-base').msel;st.sel.clear();if(bt.dataset.pvb)st.sel.add(bt.dataset.pvb);st.emit()});
@@ -4959,9 +4980,9 @@ function renderPrd(){
       return '<tr class="pv-'+cl+'" data-pre="'+esc(x.pre)+'"><td class="pv-pos"><span>'+(ordemPV==='plan'?'':i+1)+'</span></td><td class="pv-eq"><b>'+esc(x.pre)+'</b><small>'+esc(x.est)+'</small></td><td class="n">'+fmtR(x.meta)+'</td><td class="n"><b>'+fmtR(x.real)+'</b></td>'
         +'<td class="pv-res"><span class="pv-st '+cl+'">'+(dif>=0?'✔':cl==='par'?'●':'✖')+'</span><span>'+(dif>=0?'Passou ':'Faltou ')+'<b>'+fmtR(Math.abs(dif))+'</b></span></td>'
         +'<td class="pv-pcc"><div class="pv-pc"><div class="pv-bar"><i class="'+cl+'" style="width:'+Math.min(100,p/1.5*100).toFixed(1)+'%"></i><em></em></div><b class="'+cl+'">'+Math.round(p*100)+'%</b></div></td></tr>'};
-    return '<article class="pv-sheet"><header class="pv-hd"><div class="pv-ttl"><span class="pv-k">Produção do dia · meta × realizado</span><h3>'+esc(base)+'</h3><span class="pv-dt">'+semana(d).replace(/^./,c=>c.toUpperCase())+', '+dataBR(d)+(ultH?' · atividades concluídas até '+ultH:'')+'</span></div>'
+    return '<article class="pv-sheet"><header class="pv-hd"><div class="pv-ttl"><span class="pv-k">'+(per?'Produção acumulada':'Produção do dia')+' · meta × realizado</span><h3>'+esc(base)+'</h3><span class="pv-dt">'+(per?perTx:semana(d).replace(/^./,c=>c.toUpperCase())+', '+dataBR(d))+(ultH?' · atividades concluídas até '+ultH:'')+'</span></div>'
       +'<div class="pv-kp"><div><small>Meta da base</small><b>'+brl0(mt)+'</b></div><div><small>Realizado</small><b>'+brl0(rl)+'</b></div><div><small>Resultado</small><b class="'+(df>=0?'ok':'mal')+'">'+(df>=0?'+':'−')+brl0(Math.abs(df))+'</b></div><div class="pv-big '+prdCls(pb)+'"><small>Da meta</small><b>'+Math.round(pb*100)+'%</b></div><div><small>Equipes na meta</small><b>'+ok+' <i>de '+com.length+'</i></b></div></div></header>'
-      +'<table class="pv-tab"><thead><tr><th>'+(ordemPV==='plan'?'':'Posição')+'</th><th>Equipe</th><th class="n">Meta do dia</th><th class="n">Realizado</th><th>Resultado</th><th class="pv-pch">% da meta <span>(traço = 100%)</span></th></tr></thead><tbody>'+ord.map(linha).join('')+'</tbody></table>'
+      +'<table class="pv-tab"><thead><tr><th>'+(ordemPV==='plan'?'':'Posição')+'</th><th>Equipe</th><th class="n">'+(per?'Meta do período':'Meta do dia')+'</th><th class="n">Realizado</th><th>Resultado</th><th class="pv-pch">% da meta <span>(traço = 100%)</span></th></tr></thead><tbody>'+ord.map(linha).join('')+'</tbody></table>'
       +(semM.length?'<section class="pv-ini"><div class="pv-ih"><b>Início do dia · Seed Money e Moto</b><small>Equipes sem meta de valor: mostra se já começaram a trabalhar'+(ultH?' (até '+ultH+')':'')+'</small></div><table class="pv-tab pv-tab2"><thead><tr><th>Equipe</th><th>Tipo</th><th>Situação</th><th class="n">Atividades</th></tr></thead><tbody>'+semM.slice().sort((a,b)=>(b.n>0)-(a.n>0)||a.ord-b.ord).map(x=>{const ini=x.n>0;return '<tr class="pv-'+(ini?'ok':'mal')+'" data-pre="'+esc(x.pre)+'"><td class="pv-eq"><b>'+esc(x.pre)+'</b></td><td class="pv-ti">'+esc(x.est)+'</td><td class="pv-res"><span class="pv-st '+(ini?'ok':'mal')+'">'+(ini?'✔':'✖')+'</span><span><b>'+(ini?'Iniciou o dia':'Não iniciou')+'</b></span></td><td class="n">'+(ini?x.n:'—')+'</td></tr>'}).join('')+'</tbody></table></section>':'')
       +(sd0.length?'<p class="muted" style="margin:10px 4px 0;font-size:12px"><b>Sem meta neste dia</b> (domingo ou feriado): '+sd0.map(x=>esc(x.pre.replace(/^MA-/,''))+(x.n>0?' (produziu '+fmtR(x.real)+')':'')).join(', ')+'</p>':'')
       +'<footer class="pv-ft"><span><i class="ok">✔</i>Bateu a meta (100% ou mais)</span><span><i class="par">●</i>Perto da meta (85% a 99%)</span><span><i class="mal">✖</i>Abaixo de 85%</span></footer></article>'};
@@ -4996,7 +5017,7 @@ $('pvPrint').onclick=async()=>{
 document.querySelectorAll('section[data-pag] .ubar .ubar-r').forEach(r=>{if(r.querySelector('.uprint'))return;const b=document.createElement('button');b.type='button';b.className='uprint';b.title='Gerar o print do painel para enviar';b.setAttribute('aria-label','Copiar print do painel');
   b.innerHTML='<svg class="ico" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/></svg><span>Print / Enviar</span>';
   b.onclick=()=>{printAlvo=null;$('b-copiar').onclick()};r.insertBefore(b,r.firstChild)});
-['p-dia',...PF].forEach(id=>$(id).addEventListener('change',()=>{if(id==='p-dia')prdEscolheu=true;$(id).classList.toggle('on',!!$(id).value&&id!=='p-dia');renderPrd()}));
+['p-modo','p-de','p-dia',...PF].forEach(id=>$(id).addEventListener('change',()=>{if(id==='p-dia')prdEscolheu=true;$(id).classList.toggle('on',!!$(id).value&&!['p-dia','p-modo','p-de'].includes(id));renderPrd()}));
 document.querySelectorAll('[data-pfunil]').forEach(b=>b.onclick=()=>abrirGaveta());
 
 /* ================= ATUALIZAÇÃO DE DEFEITOS (réplica do Power BI "Tratativa de Defeitos") ================= */
