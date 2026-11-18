@@ -216,6 +216,8 @@ body::after { content: ""; position: fixed; right: -60px; bottom: -80px; width: 
 .hier-bar select{font:inherit;font-size:13px;font-weight:600;text-transform:none;letter-spacing:0;color:var(--fg);border:1px solid var(--line);border-radius:9px;padding:7px 10px;background:var(--surface);min-width:170px;max-width:240px}
 .hier-bar .hb-n{font-size:12.5px;color:var(--muted);padding-bottom:9px;margin-left:auto}
 .ct-topo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:16px}@media(max-width:900px){.ct-topo{grid-template-columns:1fr}}
+.diario td.a-mot{position:relative}.diario td.a-mot::after{content:"";position:absolute;top:1px;right:1px;border-style:solid;border-width:0 8px 8px 0;border-color:transparent #1b1b1e transparent transparent}.a-mrow:hover{background:var(--sunken)}.a-mdet>td{background:var(--sunken);padding:8px 12px!important}
+.pg-g th{background:transparent!important;border-bottom:0;padding-bottom:0;font-size:11px;letter-spacing:.12em}.pg-g .pg-u,.pg-g .pg-f{text-align:center!important;border-radius:8px 8px 0 0;color:#fff}.pg-g .pg-u{background:#711424!important}.pg-g .pg-f{background:#2b7a0f!important}html[data-tema="escuro"] .pg-g .pg-u{background:#4a4a50!important}html[data-tema="escuro"] .pg-g .pg-f{background:#3f6b2f!important}
 .pu-g{background:#ccffcc}.pu-r{background:#ffcccc}.pu-f{display:inline-block;padding:2px 10px;border-radius:99px;font-weight:700;font-size:12px}.pu-f.a{background:#fff1b8;color:#7a5b00}.pu-f.d{background:#bff0d6;color:#0b6b3a}
 section[data-pag="contingencia"] .ubar,section[data-pag="prazos"] .ubar{background:linear-gradient(135deg,#7a1628,#3f0912)}
 .ct-ult-g{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;padding:4px 2px}.ct-ult-g div{display:grid;gap:2px;min-width:0}.ct-ult-g small{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.ct-ult-g b{font-size:14.5px;overflow-wrap:anywhere}.ct-ult-g .vz{grid-column:1/-1;color:var(--muted);font-size:13.5px}
@@ -1450,6 +1452,11 @@ html[data-tema="escuro"] .rg-tag.n{background:var(--sup-soft)!important}
       <div class="heat-leg"><span><i style="background:#3ae007"></i>Aderente (até 30 min depois ou até 2 h antes)</span><span><i style="background:#f50c05"></i>Fora do horário</span><span><i style="background:#f59105"></i>Ausente (sem checklist)</span></div>
       <div class="tw diario-w"><table class="diario agr" id="aGrade"></table></div>
     </div>
+    <div class="panel" id="aMotP">
+      <div class="phd"><h3>Principais motivos de indisponibilidade e justificativa</h3><small id="aMotN"></small></div>
+      <p class="muted" style="font-size:12.5px;margin:0">Vêm do COI (tipo de indisponibilidade) e da planilha AJUSTE ESCALA, conforme os filtros acima. Clique em um motivo para ver as equipes e as datas. Passe o mouse sobre a célula de uma equipe (marcada com um canto escuro) para ver o motivo do dia.</p>
+      <div class="tw"><table class="utab" id="aMotT"></table></div>
+    </div>
   </section>
 
   <!-- PÁGINA: ADERÊNCIA · RANKING -->
@@ -1797,9 +1804,9 @@ html[data-tema="escuro"] .rg-tag.n{background:var(--sup-soft)!important}
     <div id="pzPainel" style="display:grid;gap:16px;min-width:0">
       <div class="panel ct-fil"><div class="fld"><label>Situação do prazo</label><div class="msel" id="pf-venc" data-todos="Todas" data-nome="situação(ões)"></div></div><div class="fld"><label>Status da atividade</label><div class="msel" id="pf-st" data-todos="Todos" data-nome="status"></div></div><div class="fld"><label>Tipo de serviço (sigla)</label><div class="msel" id="pf-sg" data-todos="Todos" data-nome="tipo(s)"></div></div><div class="fld"><label>Tipo de atividade</label><div class="msel" id="pf-tipo" data-todos="Todos" data-nome="atividade(s)"></div></div><div class="fld"><label>Base</label><div class="msel" id="pf-base" data-todos="Todas" data-nome="base(s)"></div></div><div class="fld"><label>Tipo de equipe</label><div class="msel" id="pf-teq" data-todos="Todos" data-nome="tipo(s)"></div></div><div class="fld"><label>Cidade</label><div class="msel" id="pf-cid" data-todos="Todas" data-nome="cidade(s)"></div></div><div class="fld"><label>Equipe</label><div class="msel" id="pf-rec" data-todos="Todas" data-nome="equipe(s)"></div></div><button type="button" class="btn sm" id="pf-x" hidden>Limpar filtros</button></div>
       <div class="pz-top"><div class="ct-k3 pz-k" id="pzK"></div><div class="panel"><div class="phd"><h3>Atividades por cidade</h3><small id="pzCidN"></small></div><div id="pzCid" class="pz-tree"></div></div></div>
-      <div class="panel" id="pzUpsP"><div class="phd"><h3>UPS por equipe · meta, balde e produzido</h3><small id="pzUpsN"></small></div>
+      <div class="panel" id="pzUpsP"><div class="phd"><h3>UPS e valor financeiro por equipe</h3><small id="pzUpsN"></small></div>
         <div class="tw"><table class="ct-t" id="pzUpsT"></table></div>
-        <p class="muted" style="font-size:12px;margin:8px 4px 0">Balde = UPS já produzida + UPS estimada das atividades ainda não concluídas (quantidade pendente × UPS média por atividade da equipe). Farol: “Atenção” se o produzido estiver abaixo da meta.</p>
+        <p class="muted" style="font-size:12px;margin:8px 4px 0">Balde = UPS já produzida + UPS estimada das atividades ainda não concluídas (quantidade pendente × UPS média por atividade da equipe). Farol: “Atenção” se o produzido estiver abaixo da meta. As colunas em R$ vêm da Produção do dia (meta diária em R$ da equipe, ajustada por dia da semana/feriado); equipes sem meta em R$ aparecem com “–”.</p>
       </div>
       <div class="panel"><div class="phd"><h3>Atividades e prazos</h3><small id="pzSub"></small></div>
         <div class="ct-bar"><input type="search" id="pz-q" placeholder="Buscar equipe, nota, cidade, atividade…" aria-label="Buscar"><span id="pzCont" class="muted"></span></div>
@@ -2367,9 +2374,13 @@ function pzUps(base){
   if(!L.length){T.innerHTML='<tr><td><div class="ct-vazio">Sem equipes com meta neste dia.</div></td></tr>';return}
   const v=x=>x.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}),cor=(x,m)=>x>=m?'pu-g':'pu-r';
   const tt=L.reduce((o,a)=>({meta:o.meta+a.meta,balde:o.balde+a.balde,prod:o.prod+a.prod}),{meta:0,balde:0,prod:0});
-  T.innerHTML='<tr><th>Equipe</th><th>Estrutura</th><th class="n">Meta diária</th><th class="n">Balde</th><th class="n">Pendentes</th><th class="n">Produzido</th><th>Farol da meta</th></tr>'
-   +L.map(a=>'<tr><td>'+esc(a.rec)+'</td><td>'+esc(a.tipo)+'</td><td class="n">'+v(a.meta)+'</td><td class="n '+cor(a.balde,a.meta)+'">'+v(a.balde)+'</td><td class="n">'+a.pn+'</td><td class="n '+cor(a.prod,a.meta)+'">'+v(a.prod)+'</td><td><span class="pu-f '+(a.prod<a.meta?'a':'d')+'">'+(a.prod<a.meta?'Atenção':'Aderente')+'</span></td></tr>').join('')
-   +'<tr class="tot"><td><b>Total</b></td><td></td><td class="n"><b>'+v(tt.meta)+'</b></td><td class="n"><b>'+v(tt.balde)+'</b></td><td class="n"><b>'+L.reduce((o,a)=>o+a.pn,0)+'</b></td><td class="n"><b>'+v(tt.prod)+'</b></td><td></td></tr>';
+  const okP=typeof PR!=='undefined'&&PR&&PR.dias&&PR.dias[dia]&&typeof PCFG!=='undefined'&&PCFG&&PCFG.idx;
+  for(const a of L){a.mr=0;a.rr=0;a.temR=false;if(!okP)continue;const pi=PCFG.idx[a.rec];if(!pi||!(pi.meta>0))continue;const mr=pi.meta*prdFator(a.rec,dia);if(!(mr>0))continue;const e=PR.dias[dia][a.rec];a.mr=mr;a.rr=e?e[0]:0;a.temR=true}
+  const tr=L.reduce((o,a)=>a.temR?{m:o.m+a.mr,r:o.r+a.rr}:o,{m:0,r:0}),rs=(x,m)=>x>=m?'pu-g':'pu-r';
+  T.innerHTML='<tr class="pg-g"><th colspan="2"></th><th class="n pg-u" colspan="4">UPS</th><th class="n pg-f" colspan="2">Valor financeiro (R$)</th><th></th></tr>'
+   +'<tr><th>Equipe</th><th>Estrutura</th><th class="n">Meta diária (UPS)</th><th class="n">Produzido (UPS)</th><th class="n">Pendentes</th><th class="n">Balde (UPS)</th><th class="n">Meta diária (R$)</th><th class="n">Realizado (R$)</th><th>Farol da meta</th></tr>'
+   +L.map(a=>'<tr><td>'+esc(a.rec)+'</td><td>'+esc(a.tipo)+'</td><td class="n">'+v(a.meta)+'</td><td class="n '+cor(a.prod,a.meta)+'">'+v(a.prod)+'</td><td class="n">'+a.pn+'</td><td class="n '+cor(a.balde,a.meta)+'">'+v(a.balde)+'</td><td class="n">'+(a.temR?brl0(a.mr):'–')+'</td><td class="n '+(a.temR?rs(a.rr,a.mr):'')+'">'+(a.temR?brl0(a.rr):'–')+'</td><td><span class="pu-f '+(a.prod<a.meta?'a':'d')+'">'+(a.prod<a.meta?'Atenção':'Aderente')+'</span></td></tr>').join('')
+   +'<tr class="tot"><td><b>Total</b></td><td></td><td class="n"><b>'+v(tt.meta)+'</b></td><td class="n"><b>'+v(tt.prod)+'</b></td><td class="n"><b>'+L.reduce((o,a)=>o+a.pn,0)+'</b></td><td class="n"><b>'+v(tt.balde)+'</b></td><td class="n"><b>'+(tr.m?brl0(tr.m):'–')+'</b></td><td class="n"><b>'+(tr.m?brl0(tr.r):'–')+'</b></td><td></td></tr>';
 }
 /* ---------- semelhante ao BI: Farol de Prazos ---------- */
 function ctRenderP(){
@@ -4139,7 +4150,7 @@ const aPct=p=>{const c=aClass(p);return '<span class="pct '+c.cls+'">'+pct(p)+'<
 /* relatório COI → por dia e prefixo: [1º checklist de início do turno, 1ª atividade] em minutos (entre 05:00 e 23:00) */
 function aderDeLinhas(rows){
   const h=rows[0].map(x=>x==null?'':String(x).trim());
-  const iR=h.indexOf('Recurso'),iD=h.indexOf('Data'),iS=h.indexOf('Status da Atividade'),iI=h.indexOf('Início');
+  const iR=h.indexOf('Recurso'),iD=h.indexOf('Data'),iS=h.indexOf('Status da Atividade'),iI=h.indexOf('Início'),iFm=h.indexOf('Fim'),iTI=h.indexOf('Tipo de Indisponibilidade'),iOb=h.indexOf('Observação');
   const tps=h.map((x,i)=>x==='Tipo de Atividade'?i:-1).filter(i=>i>=0);
   const iT=h.indexOf('Tipo de Atividade2')>=0?h.indexOf('Tipo de Atividade2'):tps.length>1?tps[1]:tps[0];
   if([iR,iD,iS,iI,iT].some(i=>i==null||i<0))throw new Error('Colunas da aderência não encontradas');
@@ -4148,6 +4159,7 @@ function aderDeLinhas(rows){
     const st=String(row[iS]||'');if(st!=='concluído'&&st!=='não concluído')continue;
     const rec=String(row[iR]).trim().split(' ')[0];const d=Disp.parseData(row[iD]);if(!d)continue;
     const dd=out[d]||(out[d]={});const a=dd[rec]||(dd[rec]=[null,null]);
+    if(String(row[iT]||'').trim()==='Indisponibilidade'){const ti=Disp.parseHora(row[iI]),tf=iFm>=0?Disp.parseHora(row[iFm]):null;(a[2]=a[2]||[]).push([String(iTI>=0&&row[iTI]!=null?row[iTI]:'').trim()||'Sem tipo informado',String(iOb>=0&&row[iOb]!=null?row[iOb]:'').trim(),ti,ti!=null&&tf!=null?(tf<ti?tf-ti+1440:tf-ti):null])}
     const t=Disp.parseHora(row[iI]);if(t==null||t<300||t>1380)continue;
     if(a[1]==null||t<a[1])a[1]=t;
     if(String(row[iT]||'').trim()==='Checklist Início do Turno'&&(a[0]==null||t<a[0]))a[0]=t;
@@ -4191,7 +4203,10 @@ function montarAder(){
       if(lim==null||!act)st=lim==null?'LIVRE':'SEM';
       else if(chk==null)st='AUS';
       else{const df=chk-lim;st=(Math.abs(df)<=30||(df<-30&&df>=-120))?'ADE':'FORA'}
-      linhas.push({rec,data:d,mes:d.slice(0,7),base,est:c0.sub||'',coord:c0.coord||'',turno,lim,chk,first:act?act[1]:null,tem:!!act,inter:inter.has(rec+'|'+d),st,just:j?j[1]:''});
+      const mot=[];if(act&&act[2])for(const m of act[2])mot.push({k:m[0],t:m[1]||'',i:m[2],d:m[3],o:'COI'});
+      if(j&&(j[1]||j[0]!=null))mot.push({k:'Justificativa da planilha (AJUSTE ESCALA)',t:j[1]||'',i:j[0],d:null,o:'Planilha'});
+      if(inter.has(rec+'|'+d)&&!mot.some(m=>/interjornada/i.test(m.k)))mot.push({k:'Interjornada',t:'(registro histórico da escala)',i:null,d:null,o:'Histórico'});
+      linhas.push({rec,data:d,mes:d.slice(0,7),base,est:c0.sub||'',coord:c0.coord||'',turno,lim,chk,first:act?act[1]:null,tem:!!act,inter:inter.has(rec+'|'+d),st,just:j?j[1]:'',mot});
     }}
   AR={linhas,ultima:d1,dias};
   preencherFiltrosAder();if(indAtual()==='ader')renderAder();renderInicio();
@@ -4241,7 +4256,9 @@ function renderAder(){
   $('aBases').innerHTML=bases.map(x=>'<tr><td><b>'+x.b+'</b></td><td class="n">'+aPct(x.s.pct)+'</td><td>'+aPill(x.s.pct)+'</td></tr>').join('')+'<tr class="tot"><td>Geral</td><td class="n">'+aPct(S.pct)+'</td><td>'+aPill(S.pct)+'</td></tr>';
   gradeAder(L,m);
   rankingAder(L,S);
+  try{motivosAder(L)}catch(e){console.error(e)}
 }
+const aMotTxt=l=>(l.mot||[]).map(m=>m.k+(m.t?' — '+m.t:'')+(m.i!=null?' · '+aHM(m.i)+(m.d!=null?' (parado '+aHM(m.d)+')':''):'')).join(' | ');
 function gradeAder(L,m){
   const dia=$('a-dia').value,q=$('a-busca').value.trim().toUpperCase();
   const dias=Object.keys(AR.dias).filter(d=>d.startsWith(m)&&(!dia||d===dia)).sort();
@@ -4253,12 +4270,30 @@ function gradeAder(L,m){
     if(b0!==bAnt){h+='<tr class="base-sep"><td colspan="'+(dias.length+2)+'">'+b0+' · '+(NOME_SIGLA[b0]||'')+'</td></tr>';bAnt=b0}
     const s=statsAder(Object.values(linha));
     h+='<tr><td class="nm" data-arn="'+esc(r)+'" title="Clique para ver o mês de '+esc(r)+'">'+esc(r)+'</td>'+dias.map(d=>{const l=linha[d];if(!l)return'<td class="c"></td>';
-      const tip=esc(r)+' · '+dataBR(d)+(l.lim!=null?' · previsto '+aHM(l.lim):' · sem turno na escala')+(l.chk!=null?' · checklist '+aHM(l.chk):'')+(l.just?' · '+esc(l.just):'');
-      if(l.chk==null)return l.turno!=null||l.lim!=null?'<td class="c a-aus" data-ar="'+esc(r)+'|'+d+'" title="'+tip+(l.st==='SEM'?' · sem atividade no dia (não entra no total)':' · trabalhou sem checklist')+'">AUSENTE</td>':'<td class="c"></td>';
-      const cl=l.st==='ADE'?'a-ok':l.st==='LIVRE'?'a-livre':'a-fora';return '<td class="c '+cl+'" data-ar="'+esc(r)+'|'+d+'" title="'+tip+' · clique para detalhar">'+aHM(l.chk)+'</td>'}).join('')+'<td class="n">'+aPct(s.pct)+'</td></tr>'}
+      const tip=esc(r)+' · '+dataBR(d)+(l.lim!=null?' · previsto '+aHM(l.lim):' · sem turno na escala')+(l.chk!=null?' · checklist '+aHM(l.chk):'')+(l.just?' · '+esc(l.just):'')+(l.mot&&l.mot.length?' · MOTIVO: '+esc(aMotTxt(l)):'');
+      const mk=l.mot&&l.mot.length?' a-mot':'';
+      if(l.chk==null)return l.turno!=null||l.lim!=null?'<td class="c a-aus'+mk+'" data-ar="'+esc(r)+'|'+d+'" title="'+tip+(l.st==='SEM'?' · sem atividade no dia (não entra no total)':' · trabalhou sem checklist')+'">AUSENTE</td>':'<td class="c"></td>';
+      const cl=l.st==='ADE'?'a-ok':l.st==='LIVRE'?'a-livre':'a-fora';return '<td class="c '+cl+mk+'" data-ar="'+esc(r)+'|'+d+'" title="'+tip+' · clique para detalhar">'+aHM(l.chk)+'</td>'}).join('')+'<td class="n">'+aPct(s.pct)+'</td></tr>'}
   $('aGrade').innerHTML=h+'</tbody>'||'';
   if(!recs.length)$('aGrade').innerHTML='<tbody><tr><td><div class="empty">Nenhuma equipe com turno neste filtro.</div></td></tr></tbody>';
 }
+let aMotAb=null;
+function motivosAder(L){
+  const T=$('aMotT'),N=$('aMotN');if(!T)return;
+  const g={};
+  for(const l of L)for(const m of (l.mot||[])){const o=g[m.k]||(g[m.k]={k:m.k,n:0,eq:new Set(),min:0,it:[]});o.n++;o.eq.add(l.rec);if(m.d)o.min+=m.d;o.it.push({rec:l.rec,base:l.base,data:l.data,i:m.i,d:m.d,t:m.t,o:m.o})}
+  const K=Object.values(g).sort((a,b)=>b.n-a.n);
+  N.textContent=K.length?K.reduce((s,o)=>s+o.n,0)+' ocorrência(s) · '+K.length+' motivo(s)':'';
+  if(!K.length){T.innerHTML='<tbody><tr><td><div class="empty">Nenhum motivo registrado neste filtro. Os motivos vêm do COI (Indisponibilidade) importado após esta atualização e da planilha AJUSTE ESCALA.</div></td></tr></tbody>';return}
+  let h='<thead><tr><th>Motivo</th><th class="n">Ocorrências</th><th class="n">Equipes</th><th class="n">Tempo parado</th></tr></thead><tbody>';
+  for(const o of K){const ab=aMotAb===o.k;
+    h+='<tr class="a-mrow'+(ab?' sel':'')+'" data-mk="'+esc(o.k)+'" style="cursor:pointer"><td><b>'+(ab?'▾ ':'▸ ')+esc(o.k)+'</b></td><td class="n">'+o.n+'</td><td class="n">'+o.eq.size+'</td><td class="n">'+(o.min?aHM(o.min):'–')+'</td></tr>';
+    if(ab){o.it.sort((a,b)=>a.data<b.data?1:a.data>b.data?-1:a.rec<b.rec?-1:1);
+      h+='<tr class="a-mdet"><td colspan="4"><table class="utab"><thead><tr><th>Equipe</th><th>Base</th><th>Data</th><th>Horário</th><th class="n">Parado</th><th>Observação</th><th>Fonte</th></tr></thead><tbody>'
+       +o.it.map(x=>'<tr><td><b>'+esc(x.rec)+'</b></td><td>'+esc(x.base)+'</td><td>'+dataBR(x.data)+' <span class="muted">'+semana(x.data).slice(0,3)+'</span></td><td>'+(x.i!=null?aHM(x.i):'–')+'</td><td class="n">'+(x.d!=null?aHM(x.d):'–')+'</td><td>'+(esc(x.t)||'<span class="muted">–</span>')+'</td><td>'+esc(x.o)+'</td></tr>').join('')+'</tbody></table></td></tr>'}}
+  T.innerHTML=h+'</tbody>';
+}
+document.addEventListener('click',e=>{const r=e.target.closest&&e.target.closest('#aMotT .a-mrow');if(!r||!AR)return;const k=r.dataset.mk;aMotAb=aMotAb===k?null:k;motivosAder(filtrarAder())});
 function rankingAder(L,S){
   // gauge
   const p=S.pct,c=aClass(p),cor={sup:'#2b7a0f',ate:'#3C9E18',par:'#a35a00',nao:'#C00000',nd:'#8a7f82'}[c.cls];
@@ -4302,7 +4337,7 @@ function aderDet(rec,d){
   abrirDet({tit:rec+' · '+(d?semana(d)+', '+dataBR(d):mesNome(m).replace(/^./,c=>c.toUpperCase())),
     kpis:kp,aviso:esc(l0.base)+' · '+esc(l0.est)+(l0.coord?' · coord. '+esc(l0.coord):''),
     cols:['wDia','nPrevisto','nChecklist','nDiferença','cSituação','wJustificativa'],
-    rows:Ls.map(l=>[dataBR(l.data)+' <span class="muted">'+semana(l.data).slice(0,3)+'</span>',l.lim!=null?aHM(l.lim):'–',l.chk!=null?aHM(l.chk):'–',aDf(l),aSit(l),esc(l.just||(l.inter?'Interjornada':''))||'<span class="muted">–</span>']),
+    rows:Ls.map(l=>[dataBR(l.data)+' <span class="muted">'+semana(l.data).slice(0,3)+'</span>',l.lim!=null?aHM(l.lim):'–',l.chk!=null?aHM(l.chk):'–',aDf(l),aSit(l),esc([l.just||(l.inter?'Interjornada':''),aMotTxt(l)].filter(Boolean).join(' | '))||'<span class="muted">–</span>']),
     rodape:'Tolerância: checklist até 30 min depois do previsto (ou até 2 h antes) conta como aderente.',
     filtra:{txt:'Filtrar o painel em '+rec,fn:()=>{$('a-rec').value=rec;$('a-rec').classList.add('on');renderAder()}}});
 }
@@ -4822,7 +4857,7 @@ function montarPrd(){
   for(const d in PHIST.dias){dias[d]=PHIST.dias[d];info[d]={fonte:'Relatório de Produção (planilha)'}}
   for(const d in prdDocs){dias[d]=prdDocs[d].eq;info[d]={fonte:prdDocs[d].arquivo,em:prdDocs[d].enviadoEm,ultFim:prdDocs[d].ultFim}}
   for(const d in prdLocais){dias[d]=prdLocais[d].eq;info[d]={fonte:prdLocais[d].arquivo,em:new Date().toISOString(),ultFim:prdLocais[d].ultFim,local:1}}
-  const ds=Object.keys(dias).sort();PR={dias:hierDias(dias),info,ds,ult:ds[ds.length-1]};
+  const ds=Object.keys(dias).sort();PR={dias:hierDias(dias),info,ds,ult:ds[ds.length-1]};try{if(pag().id==='prazos'&&typeof CT!=='undefined'&&CT.meta)ctRenderP()}catch(e){}
   preencherFiltrosPrd();if(indAtual()==='prd')renderPrd();renderInicio();if(typeof UR!=='undefined'&&UR)renderUPS();
 }
 function preencherFiltrosPrd(){
