@@ -1779,7 +1779,7 @@ html[data-tema="escuro"] .rg-tag.n{background:var(--sup-soft)!important}
     </div>
     <div class="ct-sem" id="ctSem" hidden></div>
     <div id="ctPainel" style="display:grid;gap:16px;min-width:0">
-      <div class="panel ct-fil"><div class="fld"><label>Tipo de serviço</label><div class="msel" id="cf-tipo" data-todos="Todos" data-nome="tipo(s)"></div></div><div class="fld"><label>Base</label><div class="msel" id="cf-base" data-todos="Todas" data-nome="base(s)"></div></div><div class="fld"><label>Status da atividade</label><div class="msel" id="cf-st" data-todos="Todos" data-nome="status"></div></div><div class="fld"><label>Tipo de equipe</label><div class="msel" id="cf-teq" data-todos="Todos" data-nome="tipo(s)"></div></div><button type="button" class="btn sm" id="cf-x" hidden>Limpar filtros</button></div>
+      <div class="panel ct-fil"><div class="fld"><label>Tipo de serviço</label><div class="msel" id="cf-tipo" data-todos="Todos" data-nome="tipo(s)"></div></div><div class="fld"><label>Contrato</label><div class="msel" id="cf-ct" data-todos="Todos" data-nome="contrato(s)"></div></div><div class="fld"><label>Base</label><div class="msel" id="cf-base" data-todos="Todas" data-nome="base(s)"></div></div><div class="fld"><label>Status da atividade</label><div class="msel" id="cf-st" data-todos="Todos" data-nome="status"></div></div><div class="fld"><label>Tipo de equipe</label><div class="msel" id="cf-teq" data-todos="Todos" data-nome="tipo(s)"></div></div><button type="button" class="btn sm" id="cf-x" hidden>Limpar filtros</button></div>
       <div class="ct-k3" id="ctK"></div>
       <div class="ct-grid">
         <div class="panel"><div class="phd"><h3>Status da atividade</h3><small>quantidade</small></div><div id="ctStat" class="ct-bars sm"></div></div>
@@ -1802,7 +1802,7 @@ html[data-tema="escuro"] .rg-tag.n{background:var(--sup-soft)!important}
     <div class="ubar"><div class="ubar-t"><h2>Farol de Prazos</h2><span>Monitoramento de prazos regulatórios · calculado a cada minuto pelo horário de Brasília</span></div></div>
     <div class="ct-sem" id="pzSem" hidden></div>
     <div id="pzPainel" style="display:grid;gap:16px;min-width:0">
-      <div class="panel ct-fil"><div class="fld"><label>Situação do prazo</label><div class="msel" id="pf-venc" data-todos="Todas" data-nome="situação(ões)"></div></div><div class="fld"><label>Status da atividade</label><div class="msel" id="pf-st" data-todos="Todos" data-nome="status"></div></div><div class="fld"><label>Tipo de serviço (sigla)</label><div class="msel" id="pf-sg" data-todos="Todos" data-nome="tipo(s)"></div></div><div class="fld"><label>Tipo de atividade</label><div class="msel" id="pf-tipo" data-todos="Todos" data-nome="atividade(s)"></div></div><div class="fld"><label>Base</label><div class="msel" id="pf-base" data-todos="Todas" data-nome="base(s)"></div></div><div class="fld"><label>Tipo de equipe</label><div class="msel" id="pf-teq" data-todos="Todos" data-nome="tipo(s)"></div></div><div class="fld"><label>Cidade</label><div class="msel" id="pf-cid" data-todos="Todas" data-nome="cidade(s)"></div></div><div class="fld"><label>Equipe</label><div class="msel" id="pf-rec" data-todos="Todas" data-nome="equipe(s)"></div></div><button type="button" class="btn sm" id="pf-x" hidden>Limpar filtros</button></div>
+      <div class="panel ct-fil"><div class="fld"><label>Situação do prazo</label><div class="msel" id="pf-venc" data-todos="Todas" data-nome="situação(ões)"></div></div><div class="fld"><label>Status da atividade</label><div class="msel" id="pf-st" data-todos="Todos" data-nome="status"></div></div><div class="fld"><label>Tipo de serviço (sigla)</label><div class="msel" id="pf-sg" data-todos="Todos" data-nome="tipo(s)"></div></div><div class="fld"><label>Tipo de atividade</label><div class="msel" id="pf-tipo" data-todos="Todos" data-nome="atividade(s)"></div></div><div class="fld"><label>Contrato</label><div class="msel" id="pf-ct" data-todos="Todos" data-nome="contrato(s)"></div></div><div class="fld"><label>Base</label><div class="msel" id="pf-base" data-todos="Todas" data-nome="base(s)"></div></div><div class="fld"><label>Tipo de equipe</label><div class="msel" id="pf-teq" data-todos="Todos" data-nome="tipo(s)"></div></div><div class="fld"><label>Cidade</label><div class="msel" id="pf-cid" data-todos="Todas" data-nome="cidade(s)"></div></div><div class="fld"><label>Equipe</label><div class="msel" id="pf-rec" data-todos="Todas" data-nome="equipe(s)"></div></div><button type="button" class="btn sm" id="pf-x" hidden>Limpar filtros</button></div>
       <div class="pz-top"><div class="ct-k3 pz-k" id="pzK"></div><div class="panel"><div class="phd"><h3>Atividades por cidade</h3><small id="pzCidN"></small></div><div id="pzCid" class="pz-tree"></div></div></div>
       <div class="panel" id="pzUpsP"><div class="phd"><h3>UPS e valor financeiro por equipe</h3><small id="pzUpsN"></small></div>
         <div class="tw"><table class="ct-t" id="pzUpsT"></table></div>
@@ -2301,7 +2301,14 @@ function ctPrep(cab,linhas){
     return {rec,st,done:/^conclu/.test(ctK(st)),tipoAt:g(l,'TIPO DE ATIVIDADE2')||'',os:g(l,'ORDEM DE SERVIÇO')||'',lim:ctMs(g(l,'DATA LIMITE')),limTxt:g(l,'DATA LIMITE'),cidade:g(l,'CIDADE')||'',nota:g(l,'NÚMERO DA NOTA')||'',
       tipo:g(l,'TIPO DE SERVIÇO DETALHADO')||g(l,'TIPO DE ATIVIDADE2')||'',base:(cf&&cf.b)||'',sigla:g(l,'STATUS DA ATIVIDADE$')||'',cli:Number(ci)||0,lat:g(l,'LATITUDE'),lon:g(l,'LONGITUDE')}});
 }
-const ctRows=()=>{const H=HIER&&HIER.itens;return CT.rows.filter(r=>{const e=H&&H[hierChave(r.rec)],cf=cfgBase&&cfgBase.prefixos&&cfgBase.prefixos[r.rec];r.base=(e&&e.b)||(cf&&cf.b)||'';r.tEq=(e&&e.t)||'';return hierOk(r.rec)})}; /* base e tipo de equipe vêm do cadastro de prefixos / equipes */
+const CT_BASE_CT={BCB:'127',ITM:'127',STI:'127',PDT:'169',PDS:'169',BDC:'169'};
+let ctCtMapa=null,ctCtRef=null;
+function ctContrato(rec,base){
+  const esc=(typeof escalaLocal!=='undefined'&&escalaLocal)||(typeof escalaDb!=='undefined'&&escalaDb)||(typeof UCFG!=='undefined'&&UCFG&&UCFG.escala)||null;
+  if(esc!==ctCtRef){ctCtRef=esc;ctCtMapa={};if(esc)for(const c of esc){const m=String(c.cc||'').match(/^\s*\d+\.(\w+)\./);if(m&&c.rec)ctCtMapa[hierChave(c.rec)]=m[1]}}
+  return (ctCtMapa&&ctCtMapa[hierChave(rec)])||CT_BASE_CT[String(base||'').toUpperCase()]||'(sem contrato)';
+}
+const ctRows=()=>{const H=HIER&&HIER.itens;return CT.rows.filter(r=>{const e=H&&H[hierChave(r.rec)],cf=cfgBase&&cfgBase.prefixos&&cfgBase.prefixos[r.rec];r.base=(e&&e.b)||(cf&&cf.b)||'';r.tEq=(e&&e.t)||'';r.ct=ctContrato(r.rec,r.base);return hierOk(r.rec)})}; /* base e tipo de equipe vêm do cadastro de prefixos / equipes */
 function ctOpts(id,vals){const el=$(id),st=el.msel||msInit(el),v=[...new Set(vals.filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));if(JSON.stringify(st.vals)!==JSON.stringify(v))st.setOpts(v)}
 const ctSel=(id,v)=>{const s=msSel(id);return !s||s.has(v)};
 CT.ord={ctTipo:{k:'n',d:-1},ctTab:{k:'cli',d:-1},pzTab:{k:'lim',d:1}};CT.fk={};CT.fcid=null;
@@ -2320,9 +2327,9 @@ const ctLk=(tp,m,n)=>'<td class="n">'+(n?'<button type="button" class="ct-lk'+(C
 /* ---------- semelhante ao BI: Gestão de Contingência ---------- */
 function ctRenderC(){
   const base=ctRows(),ag=ctAgora();
-  ctOpts('cf-tipo',base.map(r=>r.tipo));ctOpts('cf-base',base.map(r=>r.base));ctOpts('cf-st',base.map(r=>r.st));ctOpts('cf-teq',base.map(r=>r.tEq));
-  const f=base.filter(r=>ctSel('cf-tipo',r.tipo)&&ctSel('cf-base',r.base)&&ctSel('cf-st',r.st)&&ctSel('cf-teq',r.tEq));
-  $('cf-x').hidden=!(msSel('cf-tipo')||msSel('cf-base')||msSel('cf-st')||msSel('cf-teq'));
+  ctOpts('cf-tipo',base.map(r=>r.tipo));ctOpts('cf-ct',base.map(r=>r.ct));ctOpts('cf-base',base.map(r=>r.base));ctOpts('cf-st',base.map(r=>r.st));ctOpts('cf-teq',base.map(r=>r.tEq));
+  const f=base.filter(r=>ctSel('cf-tipo',r.tipo)&&ctSel('cf-ct',r.ct)&&ctSel('cf-base',r.base)&&ctSel('cf-st',r.st)&&ctSel('cf-teq',r.tEq));
+  $('cf-x').hidden=!(msSel('cf-tipo')||msSel('cf-ct')||msSel('cf-base')||msSel('cf-st')||msSel('cf-teq'));
   const cli=f.reduce((s,r)=>s+r.cli,0),a24=f.filter(r=>ctAcima24(r,ag)).length;
   $('ctK').innerHTML='<div class="ct-kp"><small>Total O.C</small><b>'+f.length+'</b><span>atividades</span></div><div class="ct-kp am"><small>Clientes afetados</small><b>'+cli+'</b><span>soma dos clientes interrompidos</span></div><div class="ct-kp vm"><small>Serviços acima de 24 h</small><b>'+a24+'</b><span>em aberto, vencidos há 24 h ou mais</span></div>';
   const st={},eq={},ti={};
@@ -2366,7 +2373,7 @@ function pzUps(base){
   if(!UR||!UR.linhas||!UR.ultima){N.textContent='UPS ainda não carregada';T.innerHTML='';return}
   const dia=UR.ultima,g={},med={};
   for(const l of UR.linhas){if(l.n>0&&l.ups>0){const m=med[l.rec]||(med[l.rec]={u:0,n:0});m.u+=l.ups;m.n+=l.n}}
-  for(const l of UR.linhas){if(l.data!==dia||!l.cod||!(l.meta>0)||!ctSel('pf-sg',l.sigla)||!ctSel('pf-rec',l.rec))continue;
+  for(const l of UR.linhas){if(l.data!==dia||!l.cod||!(l.meta>0)||!ctSel('pf-sg',l.sigla)||!ctSel('pf-rec',l.rec)||!ctSel('pf-ct',ctContrato(l.rec,l.base)))continue;
     const a=g[l.rec]||(g[l.rec]={rec:l.rec,tipo:l.tipo||'',meta:0,prod:0});a.meta+=l.meta;a.prod+=l.ups}
   const pen={};for(const r of base)if(!r.done)pen[r.rec]=(pen[r.rec]||0)+1;
   const L=Object.values(g).map(a=>{const m=med[a.rec],mu=m&&m.n?m.u/m.n:0,pn=pen[a.rec]||0;return Object.assign(a,{pn,balde:a.prod+pn*mu})}).sort((x,y)=>y.balde-x.balde);
@@ -2385,9 +2392,9 @@ function pzUps(base){
 /* ---------- semelhante ao BI: Farol de Prazos ---------- */
 function ctRenderP(){
   const base=ctRows(),ag=ctAgora();base.forEach(r=>r._v=ctVenc(r,ag));
-  ctOpts('pf-venc',['Prazo Vencido','Vencimento Hoje','A Vencer','Concluído']);ctOpts('pf-st',base.map(r=>r.st));ctOpts('pf-sg',base.map(r=>r.sigla));ctOpts('pf-tipo',base.map(r=>r.tipoAt));ctOpts('pf-base',base.map(r=>r.base));ctOpts('pf-teq',base.map(r=>r.tEq));ctOpts('pf-cid',base.map(r=>r.cidade));ctOpts('pf-rec',base.map(r=>r.rec));
-  const ids=['pf-venc','pf-st','pf-sg','pf-tipo','pf-base','pf-teq','pf-cid','pf-rec'];
-  const f0=base.filter(r=>ctSel('pf-venc',r._v)&&ctSel('pf-st',r.st)&&ctSel('pf-sg',r.sigla)&&ctSel('pf-tipo',r.tipoAt)&&ctSel('pf-base',r.base)&&ctSel('pf-teq',r.tEq)&&ctSel('pf-cid',r.cidade)&&ctSel('pf-rec',r.rec));
+  ctOpts('pf-venc',['Prazo Vencido','Vencimento Hoje','A Vencer','Concluído']);ctOpts('pf-st',base.map(r=>r.st));ctOpts('pf-sg',base.map(r=>r.sigla));ctOpts('pf-tipo',base.map(r=>r.tipoAt));ctOpts('pf-ct',base.map(r=>r.ct));ctOpts('pf-base',base.map(r=>r.base));ctOpts('pf-teq',base.map(r=>r.tEq));ctOpts('pf-cid',base.map(r=>r.cidade));ctOpts('pf-rec',base.map(r=>r.rec));
+  const ids=['pf-venc','pf-st','pf-sg','pf-tipo','pf-ct','pf-base','pf-teq','pf-cid','pf-rec'];
+  const f0=base.filter(r=>ctSel('pf-venc',r._v)&&ctSel('pf-st',r.st)&&ctSel('pf-sg',r.sigla)&&ctSel('pf-tipo',r.tipoAt)&&ctSel('pf-ct',r.ct)&&ctSel('pf-base',r.base)&&ctSel('pf-teq',r.tEq)&&ctSel('pf-cid',r.cidade)&&ctSel('pf-rec',r.rec));
   if(CT.fcid&&!f0.some(r=>r.cidade===CT.fcid))CT.fcid=null;
   const f=CT.fcid?f0.filter(r=>r.cidade===CT.fcid):f0; /* a cidade escolhida no gráfico filtra os cartões e a tabela */
   $('pf-x').hidden=!(ids.some(i=>msSel(i))||CT.fcid);
@@ -2478,9 +2485,9 @@ async function ctImportar(){
     else res.innerHTML='<div class="ct-res erro"><b>Não foi possível importar.</b> '+esc(e.message||'Falha de comunicação com o servidor.')+'<div style="margin-top:6px">A base anterior continua valendo. Tente novamente.</div></div>';
   }finally{$('ctProg').hidden=true;CT.ocupado=false;$('ct-sel').removeAttribute('aria-disabled');go.disabled=!CT.arq}
 }
-['cf-tipo','cf-base','cf-st','cf-teq','pf-venc','pf-st','pf-sg','pf-tipo','pf-base','pf-teq','pf-cid','pf-rec'].forEach(id=>{msInit($(id));$(id).addEventListener('change',()=>ctRender())});
-$('cf-x').onclick=()=>{['cf-tipo','cf-base','cf-st','cf-teq'].forEach(i=>{$(i).msel.sel.clear();$(i).msel.pintar()});CT.fk={};ctRender()};
-$('pf-x').onclick=()=>{['pf-venc','pf-st','pf-sg','pf-tipo','pf-base','pf-teq','pf-cid','pf-rec'].forEach(i=>{$(i).msel.sel.clear();$(i).msel.pintar()});CT.fcid=null;ctRender()};
+['cf-tipo','cf-ct','cf-base','cf-st','cf-teq','pf-venc','pf-st','pf-sg','pf-tipo','pf-ct','pf-base','pf-teq','pf-cid','pf-rec'].forEach(id=>{msInit($(id));$(id).addEventListener('change',()=>ctRender())});
+$('cf-x').onclick=()=>{['cf-tipo','cf-ct','cf-base','cf-st','cf-teq'].forEach(i=>{$(i).msel.sel.clear();$(i).msel.pintar()});CT.fk={};ctRender()};
+$('pf-x').onclick=()=>{['pf-venc','pf-st','pf-sg','pf-tipo','pf-ct','pf-base','pf-teq','pf-cid','pf-rec'].forEach(i=>{$(i).msel.sel.clear();$(i).msel.pintar()});CT.fcid=null;ctRender()};
 /* cliques nas tabelas e gráficos: ordenar pelo cabeçalho e filtrar */
 document.addEventListener('click',e=>{
   const th=e.target.closest&&e.target.closest('th.srt');
@@ -4700,7 +4707,7 @@ function lerEscala(wb){
     const arr=[];for(const[i,d]of dataCol){const v=row[i];if(v!=null&&String(v).trim().toUpperCase()==='X')arr[dif(d,ini)]='1'}
     let s='';for(let i=0;i<arr.length;i++)s+=arr[i]||'0';
     const g=n=>c(n)>=0&&row[c(n)]!=null?String(row[c(n)]):null;
-    out.push({cod:g('COD'),rec:String(rec),bc:g('BASE'),tipo:g('TIPO DE EQUIPE'),sub:g('SUBTIPO'),ger:g('GERENCIA'),sup:g('SUPERVISOR'),coord:g('COORDENADOR'),tdias:g('TIPO DE DIAS'),treg:g('TIPO'),d:s});
+    out.push({cod:g('COD'),rec:String(rec),bc:g('BASE'),tipo:g('TIPO DE EQUIPE'),sub:g('SUBTIPO'),ger:g('GERENCIA'),sup:g('SUPERVISOR'),coord:g('COORDENADOR'),cc:g('CCUSTO'),tdias:g('TIPO DE DIAS'),treg:g('TIPO'),d:s});
   }
   return out;
 }
