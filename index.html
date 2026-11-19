@@ -229,6 +229,7 @@ section[data-pag="contingencia"] .ubar,section[data-pag="prazos"] .ubar{backgrou
 .ct-res ul{margin:6px 0 0;padding-left:18px;display:grid;gap:3px}.ct-res li small{display:block;opacity:.85}.ct-res b{font-weight:800}
 .ct-teste{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;text-align:center;background:repeating-linear-gradient(135deg,#ffd43b 0 18px,#f5b400 18px 36px);color:#2d2200;border:2px solid #b8860b;border-radius:12px;padding:10px 16px;box-shadow:var(--sh-1)}.ct-teste b{font-size:18px;font-weight:900;letter-spacing:.14em;background:#2d2200;color:#ffd43b;border-radius:8px;padding:3px 12px}.ct-teste span{font-size:13px;font-weight:700}
 .ct-sem{border:1px dashed var(--line);border-radius:12px;padding:26px;text-align:center;color:var(--muted);background:var(--surface)}.ct-sem .btn{margin-top:10px}
+.ct-fat{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:2px 4px}.ct-fat[hidden]{display:none}.ct-fat-t{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
 .ct-fil{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;padding:12px 14px}.ct-fil .fld{display:grid;gap:4px;min-width:170px;flex:1;max-width:260px}.ct-fil .fld label{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .ct-k3{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.ct-kp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;gap:2px;box-shadow:var(--sh-1);border-top:4px solid var(--accent)}.ct-kp small{font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}.ct-kp b{font-size:34px;font-weight:900;line-height:1.1;font-variant-numeric:tabular-nums}.ct-kp span{font-size:12px;color:var(--muted)}
 .ct-kp.vm{border-top-color:#c8102e}.ct-kp.vm b{color:#c8102e}.ct-kp.am{border-top-color:#e8a100}.ct-kp.am b{color:#a96f00}.ct-kp.vd{border-top-color:#2f9e44}.ct-kp.vd b{color:#237a35}
@@ -1456,6 +1457,26 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     <div class="fld"><label for="u-rec">Prefixo</label><div class="msel" id="u-rec" data-todos="Todos" data-nome="prefixo(s)"></div></div>
     <div class="fld"><label for="u-ate">Até o dia</label><select id="u-ate"></select></div>
     </div>
+    <div id="fCt" style="display:grid;gap:14px" hidden>
+    <div class="grp">Atividades</div>
+    <div class="fld"><label>Tipo de serviço</label><div class="msel" id="cf-tipo" data-todos="Todos" data-nome="tipo(s)"></div></div>
+    <div class="fld"><label>Contrato</label><div class="msel" id="cf-ct" data-todos="Todos" data-nome="contrato(s)"></div></div>
+    <div class="fld"><label>Base</label><div class="msel" id="cf-base" data-todos="Todas" data-nome="base(s)"></div></div>
+    <div class="fld"><label>Status da atividade</label><div class="msel" id="cf-st" data-todos="Todos" data-nome="status"></div></div>
+    <div class="fld"><label>Tipo de equipe</label><div class="msel" id="cf-teq" data-todos="Todos" data-nome="tipo(s)"></div></div>
+    </div>
+    <div id="fPz" style="display:grid;gap:14px" hidden>
+    <div class="grp">Prazo e atividade</div>
+    <div class="fld"><label>Situação do prazo</label><div class="msel" id="pf-venc" data-todos="Todas" data-nome="situação(ões)"></div></div>
+    <div class="fld"><label>Status da atividade</label><div class="msel" id="pf-st" data-todos="Todos" data-nome="status"></div></div>
+    <div class="fld"><label>Tipo de serviço (sigla)</label><div class="msel" id="pf-sg" data-todos="Todos" data-nome="tipo(s)"></div></div>
+    <div class="fld"><label>Tipo de atividade</label><div class="msel" id="pf-tipo" data-todos="Todos" data-nome="atividade(s)"></div></div>
+    <div class="fld"><label>Contrato</label><div class="msel" id="pf-ct" data-todos="Todos" data-nome="contrato(s)"></div></div>
+    <div class="fld"><label>Base</label><div class="msel" id="pf-base" data-todos="Todas" data-nome="base(s)"></div></div>
+    <div class="fld"><label>Tipo de equipe</label><div class="msel" id="pf-teq" data-todos="Todos" data-nome="tipo(s)"></div></div>
+    <div class="fld"><label>Cidade</label><div class="msel" id="pf-cid" data-todos="Todas" data-nome="cidade(s)"></div></div>
+    <div class="fld"><label>Equipe</label><div class="msel" id="pf-rec" data-todos="Todas" data-nome="equipe(s)"></div></div>
+    </div>
   </div>
   <div class="gaveta-ft"><button class="btn" id="b-limparf" type="button">Limpar</button><button class="btn primary" id="b-verg" type="button">Ver resultado</button></div>
 </aside>
@@ -1913,7 +1934,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     </div>
     <div class="ct-sem" id="ctSem" hidden></div>
     <div id="ctPainel" style="display:grid;gap:16px;min-width:0">
-      <div class="panel ct-fil"><div class="fld"><label>Tipo de serviço</label><div class="msel" id="cf-tipo" data-todos="Todos" data-nome="tipo(s)"></div></div><div class="fld"><label>Contrato</label><div class="msel" id="cf-ct" data-todos="Todos" data-nome="contrato(s)"></div></div><div class="fld"><label>Base</label><div class="msel" id="cf-base" data-todos="Todas" data-nome="base(s)"></div></div><div class="fld"><label>Status da atividade</label><div class="msel" id="cf-st" data-todos="Todos" data-nome="status"></div></div><div class="fld"><label>Tipo de equipe</label><div class="msel" id="cf-teq" data-todos="Todos" data-nome="tipo(s)"></div></div><button type="button" class="btn sm" id="cf-x" hidden>Limpar filtros</button></div>
+      <div class="ct-fat" id="cfBar" hidden><span class="ct-fat-t">Filtros ativos:</span><span id="cfAt" class="ct-chips"></span><button type="button" class="btn sm" id="cf-x">Limpar filtros</button></div>
       <div class="ct-k3" id="ctK"></div>
       <div class="ct-grid">
         <div class="panel"><div class="phd"><h3>Status da atividade</h3><small>quantidade</small></div><div id="ctStat" class="ct-bars sm"></div></div>
@@ -1936,7 +1957,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     <div class="ubar"><div class="ubar-t"><h2>Farol de Prazos</h2><span>Monitoramento de prazos regulatórios · calculado a cada minuto pelo horário de Brasília</span></div></div>
     <div class="ct-sem" id="pzSem" hidden></div>
     <div id="pzPainel" style="display:grid;gap:16px;min-width:0">
-      <div class="panel ct-fil"><div class="fld"><label>Situação do prazo</label><div class="msel" id="pf-venc" data-todos="Todas" data-nome="situação(ões)"></div></div><div class="fld"><label>Status da atividade</label><div class="msel" id="pf-st" data-todos="Todos" data-nome="status"></div></div><div class="fld"><label>Tipo de serviço (sigla)</label><div class="msel" id="pf-sg" data-todos="Todos" data-nome="tipo(s)"></div></div><div class="fld"><label>Tipo de atividade</label><div class="msel" id="pf-tipo" data-todos="Todos" data-nome="atividade(s)"></div></div><div class="fld"><label>Contrato</label><div class="msel" id="pf-ct" data-todos="Todos" data-nome="contrato(s)"></div></div><div class="fld"><label>Base</label><div class="msel" id="pf-base" data-todos="Todas" data-nome="base(s)"></div></div><div class="fld"><label>Tipo de equipe</label><div class="msel" id="pf-teq" data-todos="Todos" data-nome="tipo(s)"></div></div><div class="fld"><label>Cidade</label><div class="msel" id="pf-cid" data-todos="Todas" data-nome="cidade(s)"></div></div><div class="fld"><label>Equipe</label><div class="msel" id="pf-rec" data-todos="Todas" data-nome="equipe(s)"></div></div><button type="button" class="btn sm" id="pf-x" hidden>Limpar filtros</button></div>
+      <div class="ct-fat" id="pfBar" hidden><span class="ct-fat-t">Filtros ativos:</span><span id="pfAt" class="ct-chips"></span><button type="button" class="btn sm" id="pf-x">Limpar filtros</button></div>
       <div class="pz-top"><div class="ct-k3 pz-k" id="pzK"></div><div class="panel"><div class="phd"><h3>Atividades por cidade</h3><small id="pzCidN"></small></div><div id="pzCid" class="pz-tree"></div></div></div>
       <div class="panel" id="pzUpsP"><div class="phd"><h3>UPS e valor financeiro por equipe</h3><small id="pzUpsN"></small></div>
         <div class="tw"><table class="ct-t" id="pzUpsT"></table></div>
@@ -2436,14 +2457,20 @@ function ctPrep(cab,linhas){
       tipo:g(l,'TIPO DE SERVIÇO DETALHADO')||g(l,'TIPO DE ATIVIDADE2')||'',base:(cf&&cf.b)||'',sigla:g(l,'STATUS DA ATIVIDADE$')||'',cli:Number(ci)||0,lat:g(l,'LATITUDE'),lon:g(l,'LONGITUDE')}});
 }
 const CT_BASE_CT={BCB:'127',ITM:'127',STI:'127',PDT:'169',PDS:'169',BDC:'169'};
-let ctCtMapa=null,ctCtRef=null;
+let ctCtMapa=null,ctCtRef=null,ctEsMapa=null;
+const ctEscAtual=()=>(typeof escalaLocal!=='undefined'&&escalaLocal)||(typeof escalaDb!=='undefined'&&escalaDb)||(typeof UCFG!=='undefined'&&UCFG&&UCFG.escala)||null;
+let ctEscVista=null,ctCfgVisto=null,ctHierVisto=null;
+/* refaz as telas quando o cadastro (escala, bases, hierarquia) chega depois dos dados */
+const ctCadMudou=()=>{const a=ctEscAtual(),m=a!==ctEscVista||cfgBase!==ctCfgVisto||HIER!==ctHierVisto;ctEscVista=a;ctCfgVisto=cfgBase;ctHierVisto=HIER;return m};
 function ctContrato(rec,base){
-  const esc=(typeof escalaLocal!=='undefined'&&escalaLocal)||(typeof escalaDb!=='undefined'&&escalaDb)||(typeof UCFG!=='undefined'&&UCFG&&UCFG.escala)||null;
-  if(esc!==ctCtRef){ctCtRef=esc;ctCtMapa={};if(esc)for(const c of esc){const m=String(c.cc||'').match(/^\s*\d+\.(\w+)\./);if(m&&c.rec)ctCtMapa[hierChave(c.rec)]=m[1]}}
+  const esc=ctEscAtual();
+  if(esc!==ctCtRef){ctCtRef=esc;ctCtMapa={};ctEsMapa={};if(esc)for(const c of esc){const m=String(c.cc||'').match(/^\s*\d+\.(\w+)\./);if(m&&c.rec)ctCtMapa[hierChave(c.rec)]=m[1];if(c.rec)ctEsMapa[hierChave(c.rec)]=c}}
   return (ctCtMapa&&ctCtMapa[hierChave(rec)])||CT_BASE_CT[String(base||'').toUpperCase()]||'(sem contrato)';
 }
-const ctRows=()=>{const H=HIER&&HIER.itens;return CT.rows.filter(r=>{const e=H&&H[hierChave(r.rec)],cf=cfgBase&&cfgBase.prefixos&&cfgBase.prefixos[r.rec];r.base=(e&&e.b)||(cf&&cf.b)||'';r.tEq=(e&&e.t)||'';r.ct=ctContrato(r.rec,r.base);return hierOk(r.rec)})}; /* base e tipo de equipe vêm do cadastro de prefixos / equipes */
-function ctOpts(id,vals){const el=$(id),st=el.msel||msInit(el),v=[...new Set(vals.filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));if(JSON.stringify(st.vals)!==JSON.stringify(v))st.setOpts(v)}
+/* tipo de equipe: cadastro da hierarquia e, na falta dele, a escala (coluna TIPO DE EQUIPE) */
+const ctTipoEq=rec=>{const H=HIER&&HIER.itens&&HIER.itens[hierChave(rec)];if(H&&H.t)return H.t;ctContrato(rec,'');const c=ctEsMapa&&ctEsMapa[hierChave(rec)];return (c&&c.tipo)||''};
+const ctRows=()=>{const H=HIER&&HIER.itens;return CT.rows.filter(r=>{const e=H&&H[hierChave(r.rec)],cf=cfgBase&&cfgBase.prefixos&&cfgBase.prefixos[r.rec];r.base=(e&&e.b)||(cf&&cf.b)||'';r.tEq=ctTipoEq(r.rec);r.ct=ctContrato(r.rec,r.base);return hierOk(r.rec)})}; /* base e tipo de equipe vêm do cadastro de prefixos / equipes */
+function ctOpts(id,vals){const el=$(id),st=el.msel||msInit(el),v=[...new Set(vals.filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));if(JSON.stringify(st.vals)!==JSON.stringify(v))st.setOpts(v);else if(st.pintar)st.pintar()}
 const ctSel=(id,v)=>{const s=msSel(id);return !s||s.has(v)};
 CT.ord={ctTipo:{k:'n',d:-1},ctTab:{k:'cli',d:-1},pzTab:{k:'lim',d:1}};CT.fk={};CT.fcid=null;
 /* ordenação pelos cabeçalhos: clique alterna crescente/decrescente */
@@ -2459,11 +2486,18 @@ function ctTick(){const ag=ctAgora();document.querySelectorAll('.ct-cd').forEach
 function ctIco(st){const k=ctK(st);return k.startsWith('conclu')?'<i class="ct-ic v" title="Concluído">✔</i>':k==='iniciado'?'<i class="ct-ic v" title="Iniciado">●</i>':k==='deslocamento'?'<i class="ct-ic a" title="Deslocamento">▲</i>':k==='pendente'?'<i class="ct-ic r" title="Pendente">✖</i>':''}
 const ctLk=(tp,m,n)=>'<td class="n">'+(n?'<button type="button" class="ct-lk'+(CT.fk.tipo===tp&&CT.fk.modo===m?' on':'')+'" data-tp="'+esc(tp)+'" data-m="'+m+'" title="Clique para filtrar a tabela de atividades">'+n+'</button>':n)+'</td>';
 /* ---------- semelhante ao BI: Gestão de Contingência ---------- */
+/* resumo dos filtros ativos (a escolha em si fica na gaveta "Filtros") e selo do botão */
+function ctChips(px,L,cid){
+  const at=L.filter(([i])=>msSel(i)).map(([i,n])=>[n,msTxt(i)]);if(cid)at.push(['Cidade (gráfico)',cid]);
+  $(px+'At').innerHTML=at.map(([n,v])=>'<span class="ct-chip">'+esc(n)+': '+esc(v)+'</span>').join('');
+  $(px+'Bar').hidden=!at.length;$('filtrosN').hidden=!at.length;$('filtrosN').textContent=at.length;
+}
 function ctRenderC(){
   const base=ctRows(),ag=ctAgora();
   ctOpts('cf-tipo',base.map(r=>r.tipo));ctOpts('cf-ct',base.map(r=>r.ct));ctOpts('cf-base',base.map(r=>r.base));ctOpts('cf-st',base.map(r=>r.st));ctOpts('cf-teq',base.map(r=>r.tEq));
   const f=base.filter(r=>ctSel('cf-tipo',r.tipo)&&ctSel('cf-ct',r.ct)&&ctSel('cf-base',r.base)&&ctSel('cf-st',r.st)&&ctSel('cf-teq',r.tEq));
   $('cf-x').hidden=!(msSel('cf-tipo')||msSel('cf-ct')||msSel('cf-base')||msSel('cf-st')||msSel('cf-teq'));
+  ctChips('cf',[['cf-tipo','Tipo de serviço'],['cf-ct','Contrato'],['cf-base','Base'],['cf-st','Status'],['cf-teq','Tipo de equipe']]);
   const cli=f.reduce((s,r)=>s+r.cli,0),a24=f.filter(r=>ctAcima24(r,ag)).length;
   $('ctK').innerHTML='<div class="ct-kp"><small>Total O.C</small><b>'+f.length+'</b><span>atividades</span></div><div class="ct-kp am"><small>Clientes afetados</small><b>'+cli+'</b><span>soma dos clientes interrompidos</span></div><div class="ct-kp vm"><small>Serviços acima de 24 h</small><b>'+a24+'</b><span>em aberto, vencidos há 24 h ou mais</span></div>';
   const st={},eq={},ti={};
@@ -2502,14 +2536,18 @@ function ctMapa(f,ag){
   });
 }
 /* Farol de Prazos: UPS por equipe (meta, balde, produzido, farol) com a UPS do site */
-function pzUps(base){
+function pzUps(base,f){
   const T=$('pzUpsT'),N=$('pzUpsN');if(!T)return;
   if(!UR||!UR.linhas||!UR.ultima){N.textContent='UPS ainda não carregada';T.innerHTML='';return}
   const dia=UR.ultima,g={},med={};
   for(const l of UR.linhas){if(l.n>0&&l.ups>0){const m=med[l.rec]||(med[l.rec]={u:0,n:0});m.u+=l.ups;m.n+=l.n}}
+  /* mesmos filtros da página: base e tipo de equipe pelo cadastro; situação, status, tipo de atividade e cidade pelas atividades filtradas */
+  const inf=rec=>{const e=HIER&&HIER.itens&&HIER.itens[hierChave(rec)],cf=cfgBase&&cfgBase.prefixos&&cfgBase.prefixos[rec];return {b:(e&&e.b)||(cf&&cf.b)||'',t:ctTipoEq(rec)}};
+  const porAtiv=['pf-venc','pf-st','pf-tipo','pf-cid'].some(i=>msSel(i))||!!CT.fcid,recF=new Set(f.map(r=>r.rec));
   for(const l of UR.linhas){if(l.data!==dia||!l.cod||!(l.meta>0)||!ctSel('pf-sg',l.sigla)||!ctSel('pf-rec',l.rec)||!ctSel('pf-ct',ctContrato(l.rec,l.base)))continue;
+    if(porAtiv&&!recF.has(l.rec))continue;const iq=inf(l.rec);if(!ctSel('pf-base',iq.b)||!ctSel('pf-teq',iq.t))continue;
     const a=g[l.rec]||(g[l.rec]={rec:l.rec,tipo:l.tipo||'',meta:0,prod:0});a.meta+=l.meta;a.prod+=l.ups}
-  const pen={};for(const r of base)if(!r.done)pen[r.rec]=(pen[r.rec]||0)+1;
+  const pen={};for(const r of f)if(!r.done)pen[r.rec]=(pen[r.rec]||0)+1;
   const L=Object.values(g).map(a=>{const m=med[a.rec],mu=m&&m.n?m.u/m.n:0,pn=pen[a.rec]||0;return Object.assign(a,{pn,balde:a.prod+pn*mu})}).sort((x,y)=>y.balde-x.balde);
   N.textContent='dia '+dataBR(dia)+' · '+L.length+' equipe(s)';
   if(!L.length){T.innerHTML='<tr><td><div class="ct-vazio">Sem equipes com meta neste dia.</div></td></tr>';return}
@@ -2532,6 +2570,7 @@ function ctRenderP(){
   if(CT.fcid&&!f0.some(r=>r.cidade===CT.fcid))CT.fcid=null;
   const f=CT.fcid?f0.filter(r=>r.cidade===CT.fcid):f0; /* a cidade escolhida no gráfico filtra os cartões e a tabela */
   $('pf-x').hidden=!(ids.some(i=>msSel(i))||CT.fcid);
+  ctChips('pf',[['pf-venc','Situação do prazo'],['pf-st','Status'],['pf-sg','Tipo de serviço'],['pf-tipo','Tipo de atividade'],['pf-ct','Contrato'],['pf-base','Base'],['pf-teq','Tipo de equipe'],['pf-cid','Cidade'],['pf-rec','Equipe']],CT.fcid);
   const n=k=>f.filter(r=>r._v===k).length;
   $('pzK').innerHTML='<div class="ct-kp vm"><small>Prazo vencido</small><b>'+n('Prazo Vencido')+'</b><span>em aberto, depois do limite</span></div><div class="ct-kp am"><small>Vencimento hoje</small><b>'+n('Vencimento Hoje')+'</b><span>limite ainda hoje</span></div><div class="ct-kp vd"><small>A vencer</small><b>'+n('A Vencer')+'</b><span>limite nos próximos dias</span></div>';
   const cid={};for(const r of f0)cid[r.cidade]=(cid[r.cidade]||0)+1;const ce=Object.entries(cid).sort((a,b)=>b[1]-a[1]),mx=ce.length?ce[0][1]:1,tot=f0.length||1;
@@ -2543,7 +2582,7 @@ function ctRenderP(){
   $('pzSub').textContent=CT.meta?'versão '+CT.meta.versao+' · '+CT.meta.total+' registro(s) na base':'';
   /* colunas na mesma ordem do BI */
   $('pzTab').innerHTML='<tr>'+ctTh('pzTab','rec','Prefixo')+ctTh('pzTab','cidade','Cidade')+ctTh('pzTab','nota','Número da nota')+ctTh('pzTab','tipoAt','Tipo de atividade')+ctTh('pzTab','st','Status')+ctTh('pzTab','lim','Data limite')+ctTh('pzTab','tmp','Tempo para vencimento')+ctTh('pzTab','sit','Status de vencimento')+'</tr>'+vis.slice(0,CT.limP).map(r=>'<tr><td>'+esc(r.rec)+'</td><td>'+esc(r.cidade)+'</td><td>'+esc(r.nota||r.os)+'</td><td>'+esc(r.tipoAt)+'</td><td>'+ctIco(r.st)+esc(r.st)+'</td><td>'+ctDH(r.limTxt)+'</td><td>'+ctCelCd(r,ag,2)+'</td><td><span class="pz-b '+(cls[r._v]||'')+'">'+esc(r._v||'—')+'</span></td></tr>').join('');
-  try{pzUps(base)}catch(e){console.error(e)}
+  try{pzUps(base,f)}catch(e){console.error(e)}
   $('pzCont').textContent=vis.length+' de '+base.length+' atividade(s)';$('pz-mais').hidden=vis.length<=CT.limP;$('pz-mais').textContent='Mostrar mais ('+(vis.length-CT.limP)+' restantes)';
 }
 function ctRender(){
@@ -2570,7 +2609,7 @@ const ctNaPag=()=>{const p=pag().id;return p==='contingencia'||p==='prazos'};
 function ctMostrar(){
   ctCarregar(false);ctRender();
   if(!CT.timer)CT.timer=setInterval(()=>{if(ctNaPag()&&!document.hidden)ctCarregar(true)},8000);
-  if(!CT.tick)CT.tick=setInterval(()=>{if(!ctNaPag()||document.hidden)return;ctTick();if(++CT.n%30===0)ctRender()},1000);
+  if(!CT.tick)CT.tick=setInterval(()=>{if(!ctNaPag()||document.hidden)return;ctTick();if(++CT.n%30===0||ctCadMudou())ctRender()},1000);
 }
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&ctNaPag())ctCarregar(true)});
 function ctProblemas(titulo,lista,total){
@@ -2720,7 +2759,7 @@ function mostrarPagina(){
   document.querySelectorAll('[data-pag]').forEach(s=>s.hidden=s.dataset.pag!==p);
   const ind=indAtual();
   ['b-periodo','b-filtros','b-baixar','b-copiar'].forEach(id=>$(id).hidden=id==='b-copiar'?(!ind&&pag().id!=='inicio'):(!ind||((ind==='ader'||ind==='ini'||ind==='prd'||ind==='trf'||ind==='mix'||ind==='tm')&&id==='b-baixar')));
-  $('fDisp').hidden=ind!=='disp';$('fUps').hidden=ind!=='ups';$('fAder').hidden=ind!=='ader';$('fIni').hidden=ind!=='ini';$('fDef').hidden=ind!=='def';$('fPrd').hidden=ind!=='prd';$('fTrf').hidden=ind!=='trf';$('fMix').hidden=ind!=='mix';$('fTm').hidden=ind!=='tm';
+  $('fDisp').hidden=ind!=='disp';$('fUps').hidden=ind!=='ups';$('fAder').hidden=ind!=='ader';$('fIni').hidden=ind!=='ini';$('fDef').hidden=ind!=='def';$('fPrd').hidden=ind!=='prd';$('fTrf').hidden=ind!=='trf';$('fMix').hidden=ind!=='mix';$('fTm').hidden=ind!=='tm';{const pc=p==='contingencia'||p==='prazos';if(pc)$('b-filtros').hidden=false;$('fCt').hidden=p!=='contingencia';$('fPz').hidden=p!=='prazos'}
   if(ind==='ups'){pintarTopoUps();renderUPS()}else if(ind==='disp'){pintarAtivos()}else if(ind==='ader'){renderAder()}else if(ind==='ini'){renderIni()}else if(ind==='def'){renderDef()}else if(ind==='prd'){renderPrd()}else if(ind==='trf'){renderTrf()}else if(ind==='mix'){renderMix()}else if(ind==='tm'){renderTm()}
   renderRail();
   if(p==='atualizar'){try{montarBanco()}catch(e){}}
@@ -3703,7 +3742,7 @@ $('f-arq').addEventListener('change',e=>{receber(e.target.files);e.target.value=
 /* ---------- eventos ---------- */
 $('f-mes').addEventListener('change',()=>{$('f-dia').value='';preencherDias();render()});
 ['f-dia','f-base','f-ger','f-est','f-tipo'].forEach(id=>$(id).addEventListener('change',()=>render()));
-$('b-limparf').onclick=()=>{if(indAtual()==='tm'){TMF.forEach(id=>{$(id).value='';$(id).classList.remove('on')});renderTm();return}if(indAtual()==='mix'){MXF.forEach(id=>{$(id).value='';$(id).classList.remove('on')});$('x-di').value='1';$('x-df').value='31';renderMix();return}if(indAtual()==='trf'){TF.forEach(id=>{$(id).value='';$(id).classList.remove('on')});renderTrf();return}if(indAtual()==='prd'){PF.forEach(id=>{$(id).value='';$(id).classList.remove('on')});renderPrd();return}if(indAtual()==='def'){DF.forEach(id=>{$(id).value='';$(id).classList.remove('on')});renderDef();return}if(indAtual()==='ini'){IF_.forEach(id=>{$(id).value='';$(id).classList.remove('on')});renderIni();return}if(indAtual()==='ader'){AF.forEach(id=>{$(id).value='';$(id).classList.remove('on')});renderAder();return}if(indAtual()==='ups'){UF.forEach(id=>{$(id).value='';$(id).classList.remove('on')});uCls.clear();pintarClsUps();renderUPS();pintarTopoUps();return}['f-dia','f-base','f-ger','f-est','f-tipo'].forEach(id=>{$(id).value='';$(id).classList.remove('on')});render()};
+$('b-limparf').onclick=()=>{if(pag().id==='contingencia'){$('cf-x').click();return}if(pag().id==='prazos'){$('pf-x').click();return}if(indAtual()==='tm'){TMF.forEach(id=>{$(id).value='';$(id).classList.remove('on')});renderTm();return}if(indAtual()==='mix'){MXF.forEach(id=>{$(id).value='';$(id).classList.remove('on')});$('x-di').value='1';$('x-df').value='31';renderMix();return}if(indAtual()==='trf'){TF.forEach(id=>{$(id).value='';$(id).classList.remove('on')});renderTrf();return}if(indAtual()==='prd'){PF.forEach(id=>{$(id).value='';$(id).classList.remove('on')});renderPrd();return}if(indAtual()==='def'){DF.forEach(id=>{$(id).value='';$(id).classList.remove('on')});renderDef();return}if(indAtual()==='ini'){IF_.forEach(id=>{$(id).value='';$(id).classList.remove('on')});renderIni();return}if(indAtual()==='ader'){AF.forEach(id=>{$(id).value='';$(id).classList.remove('on')});renderAder();return}if(indAtual()==='ups'){UF.forEach(id=>{$(id).value='';$(id).classList.remove('on')});uCls.clear();pintarClsUps();renderUPS();pintarTopoUps();return}['f-dia','f-base','f-ger','f-est','f-tipo'].forEach(id=>{$(id).value='';$(id).classList.remove('on')});render()};
 $('f-busca').addEventListener('input',()=>tabelaPref(filtrar()));
 document.querySelectorAll('th.sort').forEach(th=>th.addEventListener('click',()=>{const k=th.dataset.k;ordem=ordem.k===k?{k,dir:-ordem.dir}:{k,dir:['pct','rec','est','base','ger'].includes(k)?1:-1};tabelaPref(filtrar())}));
 
