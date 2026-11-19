@@ -268,6 +268,9 @@ section[data-pag="contingencia"] .ubar,section[data-pag="prazos"] .ubar{backgrou
 .modo-equipe span{flex:1;min-width:200px}
 .modo-equipe .btn{color:var(--info);border-color:#bcd4ee}
 #modalDia{z-index:85}.mdia{width:min(1000px,100%)}body.capt #mdCorpo{max-height:none;overflow:visible}.mdia .modal-bd{max-height:70vh;overflow:auto}.md-k{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:12px}.md-k>div{background:var(--sunken);border-radius:10px;padding:8px 10px}.md-k span{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}.md-k b{font-size:18px;font-weight:900}.md-k b.sup{color:#23701a}.md-k b.ate{color:#4f8a2a}.md-k b.par{color:#a26200}.md-k b.nao{color:#b0122a}.md-t td.n{font-variant-numeric:tabular-nums;white-space:nowrap}@media (max-width:640px){.md-k{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ac-dia td{background:var(--sunken);border-top:2px solid var(--line)}.ac-det td{background:var(--sunken)}.ac-det .utab{margin:4px 0}
+.cad-fil{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin:0 0 10px}.cad-fil .fld{min-width:150px;margin:0}.cad-fil select{width:100%}.cad-sel{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--accent-soft);border-radius:10px;padding:8px 12px;margin:0 0 10px;font-size:13px;font-weight:700}#cadSelTxt{margin-right:auto}
+.mass-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}.mass-g .fld{margin:0}.mass-g select,.mass-g input{width:100%}
 .lt-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 8px;flex-wrap:wrap}.mlote{width:min(1000px,100%)}.mlote .modal-bd{max-height:70vh;overflow:auto}.lt-todos{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--sunken);border-radius:10px;padding:8px 10px;margin-bottom:10px;font-size:13px}.lt-todos select{width:auto;min-width:160px}.lt-t select{min-width:150px}.lt-t tr.lt-err td{background:#fde8ea}
 .modal{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px));background:rgba(37,30,32,.45)}
 .modal-c{background:var(--surface);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-width:min(1000px,100%);max-height:calc(100vh - 40px);display:grid;grid-template-rows:auto 1fr auto;overflow:hidden}
@@ -1781,6 +1784,17 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     <div class="dcard"><div class="dch"><span class="dch-i"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="10" rx="1"/><rect x="13" y="3" width="8" height="6" rx="1"/><rect x="13" y="11" width="8" height="10" rx="1"/><rect x="3" y="15" width="8" height="6" rx="1"/></svg></span><div><h4>Local do corte por base</h4><small>Quantidade e participação</small></div></div><div id="xcBase"></div></div></div>
   </section>
 
+  <!-- PÁGINA: MIX GSTC · AUDITORIA DE CAUSAS -->
+  <section data-pag="mix-causa" class="upbi" hidden>
+    <div class="ubar"><div class="ubar-t"><h2>Auditoria de causas</h2><span id="acSub">SEMFLENG, Assistência NR e Assistência SP concluídas · COI</span></div><div class="ubar-r"></div></div>
+    <div class="dcard">
+      <div class="cad-fil"><div class="fld"><label for="acMes">Mês</label><select id="acMes"></select></div><div class="fld"><label for="acAti">Atividade</label><select id="acAti"><option value="">Todas</option><option>SEMFLENG</option><option>Assistência NR</option><option>Assistência SP</option></select></div><div class="fld"><label for="acBase">Base</label><select id="acBase"></select></div><div class="fld"><label for="acCausa">Tipo de causa</label><select id="acCausa"></select></div><div class="fld"><label for="acQ">Buscar</label><input type="search" id="acQ" placeholder="Prefixo ou ordem de serviço"></div><button class="btn sm" type="button" id="acLimpa">Limpar</button><button class="btn sm" type="button" id="acXls">Baixar Excel</button></div>
+      <div id="acMsg" class="muted" style="margin:0 0 8px"></div>
+    </div>
+    <div class="dkg" id="acKpis"></div>
+    <div class="dcard"><div class="dch"><span class="dch-i"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></span><div><h4>Concluídas por data e causa</h4><small>Clique na quantidade para ver prefixo, horários, equipe e ordem de serviço</small></div></div><div class="tw"><table class="ct-t" id="acTab"></table></div><div class="ct-mais" id="acMais" hidden><button class="btn" type="button" id="b-acMais">Mostrar mais dias</button></div></div>
+  </section>
+
   <!-- PÁGINA: TRAFOS · BLINDAGEM -->
   <section data-pag="trf-painel" class="upbi" hidden>
     <div class="ubar"><div class="ubar-t"><h2>Blindagem de trafos</h2><span class="tbarSub"></span></div><div class="ubar-r"><button type="button" class="ufunil" data-tfunil aria-label="Abrir filtros" title="Filtros"><svg class="ico" viewBox="0 0 24 24"><path d="M3 5h18l-7 8.5V19l-4 2v-7.5z"/></svg><span class="ufn" data-tfn hidden></span></button></div></div>
@@ -2028,7 +2042,9 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     <div id="cadNota"></div>
     <div class="panel" data-tabp="prefixos">
       <div class="phd"><div class="busca"><input type="search" id="cadBusca" placeholder="Buscar prefixo, estrutura ou base…" aria-label="Buscar no cadastro"><span class="muted" id="cadCont"></span></div><button class="btn primary" id="b-novoPref" type="button"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Novo prefixo</button></div>
-      <div class="tw"><table><thead><tr><th>Prefixo</th><th>Estrutura</th><th>Gerência</th><th>Base</th><th>Jornada</th><th></th></tr></thead><tbody id="t-cad"></tbody></table></div>
+      <div class="cad-fil"><div class="fld"><label for="cfBase">Base</label><select id="cfBase"></select></div><div class="fld"><label for="cfGer">Gerência</label><select id="cfGer"></select></div><div class="fld"><label for="cfEst">Estrutura</label><select id="cfEst"></select></div><div class="fld"><label for="cfTipo">Tipo na produção</label><select id="cfTipo"></select></div><div class="fld"><label for="cfSit">Situação</label><select id="cfSit"><option value="">Todas</option><option value="ed">Editados no site</option><option value="sm">Sem meta de produção</option></select></div><button class="btn sm" type="button" id="cfLimpa">Limpar filtros</button></div>
+      <div class="cad-sel" id="cadSelBar" hidden><span id="cadSelTxt"></span><button class="btn primary sm" type="button" id="b-cadMassa">Editar selecionados</button><button class="btn sm" type="button" id="b-cadSelTodos">Selecionar todos os filtrados</button><button class="btn sm" type="button" id="b-cadSelLimpa">Limpar seleção</button></div>
+      <div class="tw"><table><thead><tr><th style="width:34px"><input type="checkbox" id="cadAll" aria-label="Selecionar todos da lista"></th><th>Prefixo</th><th>Estrutura</th><th>Gerência</th><th>Base</th><th>Jornada</th><th>Meta produção</th><th></th></tr></thead><tbody id="t-cad"></tbody></table></div>
     </div>
     <div class="panel" data-tabp="feriados" hidden>
       <div class="phd"><h3>Feriados</h3><small>em feriado o turno previsto é zero, exceto nas estruturas de plantão</small></div>
@@ -2078,6 +2094,11 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     <div class="fld"><label for="cpGer">Gerência</label><input type="text" id="cpGer" list="dlGer" required></div>
     <div class="fld"><label for="cpBase">Base</label><input type="text" id="cpBase" list="dlBase" required></div>
     <datalist id="dlEst"></datalist><datalist id="dlGer"></datalist><datalist id="dlBase"></datalist>
+    <div class="grp">Produção do dia (faturamento)</div>
+    <div class="fld"><label for="cpMeta">Meta diária (R$)</label><input type="text" id="cpMeta" inputmode="decimal" placeholder="ex.: 1.353,94"><small class="muted">Vale para dia útil. Sábado conta 50% e domingo/feriado 0, exceto plantão (tipo AE116: sempre 100%). Deixe 0 para equipe sem meta fixa.</small></div>
+    <div class="fld"><label for="cpTipoP">Tipo na produção</label><input type="text" id="cpTipoP" list="dlTipoP" placeholder="ex.: AE116, LGN, CR/RI, SDM"></div>
+    <div class="fld"><label for="cpEstP">Estrutura na produção</label><input type="text" id="cpEstP" list="dlEstP" placeholder="ex.: 16H 4X4"></div>
+    <datalist id="dlTipoP"></datalist><datalist id="dlEstP"></datalist>
     <div class="grp">Jornada por dia (horas:minutos)</div>
     <div class="jor" id="cpJor"></div>
     <div id="cpMsg"></div>
@@ -2347,9 +2368,12 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
       let tt = 0;
       if (ini != null && fim != null) tt = fim < ini ? fim - ini + 1440 : fim - ini;
       const dd = dias[data] || (dias[data] = {});
-      const a = dd[rec] || (dd[rec] = [null, null, null, 0, 0]);
+      const a = dd[rec] || (dd[rec] = [null, null, null, 0, 0, null]);
       if (ini != null) a[0] = a[0] == null ? ini : Math.min(a[0], ini);
       if (fim != null) a[1] = a[1] == null ? fim : Math.max(a[1], fim);
+      /* [5] = 1º checklist de início de turno do dia: é a âncora do início da disponibilidade */
+      const tipoCk = iTipo != null && iTipo >= 0 ? row[iTipo] : null;
+      if (tipoCk != null && String(tipoCk).trim() === 'Checklist Início do Turno' && ini != null) a[5] = a[5] == null ? ini : Math.min(a[5], ini);
       if (tipo === 'Retorno à base' && ini != null) a[2] = a[2] == null ? ini : Math.max(a[2], ini);
       if (tipo === 'Intervalo para almoço') a[3] += tt;
       if (tipo === 'Indisponibilidade') a[4] += tt;
@@ -2362,7 +2386,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     if (!a) return b.slice();
     const mn = (x, y) => (x == null ? y : y == null ? x : Math.min(x, y));
     const mx = (x, y) => (x == null ? y : y == null ? x : Math.max(x, y));
-    return [mn(a[0], b[0]), mx(a[1], b[1]), mx(a[2], b[2]), a[3] + b[3], a[4] + b[4]];
+    return [mn(a[0], b[0]), mx(a[1], b[1]), mx(a[2], b[2]), a[3] + b[3], a[4] + b[4], mn(a[5], b[5])];
   }
 
   /* diasAgg: {iso:{recurso:agg}}; recursos: lista de todos os recursos vistos na base */
@@ -2378,7 +2402,8 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
       for (const data of lista) {
         const a = (diasAgg[data] && diasAgg[data][rec]) || null;
         const wd = weekdayIdx(data);
-        const ini = a && a[0] != null ? a[0] : 0;
+        /* Início = 1º checklist do dia; sem checklist (dados antigos ou equipe que não abriu), vale a regra anterior: menor início de qualquer atividade */
+        const ini = a ? (a[5] != null ? a[5] : (a[0] != null ? a[0] : 0)) : 0;
         const fimT = a ? (a[2] != null ? a[2] : (a[1] != null ? a[1] : 0)) : 0;
         const disp = fimT < ini ? 0 : fimT - ini;
         let alm = a ? a[3] : 0;
@@ -2431,7 +2456,7 @@ const pctCell=p=>'<span class="pct '+cls(p)+'">'+pct(p)+'</span>';
 /* ---------- menu lateral (páginas) ---------- */
 const ICON={relogio:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6M12 2v3"/>',mix:'<rect x="3" y="3" width="8" height="10" rx="1.5"/><rect x="13" y="3" width="8" height="6" rx="1.5"/><rect x="13" y="11" width="8" height="10" rx="1.5"/><rect x="3" y="15" width="8" height="6" rx="1.5"/>',raio:'<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',home:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>',alerta:'<path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/>',cad:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',sono:'<path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/>',cobra:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',painel:'<path d="M4 15a8 8 0 0 1 16 0"/><path d="M12 15l4-4"/><path d="M3 19h18"/>',lista:'<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/>',upload:'<path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v4h16v-4"/>',moeda:'<circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.5-1.2-1.7-1.8-3-1.8-1.7 0-3 .9-3 2.2 0 3 6 1.6 6 4.6 0 1.3-1.3 2.3-3 2.3-1.4 0-2.6-.7-3.1-1.9M12 6v1.7M12 16.8v1.7"/>',chave:'<path d="M14.7 6.3a4 4 0 0 0-5.4 5.2L3 17.8V21h3.2l6.3-6.3a4 4 0 0 0 5.2-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/>'};
 const ico=n=>'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">'+ICON[n]+'</svg>';
-const PAGINAS=[{id:'inicio',nm:'Visão geral',sub:'Resumo de todos os indicadores',ic:'home',g:'Geral'},{id:'painel',nm:'Painel',sub:'Estrutura, base e dia a dia',ic:'painel',g:'Disponibilidade'},{id:'prefixos',nm:'Por prefixo',sub:'Equipe por equipe',ic:'lista',g:'Disponibilidade'},{id:'cobranca',nm:'Cobrança do dia',sub:'Equipes abaixo da meta',ic:'cobra',g:'Disponibilidade'},{id:'ups-painel',nm:'Painel',sub:'Classes, bases e ritmo',ic:'painel',g:'UPS'},{id:'ups-prefixos',nm:'Por equipe',sub:'UPS, meta e classe',ic:'lista',g:'UPS'},{id:'ups-diario',nm:'Diário',sub:'Equipe × dia',ic:'cal',g:'UPS'},{id:'ups-cobranca',nm:'Cobrança',sub:'Equipes classe C e D',ic:'cobra',g:'UPS'},{id:'ups-regras',nm:'Regras da UPS',sub:'Pontuação, DE_PARA e regras',ic:'chave',g:'UPS',adm:true},{id:'ader-painel',nm:'Painel',sub:'Checklist × horário da escala',ic:'cal',g:'Aderência à escala'},{id:'ader-ranking',nm:'Ranking',sub:'Bases e equipes',ic:'lista',g:'Aderência à escala'},{id:'ini-painel',nm:'Painel',sub:'1ª atividade após o checklist',ic:'cal',g:'Início das atividades'},{id:'prd-dia',nm:'Visão diária',sub:'Meta x realizado em R$, em tempo real',ic:'painel',g:'Produção do dia'},{id:'def-painel',nm:'Tratamento',sub:'Total, entrantes e resolvidos',ic:'painel',g:'Atualização de defeitos'},{id:'def-evolucao',nm:'Evolução',sub:'Tipos e dia a dia do mês',ic:'cal',g:'Atualização de defeitos'},{id:'def-lista',nm:'Lista de defeitos',sub:'Banco de dados para cobrança',ic:'lista',g:'Atualização de defeitos'},{id:'tm-geral',nm:'Visão geral',sub:'TME e TMD por mês, base e atividade',ic:'painel',g:'TME / TMD'},{id:'tm-prefixo',nm:'Por prefixo',sub:'Prefixo × tipo de atividade',ic:'lista',g:'TME / TMD'},{id:'tm-detalhe',nm:'Detalhamento',sub:'Abrangência, conclusão e code',ic:'cal',g:'TME / TMD'},{id:'mix-normal',nm:'OS Normal',sub:'Quantidade por mês, base, dia e equipe',ic:'painel',g:'Mix GSTC'},{id:'mix-mistec',nm:'Miscelânea técnica',sub:'R$ executado por mês, base e equipe',ic:'lista',g:'Mix GSTC'},{id:'mix-corte',nm:'Tipo de corte',sub:'Local do corte e R$ por corte',ic:'cal',g:'Mix GSTC'},{id:'trf-painel',nm:'Blindagem',sub:'Efetividade dos trafos trabalhados',ic:'painel',g:'Trafos reincidentes'},{id:'trf-indice',nm:'Índice de reincidência',sub:'Mês a mês e trafos p/ blindagem',ic:'lista',g:'Trafos reincidentes'},{id:'contingencia',nm:'Painel',sub:'Atividades, clientes afetados e acima de 24 h',ic:'alerta',g:'Gestão de Contingência'},{id:'prazos',nm:'Painel',sub:'Prazos regulatórios',ic:'cobra',g:'Farol de Prazos'},{id:'atualizar',nm:'Atualizar com o SIGA',sub:'Enviar os 4 relatórios',ic:'upload',g:'Administração',adm:true},{id:'conferencia',nm:'Conferência',sub:'Avisos da base',ic:'alerta',g:'Administração',adm:true},{id:'cadastros',nm:'Cadastros',sub:'Prefixos, escala e feriados',ic:'cad',g:'Administração',adm:true}];
+const PAGINAS=[{id:'inicio',nm:'Visão geral',sub:'Resumo de todos os indicadores',ic:'home',g:'Geral'},{id:'painel',nm:'Painel',sub:'Estrutura, base e dia a dia',ic:'painel',g:'Disponibilidade'},{id:'prefixos',nm:'Por prefixo',sub:'Equipe por equipe',ic:'lista',g:'Disponibilidade'},{id:'cobranca',nm:'Cobrança do dia',sub:'Equipes abaixo da meta',ic:'cobra',g:'Disponibilidade'},{id:'ups-painel',nm:'Painel',sub:'Classes, bases e ritmo',ic:'painel',g:'UPS'},{id:'ups-prefixos',nm:'Por equipe',sub:'UPS, meta e classe',ic:'lista',g:'UPS'},{id:'ups-diario',nm:'Diário',sub:'Equipe × dia',ic:'cal',g:'UPS'},{id:'ups-cobranca',nm:'Cobrança',sub:'Equipes classe C e D',ic:'cobra',g:'UPS'},{id:'ups-regras',nm:'Regras da UPS',sub:'Pontuação, DE_PARA e regras',ic:'chave',g:'UPS',adm:true},{id:'ader-painel',nm:'Painel',sub:'Checklist × horário da escala',ic:'cal',g:'Aderência à escala'},{id:'ader-ranking',nm:'Ranking',sub:'Bases e equipes',ic:'lista',g:'Aderência à escala'},{id:'ini-painel',nm:'Painel',sub:'1ª atividade após o checklist',ic:'cal',g:'Início das atividades'},{id:'prd-dia',nm:'Visão diária',sub:'Meta x realizado em R$, em tempo real',ic:'painel',g:'Produção do dia'},{id:'def-painel',nm:'Tratamento',sub:'Total, entrantes e resolvidos',ic:'painel',g:'Atualização de defeitos'},{id:'def-evolucao',nm:'Evolução',sub:'Tipos e dia a dia do mês',ic:'cal',g:'Atualização de defeitos'},{id:'def-lista',nm:'Lista de defeitos',sub:'Banco de dados para cobrança',ic:'lista',g:'Atualização de defeitos'},{id:'tm-geral',nm:'Visão geral',sub:'TME e TMD por mês, base e atividade',ic:'painel',g:'TME / TMD'},{id:'tm-prefixo',nm:'Por prefixo',sub:'Prefixo × tipo de atividade',ic:'lista',g:'TME / TMD'},{id:'tm-detalhe',nm:'Detalhamento',sub:'Abrangência, conclusão e code',ic:'cal',g:'TME / TMD'},{id:'mix-normal',nm:'OS Normal',sub:'Quantidade por mês, base, dia e equipe',ic:'painel',g:'Mix GSTC'},{id:'mix-mistec',nm:'Miscelânea técnica',sub:'R$ executado por mês, base e equipe',ic:'lista',g:'Mix GSTC'},{id:'mix-corte',nm:'Tipo de corte',sub:'Local do corte e R$ por corte',ic:'cal',g:'Mix GSTC'},{id:'mix-causa',nm:'Auditoria de causas',sub:'Emergencial e assistências por causa',ic:'alerta',g:'Mix GSTC'},{id:'trf-painel',nm:'Blindagem',sub:'Efetividade dos trafos trabalhados',ic:'painel',g:'Trafos reincidentes'},{id:'trf-indice',nm:'Índice de reincidência',sub:'Mês a mês e trafos p/ blindagem',ic:'lista',g:'Trafos reincidentes'},{id:'contingencia',nm:'Painel',sub:'Atividades, clientes afetados e acima de 24 h',ic:'alerta',g:'Gestão de Contingência'},{id:'prazos',nm:'Painel',sub:'Prazos regulatórios',ic:'cobra',g:'Farol de Prazos'},{id:'atualizar',nm:'Atualizar com o SIGA',sub:'Enviar os 4 relatórios',ic:'upload',g:'Administração',adm:true},{id:'conferencia',nm:'Conferência',sub:'Avisos da base',ic:'alerta',g:'Administração',adm:true},{id:'cadastros',nm:'Cadastros',sub:'Prefixos, escala e feriados',ic:'cad',g:'Administração',adm:true}];
 /* ---------- hierarquia das equipes (gerente / coordenador / supervisor): filtro global dos indicadores por prefixo ---------- */
 let HIER=null,HF={ger:'',coo:'',sup:''};
 try{Object.assign(HF,JSON.parse(localStorage.getItem('hier.f')||'{}'))}catch(e){}
@@ -2452,7 +2477,7 @@ function hierPintar(){
   const it=HIER&&HIER.itens?Object.values(HIER.itens):[];
   if(!it.length){HF={ger:'',coo:'',sup:''};bar.hidden=true;return}
   const ind=typeof indAtual==='function'?indAtual():null;
-  bar.hidden=!(pag().id==='inicio'||pag().id==='contingencia'||pag().id==='prazos'||HIER_IND.includes(ind));
+  bar.hidden=!(pag().id==='inicio'||pag().id==='contingencia'||pag().id==='prazos'||pag().id==='mix-causa'||HIER_IND.includes(ind));
   const un=(k,f)=>[...new Set(it.filter(f).map(e=>e[k]).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
   const ger=un('ger',()=>true),coo=un('coo',e=>!HF.ger||e.ger===HF.ger),sup=un('sup',e=>(!HF.ger||e.ger===HF.ger)&&(!HF.coo||e.coo===HF.coo));
   if(HF.ger&&!ger.includes(HF.ger))HF.ger='';if(HF.coo&&!coo.includes(HF.coo))HF.coo='';if(HF.sup&&!sup.includes(HF.sup))HF.sup='';
@@ -2492,6 +2517,36 @@ function ctPrep(cab,linhas){
       tipo:g(l,'TIPO DE SERVIÇO DETALHADO')||g(l,'TIPO DE ATIVIDADE2')||'',base:(cf&&cf.b)||'',sigla:g(l,'STATUS DA ATIVIDADE$')||'',cli:Number(ci)||0,lat:g(l,'LATITUDE'),lon:g(l,'LONGITUDE')}});
 }
 const CT_BASE_CT={BCB:'127',ITM:'127',STI:'127',PDT:'169',PDS:'169',BDC:'169'};
+/* Contingência e Prazos direto do COI do SIGA baixado no dia: calcula as duas colunas que o BI criava (validado linha a linha contra a planilha do BI: 1.288 de 1.288 iguais) */
+const CT_SG={SUSPFORN:'CR',SEMFLENG:'NR',ORCNXBTN:'LG',RELIGABT:'RI',REATIVAC:'RI',LIGANOVA:'LG',MUDMEDLC:'LG',TROCPABT:'LG',DESLORAM:'LG',INSPTECN:'LG',LIGPROVI:'LG',MISTEC:'MS',DSBTPDCL:'DS',NIVELTEN:'NT'};
+const CT_SEED=new Set(['MA-PDT-D001M']); /* equipe Seed Money (a escala também a marca como SEED MONEY) */
+function ctDeriva(t2,concl,cli,seed){
+  const code=String(t2||'').split(' - ')[0].trim(),sg=CT_SG[code];
+  if(!sg)return ['Improdutivo',null];
+  if(code==='NIVELTEN')return ['Improdutivo',sg];
+  if(code==='SEMFLENG')return [cli>=2?'NR Coletiva':'NR Individual',sg];
+  if(code==='SUSPFORN'){const c=ctN(concl);if(c==='DEBITO PAGO')return [t2,'RI'];if(seed||c==='CONTINUA SUSPENSA'||c==='NAO PERMITIU A SUSPENSAO')return ['Improdutivo',null]}
+  return [t2,sg];
+}
+function ctDeCOI(rowsA,dia){
+  if(!rowsA||rowsA.length<2)return null;
+  const h=rowsA[0].map(x=>ctN(x)),ix=(n,o)=>{let i=h.indexOf(ctN(n));if(o&&i>=0)i=h.indexOf(ctN(n),i+1);return i};
+  const c={rec:ix('Recurso'),dt:ix('Data'),st:ix('Status da Atividade'),ci:ix('Cidade'),ba:ix('Bairro'),t1:ix('Tipo de Atividade'),t2:ix('Tipo de Atividade2')>=0?ix('Tipo de Atividade2'):ix('Tipo de Atividade',1),os:ix('Ordem de Serviço'),lim:ix('Data Limite'),nt:ix('Número da Nota'),cl:ix('Número de Clientes Interrompidos'),la:ix('Latitude'),lo:ix('Longitude'),cn:ix('Tipo de Conclusão Não Executada'),id:ix('ID da Atividade')};
+  if(c.rec<0||c.dt<0||c.st<0||c.t2<0||c.lim<0)return null;
+  const cab=['RECURSO','STATUS DA ATIVIDADE','TIPO DE ATIVIDADE2','ORDEM DE SERVIÇO','DATA LIMITE','CIDADE','DATA','BAIRRO','NÚMERO DA NOTA','NÚMERO DE CLIENTES INTERROMPIDOS','TIPO DE SERVIÇO DETALHADO','STATUS DA ATIVIDADE$','LATITUDE','LONGITUDE'];
+  const linhas=[],nums=[],vistos=new Set();let semEq=0,dup=0,total=0;
+  const t=v=>v==null?null:(String(v).trim()||null),num=v=>{if(v==null||v==='')return null;const n=Number(String(v).replace(',','.'));return Number.isFinite(n)?n:null};
+  const dl=v=>{const x=t(v);return x&&/^(\d{4}-\d{2}-\d{2}|\d{1,2}\/\d{1,2}\/\d{2,4})/.test(x)?x:null};
+  for(let r=1;r<rowsA.length;r++){const w=rowsA[r];if(!w||Disp.parseData(w[c.dt])!==dia)continue;total++;
+    const rec=String(w[c.rec]==null?'':w[c.rec]).trim().split(/\s+/)[0].toUpperCase();
+    const st=t(w[c.st]),t2=t(w[c.t2]);
+    if(!/^[A-Z]{2}-[A-Z0-9]{2,5}-[A-Z0-9]+$/.test(rec)||!st||!t2){semEq++;continue}
+    const cli=num(w[c.cl])||0,seed=CT_SEED.has(rec)||/SEED/i.test(String(ctTipoEq(rec)||''));
+    const dv=ctDeriva(t2,c.cn>=0?w[c.cn]:'',cli,seed);
+    const idA=c.id>=0?t(w[c.id]):null,lin=[rec,st,t2,t(w[c.os])||(idA?'ATV '+idA:null),dl(w[c.lim]),t(w[c.ci]),t(w[c.dt]),c.ba>=0?t(w[c.ba]):null,t(w[c.nt]),cli,dv[0],dv[1],num(w[c.la]),num(w[c.lo])];
+    const k=JSON.stringify(lin);if(vistos.has(k)){dup++;continue}vistos.add(k);linhas.push(lin);nums.push(r+1)}
+  return linhas.length?{cab,linhas,nums,dia,total,semEq,dup}:null;
+}
 let ctCtMapa=null,ctCtRef=null,ctEsMapa=null;
 const ctEscAtual=()=>(typeof escalaLocal!=='undefined'&&escalaLocal)||(typeof escalaDb!=='undefined'&&escalaDb)||(typeof UCFG!=='undefined'&&UCFG&&UCFG.escala)||null;
 let ctEscVista=null,ctCfgVisto=null,ctHierVisto=null;
@@ -2594,22 +2649,22 @@ function ctMapa(f,ag){
 function pzUps(base,f){
   const T=$('pzUpsT'),N=$('pzUpsN');if(!T)return;
   if(!UR||!UR.linhas||!UR.ultima){N.textContent='UPS ainda não carregada';T.innerHTML='';return}
-  const dsl=$('pf-dia'),dd=Object.keys(UR.dias||{}).filter(d=>d<=UR.ultima).sort().reverse().slice(0,45);
-  if(dsl){const at=dsl.value;dsl.innerHTML=dd.map((d,i)=>'<option value="'+d+'">'+dataBR(d)+(i===0?' (último importado)':'')+'</option>').join('');dsl.value=dd.includes(at)?at:(dd[0]||'')}
-  const dia=(dsl&&dsl.value)||UR.ultima,g={},med={};
+  const U=URH||UR,dsl=$('pf-dia'),dd=Object.keys(U.dias||{}).filter(d=>d<=U.ultima).sort().reverse().slice(0,45);
+  if(dsl){const at=dsl.value;dsl.innerHTML=dd.map((d,i)=>'<option value="'+d+'">'+dataBR(d)+(i===0?(URH?' (hoje, parcial)':' (último importado)'):'')+'</option>').join('');dsl.value=dd.includes(at)?at:(dd[0]||'')}
+  const dia=(dsl&&dsl.value)||U.ultima,g={},med={};
   /* se a UPS de hoje ainda não foi importada, estima o produzido de hoje pelas atividades concluídas na planilha (× UPS média da equipe) */
-  const hoje=new Date(ctAgora()).toISOString().slice(0,10),est=dia<hoje&&dia===UR.ultima,dn={};for(const r of f)if(r.done)dn[r.rec]=(dn[r.rec]||0)+1;
-  for(const l of UR.linhas){if(l.n>0&&l.ups>0){const m=med[l.rec]||(med[l.rec]={u:0,n:0});m.u+=l.ups;m.n+=l.n}}
+  const hoje=new Date(ctAgora()).toISOString().slice(0,10),est=dia<hoje&&dia===U.ultima&&!URH,dn={};for(const r of f)if(r.done)dn[r.rec]=(dn[r.rec]||0)+1;
+  for(const l of U.linhas){if(l.n>0&&l.ups>0){const m=med[l.rec]||(med[l.rec]={u:0,n:0});m.u+=l.ups;m.n+=l.n}}
   /* mesmos filtros da página: base e tipo de equipe pelo cadastro; situação, status, tipo de atividade e cidade pelas atividades filtradas */
   const inf=rec=>{const e=HIER&&HIER.itens&&HIER.itens[hierChave(rec)],cf=cfgBase&&cfgBase.prefixos&&cfgBase.prefixos[rec];return {b:(e&&e.b)||(cf&&cf.b)||'',t:ctTipoEq(rec)}};
   const porAtiv=['pf-venc','pf-st','pf-tipo','pf-cid'].some(i=>msSel(i))||!!ctDtTxt('pf')||!!CT.fcid,recF=new Set(f.map(r=>r.rec));
-  for(const l of UR.linhas){if(l.data!==dia||!l.cod||!(l.meta>0)||!ctSel('pf-sg',l.sigla)||!ctSel('pf-rec',l.rec)||!ctSel('pf-ct',ctContrato(l.rec,l.base)))continue;
+  for(const l of U.linhas){if(l.data!==dia||!l.cod||!(l.meta>0)||!ctSel('pf-sg',l.sigla)||!ctSel('pf-rec',l.rec)||!ctSel('pf-ct',ctContrato(l.rec,l.base)))continue;
     if(porAtiv&&!recF.has(l.rec))continue;const iq=inf(l.rec);if(!ctSel('pf-base',iq.b)||!ctSel('pf-teq',iq.t))continue;
     const a=g[l.rec]||(g[l.rec]={rec:l.rec,tipo:l.tipo||'',meta:0,prod:0});a.meta+=l.meta;a.prod+=est?0:l.ups}
   const pen={};for(const r of f)if(!r.done)pen[r.rec]=(pen[r.rec]||0)+1;
-  const L=Object.values(g).map(a=>{const m=med[a.rec],mu=m&&m.n?m.u/m.n:0,pn=dia===UR.ultima?(pen[a.rec]||0):0;if(est)a.prod=(dn[a.rec]||0)*mu;return Object.assign(a,{pn,balde:a.prod+pn*mu})}).sort((x,y)=>y.balde-x.balde);
-  N.textContent=est?'hoje, '+dataBR(hoje)+' · ESTIMATIVA pelas atividades concluídas na planilha (a UPS exata entra quando o SIGA for atualizado; último dia importado: '+dataBR(dia)+') · '+L.length+' equipe(s)':'dia '+dataBR(dia)+(dia===hoje?' (hoje)':'')+(dia!==UR.ultima?' · dia anterior: sem pendentes (a planilha só tem os pendentes de agora)':'')+' · '+L.length+' equipe(s)';
-  if(CT.meta&&CT.meta.importado_em)N.textContent+=' · pendentes da planilha de '+ctSP(CT.meta.importado_em,{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+  const L=Object.values(g).map(a=>{const m=med[a.rec],mu=m&&m.n?m.u/m.n:0,pn=dia===U.ultima?(pen[a.rec]||0):0;if(est)a.prod=(dn[a.rec]||0)*mu;return Object.assign(a,{pn,balde:a.prod+pn*mu})}).sort((x,y)=>y.balde-x.balde);
+  N.textContent=est?'hoje, '+dataBR(hoje)+' · ESTIMATIVA pelas atividades concluídas na planilha (a UPS exata entra quando o SIGA for atualizado; último dia importado: '+dataBR(dia)+') · '+L.length+' equipe(s)':'dia '+dataBR(dia)+(dia===hoje?(URH?' (hoje · UPS PARCIAL do SIGA enviado às '+ctSP(URH.em,{hour:'2-digit',minute:'2-digit'})+')':' (hoje)'):'')+(dia!==U.ultima?' · dia anterior: sem pendentes (a planilha só tem os pendentes de agora)':'')+' · '+L.length+' equipe(s)';
+  if(CT.meta&&CT.meta.importado_em)N.textContent+=' · pendentes da base de '+ctSP(CT.meta.importado_em,{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
   if(!L.length){T.innerHTML='<tr><td><div class="ct-vazio">Sem equipes com meta neste dia.</div></td></tr>';return}
   const v=x=>x.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}),cor=(x,m)=>x>=m?'pu-g':'pu-r';
   const tt=L.reduce((o,a)=>({meta:o.meta+a.meta,balde:o.balde+a.balde,prod:o.prod+a.prod}),{meta:0,balde:0,prod:0});
@@ -2754,7 +2809,7 @@ const ehAdm=()=>podeSalvar&&!modoEquipe;
 const visiveis=()=>PAGINAS.filter(p=>!p.adm||ehAdm());window.visiveis=visiveis;
 const pag=()=>{const h=location.hash.slice(1);return visiveis().find(p=>p.id===h)||PAGINAS[0]};
 const GRUPO_ICO={'Disponibilidade':'painel','UPS':'lista','Aderência à escala':'cal','Início das atividades':'sono','Produção do dia':'moeda','Atualização de defeitos':'chave','TME / TMD':'relogio','Mix GSTC':'mix','Trafos reincidentes':'raio','Gestão de Contingência':'alerta','Farol de Prazos':'cobra','Administração':'cad'};
-const GRUPO_SUB={'Disponibilidade':'Painel, prefixos e cobrança','UPS':'Painel, equipes, diário e cobrança','Aderência à escala':'Painel e ranking','Início das atividades':'Horário da 1ª atividade','Produção do dia':'Meta x realizado em tempo real','Atualização de defeitos':'Tratamento, evolução e lista','TME / TMD':'Execução e deslocamento','Mix GSTC':'OS Normal, miscelânea e tipo de corte','Trafos reincidentes':'Blindagem e índice de reincidência','Gestão de Contingência':'Atividades em campo e clientes afetados','Farol de Prazos':'Prazos regulatórios por atividade','Administração':'Envio, conferência e cadastros'};
+const GRUPO_SUB={'Disponibilidade':'Painel, prefixos e cobrança','UPS':'Painel, equipes, diário e cobrança','Aderência à escala':'Painel e ranking','Início das atividades':'Horário da 1ª atividade','Produção do dia':'Meta x realizado em tempo real','Atualização de defeitos':'Tratamento, evolução e lista','TME / TMD':'Execução e deslocamento','Mix GSTC':'OS Normal, miscelânea, corte e auditoria','Trafos reincidentes':'Blindagem e índice de reincidência','Gestão de Contingência':'Atividades em campo e clientes afetados','Farol de Prazos':'Prazos regulatórios por atividade','Administração':'Envio, conferência e cadastros'};
 let railAberto=null;
 const SEC_DE={'Geral':'','Administração':'Administração'};
 function renderRail(){
@@ -2768,6 +2823,8 @@ function renderRail(){
     if(g.g==='Geral'){h+=g.ps.map(item).join('');continue}
     if(g.g==='Administração'){h+='<div class="rail-sec"><span>Administração</span></div>'+g.ps.map(item).join('');continue}
     if(!secInd){h+='<div class="rail-sec"><span>Indicadores</span></div>';secInd=true}
+    if(g.ps.length===1){const p=g.ps[0];if(!secInd){h+='<div class="rail-sec"><span>Indicadores</span></div>';secInd=true}
+      h+='<a href="#'+p.id+'" title="'+g.g+'"'+(atual.id===p.id?' aria-current="page"':'')+'><span class="mi">'+ico(GRUPO_ICO[g.g]||p.ic)+'</span><span class="rt"><b>'+g.g+'</b><small>'+(GRUPO_SUB[g.g]||p.sub)+'</small></span></a>';continue}
     const ab=railAberto===g.g,temAtual=g.ps.some(p=>p.id===atual.id);
     h+='<div class="mg'+(ab?' aberto':'')+(temAtual?' cur':'')+'"><button type="button" class="mg-hd" data-mg="'+g.g+'" aria-expanded="'+ab+'" title="'+g.g+'"><span class="mi">'+ico(GRUPO_ICO[g.g]||'painel')+'</span><span class="rt"><b>'+g.g+'</b><small>'+(GRUPO_SUB[g.g]||'')+'</small></span><svg class="mg-sv" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="mg-it"'+(ab?'':' hidden')+'>'+g.ps.map(item).join('')+'</div></div>';
   }
@@ -2835,6 +2892,7 @@ function mostrarPagina(){
   renderRail();
   if(p==='atualizar'){try{montarBanco()}catch(e){}}
   if(p==='contingencia'||p==='prazos')ctMostrar();else if(p==='conferencia')ctCarregar(false);
+  if(p==='mix-causa')acMostrar();
   if(matchMedia('(max-width:1000px)').matches){document.body.classList.remove('rail-on');$('railFundo').hidden=true}
 }
 window.addEventListener('hashchange',mostrarPagina);
@@ -3108,8 +3166,15 @@ function resumoJor(j){if(!j)return'–';const u=j.slice(0,5);const igual=u.every
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{abaCad=b.dataset.tab;document.querySelectorAll('[data-tab]').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));document.querySelectorAll('[data-tabp]').forEach(x=>x.hidden=x.dataset.tabp!==abaCad)});
 async function salvarCad(nome,itens,ok){
   if(!db||!podeSalvar){toast('Você não tem permissão para alterar os cadastros.');return false}
-  try{await db.collection('config').doc(nome).set({itens,editadoEm:new Date().toISOString()});cad[nome]=itens;montar();toast(ok);return true}
+  try{await db.collection('config').doc(nome).set({itens,editadoEm:new Date().toISOString()});cad[nome]=itens;montar();try{montarPrd()}catch(e){}try{renderCadastros()}catch(e){}toast(ok);return true}
   catch(e){toast(e&&e.code==='invalid_argument'?'Você não tem permissão para alterar os cadastros.':'Não foi possível salvar. Tente de novo.');return false}
+}
+let cadSel=new Set(),cadVis=[];
+function cadSelPinta(){
+  const n=cadSel.size;$('cadSelBar').hidden=!podeSalvar||!n;$('cadSelTxt').textContent=n+' equipe(s) selecionada(s)';
+  const cks=[...$('t-cad').querySelectorAll('.cad-ck')],m=cks.filter(c=>c.checked).length;
+  $('cadAll').hidden=!podeSalvar;$('cadAll').checked=cks.length>0&&m===cks.length;$('cadAll').indeterminate=m>0&&m<cks.length;
+  $('b-cadSelTodos').hidden=cadVis.length===0||cadVis.every(k=>cadSel.has(k));
 }
 function renderCadastros(){
   if(!cfg)return;
@@ -3118,10 +3183,25 @@ function renderCadastros(){
   ['b-novoPref'].forEach(id=>$(id).hidden=!podeSalvar);
   document.querySelectorAll('#formFer,#formFol').forEach(f=>f.hidden=!podeSalvar);
   const q=$('cadBusca').value.trim().toUpperCase();
-  const lst=Object.entries(cfg.prefixos).filter(([k,v])=>!q||(k+' '+v.e+' '+v.b+' '+v.g).toUpperCase().includes(q)).sort((a,b)=>a[0]<b[0]?-1:1);
+  const P0=Object.entries(cfg.prefixos);
+  const unq=f=>[...new Set(P0.map(([k,v])=>f(k,v)).filter(Boolean))].sort();
+  const fill=(id,L,tx)=>{const el=$(id),v=el.value;el.innerHTML='<option value="">'+tx+'</option>'+L.map(x=>'<option>'+esc(x)+'</option>').join('');el.value=L.includes(v)?v:''};
+  fill('cfBase',unq((k,v)=>v.b),'Todas');fill('cfGer',unq((k,v)=>v.g),'Todas');fill('cfEst',unq((k,v)=>v.e),'Todas');fill('cfTipo',unq(k=>PCFG&&PCFG.idx&&PCFG.idx[k]&&PCFG.idx[k].tipo),'Todos');
+  const fb=$('cfBase').value,fg=$('cfGer').value,fe=$('cfEst').value,ft=$('cfTipo').value,fs=$('cfSit').value;
+  const lst=P0.filter(([k,v])=>{
+    if(q&&!(k+' '+v.e+' '+v.b+' '+v.g).toUpperCase().includes(q))return false;
+    if(fb&&v.b!==fb)return false;if(fg&&v.g!==fg)return false;if(fe&&v.e!==fe)return false;
+    const pi=PCFG&&PCFG.idx&&PCFG.idx[k];
+    if(ft&&!(pi&&pi.tipo===ft))return false;
+    if(fs==='ed'&&!(cad.prefixos&&cad.prefixos[k]))return false;
+    if(fs==='sm'&&pi&&pi.meta>0)return false;
+    return true}).sort((a,b)=>a[0]<b[0]?-1:1);
+  cadVis=lst.map(x=>x[0]);for(const k of [...cadSel])if(!cfg.prefixos[k])cadSel.delete(k);
   $('cadCont').textContent=lst.length+' prefixos';
-  $('t-cad').innerHTML=lst.map(([k,v])=>'<tr><td><b>'+esc(k)+'</b>'+(cad.prefixos&&cad.prefixos[k]?'<span class="tag-site">editado</span>':'')+'</td><td>'+esc(v.e)+'</td><td>'+esc(v.g)+'</td><td>'+esc(v.b||'–')+'</td><td>'+resumoJor(v.j)+'</td><td>'+(podeSalvar?'<button class="btn sm" type="button" data-edit="'+esc(k)+'">Editar</button>':'')+'</td></tr>').join('')||'<tr><td colspan="6"><div class="empty">Nenhum prefixo encontrado.</div></td></tr>';
+  $('t-cad').innerHTML=lst.map(([k,v])=>'<tr><td>'+(podeSalvar?'<input type="checkbox" class="cad-ck" value="'+esc(k)+'"'+(cadSel.has(k)?' checked':'')+' aria-label="Selecionar '+esc(k)+'">':'')+'</td><td><b>'+esc(k)+'</b>'+(cad.prefixos&&cad.prefixos[k]?'<span class="tag-site">editado</span>':'')+'</td><td>'+esc(v.e)+'</td><td>'+esc(v.g)+'</td><td>'+esc(v.b||'–')+'</td><td>'+resumoJor(v.j)+'</td><td class="n">'+metaTxt(k)+'</td><td>'+(podeSalvar?'<button class="btn sm" type="button" data-edit="'+esc(k)+'">Editar</button>':'')+'</td></tr>').join('')||'<tr><td colspan="8"><div class="empty">Nenhum prefixo encontrado.</div></td></tr>';
   $('t-cad').querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>abrirPref(b.dataset.edit));
+  $('t-cad').querySelectorAll('.cad-ck').forEach(c=>c.onchange=()=>{c.checked?cadSel.add(c.value):cadSel.delete(c.value);cadSelPinta()});
+  cadSelPinta();
   const fer=Object.entries(cfg.feriados).filter(([d])=>d>='2026-01-01').sort((a,b)=>a[0]<b[0]?1:-1);
   $('t-fer').innerHTML=fer.map(([d,n])=>'<tr><td><b>'+dataBR(d)+'</b></td><td>'+semana(d)+'</td><td>'+esc(n)+(cad.feriados&&cad.feriados[d]?'<span class="tag-site">site</span>':'')+'</td><td>'+(podeSalvar?'<button class="btn sm del" type="button" data-dfer="'+d+'">Remover</button>':'')+'</td></tr>').join('')||'<tr><td colspan="4"><div class="empty">Nenhum feriado em 2026.</div></td></tr>';
   $('t-fer').querySelectorAll('[data-dfer]').forEach(b=>b.onclick=()=>{const it=Object.assign({},cad.feriados||{});it[b.dataset.dfer]=null;salvarCad('feriados',it,'Feriado removido.')});
@@ -3133,14 +3213,56 @@ function renderCadastros(){
   $('dlEst').innerHTML=ests.map(v=>'<option value="'+esc(v)+'">').join('');$('dlBase').innerHTML=bases.map(v=>'<option value="'+esc(v)+'">').join('');$('dlGer').innerHTML=gers.map(v=>'<option value="'+esc(v)+'">').join('');
 }
 $('cadBusca').addEventListener('input',renderCadastros);
+['cfBase','cfGer','cfEst','cfTipo','cfSit'].forEach(i=>$(i).addEventListener('change',renderCadastros));
+$('cfLimpa').onclick=()=>{['cfBase','cfGer','cfEst','cfTipo','cfSit'].forEach(i=>$(i).value='');$('cadBusca').value='';renderCadastros()};
+$('cadAll').onchange=e=>{$('t-cad').querySelectorAll('.cad-ck').forEach(c=>{c.checked=e.target.checked;e.target.checked?cadSel.add(c.value):cadSel.delete(c.value)});cadSelPinta()};
+$('b-cadSelTodos').onclick=()=>{cadVis.forEach(k=>cadSel.add(k));renderCadastros()};
+$('b-cadSelLimpa').onclick=()=>{cadSel.clear();renderCadastros()};
+$('b-cadMassa').onclick=()=>abrirMassa([...cadSel]);
+/* edição em massa: só altera o que for preenchido; o resto de cada equipe fica como está */
+function abrirMassa(recs){
+  if(!recs.length)return;
+  const vals=k=>[...new Set(Object.values(cfg.prefixos).filter(v=>v&&v[k]).map(v=>v[k]))].sort();
+  const P=(PCFG&&PCFG.prefixos)||[],tp=[...new Set(P.map(p=>p[4]).filter(Boolean))].sort(),ep=[...new Set(P.map(p=>p[2]).filter(Boolean))].sort();
+  const sel=(id,L,ph)=>'<select id="'+id+'"><option value="">'+ph+'</option>'+L.map(x=>'<option>'+esc(x)+'</option>').join('')+'</select>';
+  $('ltTit').textContent='Editar '+recs.length+' equipe(s) em massa';
+  $('ltCorpo').innerHTML='<p class="muted" style="margin:0 0 10px;font-size:12.5px">Preencha só o que quer mudar. Campos deixados em branco não são alterados. Tudo é gravado no Neon.</p>'
+   +'<div class="mass-g"><div class="fld"><label>Estrutura</label>'+sel('mE',vals('e'),'— não alterar —')+'</div><div class="fld"><label>Gerência</label>'+sel('mG',vals('g'),'— não alterar —')+'</div><div class="fld"><label>Base</label>'+sel('mB',vals('b'),'— não alterar —')+'</div>'
+   +'<div class="fld"><label>Meta diária (R$)</label><input type="text" id="mMeta" inputmode="decimal" placeholder="não alterar"></div><div class="fld"><label>Tipo na produção</label><input type="text" id="mTp" list="mdlT" placeholder="não alterar"><datalist id="mdlT">'+tp.map(x=>'<option value="'+esc(x)+'">').join('')+'</datalist></div><div class="fld"><label>Estrutura na produção</label><input type="text" id="mEp" list="mdlE" placeholder="não alterar"><datalist id="mdlE">'+ep.map(x=>'<option value="'+esc(x)+'">').join('')+'</datalist></div></div>'
+   +'<p class="muted" style="margin:10px 0 4px;font-size:12px">Equipes: '+recs.map(esc).join(', ')+'</p>';
+  $('ltMsg').textContent='';$('modalLote').hidden=false;$('b-ltSalva').textContent='Aplicar às selecionadas';
+  $('b-ltSalva').onclick=async()=>{
+    const e=$('mE').value,g=$('mG').value,b=$('mB').value,pm=prdNum($('mMeta').value),pt=$('mTp').value.trim().toUpperCase(),pe=$('mEp').value.trim().toUpperCase();
+    if(Number.isNaN(pm)){$('ltMsg').textContent='Meta inválida. Use só números, ex.: 1.353,94.';return}
+    if(!e&&!g&&!b&&pm==null&&!pt&&!pe){$('ltMsg').textContent='Preencha pelo menos um campo para alterar.';return}
+    const it=Object.assign({},cad.prefixos||{});
+    for(const k of recs){const v=cfg.prefixos[k];if(!v)continue;const o=Object.assign({},it[k]||{},{e:e||v.e,g:g||v.g,b:b||v.b,j:v.j});if(e&&e!==v.e&&!(it[k]&&it[k].j))o.j=jorPadrao(e);if(pm!=null)o.pm=pm;if(pt)o.pt=pt;if(pe)o.pe=pe;it[k]=o}
+    $('b-ltSalva').disabled=true;const ok=await salvarCad('prefixos',it,recs.length+' equipe(s) atualizada(s).');$('b-ltSalva').disabled=false;
+    if(ok){$('modalLote').hidden=true;cadSel.clear();renderCadastros()}
+  };
+}
 $('formFer').addEventListener('submit',e=>{e.preventDefault();const d=$('ferData').value,n=$('ferNome').value.trim();if(!d||!n)return;const it=Object.assign({},cad.feriados||{});it[d]=n;salvarCad('feriados',it,'Feriado adicionado.').then(ok=>{if(ok){$('ferData').value='';$('ferNome').value=''}})});
 $('formFol').addEventListener('submit',e=>{e.preventDefault();const d=$('folData').value,b=$('folBase').value,es=$('folEst').value,m=$('folMot').value.trim();if(!d||!b||!es||!m)return;const it=Object.assign({},cad.folgas||{});it[b+'|'+es+'|'+d]=m;salvarCad('folgas',it,'Folga adicionada.').then(ok=>{if(ok){$('folData').value='';$('folMot').value=''}})});
+const prdNum=v=>{v=String(v==null?'':v).trim();if(!v)return null;const n=Number(v.includes(',')?v.replace(/\./g,'').replace(',','.'):v);return Number.isNaN(n)||n<0?NaN:n};
+const metaTxt=k=>{const pi=PCFG&&PCFG.idx&&PCFG.idx[k];if(!pi)return '–';return pi.meta>0?pi.meta.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}):'sem meta fixa'};
+/* A produção usa o arquivo prod_config.json como valor inicial; o que for cadastrado/editado no site (Neon) vale por cima. */
+function prdAplicarCad(){
+  if(!PCFG)return;if(!PCFG.p0)PCFG.p0=PCFG.prefixos.map(p=>p.slice());
+  const ov=(cad&&cad.prefixos)||{},mapa={};PCFG.p0.forEach(p=>mapa[p[0]]=p.slice());
+  for(const k in ov){const o=ov[k];if(o===null){delete mapa[k];continue}if(!o)continue;
+    let p=mapa[k];if(!p){if(o.pm==null&&!o.pt)continue;p=mapa[k]=[k,o.b||'',o.pe||o.e||'',0,'']}
+    if(o.b)p[1]=o.b;if(o.pe)p[2]=o.pe;if(o.pm!=null)p[3]=o.pm;if(o.pt)p[4]=o.pt}
+  PCFG.prefixos=Object.values(mapa);PCFG.idx=null;
+}
 function abrirPref(k,novoNome){
   editPref=k;confirmaDel=false;
   const v=k?cfg.prefixos[k]:{e:'',g:'',b:'',j:[480,480,480,480,480,0,0]};
   $('cadTit').textContent=k?'Editar prefixo':'Novo prefixo';
   $('cpPref').value=k||novoNome||'';$('cpPref').readOnly=!!k;
   $('cpEst').value=v.e||'';$('cpGer').value=v.g||'';$('cpBase').value=v.b||'';
+  {const pi=(PCFG&&PCFG.idx&&k&&PCFG.idx[k])||null;
+   $('cpMeta').value=pi&&pi.meta!=null?String(pi.meta).replace('.',','):(v.pm!=null?String(v.pm).replace('.',','):'');$('cpTipoP').value=pi?pi.tipo||'':(v.pt||'');$('cpEstP').value=pi?pi.est||'':(v.pe||'');
+   const P=(PCFG&&PCFG.prefixos)||[];$('dlTipoP').innerHTML=[...new Set(P.map(p=>p[4]).filter(Boolean))].sort().map(x=>'<option value="'+esc(x)+'">').join('');$('dlEstP').innerHTML=[...new Set(P.map(p=>p[2]).filter(Boolean))].sort().map(x=>'<option value="'+esc(x)+'">').join('')}
   $('cpJor').innerHTML=DIAS_CURTO.map((n,i)=>'<div class="fld"><label for="cpJ'+i+'">'+n+'</label><input type="text" inputmode="numeric" placeholder="00:00" maxlength="5" id="cpJ'+i+'" value="'+minParaHora((v.j||[])[i]||0)+'"></div>').join('');
   $('cpMsg').innerHTML='';$('b-delPref').hidden=!k;$('b-delPref').textContent='Excluir';
   $('gavCad').hidden=false;$('cadFundo').hidden=false;
@@ -3155,7 +3277,9 @@ $('b-salvaPref').onclick=async()=>{
   if(!editPref&&cfg.prefixos[k]){$('cpMsg').innerHTML='<div class="note err">Esse prefixo já existe. Use Editar na lista.</div>';return}
   const j=DIAS_CURTO.map((_,i)=>horaParaMin($('cpJ'+i).value));
   if(j.some(x=>isNaN(x))){$('cpMsg').innerHTML='<div class="note err">Jornada no formato horas:minutos, ex.: 08:00. Deixe 00:00 para folga.</div>';return}
-  const it=Object.assign({},cad.prefixos||{});it[k]={e,g,b,j};
+  const pm=prdNum($('cpMeta').value),pt=$('cpTipoP').value.trim().toUpperCase(),pe=$('cpEstP').value.trim().toUpperCase();
+  if(Number.isNaN(pm)){$('cpMsg').innerHTML='<div class="note err">Meta diária inválida. Use só números, ex.: 1.353,94.</div>';return}
+  const it=Object.assign({},cad.prefixos||{});const o={e,g,b,j};if(pm!=null)o.pm=pm;if(pt)o.pt=pt;if(pe)o.pe=pe;it[k]=o; /* tudo vai para o Neon */
   if(await salvarCad('prefixos',it,'Prefixo '+k+' salvo.'))fecharPref();
 };
 $('b-delPref').onclick=async()=>{
@@ -3191,7 +3315,7 @@ function abrirLote(recs){
   const pintaJ=tr=>{const e=tr.querySelector('.lt-e').value;tr.querySelector('.lt-j').textContent=e?resumoJor(jorPadrao(e)):'–'};
   linhas().forEach(tr=>tr.querySelector('.lt-e').onchange=()=>pintaJ(tr));
   [['lt-aE','lt-e'],['lt-aG','lt-g'],['lt-aB','lt-b']].forEach(([a,c])=>$('ltCorpo').querySelector('.'+a).onchange=ev=>{if(!ev.target.value)return;linhas().forEach(tr=>{tr.querySelector('.'+c).value=ev.target.value;pintaJ(tr)})});
-  $('ltMsg').textContent='';$('modalLote').hidden=false;
+  $('ltMsg').textContent='';$('modalLote').hidden=false;$('b-ltSalva').textContent='Salvar cadastros';
   $('b-ltSalva').onclick=async()=>{
     const it=Object.assign({},cad.prefixos||{});let falta=0;
     for(const tr of linhas()){const e=tr.querySelector('.lt-e').value,g=tr.querySelector('.lt-g').value,b=tr.querySelector('.lt-b').value;if(!e||!g||!b){falta++;tr.classList.add('lt-err');continue}tr.classList.remove('lt-err');it[tr.dataset.rec]={e,g,b,j:jorPadrao(e)}}
@@ -3736,9 +3860,10 @@ function lerArquivo(file){
       let ups=null,ader=null,ini=null;if((fonte==='MAN'||fonte==='OBRAS')&&ICFG){try{ini=iniDeLinhas(rowsA)}catch(e){ini=null}}let upsSc=null;if(fonte==='COI'&&UCFG){try{const ua=UPSCalc.agregarArquivo(UCFG,rowsA,Disp.parseData);ups=ua.dias;upsSc=ua.sc}catch(e){ups=null}try{ader=aderDeLinhas(rowsA)}catch(e){ader=null}}let prd=null,mix=null,tm=null;if(fonte==='COI'&&PCFG){try{prd=prdDeLinhas(rowsA)}catch(e){prd=null}try{mix=mixDeLinhas(rowsA).dias}catch(e){mix=null}try{tm=tmDeLinhas(rowsA).dias}catch(e){tm=null}}
       /* COI do dia de hoje (dia ainda aberto): atualiza só a Produção do dia; o resto espera o dia fechar */
       let banco=null;try{banco=bancoDeLinhas(rowsA,fonte)}catch(e){banco=null}
-      let parcial=null;const hj=hojeIso();
-      if(fonte==='COI'&&datas.includes(hj)){parcial=hj;delete r.dias[hj];datas=datas.filter(d=>d!==hj);if(ups)delete ups[hj];if(upsSc)delete upsSc[hj];if(ader)delete ader[hj];if(mix)delete mix[hj];if(tm)delete tm[hj]}
-      res({nome:file.name,fonte,datas,datasUps:ups?Object.keys(ups).sort():[],linhas:r.linhas,dias:r.dias,ups,upsSc,ader,ini,prd,mix,tm,vazio,parcial,banco});
+      let parcial=null,upsHoje=null,ct=null;const hj=hojeIso();
+      if(fonte==='COI'){try{ct=ctDeCOI(rowsA,hj)}catch(e){console.error('ctDeCOI',e);ct=null}}
+      if(fonte==='COI'&&datas.includes(hj)){parcial=hj;if(ups&&ups[hj])upsHoje={dia:hj,eq:ups[hj]};delete r.dias[hj];datas=datas.filter(d=>d!==hj);if(ups)delete ups[hj];if(upsSc)delete upsSc[hj];if(ader)delete ader[hj];if(mix)delete mix[hj];if(tm)delete tm[hj]}
+      res({nome:file.name,fonte,datas,datasUps:ups?Object.keys(ups).sort():[],linhas:r.linhas,dias:r.dias,ups,upsSc,ader,ini,prd,mix,tm,vazio,parcial,banco,upsHoje,ct});
     }catch(e){res({nome:file.name,fonte,erro:e.message})}};
     fr.onerror=()=>res({nome:file.name,fonte,erro:'Não foi possível ler o arquivo'});
     fr.readAsArrayBuffer(file);
@@ -3759,7 +3884,7 @@ function atualizarLocais(){try{atualizarLocais0()}finally{try{montarBanco()}catc
 function atualizarLocais0(){
   locais=[];upsLocais={};escalaLocal=null;aderLocais={};ajusteLocal=null;iniLocais={};defLocais={};defTatLocal=null;defTecLocal=null;trfLocalA=null;trfLocalN=null;mixLocais={};tmLocais={};prdLocais={};bancoLocal={};
   for(const p of pendentes){if(p.erro)continue;if(p.banco){const b=bancoLocal[p.fonte]=bancoLocal[p.fonte]||{cols:p.banco.cols,dias:{}};for(const d in p.banco.dias)b.dias[d]=p.banco.dias[d]}if(p.mix)for(const d in p.mix)mixLocais[d]=p.mix[d];if(p.tm)for(const d in p.tm)tmLocais[d]=p.tm[d];if(p.prd)for(const d in p.prd.dias)prdLocais[d]={eq:p.prd.dias[d],arquivo:p.nome,ultFim:p.prd.ultFim};if(p.fonte==='DEFEITOS'){defLocais[p.data]={itens:p.itens,fora:p.fora};continue}if(p.fonte==='FISCDEF'){defTatLocal={notas:p.tat};continue}if(p.fonte==='MEDICAO'){defTecLocal={m:p.tec};continue}if(p.fonte==='TRAFOAC'){trfLocalA=p.acoes;continue}if(p.fonte==='TRAFOINT'){trfLocalN=Object.assign(trfLocalN||{},p.meses);continue}for(const d of p.datas)locais.push({data:d,fonte:p.fonte,eq:p.dias[d]});if(p.ups)for(const d in p.ups)upsLocais[d]=p.ups[d];if(p.ader)for(const d in p.ader)aderLocais[d]=p.ader[d];if(p.ini)for(const d in p.ini)iniLocais[d+'#'+p.fonte]=p.ini[d];if(p.escala)escalaLocal=p.escala;if(p.ajuste)ajusteLocal=p.ajuste}
-  $('arqs').innerHTML=pendentes.map(p=>'<div class="arq'+(p.erro?' erro':'')+'"><span class="tag">'+esc(p.fonte==='PROD'?'UPS':p.fonte==='FISCDEF'?'FISC':p.fonte==='MEDICAO'?'MEDIÇÃO':p.fonte==='TRAFOAC'||p.fonte==='TRAFOINT'||p.fonte==='TRAFO'?'TRAFO':p.fonte||'?')+'</span><span class="nome">'+esc(p.nome)+'<br><span class="muted">'+(p.erro?esc(p.erro):p.fonte==='DEFEITOS'?'SISCO · situação de '+dataBR(p.data)+' · '+p.linhas.toLocaleString('pt-BR')+' defeitos no arquivo, '+p.cgb.toLocaleString('pt-BR')+' da CGB (sem Devolvido de Campo) · <b>'+p.itens.filter(x=>x[14]).length+' em tratativa</b>':p.fonte==='TRAFOAC'?'Base de ações nos trafos · '+p.linhas+' registros · '+new Set(p.acoes.map(a=>a.t)).size+' trafos':p.fonte==='TRAFOINT'?'Interrupções de trafo · '+p.linhas.toLocaleString('pt-BR')+' notas de '+dataBR(p.dIni.slice(0,10))+' a '+dataBR(p.dFim.slice(0,10))+' · substitui os meses do arquivo':p.fonte==='MEDICAO'?'Banco Medição · '+p.linhas.toLocaleString('pt-BR')+' linhas · '+Object.keys(p.tec).length.toLocaleString('pt-BR')+' PEPs (ciclo e responsável dos defeitos)':p.fonte==='FISCDEF'?'SISCO · Relatório de Fiscalização · '+p.linhas+' obras · '+p.tat.length+' notas do Tático (prioridade de tratamento)':p.fonte==='AJUSTE'?'Ajustes de horário da aderência · '+p.linhas+' registros':p.fonte==='ESCALA'?'Escala de '+p.linhas+' equipes · substitui a escala atual da UPS e da aderência':((()=>{const ds=p.datas.length?p.datas:(p.datasUps&&p.datasUps.length?p.datasUps:(p.parcial?[p.parcial]:[]));return ds.length===1?'Dia '+dataBR(ds[0]):ds.length+' dias ('+dataBR(ds[0])+' a '+dataBR(ds[ds.length-1])+')'})())+' · '+(p.vazio?'sem atividades no dia (o SIGA exportou o relatório vazio)':p.linhas.toLocaleString('pt-BR')+' atividades válidas')+(p.parcial&&!p.datas.length?' · <b>dia ainda aberto</b>: atualiza só a Produção do dia'+(p.prd&&p.prd.dias[p.parcial]?' ('+brl0(Object.values(p.prd.dias[p.parcial]).reduce((a,e)=>a+e[0],0))+')':'')+' · UPS, aderência, disponibilidade, Mix e TME esperam o dia fechar':p.fonte==='COI'&&p.ups&&Object.keys(p.ups).length?' · também atualiza a UPS, a aderência e a produção do dia'+(p.prd&&Object.keys(p.prd.dias).length?' ('+brl0(Object.values(Object.values(p.prd.dias)[0]).reduce((a,e)=>a+e[0],0))+')':''):p.ini&&!p.vazio?' · também atualiza o início das atividades':p.fonte==='PROD'?' · só UPS':''))+'</span></span><span class="'+(p.erro?'st-err':'st-ok')+'">'+(p.erro?'ERRO':'PRONTO')+'</span></div>').join('');
+  $('arqs').innerHTML=pendentes.map(p=>'<div class="arq'+(p.erro?' erro':'')+'"><span class="tag">'+esc(p.fonte==='PROD'?'UPS':p.fonte==='FISCDEF'?'FISC':p.fonte==='MEDICAO'?'MEDIÇÃO':p.fonte==='TRAFOAC'||p.fonte==='TRAFOINT'||p.fonte==='TRAFO'?'TRAFO':p.fonte||'?')+'</span><span class="nome">'+esc(p.nome)+'<br><span class="muted">'+(p.erro?esc(p.erro):p.fonte==='DEFEITOS'?'SISCO · situação de '+dataBR(p.data)+' · '+p.linhas.toLocaleString('pt-BR')+' defeitos no arquivo, '+p.cgb.toLocaleString('pt-BR')+' da CGB (sem Devolvido de Campo) · <b>'+p.itens.filter(x=>x[14]).length+' em tratativa</b>':p.fonte==='TRAFOAC'?'Base de ações nos trafos · '+p.linhas+' registros · '+new Set(p.acoes.map(a=>a.t)).size+' trafos':p.fonte==='TRAFOINT'?'Interrupções de trafo · '+p.linhas.toLocaleString('pt-BR')+' notas de '+dataBR(p.dIni.slice(0,10))+' a '+dataBR(p.dFim.slice(0,10))+' · substitui os meses do arquivo':p.fonte==='MEDICAO'?'Banco Medição · '+p.linhas.toLocaleString('pt-BR')+' linhas · '+Object.keys(p.tec).length.toLocaleString('pt-BR')+' PEPs (ciclo e responsável dos defeitos)':p.fonte==='FISCDEF'?'SISCO · Relatório de Fiscalização · '+p.linhas+' obras · '+p.tat.length+' notas do Tático (prioridade de tratamento)':p.fonte==='AJUSTE'?'Ajustes de horário da aderência · '+p.linhas+' registros':p.fonte==='ESCALA'?'Escala de '+p.linhas+' equipes · substitui a escala atual da UPS e da aderência':((()=>{const ds=p.datas.length?p.datas:(p.datasUps&&p.datasUps.length?p.datasUps:(p.parcial?[p.parcial]:[]));return ds.length===1?'Dia '+dataBR(ds[0]):ds.length+' dias ('+dataBR(ds[0])+' a '+dataBR(ds[ds.length-1])+')'})())+' · '+(p.vazio?'sem atividades no dia (o SIGA exportou o relatório vazio)':p.linhas.toLocaleString('pt-BR')+' atividades válidas')+(p.parcial&&!p.datas.length?' · <b>dia ainda aberto</b>: atualiza só a Produção do dia'+(p.prd&&p.prd.dias[p.parcial]?' ('+brl0(Object.values(p.prd.dias[p.parcial]).reduce((a,e)=>a+e[0],0))+')':'')+' · UPS, aderência, disponibilidade, Mix e TME esperam o dia fechar'+(p.ct?' · <b>atualiza também a Gestão de Contingência e o Farol de Prazos</b> ('+p.ct.linhas.length.toLocaleString('pt-BR')+' atividades de hoje'+(p.upsHoje?', UPS parcial do dia':'')+(p.ct.semEq?', '+p.ct.semEq+' sem equipe ignoradas':'')+')':' · Contingência e Prazos não mudam (o relatório não é de hoje)'):p.fonte==='COI'&&p.ups&&Object.keys(p.ups).length?' · também atualiza a UPS, a aderência e a produção do dia'+(p.prd&&Object.keys(p.prd.dias).length?' ('+brl0(Object.values(Object.values(p.prd.dias)[0]).reduce((a,e)=>a+e[0],0))+')':'')+' · Contingência e Prazos não mudam (só o SIGA de hoje atualiza)':p.ini&&!p.vazio?' · também atualiza o início das atividades':p.fonte==='PROD'?' · só UPS':''))+'</span></span><span class="'+(p.erro?'st-err':'st-ok')+'">'+(p.erro?'ERRO':'PRONTO')+'</span></div>').join('');
   const ok=pendentes.filter(p=>!p.erro&&p.datas.length), msg=$('envio-msg'), okTodos=pendentes.filter(p=>!p.erro);
   if(ok.length){
     const datas=[...new Set(ok.flatMap(p=>p.datas))].sort(), falta=[];
@@ -3776,7 +3901,7 @@ $('b-limpar').onclick=()=>{pendentes=[];atualizarLocais()};
 $('b-salvar').onclick=async()=>{
   if(!db)return;
   const btn=$('b-salvar');btn.disabled=true;btn.textContent='Salvando…';
-  let n=0,erro=null,erroArq='';const totS=pendentes.filter(p=>!p.erro).length;
+  let n=0,erro=null,erroArq='',ctAvisos=[];const totS=pendentes.filter(p=>!p.erro).length;
   outer: for(const p of pendentes){if(p.erro)continue;
     progSet('prog-env',n/Math.max(1,totS),'Salvando '+(n+1)+' de '+totS+' · '+p.nome);
     try{
@@ -3787,6 +3912,8 @@ $('b-salvar').onclick=async()=>{
       if(p.ajuste){await db.collection('config').doc('aderAjuste').set({just:p.ajuste.just,ajustes:p.ajuste.ajustes,arquivo:p.nome,editadoEm:new Date().toISOString()})}
       if(p.escala){await db.collection('config').doc('escala').set({itens:p.escala,arquivo:p.nome,editadoEm:new Date().toISOString()})}
       if(p.banco)await bancoSalvar(p);
+      if(p.upsHoje)await db.collection('config').doc('upsHoje').set({data:p.upsHoje.dia,eq:JSON.stringify(p.upsHoje.eq),arquivo:p.nome,enviadoEm:new Date().toISOString()});
+      if(p.ct){try{const nm=/\.xlsx?$/i.test(p.nome)?p.nome:p.nome+'.xlsx';const rr=await ctApi('contingencia',{method:'POST',body:{arquivo:nm,cab:p.ct.cab,linhas:p.ct.linhas,nums:p.ct.nums}});ctAvisos.push('Contingência e Prazos: '+rr.meta.total+' atividades de hoje atualizadas.');CT.versao=0;CT.ajusta=true;try{await ctCarregar(false)}catch(e9){}}catch(e8){const pr=(e8&&(e8.problemas||(e8.dados&&e8.dados.problemas)))||[];ctAvisos.push('Contingência e Prazos NÃO foram atualizados ('+esc(pr.length?pr[0].mensagem+(pr[0].coluna?' · '+pr[0].coluna:'')+(pr[0].linha?' · linha '+pr[0].linha:''):(e8&&e8.message)||'falha de comunicação')+'). O SIGA foi salvo normalmente; a base anterior continua valendo.');console.error('ct COI',e8)}}
       if(p.fonte==='DEFEITOS'){await db.collection('defeitos').doc(p.data).set({data:p.data,arquivo:p.nome,linhas:p.linhas,itens:p.itens.map(x=>JSON.stringify(x)),fora:p.fora,enviadoEm:new Date().toISOString()})}
       if(p.prd)for(const d in p.prd.dias){await db.collection('prod').doc(d).set({data:d,arquivo:p.nome,eq:JSON.stringify(p.prd.dias[d]),ultFim:p.prd.ultFim?p.prd.ultFim.join('|'):'',enviadoEm:new Date().toISOString()})}
       if(p.tm)for(const d in p.tm){await db.collection('tm').doc(d).set({data:d,arquivo:p.nome,j:JSON.stringify(p.tm[d]),enviadoEm:new Date().toISOString()})}
@@ -3801,7 +3928,7 @@ $('b-salvar').onclick=async()=>{
   btn.disabled=false;btn.textContent='Salvar na base';
   if(erro){const cod=erro.code||'',det=esc(String(erro.message||erro).slice(0,220));$('envio-msg').innerHTML='<div class="note err">Não foi possível salvar <b>'+esc(erroArq)+'</b>. '+(cod==='permission_denied'?'Sem permissão de edição neste painel.':cod==='invalid_argument'?'O banco recusou os dados (provavelmente o arquivo gera um registro grande demais ou com valor inválido).':'Tente de novo em instantes.')+'<br><small>Detalhe técnico: '+esc(cod)+' '+det+'</small></div>';return}
   pendentes=[];locais=[];upsLocais={};escalaLocal=null;aderLocais={};ajusteLocal=null;iniLocais={};defLocais={};defTatLocal=null;defTecLocal=null;trfLocalA=null;trfLocalN=null;mixLocais={};tmLocais={};prdLocais={};$('arqs').innerHTML='';$('envio-acoes').hidden=true;
-  $('envio-msg').innerHTML='<div class="note ok">'+n+' relatório(s) salvo(s) na base. Quem abrir o link já vê os números novos.</div>';
+  $('envio-msg').innerHTML='<div class="note ok">'+n+' relatório(s) salvo(s) na base. Quem abrir o link já vê os números novos.'+(ctAvisos.length?'<br>'+ctAvisos.join('<br>'):'')+'</div>';
   toast('Base atualizada.');
 };
 const drop=$('drop');
@@ -3818,7 +3945,7 @@ $('f-busca').addEventListener('input',()=>tabelaPref(filtrar()));
 document.querySelectorAll('th.sort').forEach(th=>th.addEventListener('click',()=>{const k=th.dataset.k;ordem=ordem.k===k?{k,dir:-ordem.dir}:{k,dir:['pct','rec','est','base','ger'].includes(k)?1:-1};tabelaPref(filtrar())}));
 
 /* ================= UPS ================= */
-let UCFG=null, UHIST=null, upsDocs=[], upsLocais={}, escalaDb=null, escalaDbInfo=null, escalaLocal=null, ferUps={}, UR=null, ordemU={k:'pct',dir:1}, cobModoU='mes', nAvisosUps=0;
+let UCFG=null, UHIST=null, upsDocs=[], upsLocais={}, escalaDb=null, escalaDbInfo=null, escalaLocal=null, ferUps={}, UR=null, URH=null, upsHojeDb=null, ordemU={k:'pct',dir:1}, cobModoU='mes', nAvisosUps=0;
 const SIGLAS=['BCB','ITM','PDS','PDT','STI'];
 const NOME_SIGLA={BCB:'Bacabal',ITM:'Itapecuru Mirim',PDS:'Pedreiras',PDT:'Presidente Dutra',STI:'Santa Inês'};
 const CL_COR={A:'#40c746',B:'#f2e33a',C:'#ed7b24',D:'#f24141'};
@@ -3827,7 +3954,7 @@ const n1=v=>v==null?'–':(+v).toLocaleString('pt-BR',{minimumFractionDigits:1,m
 const clsPill=c=>c?'<span class="cl cl-'+c+'">'+c+'</span>':'<span class="pill nd">–</span>';
 const faixaCell=p=>'<span class="pct '+UPSCalc.faixaBase(p).cls+'">'+pct(p)+'</span>';
 const clsCell=p=>{const c=UPSCalc.classe(p);return '<span class="pct cl-p-'+(c||'x')+'">'+pct(p)+'</span>'};
-function indAtual(){const p=pag().id;if(p==='ups-regras')return null;if(p.startsWith('ups-'))return'ups';if(p.startsWith('ader-'))return'ader';if(p.startsWith('ini-'))return'ini';if(p.startsWith('def-'))return'def';if(p.startsWith('prd-'))return'prd';if(p.startsWith('trf-'))return'trf';if(p.startsWith('mix-'))return'mix';if(p.startsWith('tm-'))return'tm';if(['painel','prefixos','cobranca'].includes(p))return'disp';return null}
+function indAtual(){const p=pag().id;if(p==='ups-regras')return null;if(p.startsWith('ups-'))return'ups';if(p.startsWith('ader-'))return'ader';if(p.startsWith('ini-'))return'ini';if(p.startsWith('def-'))return'def';if(p.startsWith('prd-'))return'prd';if(p.startsWith('trf-'))return'trf';if(p==='mix-causa')return null;if(p.startsWith('mix-'))return'mix';if(p.startsWith('tm-'))return'tm';if(['painel','prefixos','cobranca'].includes(p))return'disp';return null}
 
 function montarUPS(){
   if(!UCFG||!UHIST||!cfg)return;
@@ -3838,6 +3965,8 @@ function montarUPS(){
   const diasF=hierDias(dias);
   UR=UPSCalc.calcular(UCFG,escala,diasF,cfg.feriados,ferUps);
   UR.dias=diasF;UR.escala=escala;
+  URH=null;
+  if(upsHojeDb&&upsHojeDb.data===hojeIso()&&(!UR.ultima||upsHojeDb.data>UR.ultima)){try{const d2=Object.assign({},dias);d2[upsHojeDb.data]=upsHojeDb.eq;const dF2=hierDias(d2);URH=UPSCalc.calcular(UCFG,escala,dF2,cfg.feriados,ferUps);URH.dias=dF2;URH.escala=escala;URH.em=upsHojeDb.em;if(URH.ultima!==upsHojeDb.data)URH=null}catch(e){console.error('URH',e);URH=null}}
   preencherFiltrosUps();renderUPS();renderInicio();renderAvisosUps();renderSemClasse();renderRgUps();renderCadUps();renderRail();if(typeof montarAder==='function'&&ACFG)montarAder();atualizaTipos();if(pag().id==='prazos'&&typeof CT!=='undefined'&&CT.meta)try{ctRenderP()}catch(e){}
 }
 const UF=['u-base','u-tipo','u-coord','u-rec','u-ate'];
@@ -5103,7 +5232,7 @@ function prdDeLinhas(rows){
   return {dias,n,ultFim};
 }
 function montarPrd(){
-  if(!PCFG||!PHIST)return;prdPrep();
+  if(!PCFG||!PHIST)return;prdAplicarCad();prdPrep();
   const dias={},info={};
   for(const d in PHIST.dias){dias[d]=PHIST.dias[d];info[d]={fonte:'Relatório de Produção (planilha)'}}
   for(const d in prdDocs){dias[d]=prdDocs[d].eq;info[d]={fonte:prdDocs[d].arquivo,em:prdDocs[d].enviadoEm,ultFim:prdDocs[d].ultFim}}
@@ -5847,6 +5976,92 @@ $('tq-busca').addEventListener('input',()=>renderTm());
 })();
 
 
+/* =================== AUDITORIA DE CAUSAS (Mix GSTC) ===================
+   Atividades concluídas SEMFLENG, Assistência NR e Assistência SP do COI (banco no Neon), por data, com Tipo de Causa / Subcausa / SubTipo de Causa.
+   Clicar na quantidade abre as atividades: prefixo, equipe, data, início, fim e ordem de serviço. */
+const AC={mes:'',lim:15,abre:new Set(),rows:[],cols:{sub:false},carregando:false,mesCarregado:'',tk:0};
+const acAti=t=>{const k=ctK(t);return k.startsWith('semfleng')?'SEMFLENG':k==='assistencia nr'?'Assistência NR':k==='assistencia sp'?'Assistência SP':''};
+const acHora=v=>{const m=Disp.parseHora(v);return m==null?'':String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0')};
+const acSem=d=>['dom','seg','ter','qua','qui','sex','sáb'][new Date(d+'T12:00:00Z').getUTCDay()];
+function acMostrar(){
+  const idx=bancoIdxDe('COI'),meses=[...new Set(Object.keys(idx).map(d=>d.slice(0,7)))].sort().reverse(),sel=$('acMes');
+  if(sel.dataset.n!==String(meses.length)+meses[0]){sel.dataset.n=String(meses.length)+meses[0];sel.innerHTML=meses.map(m=>'<option value="'+m+'">'+esc(mesNome(m).replace(/^./,c=>c.toUpperCase()))+'</option>').join('');if(!AC.mes||!meses.includes(AC.mes))AC.mes=meses[0]||''}
+  sel.value=AC.mes;
+  if(!meses.length){$('acMsg').textContent='Nenhum dia do COI no banco ainda. Envie o relatório do COI em Atualizar com o SIGA.';$('acTab').innerHTML='';$('acKpis').innerHTML='';return}
+  const chave=AC.mes+'|'+Object.keys(idx).filter(d=>d.slice(0,7)===AC.mes).length;
+  if(AC.mesCarregado!==chave)acCarregar();else acRender();
+}
+async function acCarregar(){
+  const mes=AC.mes,idx=bancoIdxDe('COI'),ds=Object.keys(idx).filter(d=>d.slice(0,7)===mes).sort(),tk=++AC.tk;
+  AC.carregando=true;$('acMsg').textContent='Carregando '+ds.length+' dia(s) do COI…';
+  const rows=[];let sub=false;
+  try{
+    for(let i=0;i<ds.length;i+=6){
+      const parte=await Promise.all(ds.slice(i,i+6).map(d=>bancoDia('COI',d).then(x=>({d,x}))));
+      if(tk!==AC.tk)return;
+      for(const {d,x} of parte){const c=x.cols,ix=n=>c.indexOf(n);
+        const iA=ix('Tipo de Atividade (2)')>=0?ix('Tipo de Atividade (2)'):ix('Tipo de Atividade'),iR=ix('Recurso'),iS=ix('Status da Atividade'),iI=ix('Início'),iF=ix('Fim'),iO=ix('Ordem de Serviço'),iC=ix('Tipo de Causa - Text'),iU=ix('Subcausa'),iT=ix('SubTipo de Causa - Text');
+        if(iA<0||iR<0||iS<0)continue;if(iU>=0)sub=true;
+        const g=(r,k)=>k<0||r[k]==null?'':String(r[k]).trim();
+        for(const r of x.rows){if(ctK(g(r,iS))!=='concluido')continue;const at=acAti(g(r,iA));if(!at)continue;
+          rows.push({d,rec:g(r,iR).split(/\s+/)[0],at,os:g(r,iO),ini:g(r,iI),fim:g(r,iF),ca:g(r,iC),su:g(r,iU),st:g(r,iT)})}}
+    }
+    AC.rows=rows;AC.cols.sub=sub;AC.mesCarregado=mes+'|'+ds.length;AC.abre.clear();AC.lim=15;
+  }catch(e){$('acMsg').textContent='Não foi possível ler o COI deste mês. Tente de novo.';return}
+  finally{if(tk===AC.tk)AC.carregando=false}
+  acRender();
+}
+function acFiltradas(){
+  const at=$('acAti').value,bs=$('acBase').value,ca=$('acCausa').value,q=$('acQ').value.trim().toUpperCase();
+  return AC.rows.filter(r=>{
+    if(typeof hierOk==='function'&&!hierOk(r.rec))return false;
+    if(at&&r.at!==at)return false;
+    const cf=cfgBase&&cfgBase.prefixos&&(cfgBase.prefixos[r.rec]||(cfg&&cfg.prefixos&&cfg.prefixos[r.rec]));
+    if(bs&&!(cf&&cf.b===bs))return false;
+    if(ca&&(r.ca||'(sem causa)')!==ca)return false;
+    if(q&&!(r.rec+' '+r.os).toUpperCase().includes(q))return false;
+    return true});
+}
+function acRender(){
+  if(AC.carregando)return;
+  const prefs=(cfg&&cfg.prefixos)||(cfgBase&&cfgBase.prefixos)||{};
+  const bases=[...new Set(AC.rows.map(r=>(prefs[r.rec]||{}).b).filter(Boolean))].sort(),causas=[...new Set(AC.rows.map(r=>r.ca||'(sem causa)'))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+  const fill=(id,L,tx)=>{const el=$(id),v=el.value;el.innerHTML='<option value="">'+tx+'</option>'+L.map(x=>'<option>'+esc(x)+'</option>').join('');el.value=L.includes(v)?v:''};
+  fill('acBase',bases,'Todas');fill('acCausa',causas,'Todas');
+  const L=acFiltradas(),dias={};
+  for(const r of L){const d=dias[r.d]||(dias[r.d]={d:r.d,n:0,g:{}});d.n++;const k=r.at+'|'+r.ca+'|'+r.su+'|'+r.st;const g=d.g[k]||(d.g[k]={k:r.d+'|'+k,at:r.at,ca:r.ca,su:r.su,st:r.st,l:[]});g.l.push(r)}
+  const ds=Object.values(dias).sort((a,b)=>a.d<b.d?1:-1);
+  const sem=L.filter(r=>!r.ca&&!r.st).length,tipos=new Set(L.map(r=>r.ca).filter(Boolean)).size;
+  $('acMsg').textContent=L.length+' atividade(s) concluída(s) em '+ds.length+' dia(s)';
+  $('acKpis').innerHTML=[['Concluídas',L.length.toLocaleString('pt-BR')],['Dias com atividade',ds.length],['Tipos de causa',tipos],['Sem causa informada',sem.toLocaleString('pt-BR')+(L.length?' ('+(sem/L.length*100).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%)':'')]].map(k=>'<div class="dk"><small>'+k[0]+'</small><b>'+k[1]+'</b></div>').join('');
+  const su=AC.cols.sub;
+  let h='<thead><tr><th>Data</th><th>Atividade</th><th>Tipo de causa</th>'+(su?'<th>Subcausa</th>':'')+'<th>SubTipo de causa</th><th class="n">Qtd</th></tr></thead><tbody>';
+  const nCol=su?6:5;
+  if(!ds.length)h+='<tr><td colspan="'+nCol+'"><div class="empty">Nenhuma atividade para os filtros.</div></td></tr>';
+  for(const d of ds.slice(0,AC.lim)){
+    h+='<tr class="ac-dia"><td colspan="'+(nCol-1)+'"><b>'+dataBR(d.d)+'</b> <span class="muted">'+acSem(d.d)+'</span></td><td class="n"><b>'+d.n+'</b></td></tr>';
+    for(const g of Object.values(d.g).sort((a,b)=>b.l.length-a.l.length)){
+      const ab=AC.abre.has(g.k);
+      h+='<tr><td></td><td>'+esc(g.at)+'</td><td>'+(g.ca?esc(g.ca):'<span class="muted">(sem causa)</span>')+'</td>'+(su?'<td>'+esc(g.su||'–')+'</td>':'')+'<td>'+(g.st?esc(g.st):'<span class="muted">–</span>')+'</td><td class="n"><button type="button" class="ct-lk'+(ab?' on':'')+'" data-ak="'+esc(g.k)+'" aria-expanded="'+ab+'">'+g.l.length+'</button></td></tr>';
+      if(ab)h+='<tr class="ac-det"><td></td><td colspan="'+(nCol-1)+'"><table class="utab"><thead><tr><th>Prefixo</th><th>Equipe</th><th>Base</th><th>Data</th><th>Início</th><th>Fim</th><th>Ordem de serviço</th></tr></thead><tbody>'
+        +g.l.slice().sort((a,b)=>(Disp.parseHora(a.ini)||0)-(Disp.parseHora(b.ini)||0)).map(r=>{const p=prefs[r.rec]||{};return '<tr><td><b>'+esc(r.rec)+'</b></td><td>'+esc(p.e||'–')+'</td><td>'+esc(p.b||'–')+'</td><td>'+dataBR(r.d)+'</td><td>'+acHora(r.ini)+'</td><td>'+acHora(r.fim)+'</td><td>'+esc(r.os||'–')+'</td></tr>'}).join('')+'</tbody></table></td></tr>';
+    }
+  }
+  $('acTab').innerHTML=h+'</tbody>';$('acMais').hidden=ds.length<=AC.lim;
+}
+['acAti','acBase','acCausa'].forEach(i=>$(i).addEventListener('change',()=>{AC.abre.clear();AC.lim=15;acRender()}));
+$('acQ').addEventListener('input',()=>{AC.lim=15;acRender()});
+$('acMes').addEventListener('change',e=>{AC.mes=e.target.value;acCarregar()});
+$('acLimpa').onclick=()=>{['acAti','acBase','acCausa'].forEach(i=>$(i).value='');$('acQ').value='';AC.abre.clear();AC.lim=15;acRender()};
+$('b-acMais').onclick=()=>{AC.lim+=15;acRender()};
+$('acTab').addEventListener('click',e=>{const b=e.target.closest('[data-ak]');if(!b)return;const k=b.dataset.ak;AC.abre.has(k)?AC.abre.delete(k):AC.abre.add(k);acRender()});
+$('acXls').onclick=()=>{
+  if(typeof XLSX==='undefined'){toast('Biblioteca de Excel indisponível.');return}
+  const prefs=(cfg&&cfg.prefixos)||{},L=acFiltradas().slice().sort((a,b)=>a.d<b.d?1:a.d>b.d?-1:0);if(!L.length){toast('Nada para baixar.');return}
+  const cab=['Data','Prefixo','Equipe','Base','Atividade','Tipo de causa']+'';const c=['Data','Prefixo','Equipe','Base','Atividade','Tipo de causa'].concat(AC.cols.sub?['Subcausa']:[],['SubTipo de causa','Início','Fim','Ordem de serviço']);
+  const aoa=[c].concat(L.map(r=>{const p=prefs[r.rec]||{};return [dataBR(r.d),r.rec,p.e||'',p.b||'',r.at,r.ca].concat(AC.cols.sub?[r.su]:[],[r.st,acHora(r.ini),acHora(r.fim),r.os])}));
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(aoa),'Auditoria');XLSX.writeFile(wb,'auditoria-causas-'+AC.mes+'.xlsx');
+};
 /* =================== MIX GSTC (OS Normal · Miscelânea Técnica · Tipo de corte) =================== */
 let MH=null,mixDocs={},mixLocais={},MX=null;
 const MX_EXC=new Set(['MA-BCB-H001M','MA-BDC-H001M','MA-ITM-H001M','MA-PDT-H001M','MA-STI-H001M']);
@@ -6229,10 +6444,10 @@ Promise.all([fetch('config.json').then(r=>r.json()),fetch('historico.json').then
   db.collection('ader').onSnapshot(snap=>{aderDocs=snap.docs.map(d=>d.data()).filter(d=>d&&d.data&&d.eq);montarAder()},()=>{});
   db.collection('config').onSnapshot(snap=>{
     const n={prefixos:{},feriados:{},folgas:{},naoCgb:{}};
-    {const bi=snap.docs.find(d=>d.id==='bancoIdx');if(bi){try{const v=JSON.parse(bi.data().j);for(const f of ['COI','MAN','FIS','OBRAS'])v[f]=v[f]||{};bancoIdx=v;montarBanco()}catch(e){}}}
+    {const bi=snap.docs.find(d=>d.id==='bancoIdx');if(bi){try{const v=JSON.parse(bi.data().j);for(const f of ['COI','MAN','FIS','OBRAS'])v[f]=v[f]||{};bancoIdx=v;montarBanco();if(pag().id==='mix-causa')acMostrar()}catch(e){}}}
     let esc=null,escInfo=null,fu={};
     for(const d of snap.docs){const v=d.data();if(v&&v.itens&&n[d.id]!==undefined)n[d.id]=v.itens;if(d.id==='escala'&&v&&Array.isArray(v.itens)){esc=v.itens;escInfo=(v.arquivo||'')+(v.editadoEm?' em '+new Date(v.editadoEm).toLocaleDateString('pt-BR'):'')}if(d.id==='feriadosUps'&&v&&v.itens)fu=v.itens}
-    cad=n;{const as=JSON.stringify(n.naoCgb);if(as!==ncAssin){ncAssin=as;setTimeout(()=>{try{hierRemontar()}catch(e){}},0)}}escalaDb=esc;escalaDbInfo=escInfo;ferUps=fu;const aa=snap.docs.find(d=>d.id==='aderAjuste');aderAjDb=aa?aa.data():null;const dt=snap.docs.find(d=>d.id==='defTatico');defTatDb=dt?dt.data():null;const dtc=snap.docs.find(d=>d.id==='defTecnicos');defTecDb=dtc?dtc.data():null;{const ur=snap.docs.find(d=>d.id==='upsRegras');UOVR=rgLer(ur?ur.data():null);aplicarRegrasUps();if(UCFG){montarUPS();renderRgUps()}}montar();montarAder();montarDef();
+    cad=n;{const as=JSON.stringify(n.naoCgb);if(as!==ncAssin){ncAssin=as;setTimeout(()=>{try{hierRemontar()}catch(e){}},0)}}escalaDb=esc;escalaDbInfo=escInfo;ferUps=fu;const aa=snap.docs.find(d=>d.id==='aderAjuste');aderAjDb=aa?aa.data():null;const dt=snap.docs.find(d=>d.id==='defTatico');defTatDb=dt?dt.data():null;const dtc=snap.docs.find(d=>d.id==='defTecnicos');defTecDb=dtc?dtc.data():null;{const uh=snap.docs.find(d=>d.id==='upsHoje'),uv=uh&&uh.data();try{upsHojeDb=uv&&uv.data&&uv.eq?{data:uv.data,eq:JSON.parse(uv.eq),em:uv.enviadoEm,arquivo:uv.arquivo}:null}catch(e){upsHojeDb=null}}{const ur=snap.docs.find(d=>d.id==='upsRegras');UOVR=rgLer(ur?ur.data():null);aplicarRegrasUps();if(UCFG){montarUPS();renderRgUps()}}montar();try{montarPrd()}catch(e){}montarAder();montarDef();
   },()=>{});
   renderCadastros();
   if(pendentes.length)atualizarLocais();
