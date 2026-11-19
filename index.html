@@ -2018,7 +2018,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     <div id="cadNota"></div>
     <div class="panel" data-tabp="prefixos">
       <div class="phd"><div class="busca"><input type="search" id="cadBusca" placeholder="Buscar prefixo, estrutura ou base…" aria-label="Buscar no cadastro"><span class="muted" id="cadCont"></span></div><button class="btn primary" id="b-novoPref" type="button"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Novo prefixo</button></div>
-      <div class="tw"><table><thead><tr><th>Prefixo</th><th>Estrutura</th><th>Gerência</th><th>Base</th><th>Jornada</th><th></th></tr></thead><tbody id="t-cad"></tbody></table></div>
+      <div class="tw"><table><thead><tr><th>Prefixo</th><th>Estrutura</th><th>Gerência</th><th>Base</th><th>Jornada</th><th>Meta produção</th><th></th></tr></thead><tbody id="t-cad"></tbody></table></div>
     </div>
     <div class="panel" data-tabp="feriados" hidden>
       <div class="phd"><h3>Feriados</h3><small>em feriado o turno previsto é zero, exceto nas estruturas de plantão</small></div>
@@ -2068,6 +2068,11 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     <div class="fld"><label for="cpGer">Gerência</label><input type="text" id="cpGer" list="dlGer" required></div>
     <div class="fld"><label for="cpBase">Base</label><input type="text" id="cpBase" list="dlBase" required></div>
     <datalist id="dlEst"></datalist><datalist id="dlGer"></datalist><datalist id="dlBase"></datalist>
+    <div class="grp">Produção do dia (faturamento)</div>
+    <div class="fld"><label for="cpMeta">Meta diária (R$)</label><input type="text" id="cpMeta" inputmode="decimal" placeholder="ex.: 1.353,94"><small class="muted">Vale para dia útil. Sábado conta 50% e domingo/feriado 0, exceto plantão (tipo AE116: sempre 100%). Deixe 0 para equipe sem meta fixa.</small></div>
+    <div class="fld"><label for="cpTipoP">Tipo na produção</label><input type="text" id="cpTipoP" list="dlTipoP" placeholder="ex.: AE116, LGN, CR/RI, SDM"></div>
+    <div class="fld"><label for="cpEstP">Estrutura na produção</label><input type="text" id="cpEstP" list="dlEstP" placeholder="ex.: 16H 4X4"></div>
+    <datalist id="dlTipoP"></datalist><datalist id="dlEstP"></datalist>
     <div class="grp">Jornada por dia (horas:minutos)</div>
     <div class="jor" id="cpJor"></div>
     <div id="cpMsg"></div>
@@ -3090,7 +3095,7 @@ function resumoJor(j){if(!j)return'–';const u=j.slice(0,5);const igual=u.every
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{abaCad=b.dataset.tab;document.querySelectorAll('[data-tab]').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));document.querySelectorAll('[data-tabp]').forEach(x=>x.hidden=x.dataset.tabp!==abaCad)});
 async function salvarCad(nome,itens,ok){
   if(!db||!podeSalvar){toast('Você não tem permissão para alterar os cadastros.');return false}
-  try{await db.collection('config').doc(nome).set({itens,editadoEm:new Date().toISOString()});cad[nome]=itens;montar();toast(ok);return true}
+  try{await db.collection('config').doc(nome).set({itens,editadoEm:new Date().toISOString()});cad[nome]=itens;montar();try{montarPrd();renderCadastros()}catch(e){}toast(ok);return true}
   catch(e){toast(e&&e.code==='invalid_argument'?'Você não tem permissão para alterar os cadastros.':'Não foi possível salvar. Tente de novo.');return false}
 }
 function renderCadastros(){
@@ -3102,7 +3107,7 @@ function renderCadastros(){
   const q=$('cadBusca').value.trim().toUpperCase();
   const lst=Object.entries(cfg.prefixos).filter(([k,v])=>!q||(k+' '+v.e+' '+v.b+' '+v.g).toUpperCase().includes(q)).sort((a,b)=>a[0]<b[0]?-1:1);
   $('cadCont').textContent=lst.length+' prefixos';
-  $('t-cad').innerHTML=lst.map(([k,v])=>'<tr><td><b>'+esc(k)+'</b>'+(cad.prefixos&&cad.prefixos[k]?'<span class="tag-site">editado</span>':'')+'</td><td>'+esc(v.e)+'</td><td>'+esc(v.g)+'</td><td>'+esc(v.b||'–')+'</td><td>'+resumoJor(v.j)+'</td><td>'+(podeSalvar?'<button class="btn sm" type="button" data-edit="'+esc(k)+'">Editar</button>':'')+'</td></tr>').join('')||'<tr><td colspan="6"><div class="empty">Nenhum prefixo encontrado.</div></td></tr>';
+  $('t-cad').innerHTML=lst.map(([k,v])=>'<tr><td><b>'+esc(k)+'</b>'+(cad.prefixos&&cad.prefixos[k]?'<span class="tag-site">editado</span>':'')+'</td><td>'+esc(v.e)+'</td><td>'+esc(v.g)+'</td><td>'+esc(v.b||'–')+'</td><td>'+resumoJor(v.j)+'</td><td class="n">'+metaTxt(k)+'</td><td>'+(podeSalvar?'<button class="btn sm" type="button" data-edit="'+esc(k)+'">Editar</button>':'')+'</td></tr>').join('')||'<tr><td colspan="7"><div class="empty">Nenhum prefixo encontrado.</div></td></tr>';
   $('t-cad').querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>abrirPref(b.dataset.edit));
   const fer=Object.entries(cfg.feriados).filter(([d])=>d>='2026-01-01').sort((a,b)=>a[0]<b[0]?1:-1);
   $('t-fer').innerHTML=fer.map(([d,n])=>'<tr><td><b>'+dataBR(d)+'</b></td><td>'+semana(d)+'</td><td>'+esc(n)+(cad.feriados&&cad.feriados[d]?'<span class="tag-site">site</span>':'')+'</td><td>'+(podeSalvar?'<button class="btn sm del" type="button" data-dfer="'+d+'">Remover</button>':'')+'</td></tr>').join('')||'<tr><td colspan="4"><div class="empty">Nenhum feriado em 2026.</div></td></tr>';
@@ -3117,12 +3122,26 @@ function renderCadastros(){
 $('cadBusca').addEventListener('input',renderCadastros);
 $('formFer').addEventListener('submit',e=>{e.preventDefault();const d=$('ferData').value,n=$('ferNome').value.trim();if(!d||!n)return;const it=Object.assign({},cad.feriados||{});it[d]=n;salvarCad('feriados',it,'Feriado adicionado.').then(ok=>{if(ok){$('ferData').value='';$('ferNome').value=''}})});
 $('formFol').addEventListener('submit',e=>{e.preventDefault();const d=$('folData').value,b=$('folBase').value,es=$('folEst').value,m=$('folMot').value.trim();if(!d||!b||!es||!m)return;const it=Object.assign({},cad.folgas||{});it[b+'|'+es+'|'+d]=m;salvarCad('folgas',it,'Folga adicionada.').then(ok=>{if(ok){$('folData').value='';$('folMot').value=''}})});
+const prdNum=v=>{v=String(v==null?'':v).trim();if(!v)return null;const n=Number(v.includes(',')?v.replace(/\./g,'').replace(',','.'):v);return Number.isNaN(n)||n<0?NaN:n};
+const metaTxt=k=>{const pi=PCFG&&PCFG.idx&&PCFG.idx[k];if(!pi)return '–';return pi.meta>0?pi.meta.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}):'sem meta fixa'};
+/* A produção usa o arquivo prod_config.json como valor inicial; o que for cadastrado/editado no site (Neon) vale por cima. */
+function prdAplicarCad(){
+  if(!PCFG)return;if(!PCFG.p0)PCFG.p0=PCFG.prefixos.map(p=>p.slice());
+  const ov=(cad&&cad.prefixos)||{},mapa={};PCFG.p0.forEach(p=>mapa[p[0]]=p.slice());
+  for(const k in ov){const o=ov[k];if(o===null){delete mapa[k];continue}if(!o)continue;
+    let p=mapa[k];if(!p){if(o.pm==null&&!o.pt)continue;p=mapa[k]=[k,o.b||'',o.pe||o.e||'',0,'']}
+    if(o.b)p[1]=o.b;if(o.pe)p[2]=o.pe;if(o.pm!=null)p[3]=o.pm;if(o.pt)p[4]=o.pt}
+  PCFG.prefixos=Object.values(mapa);PCFG.idx=null;
+}
 function abrirPref(k,novoNome){
   editPref=k;confirmaDel=false;
   const v=k?cfg.prefixos[k]:{e:'',g:'',b:'',j:[480,480,480,480,480,0,0]};
   $('cadTit').textContent=k?'Editar prefixo':'Novo prefixo';
   $('cpPref').value=k||novoNome||'';$('cpPref').readOnly=!!k;
   $('cpEst').value=v.e||'';$('cpGer').value=v.g||'';$('cpBase').value=v.b||'';
+  {const pi=(PCFG&&PCFG.idx&&k&&PCFG.idx[k])||null;
+   $('cpMeta').value=pi&&pi.meta!=null?String(pi.meta).replace('.',','):(v.pm!=null?String(v.pm).replace('.',','):'');$('cpTipoP').value=pi?pi.tipo||'':(v.pt||'');$('cpEstP').value=pi?pi.est||'':(v.pe||'');
+   const P=(PCFG&&PCFG.prefixos)||[];$('dlTipoP').innerHTML=[...new Set(P.map(p=>p[4]).filter(Boolean))].sort().map(x=>'<option value="'+esc(x)+'">').join('');$('dlEstP').innerHTML=[...new Set(P.map(p=>p[2]).filter(Boolean))].sort().map(x=>'<option value="'+esc(x)+'">').join('')}
   $('cpJor').innerHTML=DIAS_CURTO.map((n,i)=>'<div class="fld"><label for="cpJ'+i+'">'+n+'</label><input type="text" inputmode="numeric" placeholder="00:00" maxlength="5" id="cpJ'+i+'" value="'+minParaHora((v.j||[])[i]||0)+'"></div>').join('');
   $('cpMsg').innerHTML='';$('b-delPref').hidden=!k;$('b-delPref').textContent='Excluir';
   $('gavCad').hidden=false;$('cadFundo').hidden=false;
@@ -3137,7 +3156,9 @@ $('b-salvaPref').onclick=async()=>{
   if(!editPref&&cfg.prefixos[k]){$('cpMsg').innerHTML='<div class="note err">Esse prefixo já existe. Use Editar na lista.</div>';return}
   const j=DIAS_CURTO.map((_,i)=>horaParaMin($('cpJ'+i).value));
   if(j.some(x=>isNaN(x))){$('cpMsg').innerHTML='<div class="note err">Jornada no formato horas:minutos, ex.: 08:00. Deixe 00:00 para folga.</div>';return}
-  const it=Object.assign({},cad.prefixos||{});it[k]={e,g,b,j};
+  const pm=prdNum($('cpMeta').value),pt=$('cpTipoP').value.trim().toUpperCase(),pe=$('cpEstP').value.trim().toUpperCase();
+  if(Number.isNaN(pm)){$('cpMsg').innerHTML='<div class="note err">Meta diária inválida. Use só números, ex.: 1.353,94.</div>';return}
+  const it=Object.assign({},cad.prefixos||{});const o={e,g,b,j};if(pm!=null)o.pm=pm;if(pt)o.pt=pt;if(pe)o.pe=pe;it[k]=o; /* tudo vai para o Neon */
   if(await salvarCad('prefixos',it,'Prefixo '+k+' salvo.'))fecharPref();
 };
 $('b-delPref').onclick=async()=>{
@@ -5085,7 +5106,7 @@ function prdDeLinhas(rows){
   return {dias,n,ultFim};
 }
 function montarPrd(){
-  if(!PCFG||!PHIST)return;prdPrep();
+  if(!PCFG||!PHIST)return;prdAplicarCad();prdPrep();
   const dias={},info={};
   for(const d in PHIST.dias){dias[d]=PHIST.dias[d];info[d]={fonte:'Relatório de Produção (planilha)'}}
   for(const d in prdDocs){dias[d]=prdDocs[d].eq;info[d]={fonte:prdDocs[d].arquivo,em:prdDocs[d].enviadoEm,ultFim:prdDocs[d].ultFim}}
@@ -6208,7 +6229,7 @@ Promise.all([fetch('config.json').then(r=>r.json()),fetch('historico.json').then
     {const bi=snap.docs.find(d=>d.id==='bancoIdx');if(bi){try{const v=JSON.parse(bi.data().j);for(const f of ['COI','MAN','FIS','OBRAS'])v[f]=v[f]||{};bancoIdx=v;montarBanco()}catch(e){}}}
     let esc=null,escInfo=null,fu={};
     for(const d of snap.docs){const v=d.data();if(v&&v.itens&&n[d.id]!==undefined)n[d.id]=v.itens;if(d.id==='escala'&&v&&Array.isArray(v.itens)){esc=v.itens;escInfo=(v.arquivo||'')+(v.editadoEm?' em '+new Date(v.editadoEm).toLocaleDateString('pt-BR'):'')}if(d.id==='feriadosUps'&&v&&v.itens)fu=v.itens}
-    cad=n;{const as=JSON.stringify(n.naoCgb);if(as!==ncAssin){ncAssin=as;setTimeout(()=>{try{hierRemontar()}catch(e){}},0)}}escalaDb=esc;escalaDbInfo=escInfo;ferUps=fu;const aa=snap.docs.find(d=>d.id==='aderAjuste');aderAjDb=aa?aa.data():null;const dt=snap.docs.find(d=>d.id==='defTatico');defTatDb=dt?dt.data():null;const dtc=snap.docs.find(d=>d.id==='defTecnicos');defTecDb=dtc?dtc.data():null;{const ur=snap.docs.find(d=>d.id==='upsRegras');UOVR=rgLer(ur?ur.data():null);aplicarRegrasUps();if(UCFG){montarUPS();renderRgUps()}}montar();montarAder();montarDef();
+    cad=n;{const as=JSON.stringify(n.naoCgb);if(as!==ncAssin){ncAssin=as;setTimeout(()=>{try{hierRemontar()}catch(e){}},0)}}escalaDb=esc;escalaDbInfo=escInfo;ferUps=fu;const aa=snap.docs.find(d=>d.id==='aderAjuste');aderAjDb=aa?aa.data():null;const dt=snap.docs.find(d=>d.id==='defTatico');defTatDb=dt?dt.data():null;const dtc=snap.docs.find(d=>d.id==='defTecnicos');defTecDb=dtc?dtc.data():null;{const ur=snap.docs.find(d=>d.id==='upsRegras');UOVR=rgLer(ur?ur.data():null);aplicarRegrasUps();if(UCFG){montarUPS();renderRgUps()}}montar();try{montarPrd();renderCadastros()}catch(e){}montarAder();montarDef();
   },()=>{});
   renderCadastros();
   if(pendentes.length)atualizarLocais();
