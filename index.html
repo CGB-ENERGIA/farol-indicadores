@@ -2105,6 +2105,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     <div class="fld"><label for="cpEst">Estrutura</label><input type="text" id="cpEst" list="dlEst" required></div>
     <div class="fld"><label for="cpGer">Gerência</label><input type="text" id="cpGer" list="dlGer" required></div>
     <div class="fld"><label for="cpBase">Base</label><input type="text" id="cpBase" list="dlBase" required></div>
+    <div class="fld"><label style="display:flex;gap:8px;align-items:flex-start;font-weight:700"><input type="checkbox" id="cpNc" style="width:auto;margin-top:3px"><span>Equipe de outra empresa (não é da CGB)<small class="muted" style="display:block;font-weight:400">Marcada, ela sai de todos os indicadores do site. Vale para todos, num cadastro só.</small></span></label></div>
     <datalist id="dlEst"></datalist><datalist id="dlGer"></datalist><datalist id="dlBase"></datalist>
     <div class="grp">Produção do dia (faturamento)</div>
     <div class="fld"><label for="cpMeta">Meta diária (R$)</label><input type="text" id="cpMeta" inputmode="decimal" placeholder="ex.: 1.353,94"><small class="muted">Vale para dia útil. Sábado conta 50% e domingo/feriado 0, exceto plantão (tipo AE116: sempre 100%). Deixe 0 para equipe sem meta fixa.</small></div>
@@ -2573,7 +2574,7 @@ function ctContrato(rec,base){
 const ctTipoEq=rec=>{const H=HIER&&HIER.itens&&HIER.itens[hierChave(rec)];if(H&&H.t)return H.t;ctContrato(rec,'');const c=ctEsMapa&&ctEsMapa[hierChave(rec)];return (c&&c.tipo)||''};
 const ctDtOk=(px,r)=>{const a=$(px+'-de'),b=$(px+'-ate');if(!a||!b||(!a.value&&!b.value))return true;if(r.lim==null)return false;const d=new Date(r.lim).toISOString().slice(0,10);return (!a.value||d>=a.value)&&(!b.value||d<=b.value)};
 const ctDtTxt=px=>{const a=$(px+'-de').value,b=$(px+'-ate').value;return a||b?(a?dataBR(a):'início')+' a '+(b?dataBR(b):'fim'):''};
-const ctRows=()=>{const H=HIER&&HIER.itens;return CT.rows.filter(r=>{const e=H&&H[hierChave(r.rec)],cf=cfgBase&&cfgBase.prefixos&&cfgBase.prefixos[r.rec];r.base=(e&&e.b)||(cf&&cf.b)||'';r.tEq=ctTipoEq(r.rec);r.ct=ctContrato(r.rec,r.base);return hierOk(r.rec)})}; /* base e tipo de equipe vêm do cadastro de prefixos / equipes */
+const ctRows=()=>{const H=HIER&&HIER.itens;return CT.rows.filter(r=>{const e=H&&H[hierChave(r.rec)],cf=(cfg&&cfg.prefixos&&cfg.prefixos[r.rec])||(cfgBase&&cfgBase.prefixos&&cfgBase.prefixos[r.rec]),ed=cad&&cad.prefixos&&cad.prefixos[r.rec];r.base=(ed&&ed.b)||(e&&e.b)||(cf&&cf.b)||'';r.tEq=ctTipoEq(r.rec);r.ct=ctContrato(r.rec,r.base);return hierOk(r.rec)})}; /* base e tipo de equipe vêm do cadastro de prefixos / equipes */
 function ctOpts(id,vals){const el=$(id),st=el.msel||msInit(el),v=[...new Set(vals.filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));if(JSON.stringify(st.vals)!==JSON.stringify(v))st.setOpts(v);else if(st.pintar)st.pintar()}
 const ctSel=(id,v)=>{const s=msSel(id);return !s||s.has(v)};
 CT.ord={ctTipo:{k:'n',d:-1},ctTab:{k:'cli',d:-1},pzTab:{k:'lim',d:1}};CT.fk={};CT.fcid=null;
@@ -3127,9 +3128,12 @@ function renderAvisos(todosMes,diaRef){
   const semCad={};
   for(const d in diasAgg){if(!d.startsWith(m))continue;for(const r in diasAgg[d]){const p=cfg.prefixos[r];if((!p||!p.b)&&!ehNaoCgb(r)){const a=semCad[r]||(semCad[r]={rec:r,dias:0,ult:'',ct:0});a.dias++;if(d>a.ult)a.ult=d}}}
   for(const r of CT.rows){const p=cfg.prefixos[r.rec];if((p&&p.b)||ehNaoCgb(r.rec))continue;const a=semCad[r.rec]||(semCad[r.rec]={rec:r.rec,dias:0,ult:'',ct:0});a.ct++}
-  const l1=Object.values(semCad).sort((a,b)=>(b.dias+b.ct)-(a.dias+a.ct));
-  const onde=a=>(a.dias?'<span class="tag-site">Relatórios do SIGA · '+a.dias+' dia(s)</span>':'')+(a.ct?'<span class="tag-site">Contingência · '+a.ct+' atividade(s)</span>':'');
-  grupos.push({t:'r',tit:'Prefixos sem cadastro',sub:'Aparecem nos relatórios do SIGA ou na base de contingência, mas não estão em Cadastros, e por isso ficam fora dos cálculos. Se o prefixo é da CGB, use Cadastrar. Se é de outra empresa, use Não é da CGB: ele sai de todos os indicadores do site.',n:l1.length,
+  {const ok=r=>/^MA-[A-Z0-9]+-[A-Z0-9]+$/.test(String(r||''));
+   const ext=[['UPS',()=>(UR&&UR.escala||[]).map(c=>c.rec)],['Produção',()=>PR&&PR.dias?Object.values(PR.dias).flatMap(o=>Object.keys(o||{})):[]],['Início das atividades',()=>IR&&IR.linhas?IR.linhas.map(l=>l.rec):[]]];
+   for(const [nm,fn] of ext){let L=[];try{L=fn()}catch(e){}for(const r of new Set(L)){if(!ok(r)||ehNaoCgb(r))continue;const p=cfg.prefixos[r];if(p&&p.b)continue;const a=semCad[r]||(semCad[r]={rec:r,dias:0,ult:'',ct:0});(a.ou=a.ou||[]).push(nm)}}}
+  const l1=Object.values(semCad).sort((a,b)=>(b.dias+b.ct+(b.ou?b.ou.length:0))-(a.dias+a.ct+(a.ou?a.ou.length:0)));
+  const onde=a=>(a.dias?'<span class="tag-site">Relatórios do SIGA · '+a.dias+' dia(s)</span>':'')+(a.ct?'<span class="tag-site">Contingência · '+a.ct+' atividade(s)</span>':'')+(a.ou||[]).map(x=>'<span class="tag-site">'+x+'</span>').join('');
+  grupos.push({t:'r',tit:'Prefixos sem cadastro',sub:'Aparecem em algum indicador (relatórios do SIGA, contingência, UPS, produção, início das atividades), mas não estão em Cadastros, e por isso ficam fora dos cálculos. Se o prefixo é da CGB, use Cadastrar. Se é de outra empresa, use Não é da CGB: ele sai de todos os indicadores do site.',n:l1.length,
     lote:l1.length&&podeSalvar,
     tab:l1.length?'<thead><tr>'+(podeSalvar?'<th style="width:34px"><input type="checkbox" class="lt-all" aria-label="Selecionar todos"></th>':'')+'<th>Prefixo no SIGA</th><th>Onde aparece</th><th>Último dia</th><th></th></tr></thead><tbody>'+l1.map(a=>'<tr>'+(podeSalvar?'<td><input type="checkbox" class="lt-ck" value="'+esc(a.rec)+'" aria-label="Selecionar '+esc(a.rec)+'"></td>':'')+'<td><b>'+esc(a.rec)+'</b></td><td>'+onde(a)+'</td><td>'+(a.ult?dataBR(a.ult):'–')+'</td><td style="white-space:nowrap">'+(podeSalvar?'<button class="btn sm" type="button" data-novo="'+esc(a.rec)+'">Cadastrar</button> <button class="btn sm" type="button" data-nc="'+esc(a.rec)+'" title="Prefixo de outra empresa: some de todos os indicadores">Não é da CGB</button>':'')+'</td></tr>').join('')+'</tbody>':''});
   // 1b. prefixos já marcados como não CGB (para conferir e desfazer)
@@ -3210,7 +3214,7 @@ function renderCadastros(){
     return true}).sort((a,b)=>a[0]<b[0]?-1:1);
   cadVis=lst.map(x=>x[0]);for(const k of [...cadSel])if(!cfg.prefixos[k])cadSel.delete(k);
   $('cadCont').textContent=lst.length+' prefixos';
-  $('t-cad').innerHTML=lst.map(([k,v])=>'<tr><td>'+(podeSalvar?'<input type="checkbox" class="cad-ck" value="'+esc(k)+'"'+(cadSel.has(k)?' checked':'')+' aria-label="Selecionar '+esc(k)+'">':'')+'</td><td><b>'+esc(k)+'</b>'+(cad.prefixos&&cad.prefixos[k]?'<span class="tag-site">editado</span>':'')+'</td><td>'+esc(v.e)+'</td><td>'+esc(v.g)+'</td><td>'+esc(v.b||'–')+'</td><td>'+resumoJor(v.j)+'</td><td class="n">'+metaTxt(k)+'</td><td>'+(podeSalvar?'<button class="btn sm" type="button" data-edit="'+esc(k)+'">Editar</button>':'')+'</td></tr>').join('')||'<tr><td colspan="8"><div class="empty">Nenhum prefixo encontrado.</div></td></tr>';
+  $('t-cad').innerHTML=lst.map(([k,v])=>'<tr><td>'+(podeSalvar?'<input type="checkbox" class="cad-ck" value="'+esc(k)+'"'+(cadSel.has(k)?' checked':'')+' aria-label="Selecionar '+esc(k)+'">':'')+'</td><td><b>'+esc(k)+'</b>'+(cad.prefixos&&cad.prefixos[k]?'<span class="tag-site">editado</span>':'')+(ehNaoCgb(k)?'<span class="tag-site" style="background:#fde8ea;color:#c8102e">não CGB</span>':'')+'</td><td>'+esc(v.e)+'</td><td>'+esc(v.g)+'</td><td>'+esc(v.b||'–')+'</td><td>'+resumoJor(v.j)+'</td><td class="n">'+metaTxt(k)+'</td><td>'+(podeSalvar?'<button class="btn sm" type="button" data-edit="'+esc(k)+'">Editar</button>':'')+'</td></tr>').join('')||'<tr><td colspan="8"><div class="empty">Nenhum prefixo encontrado.</div></td></tr>';
   $('t-cad').querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>abrirPref(b.dataset.edit));
   $('t-cad').querySelectorAll('.cad-ck').forEach(c=>c.onchange=()=>{c.checked?cadSel.add(c.value):cadSel.delete(c.value);cadSelPinta()});
   cadSelPinta();
@@ -3240,16 +3244,19 @@ function abrirMassa(recs){
   $('ltTit').textContent='Editar '+recs.length+' equipe(s) em massa';
   $('ltCorpo').innerHTML='<p class="muted" style="margin:0 0 10px;font-size:12.5px">Preencha só o que quer mudar. Campos deixados em branco não são alterados. Tudo é gravado no Neon.</p>'
    +'<div class="mass-g"><div class="fld"><label>Estrutura</label>'+sel('mE',vals('e'),'— não alterar —')+'</div><div class="fld"><label>Gerência</label>'+sel('mG',vals('g'),'— não alterar —')+'</div><div class="fld"><label>Base</label>'+sel('mB',vals('b'),'— não alterar —')+'</div>'
-   +'<div class="fld"><label>Meta diária (R$)</label><input type="text" id="mMeta" inputmode="decimal" placeholder="não alterar"></div><div class="fld"><label>Tipo na produção</label><input type="text" id="mTp" list="mdlT" placeholder="não alterar"><datalist id="mdlT">'+tp.map(x=>'<option value="'+esc(x)+'">').join('')+'</datalist></div><div class="fld"><label>Estrutura na produção</label><input type="text" id="mEp" list="mdlE" placeholder="não alterar"><datalist id="mdlE">'+ep.map(x=>'<option value="'+esc(x)+'">').join('')+'</datalist></div></div>'
+   +'<div class="fld"><label>Meta diária (R$)</label><input type="text" id="mMeta" inputmode="decimal" placeholder="não alterar"></div><div class="fld"><label>Tipo na produção</label><input type="text" id="mTp" list="mdlT" placeholder="não alterar"><datalist id="mdlT">'+tp.map(x=>'<option value="'+esc(x)+'">').join('')+'</datalist></div><div class="fld"><label>Estrutura na produção</label><input type="text" id="mEp" list="mdlE" placeholder="não alterar"><datalist id="mdlE">'+ep.map(x=>'<option value="'+esc(x)+'">').join('')+'</datalist></div><div class="fld"><label>Não é da CGB</label><select id="mNc"><option value="">— não alterar —</option><option value="1">Marcar como não CGB</option><option value="0">Voltar a considerar</option></select></div></div>'
    +'<p class="muted" style="margin:10px 0 4px;font-size:12px">Equipes: '+recs.map(esc).join(', ')+'</p>';
   $('ltMsg').textContent='';$('modalLote').hidden=false;$('b-ltSalva').textContent='Aplicar às selecionadas';
   $('b-ltSalva').onclick=async()=>{
     const e=$('mE').value,g=$('mG').value,b=$('mB').value,pm=prdNum($('mMeta').value),pt=$('mTp').value.trim().toUpperCase(),pe=$('mEp').value.trim().toUpperCase();
     if(Number.isNaN(pm)){$('ltMsg').textContent='Meta inválida. Use só números, ex.: 1.353,94.';return}
-    if(!e&&!g&&!b&&pm==null&&!pt&&!pe){$('ltMsg').textContent='Preencha pelo menos um campo para alterar.';return}
+    const nc=$('mNc').value;if(!e&&!g&&!b&&pm==null&&!pt&&!pe&&!nc){$('ltMsg').textContent='Preencha pelo menos um campo para alterar.';return}
     const it=Object.assign({},cad.prefixos||{});
     for(const k of recs){const v=cfg.prefixos[k];if(!v)continue;const o=Object.assign({},it[k]||{},{e:e||v.e,g:g||v.g,b:b||v.b,j:v.j});if(e&&e!==v.e&&!(it[k]&&it[k].j))o.j=jorPadrao(e);if(pm!=null)o.pm=pm;if(pt)o.pt=pt;if(pe)o.pe=pe;it[k]=o}
-    $('b-ltSalva').disabled=true;const ok=await salvarCad('prefixos',it,recs.length+' equipe(s) atualizada(s).');$('b-ltSalva').disabled=false;
+    $('b-ltSalva').disabled=true;let ok=true;
+    if(e||g||b||pm!=null||pt||pe)ok=await salvarCad('prefixos',it,recs.length+' equipe(s) atualizada(s).');
+    if(ok&&nc){const m=Object.assign({},cad.naoCgb||{});for(const k of recs){if(nc==='1')m[hierChave(k)]={rec:k,por:(typeof ctMeu==='function'&&ctMeu())||'',em:new Date().toISOString()};else delete m[hierChave(k)]}ok=await salvarCad('naoCgb',m,nc==='1'?recs.length+' equipe(s) marcada(s) como não CGB: saíram de todos os indicadores.':recs.length+' equipe(s) voltaram a ser consideradas.');try{hierRemontar()}catch(x){}}
+    $('b-ltSalva').disabled=false;
     if(ok){$('modalLote').hidden=true;cadSel.clear();renderCadastros()}
   };
 }
@@ -3271,6 +3278,7 @@ function abrirPref(k,novoNome){
   const v=k?cfg.prefixos[k]:{e:'',g:'',b:'',j:[480,480,480,480,480,0,0]};
   $('cadTit').textContent=k?'Editar prefixo':'Novo prefixo';
   $('cpPref').value=k||novoNome||'';$('cpPref').readOnly=!!k;
+  $('cpNc').checked=!!(k&&ehNaoCgb(k));
   $('cpEst').value=v.e||'';$('cpGer').value=v.g||'';$('cpBase').value=v.b||'';
   {const pi=(PCFG&&PCFG.idx&&k&&PCFG.idx[k])||null;
    $('cpMeta').value=pi&&pi.meta!=null?String(pi.meta).replace('.',','):(v.pm!=null?String(v.pm).replace('.',','):'');$('cpTipoP').value=pi?pi.tipo||'':(v.pt||'');$('cpEstP').value=pi?pi.est||'':(v.pe||'');
@@ -3292,7 +3300,9 @@ $('b-salvaPref').onclick=async()=>{
   const pm=prdNum($('cpMeta').value),pt=$('cpTipoP').value.trim().toUpperCase(),pe=$('cpEstP').value.trim().toUpperCase();
   if(Number.isNaN(pm)){$('cpMsg').innerHTML='<div class="note err">Meta diária inválida. Use só números, ex.: 1.353,94.</div>';return}
   const it=Object.assign({},cad.prefixos||{});const o={e,g,b,j};if(pm!=null)o.pm=pm;if(pt)o.pt=pt;if(pe)o.pe=pe;it[k]=o; /* tudo vai para o Neon */
-  if(await salvarCad('prefixos',it,'Prefixo '+k+' salvo.'))fecharPref();
+  if(await salvarCad('prefixos',it,'Prefixo '+k+' salvo.')){
+    const nc=$('cpNc').checked;if(nc!==ehNaoCgb(k)){const m=Object.assign({},cad.naoCgb||{});if(nc)m[hierChave(k)]={rec:k,por:(typeof ctMeu==='function'&&ctMeu())||'',em:new Date().toISOString()};else delete m[hierChave(k)];await salvarCad('naoCgb',m,nc?'Equipe '+k+' marcada como não CGB: saiu de todos os indicadores.':'Equipe '+k+' voltou a ser considerada.');try{hierRemontar()}catch(e){}}
+    fecharPref()}
 };
 $('b-delPref').onclick=async()=>{
   if(!confirmaDel){confirmaDel=true;$('b-delPref').textContent='Confirmar exclusão';return}
@@ -3968,12 +3978,15 @@ const faixaCell=p=>'<span class="pct '+UPSCalc.faixaBase(p).cls+'">'+pct(p)+'</s
 const clsCell=p=>{const c=UPSCalc.classe(p);return '<span class="pct cl-p-'+(c||'x')+'">'+pct(p)+'</span>'};
 function indAtual(){const p=pag().id;if(p==='ups-regras')return null;if(p.startsWith('ups-'))return'ups';if(p.startsWith('ader-'))return'ader';if(p.startsWith('ini-'))return'ini';if(p.startsWith('def-'))return'def';if(p.startsWith('prd-'))return'prd';if(p.startsWith('trf-'))return'trf';if(p==='mix-causa')return null;if(p.startsWith('mix-'))return'mix';if(p.startsWith('tm-'))return'tm';if(['painel','prefixos','cobranca'].includes(p))return'disp';return null}
 
+/* cadastro único: base e gerência editadas em Cadastros valem também na UPS (a escala continua dando a jornada e a estrutura da pontuação) */
+const siglaDeBase=b=>{const n=x=>String(x||'').toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim(),k=n(b);for(const sg of SIGLAS)if(n(NOME_SIGLA[sg])===k||sg===k)return sg;return ''};
+function upsCadOv(c){const o=cad&&cad.prefixos&&cad.prefixos[c.rec];if(!o)return c;const sg=siglaDeBase(o.b),n=Object.assign({},c);if(sg)n.bc=sg;if(o.g)n.ger=o.g;return n}
 function montarUPS(){
   if(!UCFG||!UHIST||!cfg)return;
   const dias=Object.assign({},UHIST.dias);
   for(const d of upsDocs)dias[d.data]=d.eq;
   for(const d in upsLocais)dias[d]=upsLocais[d];
-  const escala=(escalaLocal||escalaDb||UCFG.escala).filter(c=>hierOk(c.rec));
+  const escala=(escalaLocal||escalaDb||UCFG.escala).filter(c=>hierOk(c.rec)).map(upsCadOv);
   const diasF=hierDias(dias);
   UR=UPSCalc.calcular(UCFG,escala,diasF,cfg.feriados,ferUps);
   UR.dias=diasF;UR.escala=escala;
@@ -6363,7 +6376,7 @@ function montarTrf(){
   const ult=N.length?N[N.length-1].d:hojeIso();
   /* ações: foco no ano mais recente da base de ações */
   const AC0=trfLocalA||trfAcDb||TH.acoes,anos=[...new Set(AC0.map(a=>a.a).filter(Boolean))].sort(),ano=anos[anos.length-1]||'';
-  const AC=AC0.filter(a=>a.a===ano),porT={};for(const a of AC)(porT[a.t]=porT[a.t]||[]).push(a);
+  const AC=AC0.filter(a=>a.a===ano&&!(a.eq&&String(a.eq).split(/[,;]\s*/).some(e=>ehNaoCgb(/^MA-/i.test(e)?e:'MA-'+e)))),porT={};for(const a of AC)(porT[a.t]=porT[a.t]||[]).push(a);
   const munT={};for(const n of N)munT[n.t]=n.mun;
   const eqs=Object.entries(porT).map(([t,rs])=>{
     const sts=rs.map(r=>r.st.replace('PENDDENTE','PENDENTE'));const st=sts.includes('CONCLUIDO')?'CONCLUIDO':sts.includes('PARCIAL')?'PARCIAL':'PENDENTE';
