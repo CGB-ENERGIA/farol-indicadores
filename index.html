@@ -1276,6 +1276,13 @@ section[data-pag="inicio"] .panel{border-radius:22px}
 #cmdk li a small{color:var(--muted);grid-column:1}#cmdk li a em{grid-row:1;grid-column:2;font-style:normal;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#711424;background:#f6e9ec;padding:2px 8px;border-radius:99px;align-self:start}
 #cmdk li a:hover,#cmdk li a.on{background:var(--accent-soft,#f6e9ec)}
 
+.en-sec{position:relative;margin-top:30px}.en-sec h2{margin:0;font-size:20px;color:#fff;font-style:normal;text-transform:none}.en-sec small{opacity:.8}
+@keyframes enEntra{to{opacity:1;transform:none}}
+section[data-pag="inicio"] .icard{opacity:0;transform:translateY(18px);animation:enEntra .7s cubic-bezier(.2,.8,.2,1) forwards}
+section[data-pag="inicio"] .icard:nth-child(2){animation-delay:.07s}section[data-pag="inicio"] .icard:nth-child(3){animation-delay:.14s}section[data-pag="inicio"] .icard:nth-child(4){animation-delay:.21s}section[data-pag="inicio"] .icard:nth-child(5){animation-delay:.28s}section[data-pag="inicio"] .icard:nth-child(6){animation-delay:.35s}section[data-pag="inicio"] .icard:nth-child(7){animation-delay:.42s}section[data-pag="inicio"] .icard:nth-child(8){animation-delay:.49s}section[data-pag="inicio"] .icard:nth-child(9){animation-delay:.56s}
+section[data-pag="inicio"] .icard:hover{transform:translateY(-6px)!important}
+.en-rede{opacity:.55}
+
 /* ===== barra superior no mesmo padrão da tela de entrada ===== */
 header.top,.top{background:radial-gradient(900px 220px at 85% -80%,#b0283f 0%,transparent 60%),linear-gradient(135deg,#3d0812 0%,#6a1222 45%,#8d1d31 100%)!important;box-shadow:0 8px 28px rgba(61,8,18,.25)!important;border-bottom:1px solid rgba(255,255,255,.08)}
 html[data-tema="escuro"] header.top,html[data-tema="escuro"] .top{background:radial-gradient(900px 220px at 85% -80%,#7c1a2c 0%,transparent 60%),linear-gradient(135deg,#1c0408 0%,#3a0a14 50%,#5a0f1c 100%)!important;box-shadow:0 8px 28px rgba(0,0,0,.5)!important}
@@ -1450,11 +1457,11 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
   <!-- PÁGINA: VISÃO GERAL -->
   <section data-pag="inicio" style="display:grid;gap:16px;min-width:0" hidden>
     <div class="en-hero">
-      <svg class="en-rede" viewBox="0 0 1200 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><radialGradient id="enNo"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><g stroke="rgba(255,255,255,.14)" stroke-width="1" fill="none"><path d="M80 380L260 250L430 330L620 190L820 280L1010 150L1150 230"/><path d="M260 250L330 90L620 190M430 330L520 460L820 280M820 280L900 430L1010 150"/></g><g fill="url(#enNo)"><circle cx="80" cy="380" r="6"/><circle cx="260" cy="250" r="7"/><circle cx="430" cy="330" r="6"/><circle cx="620" cy="190" r="8"/><circle cx="820" cy="280" r="7"/><circle cx="1010" cy="150" r="8"/><circle cx="330" cy="90" r="5"/><circle cx="520" cy="460" r="5"/><circle cx="900" cy="430" r="5"/></g></svg>
+      <canvas class="en-rede" aria-hidden="true"></canvas>
       <div class="en-marca"></div><div class="en-marca2"></div>
       <div class="en-hw"><div>
-        <span class="en-eb"><i></i>Central de comando · Setor de Medição</span>
-        <h1 id="enSaud">Boa noite. <em>Todos os indicadores, em um só lugar.</em></h1>
+        <span class="en-eb"><i></i>Dados ao vivo</span>
+        <h1 id="enSaud">Boa noite.<br><em>Tudo o que o Setor de Medição precisa acompanhar</em>, em um só lugar.</h1>
         <p class="en-lead"><span id="inicioAte" class="vgh-ate"></span></p>
         <button type="button" class="en-busca" id="b-enbusca"><svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>Buscar indicador, painel ou equipe…</span><kbd>Ctrl K</kbd><b>Buscar</b></button>
         <div class="en-sug"><a href="#painel">Disponibilidade</a><a href="#ups-painel">UPS</a><a href="#ader-painel">Aderência</a><a href="#ini-painel">Início das atividades</a><a href="#prd-dia">Produção do dia</a><a href="#def-painel">Defeitos</a></div>
@@ -1462,6 +1469,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
       <div class="en-saude"><div class="en-anel"><svg viewBox="0 0 140 140"><defs><linearGradient id="enGr" x1="0" x2="1"><stop offset="0" stop-color="#ffd1da"/><stop offset="1" stop-color="#5ee07a"/></linearGradient></defs><circle class="bg" cx="70" cy="70" r="65"/><circle class="fg" id="enFg" cx="70" cy="70" r="65" style="--o:408"/></svg><div><b id="enPct">–</b><small>indicadores no alvo</small></div></div>
         <div><h3>Saúde dos indicadores</h3><p id="enSaudeTx">Pulso do mês, lido dos próprios cards.</p><div class="en-mini"><div><b id="enOk">–</b><small>No alvo</small></div><div><b id="enAt">–</b><small>Atenção</small></div><div><b id="enMal">–</b><small>Abaixo</small></div></div></div></div></div>
       <div class="en-tick"><b>AGORA</b><div class="en-fx"><div class="en-tr" id="enTr"></div></div></div>
+      <div class="en-sec"><h2>Seus indicadores</h2><small>clique para abrir o painel completo</small></div>
       <div id="vgPulso" hidden></div><span id="vghData" hidden></span>
     </div>
     <div class="icards" id="inicioCards"><div class="empty">Carregando indicadores…</div></div>
@@ -6128,11 +6136,21 @@ Promise.all([fetch('config.json').then(r=>r.json()),fetch('historico.json').then
   document.getElementById('enSaudeTx').textContent=ps.length+' indicadores acompanhados; '+ok+' dentro da meta.';
   const it=ps.map(p=>{const s=p.querySelector('small'),b=p.querySelector('b');return '<span><i>'+(s?s.textContent:'')+'</i> '+(b?b.textContent:'')+'</span>'}).join('');
   document.getElementById('enTr').innerHTML=it+it;
-  const g=document.getElementById('enSaud');if(g)g.firstChild.textContent=hd()+' ';
+  const g=document.getElementById('enSaud');if(g)g.firstChild.textContent=hd();
   const at2=document.getElementById('vghData');const v=document.getElementById('topAtualV');
-  const fb=document.querySelector('#inicioAte b');if(v&&fb)v.textContent=fb.textContent;
+  const eb=document.querySelector('.en-eb');const fb0=document.querySelector('#inicioAte b');if(eb&&fb0)eb.innerHTML='<i></i>Dados ao vivo · atualizados em '+fb0.textContent;enRede();enConta();const fb=document.querySelector('#inicioAte b');if(v&&fb)v.textContent=fb.textContent;
  }
  window.enHero=hero;try{hero()}catch(e){}
+
+
+ function enRede(){const cv=document.querySelector('section[data-pag="inicio"] .en-rede');if(!cv)return;if(cv._on)return;cv._on=1;if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const x=cv.getContext('2d');let W=0,H=0,P=[];const dp=devicePixelRatio||1;
+  const rs=()=>{if(!cv.offsetWidth)return;W=cv.width=cv.offsetWidth*dp;H=cv.height=cv.offsetHeight*dp;P=Array.from({length:60},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35}))};rs();
+  const d=()=>{if(!cv.isConnected)return;if(cv.offsetWidth&&cv.offsetWidth*dp!==W)rs();if(!document.hidden&&W){x.clearRect(0,0,W,H);for(const p of P){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1}const L=170*dp;
+    for(let i=0;i<P.length;i++)for(let j=i+1;j<P.length;j++){const a=P[i],b=P[j],dd=Math.hypot(a.x-b.x,a.y-b.y);if(dd<L){x.strokeStyle='rgba(255,210,220,'+(0.22*(1-dd/L))+')';x.lineWidth=1;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke()}}
+    for(const p of P){x.fillStyle='rgba(255,220,228,.7)';x.beginPath();x.arc(p.x,p.y,1.8*dp,0,7);x.fill()}}requestAnimationFrame(d)};d()}
+ function enConta(){document.querySelectorAll('section[data-pag="inicio"] .icard .ic-v,section[data-pag="inicio"] .en-mini b,section[data-pag="inicio"] .en-anel b').forEach(el=>{if(el._c)return;const t=el.textContent,m=t.match(/^([^\d-]*)([\d.]+(?:,\d+)?)(.*)$/);if(!m)return;el._c=1;const alvo=parseFloat(m[2].replace(/\./g,'').replace(',','.')),dec=(m[2].split(',')[1]||'').length,t0=performance.now();
+  const f=n=>{const p=Math.min(1,(n-t0)/1300),e=1-Math.pow(1-p,3);el.textContent=m[1]+(alvo*e).toLocaleString('pt-BR',{minimumFractionDigits:dec,maximumFractionDigits:dec})+m[3];if(p<1)requestAnimationFrame(f);else el.textContent=t};requestAnimationFrame(f)})}
+ addEventListener('hashchange',()=>setTimeout(enRede,80));
  /* busca */
  function abre(){
   let m=document.getElementById('cmdk');if(m){m.remove();return}
