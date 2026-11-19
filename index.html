@@ -233,6 +233,7 @@ section[data-pag="contingencia"] .ubar,section[data-pag="prazos"] .ubar{backgrou
 .ct-dn{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center}.ct-dn svg{width:132px;height:132px;flex:none}.ct-dn-b{font-size:25px;font-weight:800;fill:var(--fg)}.ct-dn-s{font-size:9px;fill:var(--muted);letter-spacing:.04em}
 .ct-dn ul{list-style:none;margin:0;padding:0;display:grid;gap:5px;font-size:12.5px;min-width:150px;flex:1}.ct-dn li{display:grid;grid-template-columns:10px 1fr auto auto;gap:7px;align-items:center}.ct-dn li i{width:10px;height:10px;border-radius:3px}.ct-dn li b{font-variant-numeric:tabular-nums}.ct-dn li em{font-style:normal;color:var(--muted);min-width:34px;text-align:right;font-size:11.5px}
 .ct-cols{display:flex;gap:6px;align-items:stretch;height:172px;padding:2px 0}.ct-col{flex:1;display:grid;grid-template-rows:auto 1fr auto;gap:4px;text-align:center;min-width:0}.ct-col>div{display:flex;align-items:flex-end;justify-content:center;border-bottom:1px solid var(--line)}.ct-col i{display:block;width:72%;max-width:40px;border-radius:7px 7px 2px 2px;transition:height .6s cubic-bezier(.2,.8,.2,1)}.ct-col b{font-size:12.5px;font-variant-numeric:tabular-nums}.ct-col span{color:var(--muted);font-size:10.5px;line-height:1.15;min-height:24px}
+.ct-phr{display:flex;align-items:center;gap:8px;min-width:0}.ct-pb{flex:none;width:30px;height:28px;display:inline-grid;place-items:center;border:1px solid var(--line);background:var(--surface);color:var(--accent);border-radius:9px;cursor:pointer;padding:0}.ct-pb:hover{background:var(--accent-soft)}.ct-pb .ico{width:16px;height:16px}body.capt .ct-pb{display:none!important}
 .capt-ct .ct-topo,.capt-ct #ctDados,.capt-ct #pzUpsP,.capt-ct .panel:has(#pzTab),.capt-ct .panel:has(#ctMapa),.capt-ct .ct-fat .btn,.capt-ct .ct-sem,.capt-ct .ubar-r{display:none!important}.capt-ct .ct-bars.ct-rol{max-height:none}
 .ct-fat{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:2px 4px}.ct-fat[hidden]{display:none}.ct-fat-t{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
 .ct-fil{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;padding:12px 14px}.ct-fil .fld{display:grid;gap:4px;min-width:170px;flex:1;max-width:260px}.ct-fil .fld label{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
@@ -1309,6 +1310,7 @@ body::after{display:none!important}
 header.top>.top-in{position:relative;z-index:1}
 @media print{.topoCirc{display:none}}
 #ctK{grid-template-columns:repeat(auto-fit,minmax(165px,1fr))!important}
+section[data-pag="contingencia"] .panel .phd,section[data-pag="prazos"] .panel .phd{position:relative;padding-right:38px}section[data-pag="contingencia"] .ct-pb,section[data-pag="prazos"] .ct-pb{position:absolute;right:0;top:0}
 
 /* ===== barra superior no mesmo padrão da tela de entrada ===== */
 header.top,.top{background:radial-gradient(900px 220px at 85% -80%,#b0283f 0%,transparent 60%),linear-gradient(135deg,#3d0812 0%,#6a1222 45%,#8d1d31 100%)!important;box-shadow:0 8px 28px rgba(61,8,18,.25)!important;border-bottom:1px solid rgba(255,255,255,.08)}
@@ -1474,6 +1476,9 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     </div>
     <div id="fCt" style="display:grid;gap:14px" hidden>
     <div class="grp">Atividades</div>
+    <div class="grp">Data limite</div>
+    <div class="fld"><label for="cf-de">Data limite · de</label><input type="date" id="cf-de"></div>
+    <div class="fld"><label for="cf-ate">Data limite · até</label><input type="date" id="cf-ate"></div>
     <div class="fld"><label>Tipo de serviço</label><div class="msel" id="cf-tipo" data-todos="Todos" data-nome="tipo(s)"></div></div>
     <div class="fld"><label>Contrato</label><div class="msel" id="cf-ct" data-todos="Todos" data-nome="contrato(s)"></div></div>
     <div class="fld"><label>Base</label><div class="msel" id="cf-base" data-todos="Todas" data-nome="base(s)"></div></div>
@@ -1481,6 +1486,11 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     <div class="fld"><label>Tipo de equipe</label><div class="msel" id="cf-teq" data-todos="Todos" data-nome="tipo(s)"></div></div>
     </div>
     <div id="fPz" style="display:grid;gap:14px" hidden>
+    <div class="grp">Data limite</div>
+    <div class="fld"><label for="pf-de">Data limite · de</label><input type="date" id="pf-de"></div>
+    <div class="fld"><label for="pf-ate">Data limite · até</label><input type="date" id="pf-ate"></div>
+    <div class="grp">Dia da UPS</div>
+    <div class="fld"><label for="pf-dia">Dia da tabela de UPS por equipe</label><select id="pf-dia"></select></div>
     <div class="grp">Prazo e atividade</div>
     <div class="fld"><label>Situação do prazo</label><div class="msel" id="pf-venc" data-todos="Todas" data-nome="situação(ões)"></div></div>
     <div class="fld"><label>Status da atividade</label><div class="msel" id="pf-st" data-todos="Todos" data-nome="status"></div></div>
@@ -2018,7 +2028,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     <div id="cadNota"></div>
     <div class="panel" data-tabp="prefixos">
       <div class="phd"><div class="busca"><input type="search" id="cadBusca" placeholder="Buscar prefixo, estrutura ou base…" aria-label="Buscar no cadastro"><span class="muted" id="cadCont"></span></div><button class="btn primary" id="b-novoPref" type="button"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Novo prefixo</button></div>
-      <div class="tw"><table><thead><tr><th>Prefixo</th><th>Estrutura</th><th>Gerência</th><th>Base</th><th>Jornada</th><th>Meta produção</th><th></th></tr></thead><tbody id="t-cad"></tbody></table></div>
+      <div class="tw"><table><thead><tr><th>Prefixo</th><th>Estrutura</th><th>Gerência</th><th>Base</th><th>Jornada</th><th></th></tr></thead><tbody id="t-cad"></tbody></table></div>
     </div>
     <div class="panel" data-tabp="feriados" hidden>
       <div class="phd"><h3>Feriados</h3><small>em feriado o turno previsto é zero, exceto nas estruturas de plantão</small></div>
@@ -2068,11 +2078,6 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     <div class="fld"><label for="cpGer">Gerência</label><input type="text" id="cpGer" list="dlGer" required></div>
     <div class="fld"><label for="cpBase">Base</label><input type="text" id="cpBase" list="dlBase" required></div>
     <datalist id="dlEst"></datalist><datalist id="dlGer"></datalist><datalist id="dlBase"></datalist>
-    <div class="grp">Produção do dia (faturamento)</div>
-    <div class="fld"><label for="cpMeta">Meta diária (R$)</label><input type="text" id="cpMeta" inputmode="decimal" placeholder="ex.: 1.353,94"><small class="muted">Vale para dia útil. Sábado conta 50% e domingo/feriado 0, exceto plantão (tipo AE116: sempre 100%). Deixe 0 para equipe sem meta fixa.</small></div>
-    <div class="fld"><label for="cpTipoP">Tipo na produção</label><input type="text" id="cpTipoP" list="dlTipoP" placeholder="ex.: AE116, LGN, CR/RI, SDM"></div>
-    <div class="fld"><label for="cpEstP">Estrutura na produção</label><input type="text" id="cpEstP" list="dlEstP" placeholder="ex.: 16H 4X4"></div>
-    <datalist id="dlTipoP"></datalist><datalist id="dlEstP"></datalist>
     <div class="grp">Jornada por dia (horas:minutos)</div>
     <div class="jor" id="cpJor"></div>
     <div id="cpMsg"></div>
@@ -2499,6 +2504,8 @@ function ctContrato(rec,base){
 }
 /* tipo de equipe: cadastro da hierarquia e, na falta dele, a escala (coluna TIPO DE EQUIPE) */
 const ctTipoEq=rec=>{const H=HIER&&HIER.itens&&HIER.itens[hierChave(rec)];if(H&&H.t)return H.t;ctContrato(rec,'');const c=ctEsMapa&&ctEsMapa[hierChave(rec)];return (c&&c.tipo)||''};
+const ctDtOk=(px,r)=>{const a=$(px+'-de'),b=$(px+'-ate');if(!a||!b||(!a.value&&!b.value))return true;if(r.lim==null)return false;const d=new Date(r.lim).toISOString().slice(0,10);return (!a.value||d>=a.value)&&(!b.value||d<=b.value)};
+const ctDtTxt=px=>{const a=$(px+'-de').value,b=$(px+'-ate').value;return a||b?(a?dataBR(a):'início')+' a '+(b?dataBR(b):'fim'):''};
 const ctRows=()=>{const H=HIER&&HIER.itens;return CT.rows.filter(r=>{const e=H&&H[hierChave(r.rec)],cf=cfgBase&&cfgBase.prefixos&&cfgBase.prefixos[r.rec];r.base=(e&&e.b)||(cf&&cf.b)||'';r.tEq=ctTipoEq(r.rec);r.ct=ctContrato(r.rec,r.base);return hierOk(r.rec)})}; /* base e tipo de equipe vêm do cadastro de prefixos / equipes */
 function ctOpts(id,vals){const el=$(id),st=el.msel||msInit(el),v=[...new Set(vals.filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));if(JSON.stringify(st.vals)!==JSON.stringify(v))st.setOpts(v);else if(st.pintar)st.pintar()}
 const ctSel=(id,v)=>{const s=msSel(id);return !s||s.has(v)};
@@ -2518,7 +2525,7 @@ const ctLk=(tp,m,n)=>'<td class="n">'+(n?'<button type="button" class="ct-lk'+(C
 /* ---------- semelhante ao BI: Gestão de Contingência ---------- */
 /* resumo dos filtros ativos (a escolha em si fica na gaveta "Filtros") e selo do botão */
 function ctChips(px,L,cid){
-  const at=L.filter(([i])=>msSel(i)).map(([i,n])=>[n,msTxt(i)]);if(cid)at.push(['Cidade (gráfico)',cid]);
+  const at=L.filter(([i])=>i===px+'-de'?ctDtTxt(px):msSel(i)).map(([i,n])=>[n,i===px+'-de'?ctDtTxt(px):msTxt(i)]);if(cid)at.push(['Cidade (gráfico)',cid]);
   $(px+'At').innerHTML=at.map(([n,v])=>'<span class="ct-chip">'+esc(n)+': '+esc(v)+'</span>').join('');
   $(px+'Bar').hidden=!at.length;$('filtrosN').hidden=!at.length;$('filtrosN').textContent=at.length;
 }
@@ -2532,9 +2539,9 @@ function ctCols(it){if(!it.some(i=>i.n))return ctVazio();const mx=Math.max(1,...
 function ctRenderC(){
   const base=ctRows(),ag=ctAgora();
   ctOpts('cf-tipo',base.map(r=>r.tipo));ctOpts('cf-ct',base.map(r=>r.ct));ctOpts('cf-base',base.map(r=>r.base));ctOpts('cf-st',base.map(r=>r.st));ctOpts('cf-teq',base.map(r=>r.tEq));
-  const f=base.filter(r=>ctSel('cf-tipo',r.tipo)&&ctSel('cf-ct',r.ct)&&ctSel('cf-base',r.base)&&ctSel('cf-st',r.st)&&ctSel('cf-teq',r.tEq));
-  $('cf-x').hidden=!(msSel('cf-tipo')||msSel('cf-ct')||msSel('cf-base')||msSel('cf-st')||msSel('cf-teq'));
-  ctChips('cf',[['cf-tipo','Tipo de serviço'],['cf-ct','Contrato'],['cf-base','Base'],['cf-st','Status'],['cf-teq','Tipo de equipe']]);
+  const f=base.filter(r=>ctSel('cf-tipo',r.tipo)&&ctSel('cf-ct',r.ct)&&ctSel('cf-base',r.base)&&ctSel('cf-st',r.st)&&ctSel('cf-teq',r.tEq)&&ctDtOk('cf',r));
+  $('cf-x').hidden=!(ctDtTxt('cf')||msSel('cf-tipo')||msSel('cf-ct')||msSel('cf-base')||msSel('cf-st')||msSel('cf-teq'));
+  ctChips('cf',[['cf-de','Data limite'],['cf-tipo','Tipo de serviço'],['cf-ct','Contrato'],['cf-base','Base'],['cf-st','Status'],['cf-teq','Tipo de equipe']]);
   const cli=f.reduce((s,r)=>s+r.cli,0),a24=f.filter(r=>ctAcima24(r,ag)).length;
   $('ctK').innerHTML='<div class="ct-kp"><small>Total O.C</small><b>'+f.length+'</b><span>atividades</span></div><div class="ct-kp am"><small>Clientes afetados</small><b>'+cli+'</b><span>soma dos clientes interrompidos</span></div><div class="ct-kp vm"><small>Serviços acima de 24 h</small><b>'+a24+'</b><span>em aberto, vencidos há 24 h ou mais</span></div>';
   const st={},eq={},ti={};
@@ -2587,25 +2594,30 @@ function ctMapa(f,ag){
 function pzUps(base,f){
   const T=$('pzUpsT'),N=$('pzUpsN');if(!T)return;
   if(!UR||!UR.linhas||!UR.ultima){N.textContent='UPS ainda não carregada';T.innerHTML='';return}
-  const dia=UR.ultima,g={},med={};
+  const dsl=$('pf-dia'),dd=Object.keys(UR.dias||{}).filter(d=>d<=UR.ultima).sort().reverse().slice(0,45);
+  if(dsl){const at=dsl.value;dsl.innerHTML=dd.map((d,i)=>'<option value="'+d+'">'+dataBR(d)+(i===0?' (último importado)':'')+'</option>').join('');dsl.value=dd.includes(at)?at:(dd[0]||'')}
+  const dia=(dsl&&dsl.value)||UR.ultima,g={},med={};
+  /* se a UPS de hoje ainda não foi importada, estima o produzido de hoje pelas atividades concluídas na planilha (× UPS média da equipe) */
+  const hoje=new Date(ctAgora()).toISOString().slice(0,10),est=dia<hoje&&dia===UR.ultima,dn={};for(const r of f)if(r.done)dn[r.rec]=(dn[r.rec]||0)+1;
   for(const l of UR.linhas){if(l.n>0&&l.ups>0){const m=med[l.rec]||(med[l.rec]={u:0,n:0});m.u+=l.ups;m.n+=l.n}}
   /* mesmos filtros da página: base e tipo de equipe pelo cadastro; situação, status, tipo de atividade e cidade pelas atividades filtradas */
   const inf=rec=>{const e=HIER&&HIER.itens&&HIER.itens[hierChave(rec)],cf=cfgBase&&cfgBase.prefixos&&cfgBase.prefixos[rec];return {b:(e&&e.b)||(cf&&cf.b)||'',t:ctTipoEq(rec)}};
-  const porAtiv=['pf-venc','pf-st','pf-tipo','pf-cid'].some(i=>msSel(i))||!!CT.fcid,recF=new Set(f.map(r=>r.rec));
+  const porAtiv=['pf-venc','pf-st','pf-tipo','pf-cid'].some(i=>msSel(i))||!!ctDtTxt('pf')||!!CT.fcid,recF=new Set(f.map(r=>r.rec));
   for(const l of UR.linhas){if(l.data!==dia||!l.cod||!(l.meta>0)||!ctSel('pf-sg',l.sigla)||!ctSel('pf-rec',l.rec)||!ctSel('pf-ct',ctContrato(l.rec,l.base)))continue;
     if(porAtiv&&!recF.has(l.rec))continue;const iq=inf(l.rec);if(!ctSel('pf-base',iq.b)||!ctSel('pf-teq',iq.t))continue;
-    const a=g[l.rec]||(g[l.rec]={rec:l.rec,tipo:l.tipo||'',meta:0,prod:0});a.meta+=l.meta;a.prod+=l.ups}
+    const a=g[l.rec]||(g[l.rec]={rec:l.rec,tipo:l.tipo||'',meta:0,prod:0});a.meta+=l.meta;a.prod+=est?0:l.ups}
   const pen={};for(const r of f)if(!r.done)pen[r.rec]=(pen[r.rec]||0)+1;
-  const L=Object.values(g).map(a=>{const m=med[a.rec],mu=m&&m.n?m.u/m.n:0,pn=pen[a.rec]||0;return Object.assign(a,{pn,balde:a.prod+pn*mu})}).sort((x,y)=>y.balde-x.balde);
-  N.textContent='dia '+dataBR(dia)+' · '+L.length+' equipe(s)';
+  const L=Object.values(g).map(a=>{const m=med[a.rec],mu=m&&m.n?m.u/m.n:0,pn=dia===UR.ultima?(pen[a.rec]||0):0;if(est)a.prod=(dn[a.rec]||0)*mu;return Object.assign(a,{pn,balde:a.prod+pn*mu})}).sort((x,y)=>y.balde-x.balde);
+  N.textContent=est?'hoje, '+dataBR(hoje)+' · ESTIMATIVA pelas atividades concluídas na planilha (a UPS exata entra quando o SIGA for atualizado; último dia importado: '+dataBR(dia)+') · '+L.length+' equipe(s)':'dia '+dataBR(dia)+(dia===hoje?' (hoje)':'')+(dia!==UR.ultima?' · dia anterior: sem pendentes (a planilha só tem os pendentes de agora)':'')+' · '+L.length+' equipe(s)';
+  if(CT.meta&&CT.meta.importado_em)N.textContent+=' · pendentes da planilha de '+ctSP(CT.meta.importado_em,{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
   if(!L.length){T.innerHTML='<tr><td><div class="ct-vazio">Sem equipes com meta neste dia.</div></td></tr>';return}
   const v=x=>x.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}),cor=(x,m)=>x>=m?'pu-g':'pu-r';
   const tt=L.reduce((o,a)=>({meta:o.meta+a.meta,balde:o.balde+a.balde,prod:o.prod+a.prod}),{meta:0,balde:0,prod:0});
-  const okP=typeof PR!=='undefined'&&PR&&PR.dias&&PR.dias[dia]&&typeof PCFG!=='undefined'&&PCFG&&PCFG.idx;
+  const okP=!est&&typeof PR!=='undefined'&&PR&&PR.dias&&PR.dias[dia]&&typeof PCFG!=='undefined'&&PCFG&&PCFG.idx;
   for(const a of L){a.mr=0;a.rr=0;a.temR=false;if(!okP)continue;const pi=PCFG.idx[a.rec];if(!pi||!(pi.meta>0))continue;const mr=pi.meta*prdFator(a.rec,dia);if(!(mr>0))continue;const e=PR.dias[dia][a.rec];a.mr=mr;a.rr=e?e[0]:0;a.temR=true}
   const tr=L.reduce((o,a)=>a.temR?{m:o.m+a.mr,r:o.r+a.rr}:o,{m:0,r:0}),rs=(x,m)=>x>=m?'pu-g':'pu-r';
   T.innerHTML='<tr class="pg-g"><th colspan="2"></th><th class="n pg-u" colspan="4">UPS</th><th class="n pg-f" colspan="2">Valor financeiro (R$)</th><th></th></tr>'
-   +'<tr><th>Equipe</th><th>Estrutura</th><th class="n">Meta diária (UPS)</th><th class="n">Produzido (UPS)</th><th class="n">Pendentes</th><th class="n">Balde (UPS)</th><th class="n">Meta diária (R$)</th><th class="n">Realizado (R$)</th><th>Farol da meta</th></tr>'
+   +'<tr><th>Equipe</th><th>Estrutura</th><th class="n">Meta diária (UPS)</th><th class="n">Produzido (UPS)'+(est?' · estim.':'')+'</th><th class="n">Pendentes</th><th class="n">Balde (UPS)</th><th class="n">Meta diária (R$)</th><th class="n">Realizado (R$)</th><th>Farol da meta</th></tr>'
    +L.map(a=>'<tr><td>'+esc(a.rec)+'</td><td>'+esc(a.tipo)+'</td><td class="n">'+v(a.meta)+'</td><td class="n '+cor(a.prod,a.meta)+'">'+v(a.prod)+'</td><td class="n">'+a.pn+'</td><td class="n '+cor(a.balde,a.meta)+'">'+v(a.balde)+'</td><td class="n">'+(a.temR?brl0(a.mr):'–')+'</td><td class="n '+(a.temR?rs(a.rr,a.mr):'')+'">'+(a.temR?brl0(a.rr):'–')+'</td><td><span class="pu-f '+(a.prod<a.meta?'a':'d')+'">'+(a.prod<a.meta?'Atenção':'Aderente')+'</span></td></tr>').join('')
    +'<tr class="tot"><td><b>Total</b></td><td></td><td class="n"><b>'+v(tt.meta)+'</b></td><td class="n"><b>'+v(tt.prod)+'</b></td><td class="n"><b>'+L.reduce((o,a)=>o+a.pn,0)+'</b></td><td class="n"><b>'+v(tt.balde)+'</b></td><td class="n"><b>'+(tr.m?brl0(tr.m):'–')+'</b></td><td class="n"><b>'+(tr.m?brl0(tr.r):'–')+'</b></td><td></td></tr>';
 }
@@ -2614,11 +2626,11 @@ function ctRenderP(){
   const base=ctRows(),ag=ctAgora();base.forEach(r=>r._v=ctVenc(r,ag));
   ctOpts('pf-venc',['Prazo Vencido','Vencimento Hoje','A Vencer','Concluído']);ctOpts('pf-st',base.map(r=>r.st));ctOpts('pf-sg',base.map(r=>r.sigla));ctOpts('pf-tipo',base.map(r=>r.tipoAt));ctOpts('pf-ct',base.map(r=>r.ct));ctOpts('pf-base',base.map(r=>r.base));ctOpts('pf-teq',base.map(r=>r.tEq));ctOpts('pf-cid',base.map(r=>r.cidade));ctOpts('pf-rec',base.map(r=>r.rec));
   const ids=['pf-venc','pf-st','pf-sg','pf-tipo','pf-ct','pf-base','pf-teq','pf-cid','pf-rec'];
-  const f0=base.filter(r=>ctSel('pf-venc',r._v)&&ctSel('pf-st',r.st)&&ctSel('pf-sg',r.sigla)&&ctSel('pf-tipo',r.tipoAt)&&ctSel('pf-ct',r.ct)&&ctSel('pf-base',r.base)&&ctSel('pf-teq',r.tEq)&&ctSel('pf-cid',r.cidade)&&ctSel('pf-rec',r.rec));
+  const f0=base.filter(r=>ctSel('pf-venc',r._v)&&ctSel('pf-st',r.st)&&ctSel('pf-sg',r.sigla)&&ctSel('pf-tipo',r.tipoAt)&&ctSel('pf-ct',r.ct)&&ctSel('pf-base',r.base)&&ctSel('pf-teq',r.tEq)&&ctSel('pf-cid',r.cidade)&&ctSel('pf-rec',r.rec)&&ctDtOk('pf',r));
   if(CT.fcid&&!f0.some(r=>r.cidade===CT.fcid))CT.fcid=null;
   const f=CT.fcid?f0.filter(r=>r.cidade===CT.fcid):f0; /* a cidade escolhida no gráfico filtra os cartões e a tabela */
   $('pf-x').hidden=!(ids.some(i=>msSel(i))||CT.fcid);
-  ctChips('pf',[['pf-venc','Situação do prazo'],['pf-st','Status'],['pf-sg','Tipo de serviço'],['pf-tipo','Tipo de atividade'],['pf-ct','Contrato'],['pf-base','Base'],['pf-teq','Tipo de equipe'],['pf-cid','Cidade'],['pf-rec','Equipe']],CT.fcid);
+  ctChips('pf',[['pf-de','Data limite'],['pf-venc','Situação do prazo'],['pf-st','Status'],['pf-sg','Tipo de serviço'],['pf-tipo','Tipo de atividade'],['pf-ct','Contrato'],['pf-base','Base'],['pf-teq','Tipo de equipe'],['pf-cid','Cidade'],['pf-rec','Equipe']],CT.fcid);
   const n=k=>f.filter(r=>r._v===k).length;
   $('pzK').innerHTML='<div class="ct-kp vm"><small>Prazo vencido</small><b>'+n('Prazo Vencido')+'</b><span>em aberto, depois do limite</span></div><div class="ct-kp am"><small>Vencimento hoje</small><b>'+n('Vencimento Hoje')+'</b><span>limite ainda hoje</span></div><div class="ct-kp vd"><small>A vencer</small><b>'+n('A Vencer')+'</b><span>limite nos próximos dias</span></div>';
   {const SIT=[['Prazo Vencido','Vencido','#c8102e'],['Vencimento Hoje','Vence hoje','#e8a100'],['A Vencer','A vencer','#2f9e44'],['Concluído','Concluído','#5b7fd6']];
@@ -2717,8 +2729,9 @@ async function ctImportar(){
   }finally{$('ctProg').hidden=true;CT.ocupado=false;$('ct-sel').removeAttribute('aria-disabled');go.disabled=!CT.arq}
 }
 ['cf-tipo','cf-ct','cf-base','cf-st','cf-teq','pf-venc','pf-st','pf-sg','pf-tipo','pf-ct','pf-base','pf-teq','pf-cid','pf-rec'].forEach(id=>{msInit($(id));$(id).addEventListener('change',()=>ctRender())});
-$('cf-x').onclick=()=>{['cf-tipo','cf-ct','cf-base','cf-st','cf-teq'].forEach(i=>{$(i).msel.sel.clear();$(i).msel.pintar()});CT.fk={};ctRender()};
-$('pf-x').onclick=()=>{['pf-venc','pf-st','pf-sg','pf-tipo','pf-ct','pf-base','pf-teq','pf-cid','pf-rec'].forEach(i=>{$(i).msel.sel.clear();$(i).msel.pintar()});CT.fcid=null;ctRender()};
+$('cf-x').onclick=()=>{['cf-tipo','cf-ct','cf-base','cf-st','cf-teq'].forEach(i=>{$(i).msel.sel.clear();$(i).msel.pintar()});CT.fk={};$('cf-de').value='';$('cf-ate').value='';ctRender()};
+['pf-dia','pf-de','pf-ate','cf-de','cf-ate'].forEach(i=>$(i).addEventListener('change',()=>ctRender()));
+$('pf-x').onclick=()=>{['pf-venc','pf-st','pf-sg','pf-tipo','pf-ct','pf-base','pf-teq','pf-cid','pf-rec'].forEach(i=>{$(i).msel.sel.clear();$(i).msel.pintar()});CT.fcid=null;$('pf-de').value='';$('pf-ate').value='';{const d=$('pf-dia');if(d&&d.options.length)d.selectedIndex=0}ctRender()};
 /* cliques nas tabelas e gráficos: ordenar pelo cabeçalho e filtrar */
 document.addEventListener('click',e=>{
   const th=e.target.closest&&e.target.closest('th.srt');
@@ -3095,7 +3108,7 @@ function resumoJor(j){if(!j)return'–';const u=j.slice(0,5);const igual=u.every
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{abaCad=b.dataset.tab;document.querySelectorAll('[data-tab]').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));document.querySelectorAll('[data-tabp]').forEach(x=>x.hidden=x.dataset.tabp!==abaCad)});
 async function salvarCad(nome,itens,ok){
   if(!db||!podeSalvar){toast('Você não tem permissão para alterar os cadastros.');return false}
-  try{await db.collection('config').doc(nome).set({itens,editadoEm:new Date().toISOString()});cad[nome]=itens;montar();try{montarPrd();renderCadastros()}catch(e){}toast(ok);return true}
+  try{await db.collection('config').doc(nome).set({itens,editadoEm:new Date().toISOString()});cad[nome]=itens;montar();toast(ok);return true}
   catch(e){toast(e&&e.code==='invalid_argument'?'Você não tem permissão para alterar os cadastros.':'Não foi possível salvar. Tente de novo.');return false}
 }
 function renderCadastros(){
@@ -3107,7 +3120,7 @@ function renderCadastros(){
   const q=$('cadBusca').value.trim().toUpperCase();
   const lst=Object.entries(cfg.prefixos).filter(([k,v])=>!q||(k+' '+v.e+' '+v.b+' '+v.g).toUpperCase().includes(q)).sort((a,b)=>a[0]<b[0]?-1:1);
   $('cadCont').textContent=lst.length+' prefixos';
-  $('t-cad').innerHTML=lst.map(([k,v])=>'<tr><td><b>'+esc(k)+'</b>'+(cad.prefixos&&cad.prefixos[k]?'<span class="tag-site">editado</span>':'')+'</td><td>'+esc(v.e)+'</td><td>'+esc(v.g)+'</td><td>'+esc(v.b||'–')+'</td><td>'+resumoJor(v.j)+'</td><td class="n">'+metaTxt(k)+'</td><td>'+(podeSalvar?'<button class="btn sm" type="button" data-edit="'+esc(k)+'">Editar</button>':'')+'</td></tr>').join('')||'<tr><td colspan="7"><div class="empty">Nenhum prefixo encontrado.</div></td></tr>';
+  $('t-cad').innerHTML=lst.map(([k,v])=>'<tr><td><b>'+esc(k)+'</b>'+(cad.prefixos&&cad.prefixos[k]?'<span class="tag-site">editado</span>':'')+'</td><td>'+esc(v.e)+'</td><td>'+esc(v.g)+'</td><td>'+esc(v.b||'–')+'</td><td>'+resumoJor(v.j)+'</td><td>'+(podeSalvar?'<button class="btn sm" type="button" data-edit="'+esc(k)+'">Editar</button>':'')+'</td></tr>').join('')||'<tr><td colspan="6"><div class="empty">Nenhum prefixo encontrado.</div></td></tr>';
   $('t-cad').querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>abrirPref(b.dataset.edit));
   const fer=Object.entries(cfg.feriados).filter(([d])=>d>='2026-01-01').sort((a,b)=>a[0]<b[0]?1:-1);
   $('t-fer').innerHTML=fer.map(([d,n])=>'<tr><td><b>'+dataBR(d)+'</b></td><td>'+semana(d)+'</td><td>'+esc(n)+(cad.feriados&&cad.feriados[d]?'<span class="tag-site">site</span>':'')+'</td><td>'+(podeSalvar?'<button class="btn sm del" type="button" data-dfer="'+d+'">Remover</button>':'')+'</td></tr>').join('')||'<tr><td colspan="4"><div class="empty">Nenhum feriado em 2026.</div></td></tr>';
@@ -3122,26 +3135,12 @@ function renderCadastros(){
 $('cadBusca').addEventListener('input',renderCadastros);
 $('formFer').addEventListener('submit',e=>{e.preventDefault();const d=$('ferData').value,n=$('ferNome').value.trim();if(!d||!n)return;const it=Object.assign({},cad.feriados||{});it[d]=n;salvarCad('feriados',it,'Feriado adicionado.').then(ok=>{if(ok){$('ferData').value='';$('ferNome').value=''}})});
 $('formFol').addEventListener('submit',e=>{e.preventDefault();const d=$('folData').value,b=$('folBase').value,es=$('folEst').value,m=$('folMot').value.trim();if(!d||!b||!es||!m)return;const it=Object.assign({},cad.folgas||{});it[b+'|'+es+'|'+d]=m;salvarCad('folgas',it,'Folga adicionada.').then(ok=>{if(ok){$('folData').value='';$('folMot').value=''}})});
-const prdNum=v=>{v=String(v==null?'':v).trim();if(!v)return null;const n=Number(v.includes(',')?v.replace(/\./g,'').replace(',','.'):v);return Number.isNaN(n)||n<0?NaN:n};
-const metaTxt=k=>{const pi=PCFG&&PCFG.idx&&PCFG.idx[k];if(!pi)return '–';return pi.meta>0?pi.meta.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}):'sem meta fixa'};
-/* A produção usa o arquivo prod_config.json como valor inicial; o que for cadastrado/editado no site (Neon) vale por cima. */
-function prdAplicarCad(){
-  if(!PCFG)return;if(!PCFG.p0)PCFG.p0=PCFG.prefixos.map(p=>p.slice());
-  const ov=(cad&&cad.prefixos)||{},mapa={};PCFG.p0.forEach(p=>mapa[p[0]]=p.slice());
-  for(const k in ov){const o=ov[k];if(o===null){delete mapa[k];continue}if(!o)continue;
-    let p=mapa[k];if(!p){if(o.pm==null&&!o.pt)continue;p=mapa[k]=[k,o.b||'',o.pe||o.e||'',0,'']}
-    if(o.b)p[1]=o.b;if(o.pe)p[2]=o.pe;if(o.pm!=null)p[3]=o.pm;if(o.pt)p[4]=o.pt}
-  PCFG.prefixos=Object.values(mapa);PCFG.idx=null;
-}
 function abrirPref(k,novoNome){
   editPref=k;confirmaDel=false;
   const v=k?cfg.prefixos[k]:{e:'',g:'',b:'',j:[480,480,480,480,480,0,0]};
   $('cadTit').textContent=k?'Editar prefixo':'Novo prefixo';
   $('cpPref').value=k||novoNome||'';$('cpPref').readOnly=!!k;
   $('cpEst').value=v.e||'';$('cpGer').value=v.g||'';$('cpBase').value=v.b||'';
-  {const pi=(PCFG&&PCFG.idx&&k&&PCFG.idx[k])||null;
-   $('cpMeta').value=pi&&pi.meta!=null?String(pi.meta).replace('.',','):(v.pm!=null?String(v.pm).replace('.',','):'');$('cpTipoP').value=pi?pi.tipo||'':(v.pt||'');$('cpEstP').value=pi?pi.est||'':(v.pe||'');
-   const P=(PCFG&&PCFG.prefixos)||[];$('dlTipoP').innerHTML=[...new Set(P.map(p=>p[4]).filter(Boolean))].sort().map(x=>'<option value="'+esc(x)+'">').join('');$('dlEstP').innerHTML=[...new Set(P.map(p=>p[2]).filter(Boolean))].sort().map(x=>'<option value="'+esc(x)+'">').join('')}
   $('cpJor').innerHTML=DIAS_CURTO.map((n,i)=>'<div class="fld"><label for="cpJ'+i+'">'+n+'</label><input type="text" inputmode="numeric" placeholder="00:00" maxlength="5" id="cpJ'+i+'" value="'+minParaHora((v.j||[])[i]||0)+'"></div>').join('');
   $('cpMsg').innerHTML='';$('b-delPref').hidden=!k;$('b-delPref').textContent='Excluir';
   $('gavCad').hidden=false;$('cadFundo').hidden=false;
@@ -3156,9 +3155,7 @@ $('b-salvaPref').onclick=async()=>{
   if(!editPref&&cfg.prefixos[k]){$('cpMsg').innerHTML='<div class="note err">Esse prefixo já existe. Use Editar na lista.</div>';return}
   const j=DIAS_CURTO.map((_,i)=>horaParaMin($('cpJ'+i).value));
   if(j.some(x=>isNaN(x))){$('cpMsg').innerHTML='<div class="note err">Jornada no formato horas:minutos, ex.: 08:00. Deixe 00:00 para folga.</div>';return}
-  const pm=prdNum($('cpMeta').value),pt=$('cpTipoP').value.trim().toUpperCase(),pe=$('cpEstP').value.trim().toUpperCase();
-  if(Number.isNaN(pm)){$('cpMsg').innerHTML='<div class="note err">Meta diária inválida. Use só números, ex.: 1.353,94.</div>';return}
-  const it=Object.assign({},cad.prefixos||{});const o={e,g,b,j};if(pm!=null)o.pm=pm;if(pt)o.pt=pt;if(pe)o.pe=pe;it[k]=o; /* tudo vai para o Neon */
+  const it=Object.assign({},cad.prefixos||{});it[k]={e,g,b,j};
   if(await salvarCad('prefixos',it,'Prefixo '+k+' salvo.'))fecharPref();
 };
 $('b-delPref').onclick=async()=>{
@@ -3493,7 +3490,7 @@ const carregarH2I=()=>window.htmlToImage?Promise.resolve(window.htmlToImage):(H2
 async function gerarPrintPagina(alvo){
   const temaAnt=document.documentElement.getAttribute('data-tema');document.documentElement.removeAttribute('data-tema'); /* print sempre no tema claro */
   const pg=pag(),sec=alvo||document.querySelector('section[data-pag="'+pg.id+'"]');if(!sec)throw new Error('Página sem conteúdo');
-  const h=await carregarH2I();document.body.classList.add('capt');if(pg.id==='contingencia'||pg.id==='prazos')document.body.classList.add('capt-ct');dTipHide&&dTipHide();
+  const h=await carregarH2I();document.body.classList.add('capt');if(!alvo&&(pg.id==='contingencia'||pg.id==='prazos'))document.body.classList.add('capt-ct');dTipHide&&dTipHide();
   await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
   /* o gerador perde estilos de SVG vindos de classes: copia os estilos calculados para cada elemento */
   const PROPS=['fill','fill-opacity','stroke','stroke-width','stroke-dasharray','stroke-linejoin','stroke-linecap','stroke-opacity','opacity','font-size','font-weight','font-family','paint-order','text-anchor','display','vector-effect'];
@@ -3514,7 +3511,7 @@ async function gerarPrintPagina(alvo){
   if(mesCols&&mesCols.hint)printCorte=Math.round((mesCols.hint.getBoundingClientRect().top-sec.getBoundingClientRect().top-7+24)*2);
   try{
     const w=sec.offsetWidth,ht=alvo?Math.max(sec.scrollHeight,Math.ceil(sec.getBoundingClientRect().height))+(sec.classList.contains('pv-sheet')?72:0):sec.scrollHeight,pad=24;
-    const op={pixelRatio:2,backgroundColor:'#f4f4f4',width:w+pad*2,height:ht+pad*2,style:{padding:pad+'px',margin:'0',width:w+'px',boxSizing:'content-box'},filter:n=>!(n.id==='b-agr'||n.classList&&(n.classList.contains('ufunil')||n.classList.contains('dmz-c')||n.classList.contains('dmz-h')))};
+    const op={pixelRatio:2,backgroundColor:'#f4f4f4',width:w+pad*2,height:ht+pad*2,style:{padding:pad+'px',margin:'0',width:w+'px',boxSizing:'content-box'},filter:n=>!(n.id==='b-agr'||n.classList&&(n.classList.contains('ufunil')||n.classList.contains('ct-pb')||n.classList.contains('dmz-c')||n.classList.contains('dmz-h')))};
     let cv;try{cv=await h.toCanvas(sec,op)}catch(e){cv=await h.toCanvas(sec,{...op,skipFonts:true})}
     const f=document.createElement('canvas');f.width=cv.width;f.height=cv.height+70;const c=f.getContext('2d');c.fillStyle='#f4f4f4';c.fillRect(0,0,f.width,f.height);c.drawImage(cv,0,0);
     c.fillStyle='#711424';c.fillRect(pad*2,cv.height+8,f.width-pad*4,3);c.font='700 22px "Plus Jakarta Sans",Arial,sans-serif';c.fillStyle='#2b2a2a';
@@ -5106,7 +5103,7 @@ function prdDeLinhas(rows){
   return {dias,n,ultFim};
 }
 function montarPrd(){
-  if(!PCFG||!PHIST)return;prdAplicarCad();prdPrep();
+  if(!PCFG||!PHIST)return;prdPrep();
   const dias={},info={};
   for(const d in PHIST.dias){dias[d]=PHIST.dias[d];info[d]={fonte:'Relatório de Produção (planilha)'}}
   for(const d in prdDocs){dias[d]=prdDocs[d].eq;info[d]={fonte:prdDocs[d].arquivo,em:prdDocs[d].enviadoEm,ultFim:prdDocs[d].ultFim}}
@@ -5262,6 +5259,12 @@ $('pvPrint').onclick=async()=>{
 document.querySelectorAll('section[data-pag] .ubar .ubar-r').forEach(r=>{if(r.querySelector('.uprint'))return;const b=document.createElement('button');b.type='button';b.className='uprint';b.title='Gerar o print do painel para enviar';b.setAttribute('aria-label','Copiar print do painel');
   b.innerHTML='<svg class="ico" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/></svg><span>Print / Enviar</span>';
   b.onclick=()=>{printAlvo=null;$('b-copiar').onclick()};r.insertBefore(b,r.firstChild)});
+/* botão de print em cada quadro da Contingência e do Prazos */
+document.querySelectorAll('section[data-pag="contingencia"] .panel .phd,section[data-pag="prazos"] .panel .phd').forEach(h=>{const pn=h.closest('.panel');if(!pn||pn.closest('.ct-topo')||h.querySelector('.ct-pb'))return;
+  const w=document.createElement('span');w.className='ct-phr';[...h.children].filter(x=>x.tagName==='SMALL').forEach(x=>w.appendChild(x));
+  const b=document.createElement('button');b.type='button';b.className='ct-pb';b.title='Gerar o print deste quadro';b.setAttribute('aria-label','Print deste quadro');
+  b.innerHTML='<svg class="ico" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/></svg>';
+  b.onclick=()=>{printAlvo=pn;$('b-copiar').onclick()};w.appendChild(b);h.appendChild(w)});
 ['p-modo','p-de','p-dia',...PF].forEach(id=>$(id).addEventListener('change',()=>{if(id==='p-dia')prdEscolheu=true;$(id).classList.toggle('on',!!$(id).value&&!['p-dia','p-modo','p-de'].includes(id));renderPrd()}));
 document.querySelectorAll('[data-pfunil]').forEach(b=>b.onclick=()=>abrirGaveta());
 
@@ -6229,7 +6232,7 @@ Promise.all([fetch('config.json').then(r=>r.json()),fetch('historico.json').then
     {const bi=snap.docs.find(d=>d.id==='bancoIdx');if(bi){try{const v=JSON.parse(bi.data().j);for(const f of ['COI','MAN','FIS','OBRAS'])v[f]=v[f]||{};bancoIdx=v;montarBanco()}catch(e){}}}
     let esc=null,escInfo=null,fu={};
     for(const d of snap.docs){const v=d.data();if(v&&v.itens&&n[d.id]!==undefined)n[d.id]=v.itens;if(d.id==='escala'&&v&&Array.isArray(v.itens)){esc=v.itens;escInfo=(v.arquivo||'')+(v.editadoEm?' em '+new Date(v.editadoEm).toLocaleDateString('pt-BR'):'')}if(d.id==='feriadosUps'&&v&&v.itens)fu=v.itens}
-    cad=n;{const as=JSON.stringify(n.naoCgb);if(as!==ncAssin){ncAssin=as;setTimeout(()=>{try{hierRemontar()}catch(e){}},0)}}escalaDb=esc;escalaDbInfo=escInfo;ferUps=fu;const aa=snap.docs.find(d=>d.id==='aderAjuste');aderAjDb=aa?aa.data():null;const dt=snap.docs.find(d=>d.id==='defTatico');defTatDb=dt?dt.data():null;const dtc=snap.docs.find(d=>d.id==='defTecnicos');defTecDb=dtc?dtc.data():null;{const ur=snap.docs.find(d=>d.id==='upsRegras');UOVR=rgLer(ur?ur.data():null);aplicarRegrasUps();if(UCFG){montarUPS();renderRgUps()}}montar();try{montarPrd();renderCadastros()}catch(e){}montarAder();montarDef();
+    cad=n;{const as=JSON.stringify(n.naoCgb);if(as!==ncAssin){ncAssin=as;setTimeout(()=>{try{hierRemontar()}catch(e){}},0)}}escalaDb=esc;escalaDbInfo=escInfo;ferUps=fu;const aa=snap.docs.find(d=>d.id==='aderAjuste');aderAjDb=aa?aa.data():null;const dt=snap.docs.find(d=>d.id==='defTatico');defTatDb=dt?dt.data():null;const dtc=snap.docs.find(d=>d.id==='defTecnicos');defTecDb=dtc?dtc.data():null;{const ur=snap.docs.find(d=>d.id==='upsRegras');UOVR=rgLer(ur?ur.data():null);aplicarRegrasUps();if(UCFG){montarUPS();renderRgUps()}}montar();montarAder();montarDef();
   },()=>{});
   renderCadastros();
   if(pendentes.length)atualizarLocais();
