@@ -1434,6 +1434,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     <div class="fld" id="p-de-w" hidden><label for="p-de">De</label><select id="p-de"></select></div>
     <div class="fld"><label for="p-dia" id="p-dia-l">Dia</label><select id="p-dia"></select></div>
     <div class="grp">Equipes</div>
+    <div class="fld"><label>Setor</label><div class="msel" id="p-ger" data-todos="Todos" data-nome="setor(es)"></div></div>
     <div class="fld"><label>Contrato</label><div class="msel" id="p-ct" data-todos="Todos" data-nome="contrato(s)"></div></div>
     <div class="fld"><label>Base</label><div class="msel" id="p-base" data-todos="Todas" data-nome="base(s)"></div></div>
     <div class="fld"><label>Tipo de equipe</label><div class="msel" id="p-tipo" data-todos="Todos" data-nome="tipo(s)"></div></div>
@@ -2935,6 +2936,7 @@ function montar(){
   diasAgg=dias;
   resumo=Disp.calcularResumo(cfg,dias,[...recs].filter(hierOk).sort());
   pintarTopo();preencherFiltros();render();renderRail();pintarCal(datas);renderCadastros();montarUPS();renderInicio();
+  try{if(typeof PR!=='undefined'&&PR&&indAtual()==='prd')renderPrd()}catch(e){} /* turno aberto vale nas equipes sem meta da produção */
 }
 function faltando(){if(!ultimaData||!fontesPorData[ultimaData])return 0;return FONTES.filter(f=>!fontesPorData[ultimaData].includes(f)).length}
 function pintarTopo(){
@@ -2970,7 +2972,7 @@ function msInit(el){
 function msSel(id){const st=$(id).msel;return st&&st.sel.size?st.sel:null}
 function msTxt(id){const s=msSel(id);return s?[...s].join(', '):''}
 document.addEventListener('click',()=>document.querySelectorAll('.msel-p').forEach(p=>p.hidden=true));document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.msel-p').forEach(p=>p.hidden=true)});
-['f-dia','f-base','f-ger','f-est','f-tipo','p-ct','p-base','p-tipo','p-rec','u-mes','a-base','a-est','a-tipo','a-rec','i-base','i-tipo','i-rec','q-base','q-tipo','x-base','x-tipo','t-mun','t-ef','d-pri','d-tat','d-dist','d-tipo','d-ger','d-pep','u-base','u-tipo','u-coord','u-rec'].forEach(id=>msInit($(id)));
+['f-dia','f-base','f-ger','f-est','f-tipo','p-ger','p-ct','p-base','p-tipo','p-rec','u-mes','a-base','a-est','a-tipo','a-rec','i-base','i-tipo','i-rec','q-base','q-tipo','x-base','x-tipo','t-mun','t-ef','d-pri','d-tat','d-dist','d-tipo','d-ger','d-pep','u-base','u-tipo','u-coord','u-rec'].forEach(id=>msInit($(id)));
 function opts(sel,vals,todos,lbl){
   if(sel.msel){sel.msel.setOpts(vals,lbl);return}
   const atual=sel.value;
@@ -5281,8 +5283,10 @@ async function gerarPrintUps(){
 
 /* ================= PRODUÇÃO DO DIA (réplica da aba "visao diaria" do Relatório de Produção) ================= */
 let prdEscolheu=false;let PCFG=null,PHIST=null,prdDocs={},prdLocais={},PR=null,ordemPR={k:'ord',dir:1},ordemPV='rank',printAlvo=null;try{ordemPV=localStorage.getItem('prd.ordem')||'rank'}catch(e){}
-const PF=['p-ct','p-base','p-tipo','p-rec'];
-const PF_NOME={'p-ct':'Contrato','p-base':'Base','p-tipo':'Tipo de equipe','p-rec':'Prefixo'};
+/* setor (gerência) do prefixo: o do cadastro único */
+const prdGer=k=>{const v=cfg&&cfg.prefixos&&cfg.prefixos[k];return (v&&v.g)||'(sem setor)'};
+const PF=['p-ger','p-ct','p-base','p-tipo','p-rec'];
+const PF_NOME={'p-ger':'Setor','p-ct':'Contrato','p-base':'Base','p-tipo':'Tipo de equipe','p-rec':'Prefixo'};
 const brl=v=>(v<0?'-':'')+'R$ '+Math.abs(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
 const brl0=v=>(v<0?'-':'')+'R$ '+Math.abs(v).toLocaleString('pt-BR',{maximumFractionDigits:0});
 const prdTxt=v=>v==null?'':(typeof v==='number'&&Number.isInteger(v)?String(v):String(v));
@@ -5335,6 +5339,7 @@ function preencherFiltrosPrd(){
   const v=$('p-dia').value;opts($('p-dia'),PR.ds.slice().reverse(),null,d=>dataBR(d)+' · '+semana(d));$('p-dia').value=prdEscolheu&&v&&PR.ds.includes(v)?v:PR.ult;
   {const v2=$('p-de').value;opts($('p-de'),PR.ds.slice().reverse(),null,d=>dataBR(d)+' · '+semana(d));$('p-de').value=v2&&PR.ds.includes(v2)?v2:(PR.ds.find(x=>x.slice(0,7)===$('p-dia').value.slice(0,7))||PR.ds[0])}
   const ct=PCFG.ct||{};
+  {const O=['GSTC','GOMAN','GERE'],G=[...new Set(PCFG.prefixos.map(p=>prdGer(p[0])))].sort((a,b)=>((O.indexOf(a)+1)||9)-((O.indexOf(b)+1)||9)||a.localeCompare(b));opts($('p-ger'),G,'Todos')}
   opts($('p-ct'),[...new Set(PCFG.prefixos.map(p=>String(ct[p[0]]||'(sem contrato)')))].sort(),'Todos');opts($('p-base'),[...new Set(PCFG.prefixos.map(p=>p[1]))].sort(),'Todas');atualizaTipos();opts($('p-rec'),PCFG.prefixos.map(p=>p[0]).sort(),'Todas');
 }
 /* Regra de meta do dia (mesma da UPS, ver UPSCalc.fatorMeta): plantão todos os dias; LGN, SDM, plantão moto e corte
@@ -5351,7 +5356,15 @@ function prdLinhasPer(DIAS){
   if(DIAS.length===1)return prdLinhasDia(DIAS[0]);
   return PCFG.prefixos.map((p,i)=>{let meta=0,real=0,n=0,h=null,z=true;
     for(const d of DIAS){const e=(PR.dias[d]||{})[p[0]],f=prdFator(p[0],d);meta+=p[3]*f;if(f>0)z=false;if(e){real+=e[0];n+=e[1];if(e[2]){h=h||new Array(24).fill(0);e[2].forEach((v,k)=>h[k]+=v)}}}
-    return{ord:i,pre:p[0],base:p[1],est:p[2],tipo:p[4],meta,fixa:p[3]===0,dia0:z,real,dif:real-meta,pct:(meta===0||real===0)?0:real/meta,n,h}});
+    return prdTurnoLin({ord:i,pre:p[0],base:p[1],est:p[2],tipo:p[4],meta,fixa:p[3]===0,dia0:z,real,dif:real-meta,pct:(meta===0||real===0)?0:real/meta,n,h},DIAS)});
+}
+/* Equipes sem meta em R$: abriu turno no dia (checklist ou atividade na Disponibilidade, ou atividade na produção) = 100%, faltou = 0%.
+   Dia sem meta (domingo/feriado) só conta se a equipe abriu turno. */
+function prdAbriu(pre,d){const a=typeof diasAgg!=='undefined'&&diasAgg&&diasAgg[d]&&diasAgg[d][pre];if(a&&(a[5]!=null||a[0]!=null))return true;const e=PR&&PR.dias[d]&&PR.dias[d][pre];return !!(e&&e[1]>0)}
+function prdTurnoLin(x,DIAS){
+  if(!x.fixa)return x;let tE=0,tA=0;
+  for(const d of DIAS){const ab=prdAbriu(x.pre,d);if(ab||prdFator(x.pre,d)>0){tE++;if(ab)tA++}}
+  x.turE=tE;x.tur=tA;x.pTur=tE?tA/tE:null;return x;
 }
 function prdPeriodo(){
   const m=$('p-modo').value||'dia',d=$('p-dia').value||PR.ult;
@@ -5365,7 +5378,7 @@ function prdModoUI(){
 }
 function prdLinhasDia(d){
   const eq=PR.dias[d]||{};
-  return PCFG.prefixos.map((p,i)=>{const e=eq[p[0]],real=e?e[0]:0,fat=prdFator(p[0],d),meta=p[3]*fat;return{ord:i,pre:p[0],base:p[1],est:p[2],tipo:p[4],meta,fixa:p[3]===0,dia0:fat===0,real,dif:real-meta,pct:(meta===0||real===0)?0:real/meta,n:e?e[1]:0,h:e?e[2]:null}});
+  return PCFG.prefixos.map((p,i)=>{const e=eq[p[0]],real=e?e[0]:0,fat=prdFator(p[0],d),meta=p[3]*fat;return prdTurnoLin({ord:i,pre:p[0],base:p[1],est:p[2],tipo:p[4],meta,fixa:p[3]===0,dia0:fat===0,real,dif:real-meta,pct:(meta===0||real===0)?0:real/meta,n:e?e[1]:0,h:e?e[2]:null},[d])});
 }
 /* perfil típico do dia: fração acumulada da produção até cada hora (média dos outros dias) */
 function prdPerfil(excluir){
@@ -5379,8 +5392,8 @@ const prdCls=p=>p>=1?'ok':p>=.85?'par':'mal';
 function renderPrd(){
   if(!PR)return;const d=$('p-dia').value||PR.ult,inf=PR.info[d]||{};
   prdModoUI();const DIAS=prdPeriodo(),per=DIAS.length>1,perTx=per?dataBR(DIAS[0])+' a '+dataBR(DIAS[DIAS.length-1])+' · '+DIAS.length+' dias com produção':dataBR(d);
-  {const b0=msSel('p-base'),t0=msSel('p-tipo'),c0=msSel('p-ct'),C0=PCFG.ct||{};recOpts('p-rec',PCFG.prefixos.filter(p=>(!b0||b0.has(p[1]))&&(!t0||t0.has(tipoDe(p[0])))&&(!c0||c0.has(String(C0[p[0]]||'(sem contrato)')))).map(p=>p[0]).sort(),'Todas')}
-  const fb=msSel('p-base'),fe=null,fs=null,fc=msSel('p-ct'),fRec=msSel('p-rec'),fTp=msSel('p-tipo'),CTM=PCFG.ct||{};
+  {const b0=msSel('p-base'),t0=msSel('p-tipo'),c0=msSel('p-ct'),g0=msSel('p-ger'),C0=PCFG.ct||{};recOpts('p-rec',PCFG.prefixos.filter(p=>(!g0||g0.has(prdGer(p[0])))&&(!b0||b0.has(p[1]))&&(!t0||t0.has(tipoDe(p[0])))&&(!c0||c0.has(String(C0[p[0]]||'(sem contrato)')))).map(p=>p[0]).sort(),'Todas')}
+  const fb=msSel('p-base'),fe=null,fs=null,fc=msSel('p-ct'),fRec=msSel('p-rec'),fTp=msSel('p-tipo'),fG=msSel('p-ger'),CTM=PCFG.ct||{};
   const at=PF.filter(id=>$(id).value).map(id=>{const v=$(id).value,n=$(id).msel.sel.size;return [id,PF_NOME[id],n>3?n+' selecionadas':v]});
   const chips=at.map(c=>'<span class="chipf"><small>'+c[1]+'</small>'+esc(c[2])+'<button type="button" data-tirap="'+c[0]+'" aria-label="Remover filtro">✕</button></span>').join('');
   document.querySelectorAll('.ativosP').forEach(x=>{x.innerHTML=chips;x.hidden=!at.length;x.querySelectorAll('[data-tirap]').forEach(b=>b.onclick=()=>{$(b.dataset.tirap).value='';$(b.dataset.tirap).classList.remove('on');renderPrd()})});
@@ -5390,7 +5403,7 @@ function renderPrd(){
   const aoVivo=!per&&!!(em&&emIso===d&&inf.ultFim&&inf.ultFim[0]===d),agora=aoVivo?inf.ultFim[1]:null;
   document.querySelectorAll('.pbarSub').forEach(x=>x.innerHTML=per?'<b>Acumulado</b> · '+perTx:semana(d).replace(/^./,c=>c.toUpperCase())+', <b>'+dataBR(d)+'</b>'+(em?' · arquivo enviado em '+em.toLocaleDateString('pt-BR')+' às <b>'+em.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+'</b>':' · '+esc(inf.fonte||''))+(inf.local?' · <span class="pl-loc">ainda não salvo na base</span>':''));
   const sit=x=>x.real===0?'Sem produção':x.real>=x.meta?'Acima da meta':'Abaixo da meta';
-  const L=prdLinhasPer(DIAS).filter(x=>(!fb||fb.has(x.base))&&(!fe||fe.has(x.est))&&(!fs||fs.has(sit(x)))&&(!fc||fc.has(String(CTM[x.pre]||'(sem contrato)')))&&(!fRec||fRec.has(x.pre))&&(!fTp||fTp.has(tipoDe(x.pre))));
+  const L=prdLinhasPer(DIAS).filter(x=>(!fG||fG.has(prdGer(x.pre)))&&(!fb||fb.has(x.base))&&(!fe||fe.has(x.est))&&(!fs||fs.has(sit(x)))&&(!fc||fc.has(String(CTM[x.pre]||'(sem contrato)')))&&(!fRec||fRec.has(x.pre))&&(!fTp||fTp.has(tipoDe(x.pre))));
   const meta=L.reduce((s,x)=>s+x.meta,0),real=L.reduce((s,x)=>s+x.real,0),dif=real-meta,pc=meta?real/meta:0,Lm=L.filter(x=>x.meta>0),acima=Lm.filter(x=>x.real>=x.meta).length,sem=Lm.filter(x=>x.real===0).length,nAt=L.reduce((s,x)=>s+x.n,0);
   const hs=new Array(24).fill(0);for(const x of L)if(x.h)x.h.forEach((v,i)=>hs[i]+=v);
   const perf=per?null:prdPerfil(d),fr=t=>{if(!perf)return null;const h=Math.floor(t/60),m=t%60,a=h?perf[h-1]:0;return a+(perf[h]-a)*m/60};
@@ -5419,12 +5432,12 @@ function renderPrd(){
   $('pBases').querySelectorAll('[data-pbase]').forEach(b=>b.onclick=()=>{const st=$('p-base').msel;st.sel.has(b.dataset.pbase)?st.sel.delete(b.dataset.pbase):st.sel.add(b.dataset.pbase);st.emit()});
   /* ---- mural das equipes ---- */
   const fAg=aoVivo&&perf?fr(agora):null;
-  $('pMuralSub').textContent=fAg?'Ao vivo: % do que cada equipe já deveria ter feito até '+hhmm(agora)+' (meta × ritmo do dia típico) · verde à frente, âmbar perto, vermelho atrás · sem meta (Seed Money e Moto): verde iniciou, vermelho não iniciou · cinza: dia sem meta (domingo ou feriado)':'Cada bloco é uma equipe · % da meta '+(per?'do período acumulado':'do dia')+' · verde bateu, âmbar perto (85–99%), vermelho abaixo · cor mais forte = mais longe da meta · sem meta (Seed Money e Moto): verde iniciou, vermelho não iniciou · cinza: dia sem meta (domingo ou feriado)';
+  $('pMuralSub').textContent=fAg?'Ao vivo: % do que cada equipe já deveria ter feito até '+hhmm(agora)+' (meta × ritmo do dia típico) · verde à frente, âmbar perto, vermelho atrás · sem meta em R$: abriu turno = 100%, faltou = 0% · cinza: dia sem meta (domingo ou feriado)':'Cada bloco é uma equipe · % da meta '+(per?'do período acumulado':'do dia')+' · verde bateu, âmbar perto (85–99%), vermelho abaixo · cor mais forte = mais longe da meta · sem meta em R$: abriu turno = 100%, faltou = 0% · cinza: dia sem meta (domingo ou feriado)';
   const gb={};for(const x of L){(gb[x.base]||(gb[x.base]=[])).push(x)}
-  $('pMural').innerHTML=Object.keys(gb).map(b=>'<div class="mu-g"><div class="mu-h"><b>'+esc(b)+'</b><small>'+gb[b].length+' equipes</small></div><div class="mu-t">'+gb[b].slice().sort((a,c)=>(c.meta?c.real/c.meta:c.n>0?-.5:-1)-(a.meta?a.real/a.meta:a.n>0?-.5:-1)).map(x=>{const ref=x.meta*(fAg||1),p=x.meta?x.real/ref:null,sm0=p==null,bg=sm0?(x.dia0?(x.n>0?'#2a8f30':'#8a7f82'):(x.n>0?'#2a8f30':'#c8102e')):prdCor(p),al=sm0?1:Math.min(1,.4+Math.abs(p-1)*1.3);
+  $('pMural').innerHTML=Object.keys(gb).map(b=>'<div class="mu-g"><div class="mu-h"><b>'+esc(b)+'</b><small>'+gb[b].length+' equipes</small></div><div class="mu-t">'+gb[b].slice().sort((a,c)=>(c.meta?c.real/c.meta:c.pTur!=null?c.pTur:c.n>0?-.5:-1)-(a.meta?a.real/a.meta:a.pTur!=null?a.pTur:a.n>0?-.5:-1)).map(x=>{const ref=x.meta*(fAg||1),p=x.meta?x.real/ref:(x.fixa&&x.pTur!=null?x.pTur:null),sm0=p==null,bg=sm0?(x.dia0?(x.n>0?'#2a8f30':'#8a7f82'):(x.n>0?'#2a8f30':'#c8102e')):prdCor(p),al=sm0?1:Math.min(1,.4+Math.abs(p-1)*1.3);
     return '<div class="mu'+(!sm0&&al<.72?' mu-cl':'')+'" data-pre="'+esc(x.pre)+'" style="--c:'+bg+';--a:'+al.toFixed(2)+'"><b>'+esc(x.pre.replace(/^MA-/,''))+'</b><small>'+(sm0?(x.dia0?(x.n>0?'produziu':'sem meta'):(x.n>0?'iniciou':'não iniciou')):Math.round(p*100)+'%')+'</small></div>'}).join('')+'</div></div>').join('')||'<div class="empty">Sem equipes neste filtro.</div>';
   const byP={};for(const x of L)byP[x.pre]=x;
-  $('pMural').querySelectorAll('.mu').forEach(el=>{const x=byP[el.dataset.pre];el.onmousemove=e=>dTipShow(e,'<b>'+esc(x.pre)+'</b><small>'+esc(x.base)+' · '+esc(x.est)+'</small><div class="dtip-g"><span>Meta</span><b>'+brl(x.meta)+'</b><span>Realizado</span><b>'+brl(x.real)+'</b><span>Diferença</span><b>'+brl(x.dif)+'</b>'+(fAg?'<span>Esperado até agora</span><b>'+brl(x.meta*fAg)+'</b>':'')+'<span>Atividades</span><b>'+x.n+'</b></div>');el.onmouseleave=dTipHide;
+  $('pMural').querySelectorAll('.mu').forEach(el=>{const x=byP[el.dataset.pre];el.onmousemove=e=>dTipShow(e,'<b>'+esc(x.pre)+'</b><small>'+esc(x.base)+' · '+esc(x.est)+'</small><div class="dtip-g"><span>Meta</span><b>'+brl(x.meta)+'</b><span>Realizado</span><b>'+brl(x.real)+'</b><span>Diferença</span><b>'+brl(x.dif)+'</b>'+(fAg?'<span>Esperado até agora</span><b>'+brl(x.meta*fAg)+'</b>':'')+'<span>Atividades</span><b>'+x.n+'</b>'+(x.fixa&&x.turE?'<span>Turno aberto</span><b>'+x.tur+' de '+x.turE+' dia(s) · '+Math.round(x.pTur*100)+'%</b>':'')+'</div>');el.onmouseleave=dTipHide;
     el.onclick=()=>{const tr=$('pvCorpo').querySelector('[data-pre="'+x.pre+'"]');if(tr){tr.scrollIntoView({block:'center',behavior:'smooth'});tr.classList.add('pt-hl');setTimeout(()=>tr.classList.remove('pt-hl'),1600)}}});
   /* ---- visão diária por equipe: folha por base, feita para enviar às equipes ---- */
   const ultH=!per&&inf.ultFim&&inf.ultFim[0]===d?hhmm(inf.ultFim[1]):null;
@@ -5435,7 +5448,7 @@ function renderPrd(){
   const grupos={};for(const x of L)(grupos[x.base]||(grupos[x.base]=[])).push(x);
   const fmtR=v=>'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
   const folha=(base,G)=>{
-    const com=G.filter(x=>x.meta>0),semM=G.filter(x=>x.meta===0&&x.fixa&&!x.dia0),sd0=G.filter(x=>x.dia0);
+    const com=G.filter(x=>x.meta>0),semM=G.filter(x=>x.meta===0&&x.fixa&&x.turE>0),sd0=G.filter(x=>x.dia0&&!(x.fixa&&x.turE>0));
     const ord=ordemPV==='plan'?com.slice().sort((a,b)=>a.ord-b.ord):com.slice().sort((a,b)=>b.real/b.meta-a.real/a.meta);
     const mt=com.reduce((s,x)=>s+x.meta,0),rl=G.reduce((s,x)=>s+x.real,0),df=rl-mt,pb=mt?rl/mt:0,ok=com.filter(x=>x.real>=x.meta).length;
     const linha=(x,i)=>{const p=x.real/x.meta,cl=prdCls(p),dif=x.real-x.meta;
@@ -5445,7 +5458,7 @@ function renderPrd(){
     return '<article class="pv-sheet"><header class="pv-hd"><div class="pv-ttl"><span class="pv-k">'+(per?'Produção acumulada':'Produção do dia')+' · meta × realizado</span><h3>'+esc(base)+'</h3><span class="pv-dt">'+(per?perTx:semana(d).replace(/^./,c=>c.toUpperCase())+', '+dataBR(d))+(ultH?' · atividades concluídas até '+ultH:'')+'</span></div>'
       +'<div class="pv-kp"><div><small>Meta da base</small><b>'+brl0(mt)+'</b></div><div><small>Realizado</small><b>'+brl0(rl)+'</b></div><div><small>Resultado</small><b class="'+(df>=0?'ok':'mal')+'">'+(df>=0?'+':'−')+brl0(Math.abs(df))+'</b></div><div class="pv-big '+prdCls(pb)+'"><small>Da meta</small><b>'+Math.round(pb*100)+'%</b></div><div><small>Equipes na meta</small><b>'+ok+' <i>de '+com.length+'</i></b></div></div></header>'
       +'<table class="pv-tab"><thead><tr><th>'+(ordemPV==='plan'?'':'Posição')+'</th><th>Equipe</th><th class="n">'+(per?'Meta do período':'Meta do dia')+'</th><th class="n">Realizado</th><th>Resultado</th><th class="pv-pch">% da meta <span>(traço = 100%)</span></th></tr></thead><tbody>'+ord.map(linha).join('')+'</tbody></table>'
-      +(semM.length?'<section class="pv-ini"><div class="pv-ih"><b>Início do dia · Seed Money e Moto</b><small>Equipes sem meta de valor: mostra se já começaram a trabalhar'+(ultH?' (até '+ultH+')':'')+'</small></div><table class="pv-tab pv-tab2"><thead><tr><th>Equipe</th><th>Tipo</th><th>Situação</th><th class="n">Atividades</th></tr></thead><tbody>'+semM.slice().sort((a,b)=>(b.n>0)-(a.n>0)||a.ord-b.ord).map(x=>{const ini=x.n>0;return '<tr class="pv-'+(ini?'ok':'mal')+'" data-pre="'+esc(x.pre)+'"><td class="pv-eq"><b>'+esc(x.pre)+'</b></td><td class="pv-ti">'+esc(x.est)+'</td><td class="pv-res"><span class="pv-st '+(ini?'ok':'mal')+'">'+(ini?'✔':'✖')+'</span><span><b>'+(ini?'Iniciou o dia':'Não iniciou')+'</b></span></td><td class="n">'+(ini?x.n:'—')+'</td></tr>'}).join('')+'</tbody></table></section>':'')
+      +(semM.length?'<section class="pv-ini"><div class="pv-ih"><b>Equipes sem meta em R$ · turno aberto</b><small>Abriu turno = 100% da meta · faltou = 0%'+(per?' · % = dias com turno ÷ dias previstos':'')+'</small></div><table class="pv-tab pv-tab2"><thead><tr><th>Equipe</th><th>Tipo</th><th>Situação</th><th class="n">% da meta</th><th class="n">Atividades</th></tr></thead><tbody>'+semM.slice().sort((a,b)=>b.pTur-a.pTur||a.ord-b.ord).map(x=>{const p=x.pTur,cl=prdCls(p),ok=p>=1;return '<tr class="pv-'+cl+'" data-pre="'+esc(x.pre)+'"><td class="pv-eq"><b>'+esc(x.pre)+'</b></td><td class="pv-ti">'+esc(x.est)+'</td><td class="pv-res"><span class="pv-st '+cl+'">'+(ok?'✔':cl==='par'?'●':'✖')+'</span><span><b>'+(per?x.tur+' de '+x.turE+' dias com turno':x.tur?'Abriu turno':'Faltou')+'</b></span></td><td class="n"><b class="'+cl+'">'+Math.round(p*100)+'%</b></td><td class="n">'+(x.n||'—')+'</td></tr>'}).join('')+'</tbody></table></section>':'')
       +(sd0.length?'<p class="muted" style="margin:10px 4px 0;font-size:12px"><b>Sem meta neste dia</b> (domingo ou feriado): '+sd0.map(x=>esc(x.pre.replace(/^MA-/,''))+(x.n>0?' (produziu '+fmtR(x.real)+')':'')).join(', ')+'</p>':'')
       +'<footer class="pv-ft"><span><i class="ok">✔</i>Bateu a meta (100% ou mais)</span><span><i class="par">●</i>Perto da meta (85% a 99%)</span><span><i class="mal">✖</i>Abaixo de 85%</span></footer></article>'};
   const bs2=Object.keys(grupos);
