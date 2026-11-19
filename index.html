@@ -229,6 +229,11 @@ section[data-pag="contingencia"] .ubar,section[data-pag="prazos"] .ubar{backgrou
 .ct-res ul{margin:6px 0 0;padding-left:18px;display:grid;gap:3px}.ct-res li small{display:block;opacity:.85}.ct-res b{font-weight:800}
 .ct-teste{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;text-align:center;background:repeating-linear-gradient(135deg,#ffd43b 0 18px,#f5b400 18px 36px);color:#2d2200;border:2px solid #b8860b;border-radius:12px;padding:10px 16px;box-shadow:var(--sh-1)}.ct-teste b{font-size:18px;font-weight:900;letter-spacing:.14em;background:#2d2200;color:#ffd43b;border-radius:8px;padding:3px 12px}.ct-teste span{font-size:13px;font-weight:700}
 .ct-sem{border:1px dashed var(--line);border-radius:12px;padding:26px;text-align:center;color:var(--muted);background:var(--surface)}.ct-sem .btn{margin-top:10px}
+.pz-dir{display:grid;gap:16px;min-width:0;align-content:start}.pz-g3,.ct-g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}@media(max-width:1250px){.pz-g3,.ct-g3{grid-template-columns:1fr}}
+.ct-dn{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center}.ct-dn svg{width:132px;height:132px;flex:none}.ct-dn-b{font-size:25px;font-weight:800;fill:var(--fg)}.ct-dn-s{font-size:9px;fill:var(--muted);letter-spacing:.04em}
+.ct-dn ul{list-style:none;margin:0;padding:0;display:grid;gap:5px;font-size:12.5px;min-width:150px;flex:1}.ct-dn li{display:grid;grid-template-columns:10px 1fr auto auto;gap:7px;align-items:center}.ct-dn li i{width:10px;height:10px;border-radius:3px}.ct-dn li b{font-variant-numeric:tabular-nums}.ct-dn li em{font-style:normal;color:var(--muted);min-width:34px;text-align:right;font-size:11.5px}
+.ct-cols{display:flex;gap:6px;align-items:stretch;height:172px;padding:2px 0}.ct-col{flex:1;display:grid;grid-template-rows:auto 1fr auto;gap:4px;text-align:center;min-width:0}.ct-col>div{display:flex;align-items:flex-end;justify-content:center;border-bottom:1px solid var(--line)}.ct-col i{display:block;width:72%;max-width:40px;border-radius:7px 7px 2px 2px;transition:height .6s cubic-bezier(.2,.8,.2,1)}.ct-col b{font-size:12.5px;font-variant-numeric:tabular-nums}.ct-col span{color:var(--muted);font-size:10.5px;line-height:1.15;min-height:24px}
+.capt-ct .ct-topo,.capt-ct #ctDados,.capt-ct #pzUpsP,.capt-ct .panel:has(#pzTab),.capt-ct .panel:has(#ctMapa),.capt-ct .ct-fat .btn,.capt-ct .ct-sem,.capt-ct .ubar-r{display:none!important}.capt-ct .ct-bars.ct-rol{max-height:none}
 .ct-fat{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:2px 4px}.ct-fat[hidden]{display:none}.ct-fat-t{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
 .ct-fil{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;padding:12px 14px}.ct-fil .fld{display:grid;gap:4px;min-width:170px;flex:1;max-width:260px}.ct-fil .fld label{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .ct-k3{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.ct-kp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;gap:2px;box-shadow:var(--sh-1);border-top:4px solid var(--accent)}.ct-kp small{font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}.ct-kp b{font-size:34px;font-weight:900;line-height:1.1;font-variant-numeric:tabular-nums}.ct-kp span{font-size:12px;color:var(--muted)}
@@ -1303,6 +1308,7 @@ body::after{display:none!important}
 .topoCirc{position:absolute;left:0;top:0;z-index:0;pointer-events:none}
 header.top>.top-in{position:relative;z-index:1}
 @media print{.topoCirc{display:none}}
+#ctK{grid-template-columns:repeat(auto-fit,minmax(165px,1fr))!important}
 
 /* ===== barra superior no mesmo padrão da tela de entrada ===== */
 header.top,.top{background:radial-gradient(900px 220px at 85% -80%,#b0283f 0%,transparent 60%),linear-gradient(135deg,#3d0812 0%,#6a1222 45%,#8d1d31 100%)!important;box-shadow:0 8px 28px rgba(61,8,18,.25)!important;border-bottom:1px solid rgba(255,255,255,.08)}
@@ -1927,7 +1933,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
   <!-- PÁGINA: GESTÃO DE CONTINGÊNCIA (réplica da aba "Contingência" do BI; base única e compartilhada, qualquer usuário logado importa) -->
   <section data-pag="contingencia" style="display:grid;gap:16px;min-width:0" hidden>
     <div class="ct-teste" role="status"><b>TELA EM TESTE</b><span>Em validação: os números ainda estão sendo conferidos e podem mudar. Não use para decisões ou cobranças.</span></div>
-    <div class="ubar"><div class="ubar-t"><h2>Gestão de Contingência</h2><span>Atividades em campo, clientes afetados e serviços acima de 24 h · base compartilhada, atualizada para todos sem recarregar</span></div></div>
+    <div class="ubar"><div class="ubar-t"><h2>Gestão de Contingência</h2><span>Atividades em campo, clientes afetados e serviços acima de 24 h · base compartilhada, atualizada para todos sem recarregar</span></div><div class="ubar-r"><button type="button" class="ufunil" data-afunil aria-label="Abrir filtros" title="Filtros"><svg class="ico" viewBox="0 0 24 24"><path d="M3 5h18l-7 8.5V19l-4 2v-7.5z"/></svg><span class="ufn" data-afn hidden></span></button></div></div>
     <div class="ct-topo">
       <div class="panel ct-ult"><div class="phd"><h3>Última atualização</h3><small id="ctSync"></small></div><div id="ctUlt" class="ct-ult-g"></div></div>
       <div class="panel ct-imp"><div class="phd"><h3>Atualizar a base</h3><small>qualquer usuário pode importar</small></div>
@@ -1951,6 +1957,11 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
         <div class="panel"><div class="phd"><h3>Total de ocorrência por equipe</h3><small id="ctEqN"></small></div><div id="ctEq" class="ct-bars ct-rol"></div></div>
         <div class="panel"><div class="phd"><h3>Mapa das atividades</h3><small id="ctMapaN"></small></div><div id="ctMapa"></div></div>
       </div>
+      <div class="ct-g3">
+        <div class="panel"><div class="phd"><h3>Tempo em aberto</h3><small>atividades abertas, por atraso sobre o prazo</small></div><div id="ctAge"></div></div>
+        <div class="panel"><div class="phd"><h3>Andamento das atividades</h3><small id="ctConN"></small></div><div id="ctCon"></div></div>
+        <div class="panel"><div class="phd"><h3>Clientes afetados por cidade</h3><small>as 8 maiores</small></div><div id="ctCli" class="ct-bars sm"></div></div>
+      </div>
       <div class="panel" id="ctDados"><div class="phd"><h3>Atividades</h3><small id="ctSub"></small></div>
         <div class="ct-bar"><input type="search" id="ct-q" placeholder="Buscar equipe, ordem de serviço, tipo…" aria-label="Buscar"><span id="ctCont" class="muted"></span><span id="ctChip" class="ct-chips"></span></div>
         <div class="ct-stf" id="ctStF" role="group" aria-label="Filtrar por status"></div>
@@ -1963,11 +1974,16 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
   <!-- PÁGINA: FAROL DE PRAZOS (réplica da aba "Farol de Prazos" do BI; usa a mesma base da Gestão de Contingência) -->
   <section data-pag="prazos" style="display:grid;gap:16px;min-width:0" hidden>
     <div class="ct-teste" role="status"><b>TELA EM TESTE</b><span>Em validação: os números ainda estão sendo conferidos e podem mudar. Não use para decisões ou cobranças.</span></div>
-    <div class="ubar"><div class="ubar-t"><h2>Farol de Prazos</h2><span>Monitoramento de prazos regulatórios · calculado a cada minuto pelo horário de Brasília</span></div></div>
+    <div class="ubar"><div class="ubar-t"><h2>Farol de Prazos</h2><span>Monitoramento de prazos regulatórios · calculado a cada minuto pelo horário de Brasília</span></div><div class="ubar-r"><button type="button" class="ufunil" data-afunil aria-label="Abrir filtros" title="Filtros"><svg class="ico" viewBox="0 0 24 24"><path d="M3 5h18l-7 8.5V19l-4 2v-7.5z"/></svg><span class="ufn" data-afn hidden></span></button></div></div>
     <div class="ct-sem" id="pzSem" hidden></div>
     <div id="pzPainel" style="display:grid;gap:16px;min-width:0">
       <div class="ct-fat" id="pfBar" hidden><span class="ct-fat-t">Filtros ativos:</span><span id="pfAt" class="ct-chips"></span><button type="button" class="btn sm" id="pf-x">Limpar filtros</button></div>
-      <div class="pz-top"><div class="ct-k3 pz-k" id="pzK"></div><div class="panel"><div class="phd"><h3>Atividades por cidade</h3><small id="pzCidN"></small></div><div id="pzCid" class="pz-tree"></div></div></div>
+      <div class="pz-top"><div class="ct-k3 pz-k" id="pzK"></div><div class="pz-dir"><div class="panel"><div class="phd"><h3>Atividades por cidade</h3><small id="pzCidN"></small></div><div id="pzCid" class="pz-tree"></div></div>
+        <div class="pz-g3">
+          <div class="panel"><div class="phd"><h3>Situação dos prazos</h3><small>todas as atividades filtradas</small></div><div id="pzSit"></div></div>
+          <div class="panel"><div class="phd"><h3>Vencimentos por dia</h3><small>vencidos e próximos 7 dias</small></div><div id="pzDia"></div></div>
+          <div class="panel"><div class="phd"><h3>Há quanto tempo venceram</h3><small>em aberto, depois do limite</small></div><div id="pzAtr"></div></div>
+        </div></div></div>
       <div class="panel" id="pzUpsP"><div class="phd"><h3>UPS e valor financeiro por equipe</h3><small id="pzUpsN"></small></div>
         <div class="tw"><table class="ct-t" id="pzUpsT"></table></div>
         <p class="muted" style="font-size:12px;margin:8px 4px 0">Balde = UPS já produzida + UPS estimada das atividades ainda não concluídas (quantidade pendente × UPS média por atividade da equipe). Farol: “Atenção” se o produzido estiver abaixo da meta. As colunas em R$ vêm da Produção do dia (meta diária em R$ da equipe, ajustada por dia da semana/feriado); equipes sem meta em R$ aparecem com “–”.</p>
@@ -2501,6 +2517,13 @@ function ctChips(px,L,cid){
   $(px+'At').innerHTML=at.map(([n,v])=>'<span class="ct-chip">'+esc(n)+': '+esc(v)+'</span>').join('');
   $(px+'Bar').hidden=!at.length;$('filtrosN').hidden=!at.length;$('filtrosN').textContent=at.length;
 }
+/* gráficos leves (SVG/CSS), usados nas telas de Contingência e de Prazos */
+function ctVazio(){return '<div class="ct-vazio">Sem dados para os filtros escolhidos.</div>'}
+function ctDonut(parts,big,small){const tot=parts.reduce((a,p)=>a+p.n,0);if(!tot)return ctVazio();const R=52,C=2*Math.PI*R;let off=0;
+  const arcs=parts.filter(p=>p.n).map(p=>{const len=p.n/tot*C,t='<circle cx="70" cy="70" r="'+R+'" fill="none" stroke="'+p.c+'" stroke-width="18" stroke-dasharray="'+len.toFixed(2)+' '+(C-len).toFixed(2)+'" stroke-dashoffset="'+(-off).toFixed(2)+'" transform="rotate(-90 70 70)"><title>'+esc(p.l)+': '+p.n+'</title></circle>';off+=len;return t}).join('');
+  return '<div class="ct-dn"><svg viewBox="0 0 140 140" role="img" aria-label="Gráfico de rosca"><circle cx="70" cy="70" r="52" fill="none" stroke="var(--sunken)" stroke-width="18"/>'+arcs+'<text x="70" y="70" text-anchor="middle" class="ct-dn-b">'+big+'</text><text x="70" y="86" text-anchor="middle" class="ct-dn-s">'+esc(small)+'</text></svg><ul>'+parts.map(p=>'<li><i style="background:'+p.c+'"></i><span>'+esc(p.l)+'</span><b>'+p.n+'</b><em>'+Math.round(p.n/tot*100)+'%</em></li>').join('')+'</ul></div>'}
+function ctCols(it){if(!it.some(i=>i.n))return ctVazio();const mx=Math.max(1,...it.map(i=>i.n));
+  return '<div class="ct-cols">'+it.map(i=>'<div class="ct-col" title="'+esc(i.l)+': '+i.n+'"><b>'+i.n+'</b><div><i style="height:'+(i.n?Math.max(4,i.n/mx*100):0)+'%;background:'+i.c+'"></i></div><span>'+esc(i.l)+'</span></div>').join('')+'</div>'}
 function ctRenderC(){
   const base=ctRows(),ag=ctAgora();
   ctOpts('cf-tipo',base.map(r=>r.tipo));ctOpts('cf-ct',base.map(r=>r.ct));ctOpts('cf-base',base.map(r=>r.base));ctOpts('cf-st',base.map(r=>r.st));ctOpts('cf-teq',base.map(r=>r.tEq));
@@ -2511,6 +2534,17 @@ function ctRenderC(){
   $('ctK').innerHTML='<div class="ct-kp"><small>Total O.C</small><b>'+f.length+'</b><span>atividades</span></div><div class="ct-kp am"><small>Clientes afetados</small><b>'+cli+'</b><span>soma dos clientes interrompidos</span></div><div class="ct-kp vm"><small>Serviços acima de 24 h</small><b>'+a24+'</b><span>em aberto, vencidos há 24 h ou mais</span></div>';
   const st={},eq={},ti={};
   for(const r of f){st[r.st]=(st[r.st]||0)+1;eq[r.rec]=(eq[r.rec]||0)+1;const t=ti[r.tipo]||(ti[r.tipo]={n:0,c:0,a:0});t.n++;t.c+=r.cli;if(ctAcima24(r,ag))t.a++}
+  /* novos indicadores: conclusão, atividade aberta mais atrasada e equipes acionadas */
+  {const fim=f.filter(r=>r.done).length,ab=f.filter(r=>!r.done&&r.lim!=null),mx=ab.reduce((m,r)=>Math.max(m,ag-r.lim),-1e15),h=mx/3.6e6,eqn=new Set(f.map(r=>r.rec)).size;
+   $('ctK').insertAdjacentHTML('beforeend','<div class="ct-kp vd"><small>Taxa de conclusão</small><b>'+(f.length?Math.round(fim/f.length*100):0)+'%</b><span>'+fim+' de '+f.length+' concluídas</span></div><div class="ct-kp vm"><small>Mais atrasada em aberto</small><b>'+(ab.length&&h>0?(h>=48?Math.floor(h/24)+' d':Math.round(h)+' h'):'—')+'</b><span>depois do prazo limite</span></div><div class="ct-kp"><small>Equipes acionadas</small><b>'+eqn+'</b><span>com atividade no filtro</span></div>');
+   const fx=[['No prazo',-1e9,0,'#2f9e44'],['0–12 h',0,12,'#e8a100'],['12–24 h',12,24,'#e8742a'],['24–48 h',24,48,'#d93a4d'],['48–72 h',48,72,'#c8102e'],['> 72 h',72,1e9,'#7a0a1a']];
+   $('ctAge').innerHTML=ctCols(fx.map(([l,a,b,c])=>({l,c,n:ab.filter(r=>{const x=(ag-r.lim)/3.6e6;return x>=a&&x<b}).length})));
+   const G=[['conclu','Concluído','#2f9e44'],['executad','Executado','#5b7fd6'],['deslocament','Em deslocamento','#e8a100'],['pendente','Pendente','#c8102e']],pr=G.map(([k,l,c])=>({l,c,n:f.filter(r=>ctK(r.st).includes(k)).length})),ou=f.length-pr.reduce((a,x)=>a+x.n,0);
+   if(ou>0)pr.push({l:'Outros',c:'#9a8f92',n:ou});
+   $('ctCon').innerHTML=ctDonut(pr,(f.length?Math.round(fim/f.length*100):0)+'%','concluído');$('ctConN').textContent=f.length+' atividade(s)';
+   const cc={};for(const r of f)if(r.cli)cc[r.cidade||'(sem cidade)']=(cc[r.cidade||'(sem cidade)']||0)+r.cli;
+   const ce=Object.entries(cc).sort((a,b)=>b[1]-a[1]).slice(0,8),cm=ce.length?ce[0][1]:1;
+   $('ctCli').innerHTML=ce.length?ce.map(([k,v])=>'<div class="ct-bar-l"><span title="'+esc(k)+'">'+esc(k)+'</span><i style="width:'+Math.max(2,v/cm*100)+'%"></i><b>'+v+'</b></div>').join(''):ctVazio()}
   ctBarras($('ctStat'),st,'st');ctBarras($('ctEq'),eq,'rec');$('ctEqN').textContent=Object.keys(eq).length+' equipe(s) · clique para filtrar a tabela';
   const tl=Object.entries(ti).filter(([k])=>/coletiv|individual|auxiliar/i.test(k)).map(([k,t])=>({k,n:t.n,c:t.c,a:t.a})).sort(ctCmp('ctTipo',(r,k)=>r[k]));
   $('ctTipo').innerHTML='<tr>'+ctTh('ctTipo','k','Tipo de serviço')+ctTh('ctTipo','n','Ocorrências',1)+ctTh('ctTipo','c','Clientes afetados',1)+ctTh('ctTipo','a','Acima de 24 h',1)+'</tr>'+tl.map(t=>'<tr><td>'+esc(t.k)+'</td>'+ctLk(t.k,'oc',t.n)+ctLk(t.k,'cli',t.c)+ctLk(t.k,'a24',t.a)+'</tr>').join('');
@@ -2582,6 +2616,16 @@ function ctRenderP(){
   ctChips('pf',[['pf-venc','Situação do prazo'],['pf-st','Status'],['pf-sg','Tipo de serviço'],['pf-tipo','Tipo de atividade'],['pf-ct','Contrato'],['pf-base','Base'],['pf-teq','Tipo de equipe'],['pf-cid','Cidade'],['pf-rec','Equipe']],CT.fcid);
   const n=k=>f.filter(r=>r._v===k).length;
   $('pzK').innerHTML='<div class="ct-kp vm"><small>Prazo vencido</small><b>'+n('Prazo Vencido')+'</b><span>em aberto, depois do limite</span></div><div class="ct-kp am"><small>Vencimento hoje</small><b>'+n('Vencimento Hoje')+'</b><span>limite ainda hoje</span></div><div class="ct-kp vd"><small>A vencer</small><b>'+n('A Vencer')+'</b><span>limite nos próximos dias</span></div>';
+  {const SIT=[['Prazo Vencido','Vencido','#c8102e'],['Vencimento Hoje','Vence hoje','#e8a100'],['A Vencer','A vencer','#2f9e44'],['Concluído','Concluído','#5b7fd6']];
+   $('pzSit').innerHTML=ctDonut(SIT.map(([k,l,c])=>({l,c,n:n(k)})),f.length,'atividades');
+   const ab=f.filter(r=>!r.done&&r.lim!=null),d0=Math.floor(ag/864e5),dia=r=>Math.floor(r.lim/864e5)-d0,
+     nome=d=>{const t=new Date((d0+d)*864e5);return t.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',timeZone:'UTC'}).replace('.','')},
+     it=[{l:'Venc.',c:'#c8102e',n:ab.filter(r=>r.lim<ag).length},{l:'Hoje',c:'#e8a100',n:ab.filter(r=>r.lim>=ag&&dia(r)===0).length}];
+   for(let d=1;d<=6;d++)it.push({l:nome(d),c:'#2f9e44',n:ab.filter(r=>dia(r)===d).length});
+   it.push({l:'+7 dias',c:'#7bbf88',n:ab.filter(r=>dia(r)>=7).length});
+   $('pzDia').innerHTML=ctCols(it);
+   const at=ab.filter(r=>r.lim<ag),H=r=>(ag-r.lim)/3.6e6,fx=[['< 1 h',0,1,'#f3a6ae'],['1–6 h',1,6,'#e66b79'],['6–24 h',6,24,'#d93a4d'],['1–3 dias',24,72,'#c8102e'],['> 3 dias',72,1e9,'#7a0a1a']];
+   $('pzAtr').innerHTML=at.length?ctCols(fx.map(([l,a,b,c])=>({l,c,n:at.filter(r=>H(r)>=a&&H(r)<b).length}))):'<div class="ct-vazio">Nenhuma atividade vencida no filtro. 🎉</div>'}
   const cid={};for(const r of f0)cid[r.cidade]=(cid[r.cidade]||0)+1;const ce=Object.entries(cid).sort((a,b)=>b[1]-a[1]),mx=ce.length?ce[0][1]:1,tot=f0.length||1;
   $('pzCidN').textContent=ce.length+' cidade(s) · clique para filtrar'+(CT.fcid?' · filtrando: '+CT.fcid:'');
   $('pzCid').innerHTML=ce.length?ce.map(([k,v])=>'<div class="lk'+(CT.fcid?(k===CT.fcid?' on':' dim'):'')+'" data-cid="'+esc(k)+'" style="flex-grow:'+v+';flex-basis:'+Math.max(70,v/tot*100*2)+'px;background:rgba(113,20,36,'+(.45+.5*v/mx).toFixed(2)+')" title="'+esc(k)+': '+v+' — clique para filtrar">'+esc(k)+'<b>'+v+'</b></div>').join(''):'<div class="ct-vazio" style="width:100%">Sem dados para os filtros escolhidos.</div>';
@@ -2768,7 +2812,7 @@ function mostrarPagina(){
   document.querySelectorAll('[data-pag]').forEach(s=>s.hidden=s.dataset.pag!==p);
   const ind=indAtual();
   ['b-periodo','b-filtros','b-baixar','b-copiar'].forEach(id=>$(id).hidden=id==='b-copiar'?(!ind&&pag().id!=='inicio'):(!ind||((ind==='ader'||ind==='ini'||ind==='prd'||ind==='trf'||ind==='mix'||ind==='tm')&&id==='b-baixar')));
-  $('fDisp').hidden=ind!=='disp';$('fUps').hidden=ind!=='ups';$('fAder').hidden=ind!=='ader';$('fIni').hidden=ind!=='ini';$('fDef').hidden=ind!=='def';$('fPrd').hidden=ind!=='prd';$('fTrf').hidden=ind!=='trf';$('fMix').hidden=ind!=='mix';$('fTm').hidden=ind!=='tm';{const pc=p==='contingencia'||p==='prazos';if(pc)$('b-filtros').hidden=false;$('fCt').hidden=p!=='contingencia';$('fPz').hidden=p!=='prazos'}
+  $('fDisp').hidden=ind!=='disp';$('fUps').hidden=ind!=='ups';$('fAder').hidden=ind!=='ader';$('fIni').hidden=ind!=='ini';$('fDef').hidden=ind!=='def';$('fPrd').hidden=ind!=='prd';$('fTrf').hidden=ind!=='trf';$('fMix').hidden=ind!=='mix';$('fTm').hidden=ind!=='tm';{const pc=p==='contingencia'||p==='prazos';if(pc){$('b-filtros').hidden=false;$('b-copiar').hidden=false}$('fCt').hidden=p!=='contingencia';$('fPz').hidden=p!=='prazos'}
   if(ind==='ups'){pintarTopoUps();renderUPS()}else if(ind==='disp'){pintarAtivos()}else if(ind==='ader'){renderAder()}else if(ind==='ini'){renderIni()}else if(ind==='def'){renderDef()}else if(ind==='prd'){renderPrd()}else if(ind==='trf'){renderTrf()}else if(ind==='mix'){renderMix()}else if(ind==='tm'){renderTm()}
   renderRail();
   if(p==='atualizar'){try{montarBanco()}catch(e){}}
@@ -3428,7 +3472,7 @@ const carregarH2I=()=>window.htmlToImage?Promise.resolve(window.htmlToImage):(H2
 async function gerarPrintPagina(alvo){
   const temaAnt=document.documentElement.getAttribute('data-tema');document.documentElement.removeAttribute('data-tema'); /* print sempre no tema claro */
   const pg=pag(),sec=alvo||document.querySelector('section[data-pag="'+pg.id+'"]');if(!sec)throw new Error('Página sem conteúdo');
-  const h=await carregarH2I();document.body.classList.add('capt');dTipHide&&dTipHide();
+  const h=await carregarH2I();document.body.classList.add('capt');if(pg.id==='contingencia'||pg.id==='prazos')document.body.classList.add('capt-ct');dTipHide&&dTipHide();
   await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
   /* o gerador perde estilos de SVG vindos de classes: copia os estilos calculados para cada elemento */
   const PROPS=['fill','fill-opacity','stroke','stroke-width','stroke-dasharray','stroke-linejoin','stroke-linecap','stroke-opacity','opacity','font-size','font-weight','font-family','paint-order','text-anchor','display','vector-effect'];
@@ -3456,7 +3500,7 @@ async function gerarPrintPagina(alvo){
     c.fillText('CGB · Central de Indicadores · '+(pg.g&&pg.g!=='Geral'?pg.g+' · ':'')+pg.nm,pad*2,cv.height+48);
     const ag=new Date();c.textAlign='right';c.fillStyle='#6b6a6a';c.font='600 20px "Plus Jakarta Sans",Arial,sans-serif';c.fillText('Gerado em '+ag.toLocaleDateString('pt-BR')+' às '+ag.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),f.width-pad*2,cv.height+48);
     return f;
-  }finally{if(temaAnt)document.documentElement.setAttribute('data-tema',temaAnt);document.body.classList.remove('capt');for(const [x,h] of mesSalvos)x.hidden=h;if(mesTit){mesPai.insertBefore($('uMesW'),mesProx);if(mesCols){for(const [e,pa,nx] of mesCols.mv.slice().reverse())pa.insertBefore(e,nx&&nx.parentNode===pa?nx:null);mesCols.w.remove();mesCols.w2.remove()}mesTit.remove();$('uLtit').textContent=ltTxt;$('tglL').style.display=''}for(const [x,st] of colSalvos){if(st==null)x.removeAttribute('style');else x.setAttribute('style',st)}for(const [el,st] of salvos){if(st==null)el.removeAttribute('style');else el.setAttribute('style',st)}}
+  }finally{if(temaAnt)document.documentElement.setAttribute('data-tema',temaAnt);document.body.classList.remove('capt','capt-ct');for(const [x,h] of mesSalvos)x.hidden=h;if(mesTit){mesPai.insertBefore($('uMesW'),mesProx);if(mesCols){for(const [e,pa,nx] of mesCols.mv.slice().reverse())pa.insertBefore(e,nx&&nx.parentNode===pa?nx:null);mesCols.w.remove();mesCols.w2.remove()}mesTit.remove();$('uLtit').textContent=ltTxt;$('tglL').style.display=''}for(const [x,st] of colSalvos){if(st==null)x.removeAttribute('style');else x.setAttribute('style',st)}for(const [el,st] of salvos){if(st==null)el.removeAttribute('style');else el.setAttribute('style',st)}}
 }
 /* Início das atividades: 1 print com os quadros do topo + 1 print por base */
 async function printIniLista(){
