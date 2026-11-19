@@ -4,6 +4,7 @@ node_modules
 dados
 banco2026*.json
 _versoes_anteriores_*
+_legado_*
 *.xlsx
 Backup*
 privado

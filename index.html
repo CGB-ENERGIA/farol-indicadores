@@ -3754,6 +3754,22 @@ async function bancoPeriodo(f,mes,dia){
 const MESES_B=['','janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 /* importa a exportação do Banco SIGA publicada junto com a página (banco2026_parteNde5.json); não sobrescreve dias já existentes */
 let bancoImportando=false;
+/* Disponibilidade: gera o resumo por equipe e dia (dias/{data}_{fonte}) a partir das linhas do banco, só nos dias que ainda não têm resumo.
+   Substitui o historico.json: usa a regra atual (início = 1º checklist). Não sobrescreve dias enviados pelo site. */
+async function diasDoBanco(tx){
+  if(!db||!podeSalvar)return 0;
+  const tem=new Set(dbDocs.map(d=>d.data+'_'+d.fonte)),itens=[];let n=0;
+  for(const f of ['COI','MAN','OBRAS','FIS'])for(const d of Object.keys(bancoIdx[f]||{}).sort())if(d>'2026-05-31'&&!tem.has(d+'_'+f))itens.push([f,d]);
+  for(let i=0;i<itens.length;i++){
+    const [f,d]=itens[i];if(tx)tx.textContent='Gerando resumos da disponibilidade… '+(i+1)+' de '+itens.length;
+    const D=await bancoDia(f,d);if(!D.rows.length)continue;
+    const hdr=D.cols.map(c=>c==='Tipo de Atividade (2)'?'Tipo de Atividade':c==='Tipo de Atividade'?'Tipo de Atividade (1)':c);
+    let r;try{r=Disp.agregarArquivo([hdr].concat(D.rows),f)}catch(e){continue}
+    const eq=r.dias[d];if(!eq||!Object.keys(eq).length)continue;
+    await db.collection('dias').doc(d+'_'+f).set({data:d,fonte:f,arquivo:'Banco SIGA',eq,enviadoEm:new Date().toISOString()});n++;
+  }
+  return n;
+}
 async function bancoImportar(){
   if(bancoImportando||!db||!podeSalvar)return;bancoImportando=true;
   const btn=$('bk-impb'),tx=$('bk-impt');btn.disabled=true;
@@ -3774,7 +3790,8 @@ async function bancoImportar(){
     if(falhas)throw new Error(falhas+' documento(s) não foram gravados; o índice não foi atualizado. Tente de novo.');
     for(const f in novos)bancoIdx[f]=Object.assign({},bancoIdx[f]||{},novos[f]);
     await bancoGravaIdx();bancoMem={};
-    progSet('prog-imp',1,'Concluído');setTimeout(()=>progSet('prog-imp',false),2500);tx.textContent='Pronto: '+n.toLocaleString('pt-BR')+' documentos importados'+(ign?' · '+ign.toLocaleString('pt-BR')+' ignorados (dias que já estavam no banco)':'')+'.';
+    const ng=await diasDoBanco(tx);
+    progSet('prog-imp',1,'Concluído');setTimeout(()=>progSet('prog-imp',false),2500);tx.textContent='Pronto: '+n.toLocaleString('pt-BR')+' documentos importados'+(ng?' · '+ng.toLocaleString('pt-BR')+' resumos de disponibilidade gerados':'')+(ign?' · '+ign.toLocaleString('pt-BR')+' ignorados (dias que já estavam no banco)':'')+'.';
     toast('Banco SIGA importado.');montarBanco();
   }catch(e){progSet('prog-imp',false);tx.textContent=(e&&e.message)||'Não foi possível importar.'}
   btn.disabled=false;bancoImportando=false;
@@ -6521,7 +6538,7 @@ fetch('historico_mix.json').then(r=>r.json()).then(h=>{MH=h;montarMix()}).catch(
 fetch('historico_trafo.json').then(r=>r.json()).then(h=>{TH=h;montarTrf()}).catch(()=>{});
 Promise.all([fetch('def_config.json').then(r=>r.json()),fetch('historico_defeitos.json').then(r=>r.json())]).then(([c,h])=>{DCFG=c;DHIST=h;montarDef()}).catch(()=>{});
 Promise.all([fetch('ader_config.json').then(r=>r.json()),fetch('historico_ader.json').then(r=>r.json())]).then(([c,h])=>{ACFG=c;AHIST=h;montarAder()}).catch(()=>{});
-Promise.all([fetch('config.json').then(r=>r.json()),fetch('historico.json').then(r=>r.json())]).then(([c,h])=>{cfgBase=c;hist=h;montar()}).catch(()=>{$('gauges').innerHTML='<div class="note err">Não foi possível carregar o histórico.</div>'});
+Promise.all([fetch('config.json').then(r=>r.json()),Promise.resolve({dias:{},recursos:[]}) /* histórico da disponibilidade agora vem só do Neon (coleção dias) */]).then(([c,h])=>{cfgBase=c;hist=h;montar()}).catch(()=>{$('gauges').innerHTML='<div class="note err">Não foi possível carregar o histórico.</div>'});
 (async()=>{
   if(!window.claude||!claude.use)return;
   downloads=await claude.use('downloads');

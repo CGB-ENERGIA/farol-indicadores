@@ -4,7 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 const raiz = path.join(__dirname, '..'), destino = path.join(raiz, 'public');
-const ARQUIVOS = ['index.html', 'farol-web.js', 'calc.js', 'ups.js', 'ups_ui.js'];
+const ARQUIVOS = ['index.html', 'farol-web.js'];
 const PASTAS = ['icons']; // logos da tela de login
 fs.rmSync(destino, { recursive: true, force: true });
 fs.mkdirSync(destino, { recursive: true });
