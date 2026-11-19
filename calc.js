@@ -68,9 +68,12 @@
       let tt = 0;
       if (ini != null && fim != null) tt = fim < ini ? fim - ini + 1440 : fim - ini;
       const dd = dias[data] || (dias[data] = {});
-      const a = dd[rec] || (dd[rec] = [null, null, null, 0, 0]);
+      const a = dd[rec] || (dd[rec] = [null, null, null, 0, 0, null]);
       if (ini != null) a[0] = a[0] == null ? ini : Math.min(a[0], ini);
       if (fim != null) a[1] = a[1] == null ? fim : Math.max(a[1], fim);
+      /* [5] = 1º checklist de início de turno do dia: é a âncora do início da disponibilidade */
+      const tipoCk = iTipo != null && iTipo >= 0 ? row[iTipo] : null;
+      if (tipoCk != null && String(tipoCk).trim() === 'Checklist Início do Turno' && ini != null) a[5] = a[5] == null ? ini : Math.min(a[5], ini);
       if (tipo === 'Retorno à base' && ini != null) a[2] = a[2] == null ? ini : Math.max(a[2], ini);
       if (tipo === 'Intervalo para almoço') a[3] += tt;
       if (tipo === 'Indisponibilidade') a[4] += tt;
@@ -83,7 +86,7 @@
     if (!a) return b.slice();
     const mn = (x, y) => (x == null ? y : y == null ? x : Math.min(x, y));
     const mx = (x, y) => (x == null ? y : y == null ? x : Math.max(x, y));
-    return [mn(a[0], b[0]), mx(a[1], b[1]), mx(a[2], b[2]), a[3] + b[3], a[4] + b[4]];
+    return [mn(a[0], b[0]), mx(a[1], b[1]), mx(a[2], b[2]), a[3] + b[3], a[4] + b[4], mn(a[5], b[5])];
   }
 
   /* diasAgg: {iso:{recurso:agg}}; recursos: lista de todos os recursos vistos na base */
@@ -99,7 +102,8 @@
       for (const data of lista) {
         const a = (diasAgg[data] && diasAgg[data][rec]) || null;
         const wd = weekdayIdx(data);
-        const ini = a && a[0] != null ? a[0] : 0;
+        /* Início = 1º checklist do dia; sem checklist (dados antigos ou equipe que não abriu), vale a regra anterior: menor início de qualquer atividade */
+        const ini = a ? (a[5] != null ? a[5] : (a[0] != null ? a[0] : 0)) : 0;
         const fimT = a ? (a[2] != null ? a[2] : (a[1] != null ? a[1] : 0)) : 0;
         const disp = fimT < ini ? 0 : fimT - ini;
         let alm = a ? a[3] : 0;
