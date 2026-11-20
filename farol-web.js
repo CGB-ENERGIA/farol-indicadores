@@ -76,7 +76,7 @@
     use: function (nome) {
       return pronto.then(function () {
         if (nome === 'db') return { collection: colecao };
-        if (nome === 'user') return { canEdit: function () { return Promise.resolve(!!sessao.pode_editar); }, nome: sessao.nome, nivel: sessao.nivel };
+        if (nome === 'user') return { canEdit: function () { return Promise.resolve(!!sessao.pode_editar); }, canSend: function () { return Promise.resolve(!!sessao.pode_enviar); }, nome: sessao.nome, nivel: sessao.nivel };
         if (nome === 'downloads') return {
           save: function (o) {
             return new Promise(function (res) {
@@ -495,7 +495,7 @@
       };
       corpo.querySelector('[data-salvar]').onclick = function (ev) { ev.target.disabled = true; salvarEq().then(function () { aviso(''); desenharEquipes(); }).catch(function (e) { aviso(e.message); ev.target.disabled = false; }); };
     }
-    function optNiveis(sel) { return niveis.map(function (n) { return '<option value="' + n.nivel + '"' + (n.nivel === sel ? ' selected' : '') + '>' + esc(n.rotulo) + (n.editar ? ' (edita)' : ' (só visualiza)') + '</option>'; }).join(''); }
+    function optNiveis(sel) { return niveis.map(function (n) { return '<option value="' + n.nivel + '"' + (n.nivel === sel ? ' selected' : '') + '>' + esc(n.rotulo) + (n.editar ? ' (edita)' : n.enviar ? '' : ' (só visualiza)') + '</option>'; }).join(''); }
 
     function desenhar() {
       var pend = dados.filter(function (u) { return u.status === 'PENDENTE'; }), rec = dados.filter(function (u) { return u.status === 'RECUSADO'; });
