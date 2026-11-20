@@ -1892,6 +1892,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
   <!-- PÁGINA: ATUALIZAR -->
   <section data-pag="atualizar" style="display:grid;gap:16px;min-width:0" hidden>
     <div class="ubar"><div class="ubar-t"><h2>Atualizar com o SIGA</h2><span>Envie os relatórios COI, MAN, OBRAS e FIS do dia · atualiza todos os indicadores</span></div></div>
+    <div class="note warn" id="opNota" hidden>Seu acesso é de <b>Operador</b>: você envia e salva só o <b>COI do dia atual</b>. MAN, FIS e OBRAS e qualquer outro dado ficam fechados para o seu acesso.</div>
     <div class="passos">
       <div class="passo"><b>1. Exporte do SIGA</b><span>Os 4 relatórios do dia: COI, MAN, OBRAS e FIS. Juntos, eles atualizam Disponibilidade, UPS, Aderência e Início das atividades.</span></div>
       <div class="passo"><b>2. Arraste aqui</b><span>O painel recalcula na hora, só no seu navegador.</span></div>
@@ -2781,7 +2782,7 @@ $('ct-q').oninput=e=>{CT.busca=e.target.value;CT.lim=300;ctRender()};$('pz-q').o
 $('ct-mais').onclick=()=>{CT.lim+=500;ctRender()};$('pz-mais').onclick=()=>{CT.limP+=500;ctRender()};
 let modoEquipe=false;
 const ehAdm=()=>podeSalvar&&!modoEquipe;
-const visiveis=()=>PAGINAS.filter(p=>!p.adm||ehAdm());window.visiveis=visiveis;
+const visiveis=()=>PAGINAS.filter(p=>!p.adm||ehAdm()||(p.id==='atualizar'&&podeEnviar&&!podeSalvar));window.visiveis=visiveis; /* o Operador só enxerga a página de envio do SIGA */
 const pag=()=>{const h=location.hash.slice(1);return visiveis().find(p=>p.id===h)||PAGINAS[0]};
 const GRUPO_ICO={'Disponibilidade':'painel','UPS':'lista','Aderência à escala':'cal','Início das atividades':'sono','Produção do dia':'moeda','Atualização de defeitos':'chave','TME / TMD':'relogio','Mix GSTC':'mix','Trafos reincidentes':'raio','Gestão de Contingência':'alerta','Farol de Prazos':'cobra','Administração':'cad'};
 const GRUPO_SUB={'Disponibilidade':'Painel, prefixos e cobrança','UPS':'Painel, equipes, diário e cobrança','Aderência à escala':'Painel e ranking','Início das atividades':'Horário da 1ª atividade','Produção do dia':'Meta x realizado em tempo real','Atualização de defeitos':'Tratamento, evolução e lista','TME / TMD':'Execução e deslocamento','Mix GSTC':'OS Normal, miscelânea e tipo de corte','Trafos reincidentes':'Blindagem e índice de reincidência','Gestão de Contingência':'Atividades em campo e clientes afetados','Farol de Prazos':'Prazos regulatórios por atividade','Administração':'Envio, conferência e cadastros'};
@@ -2863,7 +2864,7 @@ function mostrarPagina(){
   $('fDisp').hidden=ind!=='disp';$('fUps').hidden=ind!=='ups';$('fAder').hidden=ind!=='ader';$('fIni').hidden=ind!=='ini';$('fDef').hidden=ind!=='def';$('fPrd').hidden=ind!=='prd';$('fTrf').hidden=ind!=='trf';$('fMix').hidden=ind!=='mix';$('fTm').hidden=ind!=='tm';{const pc=p==='contingencia'||p==='prazos';if(pc){$('b-filtros').hidden=false;$('b-copiar').hidden=false}$('fCt').hidden=p!=='contingencia';$('fPz').hidden=p!=='prazos'}
   if(ind==='ups'){pintarTopoUps();renderUPS()}else if(ind==='disp'){pintarAtivos()}else if(ind==='ader'){renderAder()}else if(ind==='ini'){renderIni()}else if(ind==='def'){renderDef()}else if(ind==='prd'){renderPrd()}else if(ind==='trf'){renderTrf()}else if(ind==='mix'){renderMix()}else if(ind==='tm'){renderTm()}
   renderRail();
-  if(p==='atualizar'){try{montarBanco()}catch(e){}}
+  if(p==='atualizar'){try{montarBanco()}catch(e){}$('opNota').hidden=!(podeEnviar&&!podeSalvar)}
   if(p==='contingencia'||p==='prazos')ctMostrar();else if(p==='conferencia')ctCarregar(false);
   if(matchMedia('(max-width:1000px)').matches){document.body.classList.remove('rail-on');$('railFundo').hidden=true}
 }
@@ -3825,10 +3826,10 @@ function atualizarLocais0(){
 $('b-limpar').onclick=()=>{pendentes=[];atualizarLocais()};
 $('b-salvar').onclick=async()=>{
   if(!db)return;
-  if(!podeSalvar){ /* Operador: só o SIGA (COI, MAN, FIS ou OBRAS) do dia atual */
+  if(!podeSalvar){ /* Operador: só o COI do dia atual */
     if(!podeEnviar)return;const hj=hojeIso();
-    const ruim=pendentes.filter(p=>!p.erro).find(p=>!['COI','MAN','FIS','OBRAS'].includes(p.fonte)||p.ajuste||p.escala||(p.datas||[]).some(d=>d!==hj)||(p.banco&&Object.keys(p.banco.dias).some(d=>d!==hj)));
-    if(ruim){$('envio-msg').innerHTML='<div class="note warn">Seu acesso só envia o SIGA <b>do dia atual</b> ('+dataBR(hj)+'). O arquivo <b>'+esc(ruim.nome)+'</b> não é desse tipo, então nada foi salvo. Tire-o da lista (Descartar) e envie só o relatório de hoje.</div>';return}
+    const ruim=pendentes.filter(p=>!p.erro).find(p=>p.fonte!=='COI'||p.ajuste||p.escala||(p.datas||[]).some(d=>d!==hj)||(p.banco&&Object.keys(p.banco.dias).some(d=>d!==hj)));
+    if(ruim){$('envio-msg').innerHTML='<div class="note warn">Seu acesso só envia o <b>COI do dia atual</b> ('+dataBR(hj)+'). O arquivo <b>'+esc(ruim.nome)+'</b> não é desse tipo, então nada foi salvo. Tire-o da lista (Descartar) e envie só o COI de hoje.</div>';return}
   }
   const btn=$('b-salvar');btn.disabled=true;btn.textContent='Salvando…';
   let n=0,erro=null,erroArq='',ctAvisos=[];const totS=pendentes.filter(p=>!p.erro).length;
