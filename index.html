@@ -2046,6 +2046,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     <div class="cad-bar">
       <div class="tabs" role="group" aria-label="Cadastro">
         <button type="button" data-tab="prefixos" aria-pressed="true">Prefixos e jornadas</button>
+        <button type="button" data-tab="estruturas" aria-pressed="false">Estruturas</button>
         <button type="button" data-tab="feriados" aria-pressed="false">Feriados</button>
         <button type="button" data-tab="folgas" aria-pressed="false">Folgas por base</button>
         <button type="button" data-tab="escala" aria-pressed="false">Escala da UPS</button>
@@ -2056,9 +2057,14 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     <div id="cadNota"></div>
     <div class="panel" data-tabp="prefixos">
       <div class="phd"><div class="busca"><input type="search" id="cadBusca" placeholder="Buscar prefixo, estrutura ou base…" aria-label="Buscar no cadastro"><span class="muted" id="cadCont"></span></div><button class="btn primary" id="b-novoPref" type="button"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Novo prefixo</button></div>
-      <div class="cad-fil"><div class="fld"><label for="cfBase">Base</label><select id="cfBase"></select></div><div class="fld"><label for="cfGer">Gerência</label><select id="cfGer"></select></div><div class="fld"><label for="cfEst">Estrutura</label><select id="cfEst"></select></div><div class="fld"><label for="cfTipo">Tipo na produção</label><select id="cfTipo"></select></div><div class="fld"><label for="cfSit">Situação</label><select id="cfSit"><option value="">Todas</option><option value="ed">Editados no site</option><option value="sm">Sem meta de produção</option></select></div><button class="btn sm" type="button" id="cfLimpa">Limpar filtros</button></div>
+      <div class="cad-fil"><div class="fld"><label for="cfBase">Base</label><select id="cfBase"></select></div><div class="fld"><label for="cfGer">Gerência</label><select id="cfGer"></select></div><div class="fld"><label for="cfEst">Estrutura</label><select id="cfEst"></select></div><div class="fld"><label for="cfTipo">Tipo de equipe</label><select id="cfTipo"></select></div><div class="fld"><label for="cfSit">Situação</label><select id="cfSit"><option value="">Todas</option><option value="ed">Editados no site</option><option value="sm">Sem meta de produção</option></select></div><button class="btn sm" type="button" id="cfLimpa">Limpar filtros</button></div>
       <div class="cad-sel" id="cadSelBar" hidden><span id="cadSelTxt"></span><button class="btn primary sm" type="button" id="b-cadMassa">Editar selecionados</button><button class="btn sm" type="button" id="b-cadSelTodos">Selecionar todos os filtrados</button><button class="btn sm" type="button" id="b-cadSelLimpa">Limpar seleção</button></div>
       <div class="tw"><table><thead><tr><th style="width:34px"><input type="checkbox" id="cadAll" aria-label="Selecionar todos da lista"></th><th>Prefixo</th><th>Estrutura</th><th>Gerência</th><th>Base</th><th>Jornada</th><th>Meta produção</th><th></th></tr></thead><tbody id="t-cad"></tbody></table></div>
+    </div>
+    <div class="panel" data-tabp="estruturas" hidden>
+      <div class="phd"><h3>Estruturas · classificação central</h3><small>cada equipe tem só a estrutura; daqui saem o tipo de equipe de todos os relatórios, o processo da UPS, a produção e os dias da meta</small></div>
+      <div class="tw"><table><thead><tr><th>Estrutura</th><th>Tipo de equipe</th><th>Processo UPS</th><th>Tipo na produção</th><th>Estrutura na produção</th><th>Meta conta</th><th class="n">Equipes</th><th></th></tr></thead><tbody id="t-estr"></tbody></table></div>
+      <div id="estrDiv"></div>
     </div>
     <div class="panel" data-tabp="feriados" hidden>
       <div class="phd"><h3>Feriados</h3><small>em feriado o turno previsto é zero, exceto nas estruturas de plantão</small></div>
@@ -2111,9 +2117,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     <datalist id="dlEst"></datalist><datalist id="dlGer"></datalist><datalist id="dlBase"></datalist>
     <div class="grp">Produção do dia (faturamento)</div>
     <div class="fld"><label for="cpMeta">Meta diária (R$)</label><input type="text" id="cpMeta" inputmode="decimal" placeholder="ex.: 1.353,94"><small class="muted">Vale para dia útil. Sábado conta 50% e domingo/feriado 0, exceto plantão (tipo AE116: sempre 100%). Deixe 0 para equipe sem meta fixa.</small></div>
-    <div class="fld"><label for="cpTipoP">Tipo na produção</label><input type="text" id="cpTipoP" list="dlTipoP" placeholder="ex.: AE116, LGN, CR/RI, SDM"></div>
-    <div class="fld"><label for="cpEstP">Estrutura na produção</label><input type="text" id="cpEstP" list="dlEstP" placeholder="ex.: 16H 4X4"></div>
-    <datalist id="dlTipoP"></datalist><datalist id="dlEstP"></datalist>
+    <div class="fld"><label>Na produção</label><div id="cpPrdInfo" style="font-weight:700"></div><small class="muted">Tipo e estrutura da produção saem da Estrutura acima.</small></div>
     <div class="grp">Jornada por dia (horas:minutos)</div>
     <div class="jor" id="cpJor"></div>
     <div id="cpMsg"></div>
@@ -2573,7 +2577,7 @@ function ctContrato(rec,base){
   return (ctCtMapa&&ctCtMapa[hierChave(rec)])||CT_BASE_CT[String(base||'').toUpperCase()]||'(sem contrato)';
 }
 /* tipo de equipe: cadastro da hierarquia e, na falta dele, a escala (coluna TIPO DE EQUIPE) */
-const ctTipoEq=rec=>{const H=HIER&&HIER.itens&&HIER.itens[hierChave(rec)];if(H&&H.t)return H.t;ctContrato(rec,'');const c=ctEsMapa&&ctEsMapa[hierChave(rec)];return (c&&c.tipo)||''};
+const ctTipoEq=rec=>{{const c=classeEq(rec);if(c.t)return c.t}const H=HIER&&HIER.itens&&HIER.itens[hierChave(rec)];if(H&&H.t)return H.t;ctContrato(rec,'');const c=ctEsMapa&&ctEsMapa[hierChave(rec)];return (c&&c.tipo)||''};
 const ctDtOk=(px,r)=>{const a=$(px+'-de'),b=$(px+'-ate');if(!a||!b||(!a.value&&!b.value))return true;if(r.lim==null)return false;const d=new Date(r.lim).toISOString().slice(0,10);return (!a.value||d>=a.value)&&(!b.value||d<=b.value)};
 const ctDtTxt=px=>{const a=$(px+'-de').value,b=$(px+'-ate').value;return a||b?(a?dataBR(a):'início')+' a '+(b?dataBR(b):'fim'):''};
 const ctRows=()=>{const H=HIER&&HIER.itens;return CT.rows.filter(r=>{const e=H&&H[hierChave(r.rec)],cf=(cfg&&cfg.prefixos&&cfg.prefixos[r.rec])||(cfgBase&&cfgBase.prefixos&&cfgBase.prefixos[r.rec]),ed=cad&&cad.prefixos&&cad.prefixos[r.rec];r.base=(ed&&ed.b)||(e&&e.b)||(cf&&cf.b)||'';r.tEq=ctTipoEq(r.rec);r.ct=ctContrato(r.rec,r.base);return hierOk(r.rec)})}; /* base e tipo de equipe vêm do cadastro de prefixos / equipes */
@@ -3195,7 +3199,32 @@ function cadSelPinta(){
   $('cadAll').hidden=!podeSalvar;$('cadAll').checked=cks.length>0&&m===cks.length;$('cadAll').indeterminate=m>0&&m<cks.length;
   $('b-cadSelTodos').hidden=cadVis.length===0||cadVis.every(k=>cadSel.has(k));
 }
-function renderCadastros(){
+function renderEstruturas(){
+  if(!$('t-estr')||!cfg||!cfg.prefixos)return;
+  const T=estTabela(),cont={};for(const k in cfg.prefixos){const e=estNorm(cfg.prefixos[k]&&cfg.prefixos[k].e);if(e)cont[e]=(cont[e]||0)+1}
+  const L=[...new Set([...Object.keys(T),...Object.keys(cont)])].sort((a,b)=>(cont[b]||0)-(cont[a]||0)||a.localeCompare(b));
+  const ed=(cad&&cad.estruturas)||{},inp=(c,v,ph,w)=>'<input type="text" data-c="'+c+'" value="'+esc(v||'')+'" placeholder="'+ph+'" style="width:'+w+'"'+(podeSalvar?'':' disabled')+'>';
+  $('t-estr').innerHTML=L.map(e=>{const i=T[e]||{};return '<tr data-e="'+esc(e)+'"><td><b>'+esc(e)+'</b>'+(ed[e]?'<span class="tag-site">editado</span>':'')+(T[e]?'':'<span class="tag-site" style="background:#c8102e;color:#fff">sem classificação</span>')+'</td>'
+    +'<td>'+inp('t',i.t,'tipo','150px')+'</td><td>'+inp('u',i.u,'—','90px')+'</td><td>'+inp('pt',i.pt,'—','80px')+'</td><td>'+inp('pe',i.pe,'—','130px')+'</td>'
+    +'<td><select data-c="d"'+(podeSalvar?'':' disabled')+'><option value=""'+(!i.d?' selected':'')+'>—</option><option value="t"'+(i.d==='t'?' selected':'')+'>todos os dias</option><option value="u"'+(i.d==='u'?' selected':'')+'>dias úteis</option></select></td>'
+    +'<td class="n">'+(cont[e]||0)+'</td><td>'+(podeSalvar?'<button class="btn sm" type="button" data-salva-e>Salvar</button>':'')+'</td></tr>'}).join('');
+  $('t-estr').querySelectorAll('[data-salva-e]').forEach(b=>b.onclick=async()=>{const tr=b.closest('tr'),e=tr.dataset.e,o={};tr.querySelectorAll('[data-c]').forEach(x=>{const v=x.value.trim();if(v)o[x.dataset.c]=x.dataset.c==='d'?v:v.toUpperCase()});
+    if(!o.t){toast('Informe o tipo de equipe.');return}const it=Object.assign({},ed);it[e]=o;if(await salvarCad('estruturas',it,'Estrutura '+e+' salva. Vale para todos os indicadores.')){_et=null;try{hierRemontar()}catch(x){}}});
+  /* conferência: onde as bases antigas classificam diferente do cadastro */
+  const div=[],P=cfg.prefixos,hoje=hojeIso();
+  const esc0=(typeof escalaLocal!=='undefined'&&escalaLocal)||(typeof escalaDb!=='undefined'&&escalaDb)||(UCFG&&UCFG.escala)||[];
+  const ix=UCFG&&UCFG.escalaInicio?Math.round((Date.parse(hoje)-Date.parse(UCFG.escalaInicio))/864e5):-1,atual={};
+  for(const x of esc0){if(!x||!x.rec)continue;const d=String(x.d||'');if(!atual[x.rec]||(ix>=0&&d[ix]==='1'))atual[x.rec]=x}
+  for(const r in atual){const c=classeEq(r);if(!P[r]){div.push([r,'UPS','está na escala, mas não em Cadastros']);continue}if(c.u&&String(atual[r].tipo).toUpperCase()!==c.u)div.push([r,'UPS','escala atual: '+atual[r].tipo+' · cadastro: '+c.u+' ('+c.e+')'])}
+  const IE=(typeof ICFG!=='undefined'&&ICFG&&ICFG.equipes)||{};
+  for(const r in IE){if(!/^MA-/.test(r)||(ICFG.excluir||[]).includes(r))continue;if(!P[r]){div.push([r,'Início','está no Início, mas não em Cadastros']);continue}const g=String(IE[r][1]||'').toUpperCase(),c=classeEq(r);if(g&&c.g&&g!==String(c.g).toUpperCase())div.push([r,'Início','setor no Início: '+g+' · cadastro: '+c.g])}
+  if(PCFG&&PCFG.p0)for(const p of PCFG.p0){const c=classeEq(p[0]),m=estPrd(c.e);if(!P[p[0]])div.push([p[0],'Produção','está na produção, mas não em Cadastros']);else if(m&&(m[0]!==p[4]||m[1]!==p[2]))div.push([p[0],'Produção','arquivo: '+p[4]+' · '+p[2]+' → agora: '+m[0]+' · '+m[1]])}
+  for(const e of L)if(!T[e])div.push([e,'Estrutura',(cont[e]||0)+' equipe(s) com estrutura sem classificação: preencha a linha acima']);
+  div.sort((a,b)=>a[1].localeCompare(b[1])||a[0].localeCompare(b[0]));
+  $('estrDiv').innerHTML='<div class="phd" style="margin-top:18px"><h3>Conferência</h3><small>'+(div.length?div.length+' diferença(s) entre o cadastro e as bases antigas. Os relatórios já seguem o cadastro; a pontuação da UPS segue a escala de cada período.':'nenhuma diferença: todas as bases batem com o cadastro')+'</small></div>'
+    +(div.length?'<div class="tw"><table><thead><tr><th>Prefixo</th><th>Onde</th><th>Diferença</th></tr></thead><tbody>'+div.map(x=>'<tr><td><b>'+esc(x[0])+'</b></td><td>'+esc(x[1])+'</td><td>'+esc(x[2])+'</td></tr>').join('')+'</tbody></table></div>':'');
+}
+function renderCadastros(){try{renderEstruturas()}catch(e){console.error('estruturas',e)}
   if(!cfg)return;
   $('cadModo').textContent=podeSalvar?'Alterações valem para todos que abrem o painel.':'Somente leitura';
   $('cadNota').innerHTML=podeSalvar?'':'<div class="note">Você pode consultar os cadastros. Só quem tem permissão de edição consegue alterar.</div>';
@@ -3205,13 +3234,13 @@ function renderCadastros(){
   const P0=Object.entries(cfg.prefixos);
   const unq=f=>[...new Set(P0.map(([k,v])=>f(k,v)).filter(Boolean))].sort();
   const fill=(id,L,tx)=>{const el=$(id),v=el.value;el.innerHTML='<option value="">'+tx+'</option>'+L.map(x=>'<option>'+esc(x)+'</option>').join('');el.value=L.includes(v)?v:''};
-  fill('cfBase',unq((k,v)=>v.b),'Todas');fill('cfGer',unq((k,v)=>v.g),'Todas');fill('cfEst',unq((k,v)=>v.e),'Todas');fill('cfTipo',unq(k=>PCFG&&PCFG.idx&&PCFG.idx[k]&&PCFG.idx[k].tipo),'Todos');
+  fill('cfBase',unq((k,v)=>v.b),'Todas');fill('cfGer',unq((k,v)=>v.g),'Todas');fill('cfEst',unq((k,v)=>v.e),'Todas');fill('cfTipo',unq(k=>classeEq(k).t),'Todos');
   const fb=$('cfBase').value,fg=$('cfGer').value,fe=$('cfEst').value,ft=$('cfTipo').value,fs=$('cfSit').value;
   const lst=P0.filter(([k,v])=>{
     if(q&&!(k+' '+v.e+' '+v.b+' '+v.g).toUpperCase().includes(q))return false;
     if(fb&&v.b!==fb)return false;if(fg&&v.g!==fg)return false;if(fe&&v.e!==fe)return false;
     const pi=PCFG&&PCFG.idx&&PCFG.idx[k];
-    if(ft&&!(pi&&pi.tipo===ft))return false;
+    if(ft&&classeEq(k).t!==ft)return false;
     if(fs==='ed'&&!(cad.prefixos&&cad.prefixos[k]))return false;
     if(fs==='sm'&&pi&&pi.meta>0)return false;
     return true}).sort((a,b)=>a[0]<b[0]?-1:1);
@@ -3242,16 +3271,15 @@ $('b-cadMassa').onclick=()=>abrirMassa([...cadSel]);
 function abrirMassa(recs){
   if(!recs.length)return;
   const vals=k=>[...new Set(Object.values(cfg.prefixos).filter(v=>v&&v[k]).map(v=>v[k]))].sort();
-  const P=(PCFG&&PCFG.prefixos)||[],tp=[...new Set(P.map(p=>p[4]).filter(Boolean))].sort(),ep=[...new Set(P.map(p=>p[2]).filter(Boolean))].sort();
-  const sel=(id,L,ph)=>'<select id="'+id+'"><option value="">'+ph+'</option>'+L.map(x=>'<option>'+esc(x)+'</option>').join('')+'</select>';
+    const sel=(id,L,ph)=>'<select id="'+id+'"><option value="">'+ph+'</option>'+L.map(x=>'<option>'+esc(x)+'</option>').join('')+'</select>';
   $('ltTit').textContent='Editar '+recs.length+' equipe(s) em massa';
   $('ltCorpo').innerHTML='<p class="muted" style="margin:0 0 10px;font-size:12.5px">Preencha só o que quer mudar. Campos deixados em branco não são alterados. Tudo é gravado no Neon.</p>'
    +'<div class="mass-g"><div class="fld"><label>Estrutura</label>'+sel('mE',vals('e'),'— não alterar —')+'</div><div class="fld"><label>Gerência</label>'+sel('mG',vals('g'),'— não alterar —')+'</div><div class="fld"><label>Base</label>'+sel('mB',vals('b'),'— não alterar —')+'</div>'
-   +'<div class="fld"><label>Meta diária (R$)</label><input type="text" id="mMeta" inputmode="decimal" placeholder="não alterar"></div><div class="fld"><label>Tipo na produção</label><input type="text" id="mTp" list="mdlT" placeholder="não alterar"><datalist id="mdlT">'+tp.map(x=>'<option value="'+esc(x)+'">').join('')+'</datalist></div><div class="fld"><label>Estrutura na produção</label><input type="text" id="mEp" list="mdlE" placeholder="não alterar"><datalist id="mdlE">'+ep.map(x=>'<option value="'+esc(x)+'">').join('')+'</datalist></div><div class="fld"><label>Não é da CGB</label><select id="mNc"><option value="">— não alterar —</option><option value="1">Marcar como não CGB</option><option value="0">Voltar a considerar</option></select></div></div>'
+   +'<div class="fld"><label>Meta diária (R$)</label><input type="text" id="mMeta" inputmode="decimal" placeholder="não alterar"></div><div class="fld"><label>Não é da CGB</label><select id="mNc"><option value="">— não alterar —</option><option value="1">Marcar como não CGB</option><option value="0">Voltar a considerar</option></select></div></div>'
    +'<p class="muted" style="margin:10px 0 4px;font-size:12px">Equipes: '+recs.map(esc).join(', ')+'</p>';
   $('ltMsg').textContent='';$('modalLote').hidden=false;$('b-ltSalva').textContent='Aplicar às selecionadas';
   $('b-ltSalva').onclick=async()=>{
-    const e=$('mE').value,g=$('mG').value,b=$('mB').value,pm=prdNum($('mMeta').value),pt=$('mTp').value.trim().toUpperCase(),pe=$('mEp').value.trim().toUpperCase();
+    const e=$('mE').value,g=$('mG').value,b=$('mB').value,pm=prdNum($('mMeta').value),mp=estPrd(e),pt=mp?mp[0]:'',pe=mp?mp[1]:'';
     if(Number.isNaN(pm)){$('ltMsg').textContent='Meta inválida. Use só números, ex.: 1.353,94.';return}
     const nc=$('mNc').value;if(!e&&!g&&!b&&pm==null&&!pt&&!pe&&!nc){$('ltMsg').textContent='Preencha pelo menos um campo para alterar.';return}
     const it=Object.assign({},cad.prefixos||{});
@@ -3266,6 +3294,28 @@ function abrirMassa(recs){
 $('formFer').addEventListener('submit',e=>{e.preventDefault();const d=$('ferData').value,n=$('ferNome').value.trim();if(!d||!n)return;const it=Object.assign({},cad.feriados||{});it[d]=n;salvarCad('feriados',it,'Feriado adicionado.').then(ok=>{if(ok){$('ferData').value='';$('ferNome').value=''}})});
 $('formFol').addEventListener('submit',e=>{e.preventDefault();const d=$('folData').value,b=$('folBase').value,es=$('folEst').value,m=$('folMot').value.trim();if(!d||!b||!es||!m)return;const it=Object.assign({},cad.folgas||{});it[b+'|'+es+'|'+d]=m;salvarCad('folgas',it,'Folga adicionada.').then(ok=>{if(ok){$('folData').value='';$('folMot').value=''}})});
 const prdNum=v=>{v=String(v==null?'':v).trim();if(!v)return null;const n=Number(v.includes(',')?v.replace(/\./g,'').replace(',','.'):v);return Number.isNaN(n)||n<0?NaN:n};
+/* ===== Classificação central das equipes =====
+   Cada equipe tem só a Estrutura (aba Prefixos). Esta tabela diz, para cada estrutura: t = tipo de equipe (o mesmo em todos os
+   relatórios e filtros), u = processo da UPS, pt/pe = tipo e estrutura na produção, d = dias em que a meta conta
+   ('t' todos os dias, 'u' dias úteis: sábado 50%, domingo e feriado 0). O que for editado na aba Estruturas (Neon) vale por cima. */
+const EST_PADRAO={
+  'PLANTÃO 16 HORAS 4X4':{t:'PLANTÃO 16H',u:'PLANTÃO',pt:'AE116',pe:'16H 4X4',d:'t'},
+  'PLANTÃO LEVE 8 HORAS TRIO CARRO 4X4':{t:'PLANTÃO 8H',u:'PLANTÃO',pt:'AE116',pe:'8H TRIO 4X4',d:'t'},
+  'PLANTÃO MOTO':{t:'PLANTÃO MOTO',u:'PLANTÃO',pt:'AE116',pe:'8H MOTO',d:'u'},
+  'LIGAÇÃO NOVA MULTI 4X4':{t:'LIGAÇÃO NOVA',u:'LGN',pt:'LGN',pe:'LGN MULTI 4X4',d:'u'},
+  'LIGAÇÃO NOVA TRIO 4X4':{t:'LIGAÇÃO NOVA',u:'LGN',pt:'LGN',pe:'8H TRIO 4X4',d:'u'},
+  'CORTE E RELIGAÇÃO':{t:'CORTE E RELIGAÇÃO',u:'CR/RI',pt:'CR/RI',pe:'CT/RI LEVE',d:'u'},
+  'CORTE SEED MONEY':{t:'SEED MONEY',u:'SDM',pt:'SDM',pe:'SEED MONEY LEVE',d:'u'},
+  'CONSTRUÇÃO 6 HOMENS':{t:'CONSTRUÇÃO'},'CONSTRUÇÃO 6 HOMENS - SPOT':{t:'CONSTRUÇÃO'},
+  'INSPEÇÃO':{t:'INSPEÇÃO'},'PODA':{t:'PODA'},'LINHA VIVA':{t:'LINHA VIVA'},'MANUTENÇÃO TAT':{t:'MANUTENÇÃO TAT'},'QUALIDADE':{t:'QUALIDADE'}};
+const estNorm=e=>String(e||'').trim().toUpperCase();
+let _etSrc,_et=null;
+function estTabela(){const ov=(typeof cad!=='undefined'&&cad&&cad.estruturas)||{};if(_et&&_etSrc===ov)return _et;const o={};for(const k in EST_PADRAO)o[k]=Object.assign({},EST_PADRAO[k]);for(const k in ov){const K=estNorm(k);if(ov[k]===null){delete o[K];continue}o[K]=Object.assign({},o[K]||{},ov[k])}_etSrc=ov;_et=o;return o}
+const estInfo=e=>estTabela()[estNorm(e)]||null;
+const estPrd=e=>{const i=estInfo(e);return i&&i.pt?[i.pt,i.pe||'']:null};
+/* classificação de um prefixo: estrutura, gerência e base do cadastro + o que a tabela central diz da estrutura */
+function classeEq(rec){const v=typeof cfg!=='undefined'&&cfg&&cfg.prefixos&&cfg.prefixos[rec],i=v&&estInfo(v.e);return{e:v?v.e||'':'',g:v?v.g||'':'',b:v?v.b||'':'',t:(i&&i.t)||'',u:(i&&i.u)||'',d:(i&&i.d)||''}}
+const estPrdTxt=e=>{const m=estPrd(e);return m?m[0]+' · '+m[1]:'— (estrutura sem produção)'};
 const metaTxt=k=>{const pi=PCFG&&PCFG.idx&&PCFG.idx[k];if(!pi)return '–';return pi.meta>0?pi.meta.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}):'sem meta fixa'};
 /* A produção usa o arquivo prod_config.json como valor inicial; o que for cadastrado/editado no site (Neon) vale por cima. */
 function prdAplicarCad(){
@@ -3274,6 +3324,7 @@ function prdAplicarCad(){
   for(const k in ov){const o=ov[k];if(o===null){delete mapa[k];continue}if(!o)continue;
     let p=mapa[k];if(!p){if(o.pm==null&&!o.pt)continue;p=mapa[k]=[k,o.b||'',o.pe||o.e||'',0,'']}
     if(o.b)p[1]=o.b;if(o.pe)p[2]=o.pe;if(o.pm!=null)p[3]=o.pm;if(o.pt)p[4]=o.pt}
+  for(const p of Object.values(mapa)){const v=cfg&&cfg.prefixos&&cfg.prefixos[p[0]],m=v&&estPrd(v.e);if(m){p[4]=m[0];p[2]=m[1]}}
   PCFG.prefixos=Object.values(mapa);PCFG.idx=null;
 }
 function abrirPref(k,novoNome){
@@ -3284,8 +3335,8 @@ function abrirPref(k,novoNome){
   $('cpNc').checked=!!(k&&ehNaoCgb(k));
   $('cpEst').value=v.e||'';$('cpGer').value=v.g||'';$('cpBase').value=v.b||'';
   {const pi=(PCFG&&PCFG.idx&&k&&PCFG.idx[k])||null;
-   $('cpMeta').value=pi&&pi.meta!=null?String(pi.meta).replace('.',','):(v.pm!=null?String(v.pm).replace('.',','):'');$('cpTipoP').value=pi?pi.tipo||'':(v.pt||'');$('cpEstP').value=pi?pi.est||'':(v.pe||'');
-   const P=(PCFG&&PCFG.prefixos)||[];$('dlTipoP').innerHTML=[...new Set(P.map(p=>p[4]).filter(Boolean))].sort().map(x=>'<option value="'+esc(x)+'">').join('');$('dlEstP').innerHTML=[...new Set(P.map(p=>p[2]).filter(Boolean))].sort().map(x=>'<option value="'+esc(x)+'">').join('')}
+   $('cpMeta').value=pi&&pi.meta!=null?String(pi.meta).replace('.',','):(v.pm!=null?String(v.pm).replace('.',','):'');$('cpPrdInfo').textContent=estPrdTxt(v.e);$('cpEst').oninput=()=>{$('cpPrdInfo').textContent=estPrdTxt($('cpEst').value)};
+  }
   $('cpJor').innerHTML=DIAS_CURTO.map((n,i)=>'<div class="fld"><label for="cpJ'+i+'">'+n+'</label><input type="text" inputmode="numeric" placeholder="00:00" maxlength="5" id="cpJ'+i+'" value="'+minParaHora((v.j||[])[i]||0)+'"></div>').join('');
   $('cpMsg').innerHTML='';$('b-delPref').hidden=!k;$('b-delPref').textContent='Excluir';
   $('gavCad').hidden=false;$('cadFundo').hidden=false;
@@ -3300,7 +3351,7 @@ $('b-salvaPref').onclick=async()=>{
   if(!editPref&&cfg.prefixos[k]){$('cpMsg').innerHTML='<div class="note err">Esse prefixo já existe. Use Editar na lista.</div>';return}
   const j=DIAS_CURTO.map((_,i)=>horaParaMin($('cpJ'+i).value));
   if(j.some(x=>isNaN(x))){$('cpMsg').innerHTML='<div class="note err">Jornada no formato horas:minutos, ex.: 08:00. Deixe 00:00 para folga.</div>';return}
-  const pm=prdNum($('cpMeta').value),pt=$('cpTipoP').value.trim().toUpperCase(),pe=$('cpEstP').value.trim().toUpperCase();
+  const pm=prdNum($('cpMeta').value),mp=estPrd(e),pt=mp?mp[0]:'',pe=mp?mp[1]:'';
   if(Number.isNaN(pm)){$('cpMsg').innerHTML='<div class="note err">Meta diária inválida. Use só números, ex.: 1.353,94.</div>';return}
   const it=Object.assign({},cad.prefixos||{});const o={e,g,b,j};if(pm!=null)o.pm=pm;if(pt)o.pt=pt;if(pe)o.pe=pe;it[k]=o; /* tudo vai para o Neon */
   if(await salvarCad('prefixos',it,'Prefixo '+k+' salvo.')){
@@ -4042,7 +4093,7 @@ const UF=['u-base','u-tipo','u-coord','u-rec','u-ate'];
 const UF_NOME={'u-base':'Base','u-tipo':'Tipo','u-coord':'Coordenador','u-rec':'Prefixo','u-ate':'Até'};
 /* tipo de equipe de cada prefixo (PLANTÃO, LGN, CR/RI, SDM), da escala: mesma fonte da UPS, vale para todas as visões */
 let _tpSrc=null,_tpIR=null,_tpMap={};
-function tipoDe(rec){const src=(typeof escalaLocal!=='undefined'&&escalaLocal)||(typeof escalaDb!=='undefined'&&escalaDb)||(UCFG&&UCFG.escala)||[];const ir=(typeof IR!=='undefined'&&IR&&IR.linhas)||null;
+function tipoDe(rec){{const c=classeEq(rec);if(c.t)return c.t}const src=(typeof escalaLocal!=='undefined'&&escalaLocal)||(typeof escalaDb!=='undefined'&&escalaDb)||(UCFG&&UCFG.escala)||[];const ir=(typeof IR!=='undefined'&&IR&&IR.linhas)||null;
   if(_tpSrc!==src||_tpIR!==ir){_tpSrc=src;_tpIR=ir;_tpMap={};if(ir)for(const l of ir)if(l.rec&&l.tipo&&!_tpMap[l.rec])_tpMap[l.rec]=String(l.tipo).trim();for(const e of src)if(e&&e.rec&&e.tipo)_tpMap[e.rec]=String(e.tipo).trim()}
   return _tpMap[rec]||''}
 function tiposLista(recs){const t=new Set();for(const r of recs){const v=tipoDe(r);if(v)t.add(v)}return[...t].sort()}
@@ -4059,7 +4110,7 @@ function atualizaTipos(){try{
   if(typeof MX!=='undefined'&&MX&&MX.ds){const rs=new Set();for(const d of MX.ds){const o=MX.dias[d];for(const k of ['n','m','c'])for(const r in o[k]||{})rs.add(r)}recOpts('x-tipo',tiposLista(rs),'Todos')}
 }catch(e){}}
 function recUpsOpts(){if(!UR)return;const b=msSel('u-base'),t=msSel('u-tipo'),co=msSel('u-coord');
-  recOpts('u-rec',[...new Set(UR.cadastros.filter(c=>(!b||b.has(c.sigla))&&(!t||t.has(c.tipo))&&(!co||co.has(c.coord))).map(c=>c.rec))].sort(),'Todos')}
+  recOpts('u-rec',[...new Set(UR.cadastros.filter(c=>(!b||b.has(c.sigla))&&(!t||t.has(tipoDe(c.rec)))&&(!co||co.has(c.coord))).map(c=>c.rec))].sort(),'Todos')}
 let uCls=new Set(), uAbertos=new Set(), uMesIni=false;
 /* meses escolhidos no filtro da UPS (vazio = todos os meses disponíveis), em ordem crescente */
 function mesesU(){const st=$('u-mes').msel;if(!st)return[];return (st.sel.size?[...st.sel]:st.vals.slice()).sort()}
@@ -4074,7 +4125,7 @@ function preencherFiltrosUps(){
   const keep=id=>{const v=$(id).value;return()=>{if(v&&[...$(id).options].some(o=>o.value===v))$(id).value=v}};
   const kb=keep('u-base'),kt=keep('u-tipo'),kc=keep('u-coord'),kr=keep('u-rec');
   opts($('u-base'),SIGLAS,'Todas',s=>s+' · '+NOME_SIGLA[s]);kb();
-  opts($('u-tipo'),[...new Set(UR.cadastros.map(c=>c.tipo).filter(Boolean))].sort(),'Todos');kt();
+  opts($('u-tipo'),[...new Set(UR.cadastros.map(c=>tipoDe(c.rec)).filter(Boolean))].sort(),'Todos');kt();
   opts($('u-coord'),[...new Set(UR.cadastros.map(c=>c.coord).filter(Boolean))].sort(),'Todos');kc();
   recUpsOpts();
   preencherAteUps();
@@ -4082,7 +4133,7 @@ function preencherFiltrosUps(){
 function preencherAteUps(){const ms=mesesU(),v=$('u-ate').value;const ds=ms.length?diasComDados(ms):[];opts($('u-ate'),ds.slice().reverse(),ms.length>1?'Período inteiro':'Mês inteiro',d=>dataBR(d)+' · '+semana(d).slice(0,3));if(v&&ds.includes(v))$('u-ate').value=v}
 function filtrarUps(m){
   const ms=new Set(m?[m]:mesesU());const b=msSel('u-base'),t=msSel('u-tipo'),co=msSel('u-coord'),r=msSel('u-rec'),ate=$('u-ate').value;
-  return UR.linhas.filter(l=>ms.has(l.mes)&&(!b||b.has(l.sigla))&&(!t||t.has(l.tipo))&&(!co||co.has(l.coord))&&(!r||r.has(l.rec))&&(!ate||l.data<=ate));
+  return UR.linhas.filter(l=>ms.has(l.mes)&&(!b||b.has(l.sigla))&&(!t||t.has(tipoDe(l.rec)))&&(!co||co.has(l.coord))&&(!r||r.has(l.rec))&&(!ate||l.data<=ate));
 }
 function statsUps(L){
   let ups=0,meta=0,tem=false;for(const l of L){ups+=l.ups;meta+=l.meta;tem=tem||l.temUps}
@@ -4090,7 +4141,7 @@ function statsUps(L){
   return {ups,meta,pct:meta&&tem?ups/meta:null,teams};
 }
 function diasComDados(m){const ms=Array.isArray(m)?m:[m];return Object.keys(UR.dias).filter(d=>ms.includes(d.slice(0,7))&&d<=UR.ultima).sort()}
-function metaDoMes(m,recs){const msx=new Set(Array.isArray(m)?m:[m]);const b=msSel('u-base'),t=msSel('u-tipo'),co=msSel('u-coord'),r=msSel('u-rec');const rc={};if(co)for(const c of UR.cadastros)rc[c.rec]=c.coord;let s=0;for(const k in UR.metaMes){const [mm,rec,sg,tp]=k.split('|');if(msx.has(mm)&&(!b||b.has(sg))&&(!t||t.has(tp))&&(!r||r.has(rec))&&(!co||co.has(rc[rec]))&&(!recs||recs.has(rec)))s+=UR.metaMes[k]}return s}
+function metaDoMes(m,recs){const msx=new Set(Array.isArray(m)?m:[m]);const b=msSel('u-base'),t=msSel('u-tipo'),co=msSel('u-coord'),r=msSel('u-rec');const rc={};if(co)for(const c of UR.cadastros)rc[c.rec]=c.coord;let s=0;for(const k in UR.metaMes){const [mm,rec,sg,tp]=k.split('|');if(msx.has(mm)&&(!b||b.has(sg))&&(!t||t.has(tipoDe(rec)))&&(!r||r.has(rec))&&(!co||co.has(rc[rec]))&&(!recs||recs.has(rec)))s+=UR.metaMes[k]}return s}
 /* UPS por mês e por base: cada equipe recebe a classe do mês (UPS ÷ meta) e o índice é (A + B) ÷ (A + B + C + D). Chave 'mês|base', '*|base' = período todo */
 function upsMesAB(L,bsel){
   const g={};
@@ -4159,7 +4210,7 @@ function renderUPS(){
   // UPS por mês (base × mês)
   const meses=[...new Set(UR.linhas.filter(l=>l.meta>0).map(l=>l.mes))].sort();
   const tsel=msSel('u-tipo'),csel=msSel('u-coord'),rsel=msSel('u-rec'),bsel=msSel('u-base');
-  const LM=UR.linhas.filter(l=>(!tsel||tsel.has(l.tipo))&&(!csel||csel.has(l.coord))&&(!rsel||rsel.has(l.rec))&&(!S.recs||S.recs.has(l.rec)));
+  const LM=UR.linhas.filter(l=>(!tsel||tsel.has(tipoDe(l.rec)))&&(!csel||csel.has(l.coord))&&(!rsel||rsel.has(l.rec))&&(!S.recs||S.recs.has(l.rec)));
   const ab=upsMesAB(LM,bsel);
   const vM=k=>{const x=ab[k];return x?x.p:null};
   const totB=s=>vM('*|'+s);
@@ -4236,7 +4287,7 @@ function semanaUps(){
   const A=SEM_NOME.map(()=>({e:0,n:0,u:0,m:0,dias:new Set()}));
   for(const l of UR.linhas){
     if(!l.cod||l.data.slice(0,4)!==ano||l.data>UR.ultima)continue;
-    if((b&&!b.has(l.sigla))||(t&&!t.has(l.tipo))||(co&&!co.has(l.coord))||(r&&!r.has(l.rec)))continue;
+    if((b&&!b.has(l.sigla))||(t&&!t.has(tipoDe(l.rec)))||(co&&!co.has(l.coord))||(r&&!r.has(l.rec)))continue;
     if(!(l.meta>0||l.n>0))continue;
     const w=(new Date(l.data+'T12:00:00Z').getUTCDay()+6)%7,a=A[w];a.e++;a.n+=l.n;a.u+=l.ups;a.m+=l.meta;a.dias.add(l.data)}
   const soma=ix=>ix.reduce((s,i)=>({e:s.e+A[i].e,n:s.n+A[i].n,u:s.u+A[i].u,m:s.m+A[i].m,dias:new Set([...s.dias,...A[i].dias])}),{e:0,n:0,u:0,m:0,dias:new Set()});
@@ -4509,7 +4560,7 @@ function montarIni(){
   const datas=Object.keys(dias).sort();if(!datas.length)return;
   const linhas=[];
   for(const d of datas)for(const p in dias[d]){if(!hierOk(p))continue;const v=dias[d][p],eq=ICFG.equipes[p.toUpperCase()]||[];
-    linhas.push({rec:p,data:d,mes:d.slice(0,7),base:(p.split('-')[1]||'').toUpperCase(),tipo:eq[0]||'PODA',setor:eq[1]||'',t:v[0],km:v[1],info:v[2],la:v[3]==null?null:v[3],lo:v[4]==null?null:v[4]})}
+    linhas.push({rec:p,data:d,mes:d.slice(0,7),base:(p.split('-')[1]||'').toUpperCase(),tipo:tipoDe(p)||eq[0]||'PODA',setor:classeEq(p).g||eq[1]||'',t:v[0],km:v[1],info:v[2],la:v[3]==null?null:v[3],lo:v[4]==null?null:v[4]})}
   IR={linhas,ultima:datas[datas.length-1]};
   preencherFiltrosIni();if(indAtual()==='ini')renderIni();renderInicio();
 }
@@ -4521,9 +4572,9 @@ function preencherFiltrosIni(){
   keep('i-tipo',[...new Set(IR.linhas.map(l=>l.tipo))].sort(),'Todos');
   recIniOpts();atualizaTipos();
 }
-function recIniOpts(){if(!IR)return;const b=msSel('i-base'),t=msSel('i-tipo');recOpts('i-rec',[...new Set(IR.linhas.filter(l=>(!b||b.has(l.base))&&(!t||t.has(l.tipo))).map(l=>l.rec))].sort(),'Todos')}
+function recIniOpts(){if(!IR)return;const b=msSel('i-base'),t=msSel('i-tipo');recOpts('i-rec',[...new Set(IR.linhas.filter(l=>(!b||b.has(l.base))&&(!t||t.has(tipoDe(l.rec)))).map(l=>l.rec))].sort(),'Todos')}
 function filtrarIni(){const m=$('i-mes').value,b=msSel('i-base'),t=msSel('i-tipo'),r=msSel('i-rec'),q=($('i-busca').value||'').trim().toUpperCase();
-  return IR.linhas.filter(l=>l.mes===m&&(!b||b.has(l.base))&&(!t||t.has(l.tipo))&&(!r||r.has(l.rec))&&(!q||l.rec.toUpperCase().includes(q)))}
+  return IR.linhas.filter(l=>l.mes===m&&(!b||b.has(l.base))&&(!t||t.has(tipoDe(l.rec)))&&(!r||r.has(l.rec))&&(!q||l.rec.toUpperCase().includes(q)))}
 const iMed=L=>L.length?Math.floor(L.reduce((s,l)=>s+l.t,0)/L.length):null;
 const iDesl=L=>{const k=L.filter(l=>l.km!=null);if(!k.length)return{km:null,min:null};return{km:k.reduce((s,l)=>s+l.km,0)/k.length,min:Math.round(k.reduce((s,l)=>s+Math.round(l.km/ICFG.velocidade*60),0)/k.length)}};
 const iHmin=m=>m==null?'–':Math.floor(m/60)+'h'+String(m%60).padStart(2,'0');
@@ -4637,7 +4688,7 @@ document.querySelectorAll('[data-ifunil]').forEach(b=>b.onclick=()=>abrirGaveta(
 let ACFG=null,AHIST=null,aderDocs=[],aderLocais={},ajusteLocal=null,aderAjDb=null,AR=null,ordemA={k:'rank',dir:1};
 const AF=['a-dia','a-base','a-est','a-tipo','a-rec'];
 const AF_NOME={'a-dia':'Dia','a-base':'Base','a-est':'Estrutura','a-tipo':'Tipo de equipe','a-rec':'Prefixo'};
-const A_T8=['PLANTÃO LEVE 8 HORAS TRIO CARRO 4X4','LIGAÇÃO NOVA MULTI 4X4','CORTE E RELIGAÇÃO LEVE','CORTE E RELIGAÇÃO (SEED MONEY)','LIGAÇÃO NOVA MULTI LEVE','PLANTÃO LEVE 8 HORAS TRIO CARRO LEVE','PLANTÃO LEVE 8 HORAS ADM MOTO'];
+const A_T8=['PLANTÃO LEVE 8 HORAS TRIO CARRO 4X4','LIGAÇÃO NOVA MULTI 4X4','LIGAÇÃO NOVA TRIO 4X4','CORTE E RELIGAÇÃO LEVE','CORTE E RELIGAÇÃO (SEED MONEY)','LIGAÇÃO NOVA MULTI LEVE','PLANTÃO LEVE 8 HORAS TRIO CARRO LEVE','PLANTÃO LEVE 8 HORAS ADM MOTO'];
 const A_TODOS=['PLANTÃO LEVE 8 HORAS TRIO CARRO 4X4','PLANTÃO LEVE 8 HORAS TRIO CARRO LEVE','PLANTÃO 16 HORAS 4X4'];
 const aHM=m=>{if(m==null)return'';m=Math.round(m);return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0')};
 const aDif=(a,b)=>Math.round((new Date(a+'T00:00:00Z')-new Date(b+'T00:00:00Z'))/86400000);
@@ -5375,6 +5426,7 @@ function prdFator(pre,d){
   const pi=PCFG.idx&&PCFG.idx[pre];if(!pi)return 1;
   const wd=(new Date(d+'T12:00:00Z').getUTCDay()+6)%7;
   const fer=!!((cfg&&cfg.feriados&&cfg.feriados[d])||(typeof cad!=='undefined'&&cad&&cad.feriados&&cad.feriados[d]));
+  const ce=classeEq(pre);if(ce.d)return UPSCalc.fatorMeta(ce.d==='t',wd,fer);
   return UPSCalc.fatorMeta(pi.tipo==='AE116'&&!/MOTO/i.test(pi.est),wd,fer);
 }
 function prdLinhasPer(DIAS){
@@ -6605,7 +6657,7 @@ Promise.all([fetch('config.json').then(r=>r.json()),Promise.resolve({dias:{},rec
   db.collection('hierarquia').onSnapshot(snap=>{const d=snap.docs.find(x=>x.id==='equipes');HIER=d?d.data():null;hierPintar();if(hierAtivo())hierRemontar()},()=>{});
   db.collection('ader').onSnapshot(snap=>{aderDocs=snap.docs.map(d=>d.data()).filter(d=>d&&d.data&&d.eq);montarAder()},()=>{});
   db.collection('config').onSnapshot(snap=>{
-    const n={prefixos:{},feriados:{},folgas:{},naoCgb:{}};
+    const n={prefixos:{},feriados:{},folgas:{},naoCgb:{},estruturas:{}};
     {const bi=snap.docs.find(d=>d.id==='bancoIdx');if(bi){try{const v=JSON.parse(bi.data().j);for(const f of ['COI','MAN','FIS','OBRAS'])v[f]=v[f]||{};bancoIdx=v;montarBanco();if(pag().id==='mix-causa')acMostrar()}catch(e){}}}
     let esc=null,escInfo=null,fu={};
     for(const d of snap.docs){const v=d.data();if(v&&v.itens&&n[d.id]!==undefined)n[d.id]=v.itens;if(d.id==='escala'&&v&&Array.isArray(v.itens)){esc=v.itens;escInfo=(v.arquivo||'')+(v.editadoEm?' em '+new Date(v.editadoEm).toLocaleDateString('pt-BR'):'')}if(d.id==='feriadosUps'&&v&&v.itens)fu=v.itens}
