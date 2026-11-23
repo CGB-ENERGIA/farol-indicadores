@@ -1642,7 +1642,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     </div>
     <div class="panel">
       <div class="phd"><h3>Aderência à escala · horário do checklist de início do turno</h3><div class="busca" style="display:flex;gap:8px;align-items:center"><input type="search" id="a-busca" placeholder="Buscar prefixo…" aria-label="Buscar prefixo"><button type="button" class="btn sm" id="b-agr" title="Ver todos os prefixos em tela grande"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>Expandir</span></button></div></div>
-      <div class="heat-leg"><span><i style="background:#3ae007"></i>Aderente (até 30 min depois ou até 2 h antes)</span><span><i style="background:#f50c05"></i>Fora do horário</span><span><i style="background:#f59105"></i>Ausente (sem checklist)</span></div>
+      <div class="heat-leg"><span><i style="background:#3ae007"></i>Aderente (dentro da tolerância do cadastro)</span><span><i style="background:#f50c05"></i>Fora do horário</span><span><i style="background:#f59105"></i>Ausente (sem checklist)</span></div>
       <div class="tw diario-w"><table class="diario agr" id="aGrade"></table></div>
     </div>
     <div class="panel" id="aMotP">
@@ -2051,6 +2051,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
         <button type="button" data-tab="folgas" aria-pressed="false">Folgas por base</button>
         <button type="button" data-tab="escala" aria-pressed="false">Escala da UPS</button>
         <button type="button" data-tab="ferups" aria-pressed="false">Feriados da UPS</button>
+        <button type="button" data-tab="aderencia" aria-pressed="false">Aderência à escala</button>
       </div>
       <span class="muted" id="cadModo" style="font-size:12.5px"></span>
     </div>
@@ -2079,6 +2080,13 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
       <div class="phd"><div class="busca"><input type="search" id="escBusca" placeholder="Buscar prefixos, base ou tipo (vários: separe por espaço ou vírgula)…" aria-label="Buscar na escala"><span class="muted" id="escCont"></span></div></div>
       <div id="escOrigem"></div>
       <div class="tw"><table><thead><tr><th>Prefixo</th><th>Base</th><th>Tipo de equipe</th><th>Estrutura UPS</th><th>Subtipo</th><th class="n">Dias escalados</th></tr></thead><tbody id="t-esc"></tbody></table></div>
+    </div>
+    <div class="panel" data-tabp="aderencia" hidden>
+      <div class="phd"><h3>Aderência à escala: horário previsto de início</h3><small>o checklist é comparado com o horário previsto da estrutura. Em branco = a estrutura não entra na aderência</small></div>
+      <div class="cad-fil"><div class="fld"><label for="arAtr">Tolerância após o horário (min)</label><input type="text" id="arAtr" inputmode="numeric"></div><div class="fld"><label for="arAnt">Tolerância antes do horário (min)</label><input type="text" id="arAnt" inputmode="numeric"></div><button class="btn primary" type="button" id="b-arSalva">Salvar regras</button><button class="btn" type="button" id="b-arPadrao">Voltar ao padrão</button></div>
+      <div id="arMsg"></div>
+      <div class="tw"><table><thead><tr><th>Estrutura</th><th>Horário único</th><th>Prefixo final M</th><th>Prefixo final T</th><th>Vale no domingo</th></tr></thead><tbody id="t-ar"></tbody></table></div>
+      <small class="muted">Use "Horário único" para estruturas com um só turno. Use "final M / final T" quando a manhã e a tarde são separadas pela última letra do prefixo. Na tolerância, 30 depois e 120 antes é o padrão.</small>
     </div>
     <div class="panel" data-tabp="ferups" hidden>
       <div class="phd"><h3>Feriados da UPS por equipe e base</h3><small>no dia, a meta das equipes desse tipo e base não conta (o Plantão continua contando)</small></div>
@@ -2458,7 +2466,7 @@ const MESES=['janeiro','fevereiro','março','abril','maio','junho','julho','agos
 const FONTES=['COI','MAN','OBRAS','FIS'];
 let cfg=null, hist=null, dbDocs=[], locais=[], resumo=[], ultimaData=null, fontesPorData={};
 let db=null, podeSalvar=true, podeEnviar=false, downloads=null;
-let ULT=null, ordem={k:'pct',dir:1}, cfgBase=null, cad={prefixos:{},feriados:{},folgas:{}}, diasAgg={}, nAvisos=0;
+let ULT=null, ordem={k:'pct',dir:1}, cfgBase=null, cad={prefixos:{},feriados:{},folgas:{},aderRegras:{}}, diasAgg={}, nAvisos=0;
 
 const pct=v=>v==null||isNaN(v)?'–':(v*100).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+'%';
 const horas=m=>Math.round(m/60).toLocaleString('pt-BR');
@@ -3189,7 +3197,7 @@ function resumoJor(j){if(!j)return'–';const u=j.slice(0,5);const igual=u.every
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{abaCad=b.dataset.tab;document.querySelectorAll('[data-tab]').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));document.querySelectorAll('[data-tabp]').forEach(x=>x.hidden=x.dataset.tabp!==abaCad)});
 async function salvarCad(nome,itens,ok){
   if(!db||!podeSalvar){toast('Você não tem permissão para alterar os cadastros.');return false}
-  try{await db.collection('config').doc(nome).set({itens,editadoEm:new Date().toISOString()});cad[nome]=itens;montar();try{montarPrd()}catch(e){}try{renderCadastros()}catch(e){}toast(ok);return true}
+  try{await db.collection('config').doc(nome).set({itens,editadoEm:new Date().toISOString()});cad[nome]=itens;montar();try{montarPrd()}catch(e){}if(nome==='aderRegras'){try{montarAder()}catch(e){}}try{renderCadastros()}catch(e){}toast(ok);return true}
   catch(e){toast(e&&e.code==='invalid_argument'?'Você não tem permissão para alterar os cadastros.':'Não foi possível salvar. Tente de novo.');return false}
 }
 let cadSel=new Set(),cadVis=[];
@@ -3226,7 +3234,30 @@ function renderEstruturas(){
 }
 /* busca com vários termos (prefixos separados por espaço, vírgula, ponto e vírgula ou linha): mostra os que casam com qualquer um */
 function buscaTermos(v){return String(v||'').toUpperCase().split(/[\s,;]+/).filter(Boolean)}
-function renderCadastros(){try{renderEstruturas()}catch(e){console.error('estruturas',e)}
+let arSuja=false;
+function renderAderRegras(){
+  if(arSuja||!$('t-ar'))return;
+  const esc0=(typeof escalaLocal!=='undefined'&&escalaLocal)||(typeof escalaDb!=='undefined'&&escalaDb)||(typeof UCFG!=='undefined'&&UCFG&&UCFG.escala)||[];
+  const ests=[...new Set([...esc0.map(c=>String(c.sub||'').trim().toUpperCase()),...A_T8,...A_TODOS,'PLANTÃO 16 HORAS 4X4'].filter(Boolean))].sort();
+  const tl=aderTol();$('arAtr').value=tl.atr;$('arAnt').value=tl.ant;
+  const ro=podeSalvar?'':' disabled';
+  $('t-ar').innerHTML=ests.map(e=>{const g=aderRegraEst(e)||{};return '<tr data-e="'+esc(e)+'"><td><b>'+esc(e)+'</b></td>'+['h','m','t'].map(k=>'<td><input type="text" class="ar-i" data-k="'+k+'" inputmode="numeric" placeholder="–" maxlength="5" style="width:80px" value="'+(g[k]!=null?minParaHora(g[k]):'')+'"'+ro+'></td>').join('')+'<td><input type="checkbox" class="ar-i" data-k="dom"'+(g.dom?' checked':'')+ro+'></td></tr>'}).join('');
+  document.querySelectorAll('#t-ar .ar-i,#arAtr,#arAnt').forEach(i=>i.oninput=i.onchange=()=>{arSuja=true});
+  $('b-arSalva').hidden=$('b-arPadrao').hidden=!podeSalvar;$('arAtr').disabled=$('arAnt').disabled=!podeSalvar;
+}
+$('b-arSalva')&&($('b-arSalva').onclick=async()=>{
+  const atr=Number($('arAtr').value),ant=Number($('arAnt').value);
+  if(!Number.isFinite(atr)||!Number.isFinite(ant)||atr<0||ant<0){$('arMsg').innerHTML='<div class="note err">Tolerância em minutos, só números.</div>';return}
+  const est={};
+  for(const tr of document.querySelectorAll('#t-ar tr')){const o={};let ruim=false;
+    tr.querySelectorAll('.ar-i').forEach(i=>{const k=i.dataset.k;if(k==='dom'){o.dom=i.checked;return}const t=i.value.trim();if(!t)return;const m=horaParaMin(t);if(Number.isNaN(m)){ruim=true;return}o[k]=m});
+    if(ruim){$('arMsg').innerHTML='<div class="note err">Horário no formato horas:minutos, ex.: 08:00 ('+esc(tr.dataset.e)+').</div>';return}
+    est[tr.dataset.e]=o}
+  $('arMsg').innerHTML='';
+  if(await salvarCad('aderRegras',{tolAtr:atr,tolAnt:ant,est},'Regras da aderência salvas.')){arSuja=false;renderAderRegras()}
+});
+$('b-arPadrao')&&($('b-arPadrao').onclick=async()=>{if(await salvarCad('aderRegras',{},'Regras da aderência voltaram ao padrão.')){arSuja=false;renderAderRegras()}});
+function renderCadastros(){try{renderEstruturas()}catch(e){console.error('estruturas',e)}try{renderAderRegras()}catch(e){console.error('aderRegras',e)}
   if(!cfg)return;
   $('cadModo').textContent=podeSalvar?'Alterações valem para todos que abrem o painel.':'Somente leitura';
   $('cadNota').innerHTML=podeSalvar?'':'<div class="note">Você pode consultar os cadastros. Só quem tem permissão de edição consegue alterar.</div>';
@@ -4729,11 +4760,16 @@ function lerAjusteEscala(wb){
   if(!Object.keys(just).length&&!ajustes.length)throw new Error('Não achei as abas INTERJORNADAS / TURNO DIFERENTE');
   return {just,ajustes};
 }
-function turnoPadrao(cad,data){
-  const est=String(cad.sub||'').trim().toUpperCase(),suf=String(cad.rec||'').trim().toUpperCase().slice(-1);
-  let t=null;if(est==='PLANTÃO 16 HORAS 4X4')t=suf==='M'?420:suf==='T'?900:null;else if(A_T8.includes(est))t=480;
+/* regras do horário de início da aderência: valores de fábrica; o que for salvo em Cadastros > Aderência à escala vale no lugar */
+const AR_PADRAO_EST=est=>est==='PLANTÃO 16 HORAS 4X4'?{m:420,t:900,dom:true}:A_T8.includes(est)?{h:480,dom:A_TODOS.includes(est)}:null;
+function aderRegraEst(est){const o=cad.aderRegras&&cad.aderRegras.est&&cad.aderRegras.est[est];return o||AR_PADRAO_EST(est)}
+function aderTol(){const o=cad.aderRegras||{};return{atr:Number.isFinite(o.tolAtr)?o.tolAtr:30,ant:Number.isFinite(o.tolAnt)?o.tolAnt:120}}
+function turnoPadrao(cad0,data){
+  const est=String(cad0.sub||'').trim().toUpperCase(),suf=String(cad0.rec||'').trim().toUpperCase().slice(-1);
+  const g=aderRegraEst(est);if(!g)return null;
+  const t=g.h!=null?g.h:(suf==='M'?(g.m!=null?g.m:null):suf==='T'?(g.t!=null?g.t:null):null);
   const wd=(new Date(data+'T00:00:00Z').getUTCDay()+6)%7;
-  return (A_TODOS.includes(est)||wd<=5)?t:null;
+  return (g.dom||wd<=5)?t:null;
 }
 function montarAder(){
   if(!ACFG||!AHIST||!UCFG)return;
@@ -4755,7 +4791,7 @@ function montarAder(){
       const chk=act?act[0]:null;let st;
       if(lim==null||!act)st=lim==null?'LIVRE':'SEM';
       else if(chk==null)st='AUS';
-      else{const df=chk-lim;st=(Math.abs(df)<=30||(df<-30&&df>=-120))?'ADE':'FORA'}
+      else{const df=chk-lim,tl=aderTol();st=(df>=-tl.ant&&df<=tl.atr)?'ADE':'FORA'}
       const mot=[];if(act&&act[2])for(const m of act[2])mot.push({k:m[0],t:m[1]||'',i:m[2],d:m[3],o:'COI'});
       if(j&&(j[1]||j[0]!=null))mot.push({k:'Justificativa da planilha (AJUSTE ESCALA)',t:j[1]||'',i:j[0],d:null,o:'Planilha'});
       if(inter.has(rec+'|'+d)&&!mot.some(m=>/interjornada/i.test(m.k)))mot.push({k:'Interjornada',t:'(registro histórico da escala)',i:null,d:null,o:'Histórico'});
@@ -4782,7 +4818,7 @@ function statsAder(L){
   let ade=0,tot=0,aus=0,atS=0,atN=0,mS=0,mN=0;
   for(const l of L){if(l.st==='ADE'||l.st==='FORA'||l.st==='AUS'){tot++;if(l.st==='ADE')ade++}
     if(l.turno!=null&&l.chk==null)aus++;
-    if(l.chk!=null&&l.lim!=null){const df=l.chk-l.lim;if(df>30){atS+=df;atN++}}
+    if(l.chk!=null&&l.lim!=null){const df=l.chk-l.lim;if(df>aderTol().atr){atS+=df;atN++}}
     if(l.first!=null&&!l.inter){mS+=l.first;mN++}}
   return {ade,tot,pct:tot?ade/tot:null,aus,atraso:atN?Math.round(atS/atN):null,media:mN?mS/mN:null};
 }
@@ -4891,7 +4927,7 @@ function aderDet(rec,d){
     kpis:kp,aviso:esc(l0.base)+' · '+esc(l0.est)+(l0.coord?' · coord. '+esc(l0.coord):''),
     cols:['wDia','nPrevisto','nChecklist','nDiferença','cSituação','wJustificativa'],
     rows:Ls.map(l=>[dataBR(l.data)+' <span class="muted">'+semana(l.data).slice(0,3)+'</span>',l.lim!=null?aHM(l.lim):'–',l.chk!=null?aHM(l.chk):'–',aDf(l),aSit(l),esc([l.just||(l.inter?'Interjornada':''),aMotTxt(l)].filter(Boolean).join(' | '))||'<span class="muted">–</span>']),
-    rodape:'Tolerância: checklist até 30 min depois do previsto (ou até 2 h antes) conta como aderente.',
+    rodape:'Tolerância: checklist até '+aderTol().atr+' min depois do previsto (ou até '+Math.round(aderTol().ant/60*10)/10+' h antes) conta como aderente.',
     filtra:{txt:'Filtrar o painel em '+rec,fn:()=>{$('a-rec').value=rec;$('a-rec').classList.add('on');renderAder()}}});
 }
 ['aGrade','aRankE'].forEach(id=>$(id).addEventListener('click',ev=>{const c=ev.target.closest('[data-ar]');if(c){const [r,d]=c.dataset.ar.split('|');aderDet(r,d);return}const n=ev.target.closest('[data-arn]');if(n)aderDet(n.dataset.arn,null)}));
@@ -6683,7 +6719,7 @@ montarTrf=cargaEmbrulhar('montarTrf',montarTrf);montarBanco=cargaEmbrulhar('mont
   db.collection('hierarquia').onSnapshot(snap=>{const d=snap.docs.find(x=>x.id==='equipes');HIER=d?d.data():null;hierPintar();if(hierAtivo())hierRemontar()},()=>{});
   db.collection('ader').onSnapshot(snap=>{aderDocs=snap.docs.map(d=>d.data()).filter(d=>d&&d.data&&d.eq);montarAder()},()=>{});
   db.collection('config').onSnapshot(snap=>{
-    const n={prefixos:{},feriados:{},folgas:{},naoCgb:{},estruturas:{}};
+    const n={prefixos:{},feriados:{},folgas:{},naoCgb:{},estruturas:{},aderRegras:{}};
     {const bi=snap.docs.find(d=>d.id==='bancoIdx');if(bi){try{const v=JSON.parse(bi.data().j);for(const f of ['COI','MAN','FIS','OBRAS'])v[f]=v[f]||{};bancoIdx=v;montarBanco();if(pag().id==='mix-causa')acMostrar()}catch(e){}}}
     let esc=null,escInfo=null,fu={};
     for(const d of snap.docs){const v=d.data();if(v&&v.itens&&n[d.id]!==undefined)n[d.id]=v.itens;if(d.id==='escala'&&v&&Array.isArray(v.itens)){esc=v.itens;escInfo=(v.arquivo||'')+(v.editadoEm?' em '+new Date(v.editadoEm).toLocaleDateString('pt-BR'):'')}if(d.id==='feriadosUps'&&v&&v.itens)fu=v.itens}
