@@ -38,7 +38,7 @@ npm run importar-export -- banco2026_v2_parte1de5.json banco2026_v2_parte2de5.js
 
 ```
 ONEDRIVE_MODO=local
-ONEDRIVE_PASTA_LOCAL=C:\Users\Micro\OneDrive - CGB ENERGIA LTDA\SETOR DE MEDIÇÃO\Projetos\Backup de siga
+ONEDRIVE_PASTA_LOCAL=C:\Users\Micro\OneDrive - CGB ENERGIA LTDA\SETOR DE MEDIÇÃO\Projetos\Dados\Backup de siga
 ONEDRIVE_ARQUIVO=BANCOS 2026
 ONEDRIVE_PROFUNDIDADE=1
 DADOS_DIR=C:\dev\farol-dados
