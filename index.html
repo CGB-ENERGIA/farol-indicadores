@@ -309,6 +309,20 @@ button.ac-k{cursor:pointer}button.ac-k:hover,.ac-k.on{box-shadow:0 0 0 2px var(-
 .tabs{display:inline-flex;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:3px;gap:3px;flex-wrap:wrap}
 .tabs button{border:0;background:transparent;padding:7px 14px;border-radius:7px;font-weight:700;font-size:13px;color:var(--muted)}
 .tabs button[aria-pressed="true"]{background:var(--accent-bg);color:#fff}
+.cad-menu{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:2px}
+.cad-menu .cm-g{font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:10px 8px 3px}
+.cad-menu button[data-tab]{text-align:left;border:0;background:transparent;padding:8px 10px;border-radius:8px;font-weight:700;font-size:13px;color:var(--text,inherit);cursor:pointer}
+.cad-menu button[data-tab]:hover{background:var(--accent-soft)}
+.cad-menu button[data-tab][aria-pressed="true"]{background:var(--accent-bg);color:#fff}
+.cad-menu input{width:100%;min-height:36px;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font:inherit;font-size:13px;background:var(--surface);color:inherit}
+.cad-intro{background:var(--accent-soft);border-radius:10px;padding:10px 14px;font-size:13px}
+.cad-pend{display:flex;flex-direction:column;gap:6px}.cad-pend .note{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0}.cad-pend .note button{margin-left:auto}
+.cad-g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:0 0 12px}.cad-g2 textarea{width:100%;min-height:110px;font:inherit;font-size:13px;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--surface);color:inherit}
+section[data-pag="cadastros"]{grid-template-columns:230px minmax(0,1fr);align-items:start}
+section[data-pag="cadastros"]>*{grid-column:2}
+section[data-pag="cadastros"]>.ubar{grid-column:1/-1}
+section[data-pag="cadastros"]>.cad-menu{grid-column:1;grid-row:2/span 40;position:sticky;top:12px}
+@media(max-width:900px){section[data-pag="cadastros"]{grid-template-columns:minmax(0,1fr)}section[data-pag="cadastros"]>*,section[data-pag="cadastros"]>.cad-menu{grid-column:1;grid-row:auto;position:static}.cad-menu{flex-direction:row;flex-wrap:wrap}.cad-menu .cm-g{width:100%}}
 .cad-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 .tag-site{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border-radius:5px;padding:1px 6px;margin-left:6px}
 .form-in{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;align-items:end}
@@ -1891,8 +1905,8 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
       <div class="cob-ref" id="cobRef"></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
         <div class="seg" role="group" aria-label="Quem entra na cobrança">
-          <button type="button" data-lim="0.93" aria-pressed="true">Abaixo da meta (93%)</button>
-          <button type="button" data-lim="0.85" aria-pressed="false">Não atende (85%)</button>
+          <button type="button" data-lim="meta" aria-pressed="true">Abaixo da meta (93%)</button>
+          <button type="button" data-lim="par" aria-pressed="false">Não atende (85%)</button>
         </div>
         <button class="btn primary" id="b-cobTodas" type="button"><svg class="ico" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>Copiar todas</button>
       </div>
@@ -2043,18 +2057,25 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
   <!-- PÁGINA: CADASTROS -->
   <section data-pag="cadastros" style="display:grid;gap:16px;min-width:0" hidden>
     <div class="ubar"><div class="ubar-t"><h2>Cadastros</h2><span>Prefixos, escala, feriados e folgas usados nos cálculos</span></div></div>
-    <div class="cad-bar">
-      <div class="tabs" role="group" aria-label="Cadastro">
-        <button type="button" data-tab="prefixos" aria-pressed="true">Prefixos e jornadas</button>
-        <button type="button" data-tab="estruturas" aria-pressed="false">Estruturas</button>
-        <button type="button" data-tab="feriados" aria-pressed="false">Feriados</button>
-        <button type="button" data-tab="folgas" aria-pressed="false">Folgas por base</button>
-        <button type="button" data-tab="escala" aria-pressed="false">Escala da UPS</button>
-        <button type="button" data-tab="ferups" aria-pressed="false">Feriados da UPS</button>
-        <button type="button" data-tab="aderencia" aria-pressed="false">Aderência à escala</button>
-      </div>
-      <span class="muted" id="cadModo" style="font-size:12.5px"></span>
-    </div>
+    <nav class="cad-menu" aria-label="Cadastro">
+      <input type="search" id="cadGlobal" placeholder="Buscar prefixo ou regra…" aria-label="Buscar nos cadastros"><small class="muted" id="cadGlobMsg" style="padding:0 4px"></small>
+      <div class="cm-g">Equipes</div>
+      <button type="button" data-tab="prefixos" data-kw="prefixo prefixos jornada equipe equipes base gerencia meta" aria-pressed="true">Prefixos e jornadas</button>
+      <button type="button" data-tab="estruturas" data-kw="estrutura estruturas tipo producao" aria-pressed="false">Estruturas</button>
+      <button type="button" data-tab="escala" data-kw="escala ups turno" aria-pressed="false">Escala da UPS</button>
+      <div class="cm-g">Calendário</div>
+      <button type="button" data-tab="feriados" data-kw="feriado feriados" aria-pressed="false">Feriados</button>
+      <button type="button" data-tab="folgas" data-kw="folga folgas" aria-pressed="false">Folgas por base</button>
+      <button type="button" data-tab="ferups" data-kw="feriado ups" aria-pressed="false">Feriados da UPS</button>
+      <div class="cm-g">Indicadores</div>
+      <button type="button" data-tab="metas" data-kw="meta metas faixa faixas cor disponibilidade ups aderencia inicio" aria-pressed="false">Metas e faixas de cor</button>
+      <button type="button" data-tab="aderencia" data-kw="aderencia escala horario previsto tolerancia checklist" aria-pressed="false">Aderência à escala</button>
+      <div class="cm-g">Geral</div>
+      <button type="button" data-tab="listas" data-kw="excecao excecoes lista listas seed money mix supervisor contrato peps" aria-pressed="false">Exceções e listas</button>
+    </nav>
+    <div class="cad-topo"><span class="muted" id="cadModo" style="font-size:12.5px"></span></div>
+    <div class="cad-intro" id="cadIntro"></div>
+    <div class="cad-pend" id="cadPend"></div>
     <div id="cadNota"></div>
     <div class="panel" data-tabp="prefixos">
       <div class="phd"><div class="busca"><input type="search" id="cadBusca" placeholder="Buscar prefixos, estrutura ou base (vários: separe por espaço ou vírgula)…" aria-label="Buscar no cadastro"><span class="muted" id="cadCont"></span></div><button class="btn primary" id="b-novoPref" type="button"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Novo prefixo</button></div>
@@ -2080,6 +2101,34 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
       <div class="phd"><div class="busca"><input type="search" id="escBusca" placeholder="Buscar prefixos, base ou tipo (vários: separe por espaço ou vírgula)…" aria-label="Buscar na escala"><span class="muted" id="escCont"></span></div></div>
       <div id="escOrigem"></div>
       <div class="tw"><table><thead><tr><th>Prefixo</th><th>Base</th><th>Tipo de equipe</th><th>Estrutura UPS</th><th>Subtipo</th><th class="n">Dias escalados</th></tr></thead><tbody id="t-esc"></tbody></table></div>
+    </div>
+    <div class="panel" data-tabp="metas" hidden>
+      <div class="phd"><h3>Metas e faixas de cor dos indicadores</h3><small>valem para os painéis, cores, gráficos, cobranças e planilhas exportadas</small></div>
+      <div class="cad-g2">
+        <div class="fld"><label>Disponibilidade · meta (%)</label><input type="text" id="mt-dispMeta" inputmode="decimal"></div>
+        <div class="fld"><label>Disponibilidade · supera (%)</label><input type="text" id="mt-dispSup" inputmode="decimal"></div>
+        <div class="fld"><label>Disponibilidade · atende parcial a partir de (%)</label><input type="text" id="mt-dispPar" inputmode="decimal"></div>
+        <div class="fld"><label>UPS · meta (%)</label><input type="text" id="mt-upsMeta" inputmode="decimal"></div>
+        <div class="fld"><label>Aderência · supera (%)</label><input type="text" id="mt-aderSup" inputmode="decimal"></div>
+        <div class="fld"><label>Aderência · atende (%)</label><input type="text" id="mt-aderMeta" inputmode="decimal"></div>
+        <div class="fld"><label>Aderência · atende parcial a partir de (%)</label><input type="text" id="mt-aderPar" inputmode="decimal"></div>
+        <div class="fld"><label>Início das atividades · verde até (hh:mm)</label><input type="text" id="mt-iniOk" maxlength="5"></div>
+        <div class="fld"><label>Início das atividades · amarelo até (hh:mm)</label><input type="text" id="mt-iniAt" maxlength="5"></div>
+      </div>
+      <div class="cad-fil"><button class="btn primary" type="button" id="b-mtSalva">Salvar metas</button><button class="btn" type="button" id="b-mtPadrao">Voltar ao padrão</button></div>
+      <div id="mtMsg"></div>
+      <small class="muted">A classificação por classe da UPS (A, B, C, D) segue a regra do contrato e não muda aqui.</small>
+    </div>
+    <div class="panel" data-tabp="listas" hidden>
+      <div class="phd"><h3>Exceções e listas</h3><small>um item por linha</small></div>
+      <div class="cad-g2">
+        <div class="fld"><label>Equipes Seed Money (prefixos)</label><textarea id="ls-seed" spellcheck="false"></textarea></div>
+        <div class="fld"><label>Equipes fora do Mix de causas (prefixos)</label><textarea id="ls-mixExc" spellcheck="false"></textarea></div>
+        <div class="fld"><label>Defeitos do supervisor (PEPs)</label><textarea id="ls-supPeps" spellcheck="false"></textarea></div>
+        <div class="fld"><label>Contrato de cada base (BASE=contrato)</label><textarea id="ls-baseCt" spellcheck="false"></textarea></div>
+      </div>
+      <div class="cad-fil"><button class="btn primary" type="button" id="b-lsSalva">Salvar listas</button><button class="btn" type="button" id="b-lsPadrao">Voltar ao padrão</button></div>
+      <div id="lsMsg"></div>
     </div>
     <div class="panel" data-tabp="aderencia" hidden>
       <div class="phd"><h3>Aderência à escala: horário previsto de início</h3><small>o checklist é comparado com o horário previsto da estrutura. Em branco = a estrutura não entra na aderência</small></div>
@@ -2448,9 +2497,9 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
 
   function classificar(p) {
     if (p == null || isNaN(p)) return { txt: 'Sem dados', cls: 'nd' };
-    if (p >= 0.98) return { txt: 'Supera esperado', cls: 'sup' };
-    if (p > 0.93) return { txt: 'Atende esperado', cls: 'ate' };
-    if (p > 0.85) return { txt: 'Atende parcial', cls: 'par' };
+    if (p >= METAS.dispSup) return { txt: 'Supera esperado', cls: 'sup' };
+    if (p > METAS.dispMeta) return { txt: 'Atende esperado', cls: 'ate' };
+    if (p > METAS.dispPar) return { txt: 'Atende parcial', cls: 'par' };
     return { txt: 'Não atende', cls: 'nao' };
   }
 
@@ -2465,8 +2514,18 @@ const $=id=>document.getElementById(id);
 const MESES=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 const FONTES=['COI','MAN','OBRAS','FIS'];
 let cfg=null, hist=null, dbDocs=[], locais=[], resumo=[], ultimaData=null, fontesPorData={};
+/* metas, faixas de cor e listas de exceção: valores de fábrica; o que for salvo em Cadastros vale no lugar */
+const METAS_PAD={dispMeta:.93,dispSup:.98,dispPar:.85,upsMeta:.75,aderSup:.90,aderMeta:.85,aderPar:.75,iniOk:540,iniAt:570};
+const METAS=Object.assign({},METAS_PAD);
+function aplicarMetas(){const o=(cad&&cad.metas)||{};for(const k in METAS_PAD)METAS[k]=Number.isFinite(o[k])?o[k]:METAS_PAD[k];
+  document.querySelectorAll('[data-lim="meta"]').forEach(b=>b.textContent='Abaixo da meta ('+Math.round(METAS.dispMeta*100)+'%)');
+  document.querySelectorAll('[data-lim="par"]').forEach(b=>b.textContent='Não atende ('+Math.round(METAS.dispPar*100)+'%)')}
+function aplicarListas(){const o=(cad&&cad.listas)||{};
+  const fill=(set,pad,k)=>{set.clear();(Array.isArray(o[k])?o[k]:pad).forEach(x=>set.add(x))};
+  fill(CT_SEED,CT_SEED_PAD,'seed');fill(MX_EXC,MX_EXC_PAD,'mixExc');fill(D_SUP_PEPS,D_SUP_PEPS_PAD,'supPeps');
+  for(const k of Object.keys(CT_BASE_CT))delete CT_BASE_CT[k];Object.assign(CT_BASE_CT,o.baseCt&&typeof o.baseCt==='object'?o.baseCt:CT_BASE_CT_PAD)}
 let db=null, podeSalvar=true, podeEnviar=false, downloads=null;
-let ULT=null, ordem={k:'pct',dir:1}, cfgBase=null, cad={prefixos:{},feriados:{},folgas:{},aderRegras:{}}, diasAgg={}, nAvisos=0;
+let ULT=null, ordem={k:'pct',dir:1}, cfgBase=null, cad={prefixos:{},feriados:{},folgas:{},aderRegras:{},metas:{},listas:{}}, diasAgg={}, nAvisos=0;
 
 const pct=v=>v==null||isNaN(v)?'–':(v*100).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+'%';
 const horas=m=>Math.round(m/60).toLocaleString('pt-BR');
@@ -2543,10 +2602,10 @@ function ctPrep(cab,linhas){
     return {rec,st,done:/^conclu/.test(ctK(st)),tipoAt:g(l,'TIPO DE ATIVIDADE2')||'',os:g(l,'ORDEM DE SERVIÇO')||'',lim:ctMs(g(l,'DATA LIMITE')),limTxt:g(l,'DATA LIMITE'),cidade:g(l,'CIDADE')||'',nota:g(l,'NÚMERO DA NOTA')||'',
       tipo:g(l,'TIPO DE SERVIÇO DETALHADO')||g(l,'TIPO DE ATIVIDADE2')||'',base:(cf&&cf.b)||'',sigla:g(l,'STATUS DA ATIVIDADE$')||'',cli:Number(ci)||0,lat:g(l,'LATITUDE'),lon:g(l,'LONGITUDE')}});
 }
-const CT_BASE_CT={BCB:'127',ITM:'127',STI:'127',PDT:'169',PDS:'169',BDC:'169'};
+const CT_BASE_CT_PAD={BCB:'127',ITM:'127',STI:'127',PDT:'169',PDS:'169',BDC:'169'};const CT_BASE_CT={BCB:'127',ITM:'127',STI:'127',PDT:'169',PDS:'169',BDC:'169'};
 /* Contingência e Prazos direto do COI do SIGA baixado no dia: calcula as duas colunas que o BI criava (validado linha a linha contra a planilha do BI: 1.288 de 1.288 iguais) */
 const CT_SG={SUSPFORN:'CR',SEMFLENG:'NR',ORCNXBTN:'LG',RELIGABT:'RI',REATIVAC:'RI',LIGANOVA:'LG',MUDMEDLC:'LG',TROCPABT:'LG',DESLORAM:'LG',INSPTECN:'LG',LIGPROVI:'LG',MISTEC:'MS',DSBTPDCL:'DS',NIVELTEN:'NT'};
-const CT_SEED=new Set(['MA-PDT-D001M']); /* equipe Seed Money (a escala também a marca como SEED MONEY) */
+const CT_SEED_PAD=['MA-PDT-D001M'];const CT_SEED=new Set(CT_SEED_PAD); /* equipe Seed Money (a escala também a marca como SEED MONEY) */
 function ctDeriva(t2,concl,cli,seed){
   const code=String(t2||'').split(' - ')[0].trim(),sg=CT_SG[code];
   if(!sg)return ['Improdutivo',null];
@@ -3028,7 +3087,7 @@ function gauge(titulo,s,rodapeEsq,rodapeDir,dl){
   const p=s.pct, max=1.5, v=p==null?0:Math.max(0,Math.min(max,p));
   const cx=150,cy=140,R=110,arc=(a0,a1)=>{const t0=Math.PI*(1-a0/max),t1=Math.PI*(1-a1/max);return 'M'+(cx+R*Math.cos(t0)).toFixed(1)+' '+(cy-R*Math.sin(t0)).toFixed(1)+' A'+R+' '+R+' 0 0 1 '+(cx+R*Math.cos(t1)).toFixed(1)+' '+(cy-R*Math.sin(t1)).toFixed(1)};
   const c=cls(p), cor={sup:'var(--sup)',ate:'var(--ate)',par:'var(--par)',nao:'var(--nao)',nd:'var(--nd)'}[c];
-  const tm=Math.PI*(1-0.93/max);
+  const tm=Math.PI*(1-METAS.dispMeta/max);
   let svg='<svg viewBox="0 0 300 170" role="img" aria-label="'+titulo+': '+pct(p)+'">';
   svg+='<path d="'+arc(0,max)+'" fill="none" stroke="var(--sunken)" stroke-width="22" stroke-linecap="round"/>';
   if(v>0)svg+='<path class="val" d="'+arc(0,Math.max(0.001,v))+'" fill="none" stroke="'+cor+'" stroke-width="22" stroke-linecap="round"/>';
@@ -3062,7 +3121,7 @@ function render(){
     gauge(d?'Dia selecionado':(P?'Último dia do período · ':'Último dia · ')+(diaRef?dataBR(diaRef).slice(0,5):''),sDia,['Turno real',horas(sDia.real)+' h'],['Previsto',horas(sDia.prev)+' h'],delta(sDia.pct,sAntDia.pct,'vs mesmo dia de '+nomeAnt))+
     gauge('Últimos 7 dias',s7,['Período',ult7.length?dataBR(ult7[0]).slice(0,5)+' a '+dataBR(ult7[ult7.length-1]).slice(0,5):'–'],['Dias',ult7.length],delta(s7.pct,sAnt7.pct,'vs mesmos dias de '+nomeAnt));
   const eqs=new Set(rows.map(r=>r.rec)).size;
-  const est=agrupar(rows,'est'), abaixo=est.filter(e=>e.pct!=null&&e.pct<=0.93).length;
+  const est=agrupar(rows,'est'), abaixo=est.filter(e=>e.pct!=null&&e.pct<=METAS.dispMeta).length;
   pintarAtivos();
 
   est.sort((a,b)=>(b.pct??-1)-(a.pct??-1));
@@ -3070,13 +3129,13 @@ function render(){
   const antEst={};for(const e of agrupar(rowsAntP,'est'))antEst[e.k]=e.pct;
   const escala=Math.max(1.2,...est.map(e=>e.pct||0));
   $('t-est').innerHTML=est.length?est.map(e=>{const w=Math.min(100,(e.pct||0)/escala*100);
-    return '<tr class="click" data-est="'+esc(e.k)+'" title="Real '+horas(e.real)+' h · previsto '+horas(e.prev)+' h"><td class="wrap-t"><b>'+esc(e.k)+'</b></td><td class="n">'+pctCell(e.pct)+'</td><td class="n">'+delta(e.pct,antEst[e.k])+'</td><td class="barcell"><div class="barra" role="img" aria-label="'+pct(e.pct)+' contra meta de 93%"><i class="'+cls(e.pct)+'" style="width:'+w+'%"></i><em style="left:'+(0.93/escala*100)+'%"></em></div></td></tr>'}).join('')
+    return '<tr class="click" data-est="'+esc(e.k)+'" title="Real '+horas(e.real)+' h · previsto '+horas(e.prev)+' h"><td class="wrap-t"><b>'+esc(e.k)+'</b></td><td class="n">'+pctCell(e.pct)+'</td><td class="n">'+delta(e.pct,antEst[e.k])+'</td><td class="barcell"><div class="barra" role="img" aria-label="'+pct(e.pct)+' contra meta de 93%"><i class="'+cls(e.pct)+'" style="width:'+w+'%"></i><em style="left:'+(METAS.dispMeta/escala*100)+'%"></em></div></td></tr>'}).join('')
     +'<tr class="tot"><td>Total geral</td><td class="n">'+pctCell(s.pct)+'</td><td class="n">'+delta(s.pct,sAntAc.pct)+'</td><td>'+pill(s.pct)+'</td></tr>'
     :'<tr><td colspan="4"><div class="empty">Nenhuma equipe nesse filtro.</div></td></tr>';
   document.querySelectorAll('#t-est tr[data-est]').forEach(tr=>tr.onclick=()=>{$('f-est').value=tr.dataset.est;$('f-est').classList.add('on');render()});
 
   const bases=agrupar(rows,'base').sort((a,b)=>(b.pct??-1)-(a.pct??-1));const escalaB=Math.max(1.2,...bases.map(e=>e.pct||0));
-  $('t-base').innerHTML=bases.map(e=>'<tr class="click" data-base="'+esc(e.k)+'"><td><b>'+esc(e.k)+'</b></td><td class="n">'+pctCell(e.pct)+'</td><td class="barcell"><div class="barra"><i class="'+cls(e.pct)+'" style="width:'+Math.min(100,(e.pct||0)/escalaB*100)+'%"></i><em style="left:'+(0.93/escalaB*100)+'%"></em></div></td></tr>').join('')||'<tr><td colspan="3"><div class="empty">–</div></td></tr>';
+  $('t-base').innerHTML=bases.map(e=>'<tr class="click" data-base="'+esc(e.k)+'"><td><b>'+esc(e.k)+'</b></td><td class="n">'+pctCell(e.pct)+'</td><td class="barcell"><div class="barra"><i class="'+cls(e.pct)+'" style="width:'+Math.min(100,(e.pct||0)/escalaB*100)+'%"></i><em style="left:'+(METAS.dispMeta/escalaB*100)+'%"></em></div></td></tr>').join('')||'<tr><td colspan="3"><div class="empty">–</div></td></tr>';
   document.querySelectorAll('#t-base tr[data-base]').forEach(tr=>tr.onclick=()=>{$('f-base').value=tr.dataset.base;$('f-base').classList.add('on');render()});
 
   const ptsDia=agrupar(todosMes,'data').filter(x=>x.prev>0).sort((a,b)=>a.k<b.k?-1:1);
@@ -3194,10 +3253,20 @@ const DIAS_CURTO=['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Doming
 const minParaHora=m=>m==null||m===''?'':String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
 const horaParaMin=v=>{v=String(v||'').trim();if(!v)return 0;const m=v.match(/^(\d{1,2})(?:[:h.,](\d{1,2}))?$/);if(!m)return NaN;const h=+m[1],mm=+(m[2]||0);if(h>24||mm>59)return NaN;return h*60+mm};
 function resumoJor(j){if(!j)return'–';const u=j.slice(0,5);const igual=u.every(x=>x===u[0]);const p=[];p.push(igual?minParaHora(u[0])+' seg–sex':u.map(minParaHora).join(' / '));if(j[5])p.push(minParaHora(j[5])+' sáb');if(j[6])p.push(minParaHora(j[6])+' dom');return p.join(' · ')}
-document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{abaCad=b.dataset.tab;document.querySelectorAll('[data-tab]').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));document.querySelectorAll('[data-tabp]').forEach(x=>x.hidden=x.dataset.tabp!==abaCad)});
+const CAD_INTRO={
+ prefixos:'Cada equipe: estrutura, gerência, base, jornada por dia e meta de produção. Marque várias linhas para editar em massa, inclusive a jornada.',
+ estruturas:'Estruturas de equipe e como cada uma entra na produção. Mudanças valem para todos que abrem o painel.',
+ escala:'Escala mensal usada pela UPS e pela aderência: quais dias cada equipe trabalha.',
+ feriados:'Feriados que zeram a jornada prevista na disponibilidade.',
+ folgas:'Folgas por base e estrutura: dias em que a equipe não conta como prevista.',
+ ferups:'Feriados em que a meta da UPS não conta para um tipo de equipe e base.',
+ metas:'Metas e faixas de cor de todos os indicadores num só lugar. Mudou aqui, mudou nos painéis, nas cobranças e nas planilhas.',
+ aderencia:'Horário previsto de início por estrutura e tolerância do checklist. Em branco, a estrutura não entra na aderência.',
+ listas:'Exceções que ficavam no código: Seed Money, equipes fora do Mix, defeitos do supervisor e contrato de cada base.'};
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{abaCad=b.dataset.tab;{const it=$('cadIntro');if(it)it.textContent=CAD_INTRO[abaCad]||''}document.querySelectorAll('[data-tab]').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));document.querySelectorAll('[data-tabp]').forEach(x=>x.hidden=x.dataset.tabp!==abaCad)});
 async function salvarCad(nome,itens,ok){
   if(!db||!podeSalvar){toast('Você não tem permissão para alterar os cadastros.');return false}
-  try{await db.collection('config').doc(nome).set({itens,editadoEm:new Date().toISOString()});cad[nome]=itens;montar();try{montarPrd()}catch(e){}if(nome==='aderRegras'){try{montarAder()}catch(e){}}try{renderCadastros()}catch(e){}toast(ok);return true}
+  try{await db.collection('config').doc(nome).set({itens,editadoEm:new Date().toISOString()});cad[nome]=itens;montar();try{montarPrd()}catch(e){}if(nome==='aderRegras'||nome==='metas'||nome==='listas'){try{aplicarMetas();aplicarListas();montarAder();if(typeof montarIni==='function')montarIni();if(typeof montarUPS==='function')montarUPS()}catch(e){}}try{renderCadastros()}catch(e){}toast(ok);return true}
   catch(e){toast(e&&e.code==='invalid_argument'?'Você não tem permissão para alterar os cadastros.':'Não foi possível salvar. Tente de novo.');return false}
 }
 let cadSel=new Set(),cadVis=[];
@@ -3257,7 +3326,62 @@ $('b-arSalva')&&($('b-arSalva').onclick=async()=>{
   if(await salvarCad('aderRegras',{tolAtr:atr,tolAnt:ant,est},'Regras da aderência salvas.')){arSuja=false;renderAderRegras()}
 });
 $('b-arPadrao')&&($('b-arPadrao').onclick=async()=>{if(await salvarCad('aderRegras',{},'Regras da aderência voltaram ao padrão.')){arSuja=false;renderAderRegras()}});
-function renderCadastros(){try{renderEstruturas()}catch(e){console.error('estruturas',e)}try{renderAderRegras()}catch(e){console.error('aderRegras',e)}
+let mtSuja=false,lsSuja=false;
+function renderMetasCad(){
+  if(mtSuja||!$('mt-dispMeta'))return;
+  const pc=k=>String(Math.round(METAS[k]*10000)/100).replace('.',',');
+  for(const k of ['dispMeta','dispSup','dispPar','upsMeta','aderSup','aderMeta','aderPar'])$('mt-'+k).value=pc(k);
+  $('mt-iniOk').value=minParaHora(METAS.iniOk);$('mt-iniAt').value=minParaHora(METAS.iniAt);
+  document.querySelectorAll('[data-tabp="metas"] input').forEach(i=>{i.disabled=!podeSalvar;i.oninput=()=>{mtSuja=true}});
+  $('b-mtSalva').hidden=$('b-mtPadrao').hidden=!podeSalvar;
+}
+function renderListasCad(){
+  if(lsSuja||!$('ls-seed'))return;
+  $('ls-seed').value=[...CT_SEED].join('\n');$('ls-mixExc').value=[...MX_EXC].join('\n');$('ls-supPeps').value=[...D_SUP_PEPS].join('\n');
+  $('ls-baseCt').value=Object.entries(CT_BASE_CT).map(([b,c])=>b+'='+c).join('\n');
+  document.querySelectorAll('[data-tabp="listas"] textarea').forEach(t=>{t.disabled=!podeSalvar;t.oninput=()=>{lsSuja=true}});
+  $('b-lsSalva').hidden=$('b-lsPadrao').hidden=!podeSalvar;
+}
+$('b-mtSalva')&&($('b-mtSalva').onclick=async()=>{
+  const o={};
+  for(const k of ['dispMeta','dispSup','dispPar','upsMeta','aderSup','aderMeta','aderPar']){const v=prdNum($('mt-'+k).value);if(v==null||Number.isNaN(v)||v<=0||v>100){$('mtMsg').innerHTML='<div class="note err">Percentuais entre 0 e 100, ex.: 93 ou 93,5.</div>';return}o[k]=v/100}
+  for(const k of ['iniOk','iniAt']){const t=$('mt-'+k).value.trim(),m=horaParaMin(t);if(!t||Number.isNaN(m)){$('mtMsg').innerHTML='<div class="note err">Horário no formato horas:minutos, ex.: 09:00.</div>';return}o[k]=m}
+  if(!(o.dispPar<o.dispMeta&&o.dispMeta<=o.dispSup)){$('mtMsg').innerHTML='<div class="note err">Disponibilidade: parcial deve ser menor que a meta, e a meta não pode passar de "supera".</div>';return}
+  if(!(o.aderPar<o.aderMeta&&o.aderMeta<=o.aderSup)){$('mtMsg').innerHTML='<div class="note err">Aderência: parcial menor que "atende", e "atende" não pode passar de "supera".</div>';return}
+  if(!(o.iniOk<o.iniAt)){$('mtMsg').innerHTML='<div class="note err">Início das atividades: o horário do amarelo deve ser depois do verde.</div>';return}
+  $('mtMsg').innerHTML='';
+  if(await salvarCad('metas',o,'Metas salvas.')){mtSuja=false;renderMetasCad()}
+});
+$('b-mtPadrao')&&($('b-mtPadrao').onclick=async()=>{if(await salvarCad('metas',{},'Metas voltaram ao padrão.')){mtSuja=false;renderMetasCad()}});
+$('b-lsSalva')&&($('b-lsSalva').onclick=async()=>{
+  const L=id=>$(id).value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+  const baseCt={};for(const l of L('ls-baseCt')){const m=l.match(/^([A-Za-z0-9]+)\s*[=:;]\s*(\S+)$/);if(!m){$('lsMsg').innerHTML='<div class="note err">Contrato no formato BASE=contrato, ex.: BCB=127 ('+esc(l)+').</div>';return}baseCt[m[1].toUpperCase()]=m[2]}
+  $('lsMsg').innerHTML='';
+  if(await salvarCad('listas',{seed:L('ls-seed'),mixExc:L('ls-mixExc'),supPeps:L('ls-supPeps'),baseCt},'Listas salvas.')){lsSuja=false;renderListasCad()}
+});
+$('b-lsPadrao')&&($('b-lsPadrao').onclick=async()=>{if(await salvarCad('listas',{},'Listas voltaram ao padrão.')){lsSuja=false;renderListasCad()}});
+/* pendências: o que ainda precisa de cadastro */
+function renderCadPend(){
+  const el=$('cadPend');if(!el||!cfg)return;
+  const esc0=(typeof escalaLocal!=='undefined'&&escalaLocal)||(typeof escalaDb!=='undefined'&&escalaDb)||(typeof UCFG!=='undefined'&&UCFG&&UCFG.escala)||[];
+  const P=cfg.prefixos||{},it=[];
+  const semCad=[...new Set(esc0.map(c=>String(c.rec||'').replace(/ /g,'')).filter(Boolean))].filter(r=>!P[r]);
+  if(semCad.length)it.push(['prefixos','<b>'+semCad.length+'</b> prefixo(s) da escala sem cadastro: '+semCad.slice(0,6).map(esc).join(', ')+(semCad.length>6?'…':''),'Ver prefixos']);
+  const zer=Object.entries(P).filter(([k,v])=>!ehNaoCgb(k)&&(!v.j||v.j.every(x=>!x))).map(x=>x[0]);
+  if(zer.length)it.push(['prefixos','<b>'+zer.length+'</b> prefixo(s) com jornada zerada: '+zer.slice(0,6).map(esc).join(', ')+(zer.length>6?'…':''),'Ver prefixos']);
+  const ests=[...new Set(esc0.map(c=>String(c.sub||'').trim().toUpperCase()).filter(Boolean))].filter(e=>!aderRegraEst(e));
+  if(ests.length)it.push(['aderencia','<b>'+ests.length+'</b> estrutura(s) da escala sem horário de aderência (ficam fora desse indicador): '+ests.slice(0,3).map(esc).join(', ')+(ests.length>3?'…':''),'Ver aderência']);
+  el.innerHTML=it.map(([t,h,b])=>'<div class="note warn">'+h+'<button class="btn sm" type="button" data-go="'+t+'">'+b+'</button></div>').join('');
+  el.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>document.querySelector('[data-tab="'+b.dataset.go+'"]').click());
+}
+/* busca única: com número é prefixo; sem número procura o assunto no menu */
+{const sem=t=>String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+ const g=$('cadGlobal');if(g)g.addEventListener('keydown',e=>{if(e.key!=='Enter')return;
+  const v=g.value.trim();if(!v)return;const t=sem(v);let alvo=null;
+  if(!/\d/.test(v)){for(const b of document.querySelectorAll('.cad-menu [data-tab]')){if((sem(b.textContent)+' '+b.dataset.kw).split(/\s+/).some(w=>w&&(w===t||(t.length>=4&&w.startsWith(t)))))alvo=b;if(alvo)break}}
+  if(alvo){alvo.click();$('cadGlobMsg').textContent='Aberto: '+alvo.textContent}
+  else{document.querySelector('[data-tab="prefixos"]').click();$('cadBusca').value=v;renderCadastros();$('cadGlobMsg').textContent=cadVis.length+' prefixo(s) encontrado(s)'}})}
+function renderCadastros(){try{renderEstruturas()}catch(e){console.error('estruturas',e)}try{renderMetasCad();renderListasCad();renderCadPend();if(!$('cadIntro').textContent)$('cadIntro').textContent=CAD_INTRO[abaCad]||''}catch(e){console.error('metasCad',e)}try{renderAderRegras()}catch(e){console.error('aderRegras',e)}
   if(!cfg)return;
   $('cadModo').textContent=podeSalvar?'Alterações valem para todos que abrem o painel.':'Somente leitura';
   $('cadNota').innerHTML=podeSalvar?'':'<div class="note">Você pode consultar os cadastros. Só quem tem permissão de edição consegue alterar.</div>';
@@ -3464,7 +3588,7 @@ function grafico(pts,sel){
   const y=v=>T+(top-v)/(top-bot)*(H-T-B);
   let s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Disponibilidade diária"><defs><linearGradient id="gArea" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#711424" stop-opacity=".22"/><stop offset="1" stop-color="#711424" stop-opacity="0"/></linearGradient></defs>';
   for(let v=bot;v<=top+1e-9;v+=0.1){const yy=y(v);s+='<line class="grid" x1="'+L+'" x2="'+(W-R)+'" y1="'+yy+'" y2="'+yy+'"/><text x="'+(L-8)+'" y="'+(yy+4)+'" text-anchor="end">'+Math.round(v*100)+'%</text>'}
-  s+='<line class="meta" x1="'+L+'" x2="'+(W-R)+'" y1="'+y(0.93)+'" y2="'+y(0.93)+'"/>';
+  s+='<line class="meta" x1="'+L+'" x2="'+(W-R)+'" y1="'+y(METAS.dispMeta)+'" y2="'+y(METAS.dispMeta)+'"/>';
   const path=pts.map((p,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(p.pct).toFixed(1)).join(' ');
   s+='<path class="area" d="'+path+' L'+x(pts.length-1).toFixed(1)+' '+(H-B)+' L'+x(0).toFixed(1)+' '+(H-B)+' Z"/><path class="linha" d="'+path+'"/>';
   const passo=Math.ceil(pts.length/16);
@@ -3497,8 +3621,8 @@ function textoResumo(){
   return t+'\n*Total geral: '+pct(s.pct)+'*';
 }
 /* ---------- cobrança do dia ---------- */
-let limCob=0.93, cobGrupos=[], cobDia=null;
-document.querySelectorAll('[data-lim]').forEach(b=>b.onclick=()=>{limCob=+b.dataset.lim;document.querySelectorAll('[data-lim]').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));render()});
+let limCob=METAS.dispMeta, cobGrupos=[], cobDia=null;
+document.querySelectorAll('[data-lim]').forEach(b=>b.onclick=()=>{limCob=b.dataset.lim==='meta'?METAS.dispMeta:b.dataset.lim==='par'?METAS.dispPar:+b.dataset.lim;document.querySelectorAll('[data-lim]').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));render()});
 function motivo(r){
   if(!r.ativo) return '<span class="sem">Sem atividade no SIGA</span>';
   return 'Início '+hhmm(r.ini)+' · fim '+hhmm(r.fim)+(r.alm?' · almoço '+hhmm(r.alm):'')+(r.ind?' · indisp. '+hhmm(r.ind):'');
@@ -3522,8 +3646,8 @@ function renderCobranca(todosMes,diaRef){
   document.querySelectorAll('[data-cob]').forEach(b=>b.onclick=()=>copiar(textoCobranca(cobGrupos[+b.dataset.cob]),'Cobrança de '+cobGrupos[+b.dataset.cob].base+' copiada.'));
 }
 function textoCobranca(g){
-  const marca=p=>p<0.85?'🔴':'🟡';
-  let t='*Cobrança de disponibilidade · '+g.base+'*\nDia '+dataBR(cobDia)+' ('+semana(cobDia)+') · Meta 93%\nDisponibilidade da base: *'+pct(g.pct)+'*\n\nEquipes abaixo de '+Math.round(limCob*100)+'%:\n';
+  const marca=p=>p<METAS.dispPar?'🔴':'🟡';
+  let t='*Cobrança de disponibilidade · '+g.base+'*\nDia '+dataBR(cobDia)+' ('+semana(cobDia)+') · Meta '+Math.round(METAS.dispMeta*100)+'%\nDisponibilidade da base: *'+pct(g.pct)+'*\n\nEquipes abaixo de '+Math.round(limCob*100)+'%:\n';
   for(const r of g.abaixo){t+=marca(r.pct)+' '+r.rec+' ('+r.est+'): *'+pct(r.pct)+'*'+(r.ativo?' · início '+hhmm(r.ini)+', fim '+hhmm(r.fim):' · sem atividade no SIGA')+'\n'}
   return t+'\nFavor verificar e enviar a justificativa.';
 }
@@ -3545,7 +3669,7 @@ const baixarDisp=async()=>{
     // DASH: período e filtros atuais
     const U=ULT, per=perDisp()?perTxt(perDisp()):mesNome($('f-mes').value)+(ultimaData&&ultimaData.startsWith($('f-mes').value)?' (até '+dataBR(ultimaData)+')':'');
     const filtros=[['Base',$('f-base').value],['Gerência',$('f-ger').value],['Estrutura',$('f-est').value],['Tipo de equipe',$('f-tipo').value]].filter(x=>x[1]).map(x=>x[0]+': '+x[1]).join(' · ')||'Todas as equipes';
-    const dash=[['DISPONIBILIDADE ANS · SETOR DE MEDIÇÃO'],['Período',per],['Filtros',filtros],['Meta',0.93],[],['ESTRUTURA','TURNO REAL','TURNO PREVISTO','% DISPONIBILIDADE','VS MÊS ANTERIOR (p.p.)','CLASSIFICAÇÃO']];
+    const dash=[['DISPONIBILIDADE ANS · SETOR DE MEDIÇÃO'],['Período',per],['Filtros',filtros],['Meta',METAS.dispMeta],[],['ESTRUTURA','TURNO REAL','TURNO PREVISTO','% DISPONIBILIDADE','VS MÊS ANTERIOR (p.p.)','CLASSIFICAÇÃO']];
     for(const e of U.est)dash.push([e.k,fr(e.real),fr(e.prev),e.pct,U.antEst[e.k]==null||e.pct==null?'':+((e.pct-U.antEst[e.k])*100).toFixed(1),Disp.classificar(e.pct).txt]);
     dash.push(['TOTAL GERAL',fr(U.s.real),fr(U.s.prev),U.s.pct,U.sAntAc.pct==null||U.s.pct==null?'':+((U.s.pct-U.sAntAc.pct)*100).toFixed(1),Disp.classificar(U.s.pct).txt]);
     const l0=dash.length+1;dash.push([],['BASE','TURNO REAL','TURNO PREVISTO','% DISPONIBILIDADE','','CLASSIFICAÇÃO']);
@@ -3560,8 +3684,8 @@ const baixarDisp=async()=>{
     const ultM=meses[meses.length-1];
     ests.sort((x,y)=>{const a=ag[y+'|'+ultM],b=ag[x+'|'+ultM];return (a&&a[1]?a[0]/a[1]:-1)-(b&&b[1]?b[0]/b[1]:-1)});
     const rd=[['%Disponibilidade'],['PROCESSO','%Meta',...meses.map(m=>MESES[+m.slice(5)-1].toUpperCase()+'/'+m.slice(2,4))]];
-    for(const e of ests)rd.push([e,0.93,...meses.map(m=>{const a=ag[e+'|'+m];return a&&a[1]?a[0]/a[1]:''})]);
-    const tm=meses.map(m=>{let a=0,b=0;for(const e of ests){const x=ag[e+'|'+m];if(x){a+=x[0];b+=x[1]}}return b?a/b:''});rd.push(['TOTAL GERAL',0.93,...tm]);
+    for(const e of ests)rd.push([e,METAS.dispMeta,...meses.map(m=>{const a=ag[e+'|'+m];return a&&a[1]?a[0]/a[1]:''})]);
+    const tm=meses.map(m=>{let a=0,b=0;for(const e of ests){const x=ag[e+'|'+m];if(x){a+=x[0];b+=x[1]}}return b?a/b:''});rd.push(['TOTAL GERAL',METAS.dispMeta,...tm]);
     const wsR=XLSX.utils.aoa_to_sheet(rd);fmt(wsR,meses.map((_,i)=>i+2).concat([1]),'0.0%');wsR['!cols']=[{wch:40},{wch:8},...meses.map(()=>({wch:11}))];
     XLSX.utils.book_append_sheet(wb,wsR,'RESUMO DISP');
     // Resumo: mesmas colunas da aba Resumo da planilha
@@ -3620,7 +3744,7 @@ async function gerarPrint(){
   // tabelas
   const ty=ky+kh+24, lw2=Math.round((W-2*P-20)*0.62), rw=W-2*P-20-lw2, rx=P+lw2+20;
   const painel=(x,y,w,h,tit)=>{c.save();c.shadowColor='rgba(43,42,42,.08)';c.shadowBlur=14;c.shadowOffsetY=3;rr(c,x,y,w,h,16);c.fillStyle='#fff';c.fill();c.restore();rr(c,x,y,w,h,16);c.strokeStyle='#dedadb';c.stroke();c.fillStyle='#2b2a2a';c.font='800 17px '+F;c.fillText(tit,x+20,y+32)};
-  const barra=(x,y,w,p)=>{const esc=1.5;rr(c,x,y,w,12,6);c.fillStyle='#eaeaea';c.fill();const v=Math.max(0,Math.min(esc,p||0));if(v>0){rr(c,x,y,Math.max(12,w*v/esc),12,6);c.fillStyle=corCls(p);c.fill()}const mx=x+w*0.93/esc;c.fillStyle='#4a0b16';c.fillRect(mx-1,y-4,2,20)};
+  const barra=(x,y,w,p)=>{const esc=1.5;rr(c,x,y,w,12,6);c.fillStyle='#eaeaea';c.fill();const v=Math.max(0,Math.min(esc,p||0));if(v>0){rr(c,x,y,Math.max(12,w*v/esc),12,6);c.fillStyle=corCls(p);c.fill()}const mx=x+w*METAS.dispMeta/esc;c.fillStyle='#4a0b16';c.fillRect(mx-1,y-4,2,20)};
   painel(P,ty,lw2,tabH,'Por estrutura');
   c.font='700 11px '+F;c.fillStyle='#6b6a6a';c.fillText('ESTRUTURA',P+20,ty+60);c.textAlign='right';c.fillText('DISP.',P+380,ty+60);c.fillText('VS MÊS ANT.',P+490,ty+60);c.textAlign='left';c.fillText('VS META (93%)',P+510,ty+60);
   let yy=ty+70;
@@ -3651,7 +3775,7 @@ async function gerarPrint(){
     c.font='600 11px '+F;
     for(let v=bot;v<=top+1e-9;v+=0.1){const yy2=Y(v);c.strokeStyle='#eeeaeb';c.lineWidth=1;c.beginPath();c.moveTo(x0,yy2);c.lineTo(x1,yy2);c.stroke();c.fillStyle='#6b6a6a';c.textAlign='right';c.fillText(Math.round(v*100)+'%',x0-10,yy2+4)}
     c.textAlign='left';
-    c.setLineDash([6,5]);c.strokeStyle='#4a0b16';c.lineWidth=1.5;c.beginPath();c.moveTo(x0,Y(0.93));c.lineTo(x1,Y(0.93));c.stroke();c.setLineDash([]);
+    c.setLineDash([6,5]);c.strokeStyle='#4a0b16';c.lineWidth=1.5;c.beginPath();c.moveTo(x0,Y(METAS.dispMeta));c.lineTo(x1,Y(METAS.dispMeta));c.stroke();c.setLineDash([]);
     const ga=c.createLinearGradient(0,yt,0,yb);ga.addColorStop(0,'rgba(113,20,36,.22)');ga.addColorStop(1,'rgba(113,20,36,0)');
     c.beginPath();pts.forEach((q,i)=>i?c.lineTo(X(i),Y(q.pct)):c.moveTo(X(i),Y(q.pct)));c.lineTo(X(pts.length-1),yb);c.lineTo(X(0),yb);c.closePath();c.fillStyle=ga;c.fill();
     c.beginPath();pts.forEach((q,i)=>i?c.lineTo(X(i),Y(q.pct)):c.moveTo(X(i),Y(q.pct)));c.strokeStyle='#711424';c.lineWidth=2.5;c.stroke();
@@ -3679,7 +3803,7 @@ async function gerarPrint(){
   [['#2b7a0f','Supera (≥ 98%)'],['#9fd58a','Atende (93% a 98%)'],['#f6c77d','Parcial (85% a 93%)'],['#C00000','Não atende (< 85%)'],['#eaeaea','Sem turno previsto']].forEach(l=>{rr(c,lgx,hy-11,14,14,4);c.fillStyle=l[0];c.fill();c.fillStyle='#6b6a6a';c.font='600 12px '+F;c.fillText(l[1],lgx+20,hy);lgx+=c.measureText(l[1]).width+48});
   // rodapé
   const agora=new Date();c.font='600 12px '+F;c.fillStyle='#6b6a6a';
-  c.fillText('Disponibilidade = turno real ÷ turno previsto · Meta 93% · Fonte: SIGA (COI, MAN, OBRAS e FIS)',P,H-28);
+  c.fillText('Disponibilidade = turno real ÷ turno previsto · Meta '+Math.round(METAS.dispMeta*100)+'% · Fonte: SIGA (COI, MAN, OBRAS e FIS)',P,H-28);
   c.textAlign='right';c.fillText('Gerado em '+agora.toLocaleDateString('pt-BR')+' às '+agora.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),W-P,H-28);c.textAlign='left';
   return cv;
 }
@@ -4549,7 +4673,7 @@ document.querySelectorAll('th.sortu').forEach(th=>th.addEventListener('click',()
 let ICFG=null,IHIST=null,iniDocs=[],iniLocais={},IR=null,IIDX={};
 const IF_=['i-base','i-tipo','i-rec'];
 const IF_NOME={'i-base':'Base','i-tipo':'Tipo de equipe','i-rec':'Prefixo'};
-const I_COR=t=>t==null?null:t<=540?'g':t<=570?'y':'r';
+const I_COR=t=>t==null?null:t<=METAS.iniOk?'g':t<=METAS.iniAt?'y':'r';
 const I_SIGLAS=['BCB','BDC','ITM','PDS','PDT','STI'];
 const iNomeBase=s=>NOME_SIGLA[s]||(s==='BDC'?'Barra do Corda':s);
 /* MAN/OBRAS → por dia e prefixo: c = 1º checklist de início do turno; a = atividades seguintes [min, lat, lon, tipo, cidade, bairro] */
@@ -4658,7 +4782,7 @@ function renderIni(){
 
 
 /* ---------- Início de turno: detalhe por equipe e por base ---------- */
-const iFx=t=>({g:'<span class="pill ate">até 09:00</span>',y:'<span class="pill par">09:01 a 09:30</span>',r:'<span class="pill nao">após 09:30</span>'}[I_COR(t)]);
+const iFx=t=>({g:'<span class="pill ate">até '+minParaHora(METAS.iniOk)+'</span>',y:'<span class="pill par">até '+minParaHora(METAS.iniAt)+'</span>',r:'<span class="pill nao">após '+minParaHora(METAS.iniAt)+'</span>'}[I_COR(t)]);
 function iniDet(rec,base){
   const m=$('i-mes').value;
   if(rec){
@@ -4727,7 +4851,7 @@ const A_T8=['PLANTÃO LEVE 8 HORAS TRIO CARRO 4X4','LIGAÇÃO NOVA MULTI 4X4','L
 const A_TODOS=['PLANTÃO LEVE 8 HORAS TRIO CARRO 4X4','PLANTÃO LEVE 8 HORAS TRIO CARRO LEVE','PLANTÃO 16 HORAS 4X4'];
 const aHM=m=>{if(m==null)return'';m=Math.round(m);return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0')};
 const aDif=(a,b)=>Math.round((new Date(a+'T00:00:00Z')-new Date(b+'T00:00:00Z'))/86400000);
-function aClass(p){if(p==null||isNaN(p))return{txt:'Sem dados',cls:'nd'};if(p>=0.9)return{txt:'Supera esperado',cls:'sup'};if(p>=0.85)return{txt:'Atende o esperado',cls:'ate'};if(p>=0.75)return{txt:'Atende parcialmente',cls:'par'};return{txt:'Não atende',cls:'nao'}}
+function aClass(p){if(p==null||isNaN(p))return{txt:'Sem dados',cls:'nd'};if(p>=METAS.aderSup)return{txt:'Supera esperado',cls:'sup'};if(p>=METAS.aderMeta)return{txt:'Atende o esperado',cls:'ate'};if(p>=METAS.aderPar)return{txt:'Atende parcialmente',cls:'par'};return{txt:'Não atende',cls:'nao'}}
 const aPill=p=>{const c=aClass(p);return '<span class="pill '+c.cls+'">'+c.txt+'</span>'};
 const aPct=p=>{const c=aClass(p);return '<span class="pct '+c.cls+'">'+pct(p)+'</span>'};
 
@@ -4940,7 +5064,7 @@ function renderInicio(){
   if(resumo.length){
     const m=[...new Set(resumo.map(r=>r.mes))].sort().pop();const rs=resumo.filter(r=>r.mes===m);const s=soma(rs);
     const ds=[...new Set(rs.map(r=>r.data))].sort();const ud=ds[ds.length-1];const sd=soma(rs.filter(r=>r.data===ud));
-    const abaixo=rs.filter(r=>r.data===ud&&r.prev>0&&r.real/r.prev<0.93).length;
+    const abaixo=rs.filter(r=>r.data===ud&&r.prev>0&&r.real/r.prev<METAS.dispMeta).length;
     h+='<a class="icard" href="#painel"><div class="ic-hd"><span class="ic-k">Disponibilidade</span><span class="ic-m">'+mesNome(m)+'</span></div><div class="ic-v '+cls(s.pct)+'">'+pct(s.pct)+'</div><div>'+pill(s.pct)+'</div><div class="ic-l"><span>Último dia ('+dataBR(ud).slice(0,5)+')</span><b>'+pct(sd.pct)+'</b></div><div class="ic-l"><span>Equipes abaixo de 93% no dia</span><b>'+abaixo+'</b></div><div class="ic-l"><span>Meta</span><b>93%</b></div>'+vgSpark('disp',VGS.disp)+'<span class="ic-go">Abrir painel →</span></a>';
   }
   if(UR&&UR.ultima){
@@ -4991,7 +5115,7 @@ function vgSeries(){
 }
 const vgMedia=a=>a.length?a.reduce((s,x)=>s+x.v,0)/a.length:null;
 function vgDelta(se){if(!se||se.length<8)return null;const ult=se.slice(-7),ant=se.slice(-14,-7);if(!ant.length)return null;return{ult:vgMedia(ult),ant:vgMedia(ant)}}
-const VG_META={disp:0.93,ups:0.75,ader:0.85,ini:540};
+const VG_META={get disp(){return METAS.dispMeta},get ups(){return METAS.upsMeta},get ader(){return METAS.aderMeta},get ini(){return METAS.iniOk}};
 function vgSpark(k,se){
   if(!se||se.length<2)return '';
   const pts=se.slice(-14),W=150,H=38,p=3,vals=pts.map(x=>x.v).concat([VG_META[k]]),mn=Math.min(...vals),mx=Math.max(...vals),r=(mx-mn)||1;
@@ -5669,7 +5793,7 @@ function defTatDeLinhas(wb){
   return {linhas:ls.length,notas:[...new Set(ls.filter(r=>defTxt(r[iC])==='TÁTICO DE PROJETOS E FISCALIZAÇÃO').map(r=>defTxt(r[iN])))]};
 }
 /* colunas extras do banco (export): barramento, ano, conclusão, ciclo e responsável — como no PBI */
-const D_SUP_PEPS=new Set(['MA-2200912EUR1.3.0096','MA-2402304EME3.D.0028']);
+const D_SUP_PEPS_PAD=['MA-2200912EUR1.3.0096','MA-2402304EME3.D.0028'];const D_SUP_PEPS=new Set(D_SUP_PEPS_PAD);
 let defTecDb=null,defTecLocal=null,defTecMap=null,defTecSrc=null;
 function defTec(){const src=defTecLocal||defTecDb;if(src!==defTecSrc){defTecSrc=src;defTecMap=null;if(src){try{defTecMap=typeof src.m==='string'?JSON.parse(src.m):src.m}catch(e){defTecMap=null}}}return defTecMap}
 function defExtras(o){
@@ -6318,7 +6442,7 @@ $('acXls').onclick=()=>{
 };
 /* =================== MIX GSTC (OS Normal · Miscelânea Técnica · Tipo de corte) =================== */
 let MH=null,mixDocs={},mixLocais={},MX=null;
-const MX_EXC=new Set(['MA-BCB-H001M','MA-BDC-H001M','MA-ITM-H001M','MA-PDT-H001M','MA-STI-H001M']);
+const MX_EXC_PAD=['MA-BCB-H001M','MA-BDC-H001M','MA-ITM-H001M','MA-PDT-H001M','MA-STI-H001M'];const MX_EXC=new Set(MX_EXC_PAD);
 const MX_LOC={D:'Disjuntor',M:'Medidor',P:'Poste',R:'Ramal',G:'Débito pago',N:'Não executado'},MX_LCOR={D:'#3a0912',M:'#c9a227',P:'#a5485b',R:'#2f6f8f',G:'#8a8a8a',N:'#cdbfc3'};
 const MX_BCOR=['#4a0b16','#2f6f8f','#a5485b','#b8860b','#5f7d4e','#8a5a63','#555'];
 const MX_TC={'DISJUNTOR':'D','DISJUNTOR DESARMADO':'D','DÉBITO PAGO':'G','SUSPENSÃO NO POSTE/CPREDE':'P','DIFICIL ACESSO':'N','SOBRAS':'N','SUSPENSÃO - RAMAL RETIRADO':'R','POSTE/CPREDE':'P','RAMAL RETIRADO':'R','CONTINUA SUSPENSA':'N','MEDIDOR':'M','DEMOLIDO':'N','SUSPENSÃO NO BARRAMENTO/CPREDE':'M','NÃO LOCALIZADO':'N','SUSPENSÃO NO BEIRAL':'R','BEIRAL':'R','SUSPENSÃO - MEDIDOR RETIRADO':'M','OUTRO EQUIPAMENTO NO LOCAL':'N','NÃO PERMITIU A SUSPENSÃO':'N','NEGOCIAÇÃO SEED MONEY':'G','BAIXA POR RAJADA/ARRECADAÇÃO':'N','BARRAMENTO/CPREDE':'M'};
@@ -6719,11 +6843,11 @@ montarTrf=cargaEmbrulhar('montarTrf',montarTrf);montarBanco=cargaEmbrulhar('mont
   db.collection('hierarquia').onSnapshot(snap=>{const d=snap.docs.find(x=>x.id==='equipes');HIER=d?d.data():null;hierPintar();if(hierAtivo())hierRemontar()},()=>{});
   db.collection('ader').onSnapshot(snap=>{aderDocs=snap.docs.map(d=>d.data()).filter(d=>d&&d.data&&d.eq);montarAder()},()=>{});
   db.collection('config').onSnapshot(snap=>{
-    const n={prefixos:{},feriados:{},folgas:{},naoCgb:{},estruturas:{},aderRegras:{}};
+    const n={prefixos:{},feriados:{},folgas:{},naoCgb:{},estruturas:{},aderRegras:{},metas:{},listas:{}};
     {const bi=snap.docs.find(d=>d.id==='bancoIdx');if(bi){try{const v=JSON.parse(bi.data().j);for(const f of ['COI','MAN','FIS','OBRAS'])v[f]=v[f]||{};bancoIdx=v;montarBanco();if(pag().id==='mix-causa')acMostrar()}catch(e){}}}
     let esc=null,escInfo=null,fu={};
     for(const d of snap.docs){const v=d.data();if(v&&v.itens&&n[d.id]!==undefined)n[d.id]=v.itens;if(d.id==='escala'&&v&&Array.isArray(v.itens)){esc=v.itens;escInfo=(v.arquivo||'')+(v.editadoEm?' em '+new Date(v.editadoEm).toLocaleDateString('pt-BR'):'')}if(d.id==='feriadosUps'&&v&&v.itens)fu=v.itens}
-    cad=n;{const as=JSON.stringify(n.naoCgb);if(as!==ncAssin){ncAssin=as;setTimeout(()=>{try{hierRemontar()}catch(e){}},0)}}escalaDb=esc;escalaDbInfo=escInfo;ferUps=fu;const aa=snap.docs.find(d=>d.id==='aderAjuste');aderAjDb=aa?aa.data():null;const dt=snap.docs.find(d=>d.id==='defTatico');defTatDb=dt?dt.data():null;const dtc=snap.docs.find(d=>d.id==='defTecnicos');defTecDb=dtc?dtc.data():null;{const uh=snap.docs.find(d=>d.id==='upsHoje'),uv=uh&&uh.data();try{upsHojeDb=uv&&uv.data&&uv.eq?{data:uv.data,eq:JSON.parse(uv.eq),em:uv.enviadoEm,arquivo:uv.arquivo}:null}catch(e){upsHojeDb=null}}{const ur=snap.docs.find(d=>d.id==='upsRegras');UOVR=rgLer(ur?ur.data():null);aplicarRegrasUps();if(UCFG){montarUPS();renderRgUps()}}montar();try{montarPrd()}catch(e){}montarAder();montarDef();
+    cad=n;try{aplicarMetas();aplicarListas()}catch(e){console.error('metas',e)}{const as=JSON.stringify(n.naoCgb);if(as!==ncAssin){ncAssin=as;setTimeout(()=>{try{hierRemontar()}catch(e){}},0)}}escalaDb=esc;escalaDbInfo=escInfo;ferUps=fu;const aa=snap.docs.find(d=>d.id==='aderAjuste');aderAjDb=aa?aa.data():null;const dt=snap.docs.find(d=>d.id==='defTatico');defTatDb=dt?dt.data():null;const dtc=snap.docs.find(d=>d.id==='defTecnicos');defTecDb=dtc?dtc.data():null;{const uh=snap.docs.find(d=>d.id==='upsHoje'),uv=uh&&uh.data();try{upsHojeDb=uv&&uv.data&&uv.eq?{data:uv.data,eq:JSON.parse(uv.eq),em:uv.enviadoEm,arquivo:uv.arquivo}:null}catch(e){upsHojeDb=null}}{const ur=snap.docs.find(d=>d.id==='upsRegras');UOVR=rgLer(ur?ur.data():null);aplicarRegrasUps();if(UCFG){montarUPS();renderRgUps()}}montar();try{montarPrd()}catch(e){}montarAder();montarDef();
   },()=>{});
   renderCadastros();
   if(pendentes.length)atualizarLocais();
