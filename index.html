@@ -3278,16 +3278,18 @@ function abrirMassa(recs){
   $('ltCorpo').innerHTML='<p class="muted" style="margin:0 0 10px;font-size:12.5px">Preencha só o que quer mudar. Campos deixados em branco não são alterados. Tudo é gravado no Neon.</p>'
    +'<div class="mass-g"><div class="fld"><label>Estrutura</label>'+sel('mE',vals('e'),'— não alterar —')+'</div><div class="fld"><label>Gerência</label>'+sel('mG',vals('g'),'— não alterar —')+'</div><div class="fld"><label>Base</label>'+sel('mB',vals('b'),'— não alterar —')+'</div>'
    +'<div class="fld"><label>Meta diária (R$)</label><input type="text" id="mMeta" inputmode="decimal" placeholder="não alterar"></div><div class="fld"><label>Não é da CGB</label><select id="mNc"><option value="">— não alterar —</option><option value="1">Marcar como não CGB</option><option value="0">Voltar a considerar</option></select></div></div>'
+   +'<div class="fld" style="margin-top:10px"><label>Jornada (horas por dia)</label><div class="jor">'+DIAS_CURTO.map((n,i)=>'<div class="fld"><label for="mJ'+i+'">'+n+'</label><input type="text" inputmode="numeric" placeholder="não alterar" maxlength="5" id="mJ'+i+'"></div>').join('')+'</div><small class="muted">Preencha só os dias que quer mudar, ex.: 08:00. Use 00:00 para folga. Em branco mantém a jornada de cada equipe.</small></div>'
    +'<p class="muted" style="margin:10px 0 4px;font-size:12px">Equipes: '+recs.map(esc).join(', ')+'</p>';
   $('ltMsg').textContent='';$('modalLote').hidden=false;$('b-ltSalva').textContent='Aplicar às selecionadas';
   $('b-ltSalva').onclick=async()=>{
     const e=$('mE').value,g=$('mG').value,b=$('mB').value,pm=prdNum($('mMeta').value),mp=estPrd(e),pt=mp?mp[0]:'',pe=mp?mp[1]:'';
     if(Number.isNaN(pm)){$('ltMsg').textContent='Meta inválida. Use só números, ex.: 1.353,94.';return}
-    const nc=$('mNc').value;if(!e&&!g&&!b&&pm==null&&!pt&&!pe&&!nc){$('ltMsg').textContent='Preencha pelo menos um campo para alterar.';return}
+    const jm=DIAS_CURTO.map((_,i)=>{const t=$('mJ'+i).value.trim();return t===''?null:horaParaMin(t)});if(jm.some(x=>x!=null&&isNaN(x))){$('ltMsg').textContent='Jornada no formato horas:minutos, ex.: 08:00. Use 00:00 para folga.';return}const temJ=jm.some(x=>x!=null);
+    const nc=$('mNc').value;if(!e&&!g&&!b&&pm==null&&!pt&&!pe&&!nc&&!temJ){$('ltMsg').textContent='Preencha pelo menos um campo para alterar.';return}
     const it=Object.assign({},cad.prefixos||{});
-    for(const k of recs){const v=cfg.prefixos[k];if(!v)continue;const o=Object.assign({},it[k]||{},{e:e||v.e,g:g||v.g,b:b||v.b,j:v.j});if(e&&e!==v.e&&!(it[k]&&it[k].j))o.j=jorPadrao(e);if(pm!=null)o.pm=pm;if(pt)o.pt=pt;if(pe)o.pe=pe;it[k]=o}
+    for(const k of recs){const v=cfg.prefixos[k];if(!v)continue;const o=Object.assign({},it[k]||{},{e:e||v.e,g:g||v.g,b:b||v.b,j:v.j});if(e&&e!==v.e&&!(it[k]&&it[k].j))o.j=jorPadrao(e);if(temJ){const base=(o.j||v.j||[0,0,0,0,0,0,0]).slice();jm.forEach((m,i)=>{if(m!=null)base[i]=m});o.j=base}if(pm!=null)o.pm=pm;if(pt)o.pt=pt;if(pe)o.pe=pe;it[k]=o}
     $('b-ltSalva').disabled=true;let ok=true;
-    if(e||g||b||pm!=null||pt||pe)ok=await salvarCad('prefixos',it,recs.length+' equipe(s) atualizada(s).');
+    if(e||g||b||pm!=null||pt||pe||temJ)ok=await salvarCad('prefixos',it,recs.length+' equipe(s) atualizada(s).');
     if(ok&&nc){const m=Object.assign({},cad.naoCgb||{});for(const k of recs){if(nc==='1')m[hierChave(k)]={rec:k,por:(typeof ctMeu==='function'&&ctMeu())||'',em:new Date().toISOString()};else delete m[hierChave(k)]}ok=await salvarCad('naoCgb',m,nc==='1'?recs.length+' equipe(s) marcada(s) como não CGB: saíram de todos os indicadores.':recs.length+' equipe(s) voltaram a ser consideradas.');try{hierRemontar()}catch(x){}}
     $('b-ltSalva').disabled=false;
     if(ok){$('modalLote').hidden=true;cadSel.clear();renderCadastros()}
