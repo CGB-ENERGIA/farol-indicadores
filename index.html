@@ -2056,7 +2056,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     </div>
     <div id="cadNota"></div>
     <div class="panel" data-tabp="prefixos">
-      <div class="phd"><div class="busca"><input type="search" id="cadBusca" placeholder="Buscar prefixo, estrutura ou base…" aria-label="Buscar no cadastro"><span class="muted" id="cadCont"></span></div><button class="btn primary" id="b-novoPref" type="button"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Novo prefixo</button></div>
+      <div class="phd"><div class="busca"><input type="search" id="cadBusca" placeholder="Buscar prefixos, estrutura ou base (vários: separe por espaço ou vírgula)…" aria-label="Buscar no cadastro"><span class="muted" id="cadCont"></span></div><button class="btn primary" id="b-novoPref" type="button"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Novo prefixo</button></div>
       <div class="cad-fil"><div class="fld"><label for="cfBase">Base</label><select id="cfBase"></select></div><div class="fld"><label for="cfGer">Gerência</label><select id="cfGer"></select></div><div class="fld"><label for="cfEst">Estrutura</label><select id="cfEst"></select></div><div class="fld"><label for="cfTipo">Tipo de equipe</label><select id="cfTipo"></select></div><div class="fld"><label for="cfSit">Situação</label><select id="cfSit"><option value="">Todas</option><option value="ed">Editados no site</option><option value="sm">Sem meta de produção</option></select></div><button class="btn sm" type="button" id="cfLimpa">Limpar filtros</button></div>
       <div class="cad-sel" id="cadSelBar" hidden><span id="cadSelTxt"></span><button class="btn primary sm" type="button" id="b-cadMassa">Editar selecionados</button><button class="btn sm" type="button" id="b-cadSelTodos">Selecionar todos os filtrados</button><button class="btn sm" type="button" id="b-cadSelLimpa">Limpar seleção</button></div>
       <div class="tw"><table><thead><tr><th style="width:34px"><input type="checkbox" id="cadAll" aria-label="Selecionar todos da lista"></th><th>Prefixo</th><th>Estrutura</th><th>Gerência</th><th>Base</th><th>Jornada</th><th>Meta produção</th><th></th></tr></thead><tbody id="t-cad"></tbody></table></div>
@@ -2076,7 +2076,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
       <div class="tw"><table><thead><tr><th>Data</th><th>Dia</th><th>Feriado</th><th></th></tr></thead><tbody id="t-fer"></tbody></table></div>
     </div>
     <div class="panel" data-tabp="escala" hidden>
-      <div class="phd"><div class="busca"><input type="search" id="escBusca" placeholder="Buscar prefixo, base ou tipo…" aria-label="Buscar na escala"><span class="muted" id="escCont"></span></div></div>
+      <div class="phd"><div class="busca"><input type="search" id="escBusca" placeholder="Buscar prefixos, base ou tipo (vários: separe por espaço ou vírgula)…" aria-label="Buscar na escala"><span class="muted" id="escCont"></span></div></div>
       <div id="escOrigem"></div>
       <div class="tw"><table><thead><tr><th>Prefixo</th><th>Base</th><th>Tipo de equipe</th><th>Estrutura UPS</th><th>Subtipo</th><th class="n">Dias escalados</th></tr></thead><tbody id="t-esc"></tbody></table></div>
     </div>
@@ -3224,20 +3224,22 @@ function renderEstruturas(){
   $('estrDiv').innerHTML='<div class="phd" style="margin-top:18px"><h3>Conferência</h3><small>'+(div.length?div.length+' diferença(s) entre o cadastro e as bases antigas. Os relatórios já seguem o cadastro; a pontuação da UPS segue a escala de cada período.':'nenhuma diferença: todas as bases batem com o cadastro')+'</small></div>'
     +(div.length?'<div class="tw"><table><thead><tr><th>Prefixo</th><th>Onde</th><th>Diferença</th></tr></thead><tbody>'+div.map(x=>'<tr><td><b>'+esc(x[0])+'</b></td><td>'+esc(x[1])+'</td><td>'+esc(x[2])+'</td></tr>').join('')+'</tbody></table></div>':'');
 }
+/* busca com vários termos (prefixos separados por espaço, vírgula, ponto e vírgula ou linha): mostra os que casam com qualquer um */
+function buscaTermos(v){return String(v||'').toUpperCase().split(/[\s,;]+/).filter(Boolean)}
 function renderCadastros(){try{renderEstruturas()}catch(e){console.error('estruturas',e)}
   if(!cfg)return;
   $('cadModo').textContent=podeSalvar?'Alterações valem para todos que abrem o painel.':'Somente leitura';
   $('cadNota').innerHTML=podeSalvar?'':'<div class="note">Você pode consultar os cadastros. Só quem tem permissão de edição consegue alterar.</div>';
   ['b-novoPref'].forEach(id=>$(id).hidden=!podeSalvar);
   document.querySelectorAll('#formFer,#formFol').forEach(f=>f.hidden=!podeSalvar);
-  const q=$('cadBusca').value.trim().toUpperCase();
+  const q=buscaTermos($('cadBusca').value);
   const P0=Object.entries(cfg.prefixos);
   const unq=f=>[...new Set(P0.map(([k,v])=>f(k,v)).filter(Boolean))].sort();
   const fill=(id,L,tx)=>{const el=$(id),v=el.value;el.innerHTML='<option value="">'+tx+'</option>'+L.map(x=>'<option>'+esc(x)+'</option>').join('');el.value=L.includes(v)?v:''};
   fill('cfBase',unq((k,v)=>v.b),'Todas');fill('cfGer',unq((k,v)=>v.g),'Todas');fill('cfEst',unq((k,v)=>v.e),'Todas');fill('cfTipo',unq(k=>classeEq(k).t),'Todos');
   const fb=$('cfBase').value,fg=$('cfGer').value,fe=$('cfEst').value,ft=$('cfTipo').value,fs=$('cfSit').value;
   const lst=P0.filter(([k,v])=>{
-    if(q&&!(k+' '+v.e+' '+v.b+' '+v.g).toUpperCase().includes(q))return false;
+    if(q.length){const tx=(k+' '+v.e+' '+v.b+' '+v.g).toUpperCase();if(!q.some(t=>tx.includes(t)))return false}
     if(fb&&v.b!==fb)return false;if(fg&&v.g!==fg)return false;if(fe&&v.e!==fe)return false;
     const pi=PCFG&&PCFG.idx&&PCFG.idx[k];
     if(ft&&classeEq(k).t!==ft)return false;
@@ -5217,8 +5219,8 @@ function renderCadUps(){
   const m=UR.ultima?UR.ultima.slice(0,7):'';const ini=UCFG.escalaInicio;
   const diasNoMes=c=>{let n=0;for(let i=0;i<c.d.length;i++)if(c.d[i]==='1'&&UPSCalc.addDias(ini,i).startsWith(m))n++;return n};
   const idx=UPSCalc.indexarEscala(UCFG,UR.escala);const lst=[];for(const r in idx)for(const c of idx[r])lst.push(c);
-  const q=($('escBusca').value||'').trim().toUpperCase();
-  const f=lst.filter(c=>!q||(c.rec+' '+c.tipo+' '+c.sigla).toUpperCase().includes(q)).sort((a,b)=>a.rec<b.rec?-1:1);
+  const q=buscaTermos($('escBusca').value);
+  const f=lst.filter(c=>!q.length||q.some(t=>(c.rec+' '+c.tipo+' '+c.sigla).toUpperCase().includes(t))).sort((a,b)=>a.rec<b.rec?-1:1);
   $('escOrigem').innerHTML=escalaLocal?'<div class="note warn">Escala nova carregada só neste navegador. Salve em Atualizar com o SIGA.</div>':escalaDb?'<div class="note">Escala da planilha enviada'+(escalaDbInfo?' ('+esc(escalaDbInfo)+')':'')+'.</div>':'<div class="note">Escala da planilha EQUIPES E FREQUÊNCIA usada na criação do site. Para atualizar, envie a planilha nova em <a href="#atualizar">Atualizar com o SIGA</a>.</div>';
   $('t-esc').innerHTML=f.map(c=>'<tr><td><b>'+esc(c.rec)+'</b></td><td>'+esc(c.sigla||'–')+'</td><td>'+esc(c.tipo||'–')+'</td><td>'+(c.est?esc(c.est):'<span class="muted">fora da UPS</span>')+'</td><td>'+esc(c.sub||'')+'</td><td class="n">'+diasNoMes(c)+'</td></tr>').join('');
   $('escCont').textContent=f.length+' cadastros · dias escalados em '+mesNome(m);
