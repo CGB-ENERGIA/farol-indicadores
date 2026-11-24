@@ -1998,6 +1998,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
         <input id="bk-busca" class="bk-in" type="search" placeholder="Buscar em todas as colunas">
         <button class="btn" id="bk-xls" type="button">Baixar Excel</button><button class="btn del" id="bk-del" type="button" hidden>Excluir este dia</button></div>
       <div class="bk-hist" id="bk-hist" hidden><label class="btn" for="bk-f">Carregar histórico (só no banco)</label><input type="file" id="bk-f" accept=".xlsx,.xls,.csv,.json" multiple hidden><span class="muted" id="bk-hmsg">Selecione os arquivos antigos do SIGA (COI, MAN, FIS, OBRAS). Eles entram só no banco e não mexem em nenhum indicador.</span></div>
+      <div class="bk-hist" id="bk-bkp" hidden><button class="btn" id="bk-bkpb" type="button">Baixar backup do banco (.zip)</button><label class="btn" for="bk-rest" id="bk-restl" hidden>Restaurar de backup</label><input type="file" id="bk-rest" accept=".zip" hidden><span class="muted" id="bk-bkpm">Um arquivo .zip com um CSV por fonte (COI, MAN, FIS, OBRAS). Abre no Excel; guarde na pasta Backup de siga. Restaurar só preenche dias que não estão no banco.</span></div>
       <div class="bk-hist" id="bk-imp" hidden><button class="btn" id="bk-impb" type="button">Importar banco inicial (arquivos banco2026)</button><span class="muted" id="bk-impt">Carrega no banco os dias de COI, MAN, FIS e OBRAS de 01/01 a 10/11/2026. Dias que já estão no banco não são sobrescritos.</span></div>
       <div class="prog" id="prog-imp" hidden><div class="prog-t"></div><div class="prog-b"><i></i></div></div>
       <div class="bk-res" id="bk-res"></div>
@@ -4050,6 +4051,7 @@ async function montarBanco(){
   const box=$('bk-tabs');if(!box)return;
   $('bk-hist').hidden=!podeSalvar;
   $('bk-imp').hidden=!podeSalvar||!db||!!window.FAROL_WEB;$('bk-impb').onclick=bancoImportar;
+  $('bk-bkp').hidden=!podeSalvar;$('bk-restl').hidden=!db;$('bk-bkpb').onclick=bancoBackup;$('bk-rest').onchange=e=>{bancoRestaurar(e.target.files[0]);e.target.value=''};
   const F=['COI','MAN','FIS','OBRAS'];
   box.innerHTML=F.map(f=>{const n=Object.keys(bancoIdxDe(f)).length;return '<button type="button" data-f="'+f+'" aria-pressed="'+(bancoSel.fonte===f)+'">'+f+' · '+n+' dias</button>'}).join('');
   box.querySelectorAll('button').forEach(b=>b.onclick=()=>{bancoSel.fonte=b.dataset.f;bancoSel.dia='';montarBanco()});
@@ -4070,6 +4072,80 @@ async function montarBanco(){
   bancoCache=D;bancoTabela();
 }
 let bancoCache={cols:[],rows:[]};
+/* ---------- backup do banco: .zip com um CSV por fonte (;, UTF-8 com BOM, 1ª coluna = Data) ---------- */
+const CRC_T=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+function crc32(u8){let c=0xFFFFFFFF;for(let i=0;i<u8.length;i++)c=CRC_T[(c^u8[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0}
+const csvCel=v=>{v=v==null?'':String(v);return /[;"\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+function csvLer(txt){ /* texto -> linhas de células, separador ; e aspas */
+  const out=[];let row=[],cur='',q=false;if(txt.charCodeAt(0)===0xFEFF)txt=txt.slice(1);
+  for(let i=0;i<txt.length;i++){const ch=txt[i];
+    if(q){if(ch==='"'){if(txt[i+1]==='"'){cur+='"';i++}else q=false}else cur+=ch}
+    else if(ch==='"')q=true;else if(ch===';'){row.push(cur);cur=''}
+    else if(ch==='\n'){row.push(cur);cur='';out.push(row);row=[]}else if(ch!=='\r')cur+=ch}
+  if(cur!==''||row.length){row.push(cur);out.push(row)}return out}
+async function zipMonta(arqs){ /* arqs: [{nome, blob}] -> Blob .zip (deflate) */
+  const enc=new TextEncoder(),partes=[],cen=[];let off=0;
+  const d=new Date(),dt=((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate(),tm=(d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1);
+  for(const a of arqs){
+    const raw=new Uint8Array(await a.blob.arrayBuffer()),crc=crc32(raw);
+    const z=new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer());
+    const nm=enc.encode(a.nome),h=new DataView(new ArrayBuffer(30));
+    h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint16(8,8,true);h.setUint16(10,tm,true);h.setUint16(12,dt,true);h.setUint32(14,crc,true);h.setUint32(18,z.length,true);h.setUint32(22,raw.length,true);h.setUint16(26,nm.length,true);h.setUint16(28,0,true);
+    partes.push(h.buffer,nm,z);
+    const c=new DataView(new ArrayBuffer(46));
+    c.setUint32(0,0x02014b50,true);c.setUint16(4,20,true);c.setUint16(6,20,true);c.setUint16(8,0x0800,true);c.setUint16(10,8,true);c.setUint16(12,tm,true);c.setUint16(14,dt,true);c.setUint32(16,crc,true);c.setUint32(20,z.length,true);c.setUint32(24,raw.length,true);c.setUint16(28,nm.length,true);c.setUint32(42,off,true);
+    cen.push(c.buffer,nm);off+=30+nm.length+z.length}
+  let cs=0;for(let i=0;i<cen.length;i++)cs+=cen[i].byteLength;
+  const e=new DataView(new ArrayBuffer(22));e.setUint32(0,0x06054b50,true);e.setUint16(8,arqs.length,true);e.setUint16(10,arqs.length,true);e.setUint32(12,cs,true);e.setUint32(16,off,true);
+  return new Blob([...partes,...cen,e.buffer],{type:'application/zip'})}
+async function zipLe(blob){ /* Blob .zip -> [{nome, texto}] */
+  const buf=new Uint8Array(await blob.arrayBuffer()),dv=new DataView(buf.buffer);let e=-1;
+  for(let i=buf.length-22;i>=Math.max(0,buf.length-65600);i--)if(dv.getUint32(i,true)===0x06054b50){e=i;break}
+  if(e<0)throw new Error('Arquivo .zip inválido.');
+  const n=dv.getUint16(e+10,true);let o=dv.getUint32(e+16,true);const out=[],dec=new TextDecoder();
+  for(let i=0;i<n;i++){
+    if(dv.getUint32(o,true)!==0x02014b50)throw new Error('Arquivo .zip inválido.');
+    const met=dv.getUint16(o+10,true),cz=dv.getUint32(o+20,true),nl=dv.getUint16(o+28,true),el=dv.getUint16(o+30,true),cl=dv.getUint16(o+32,true),lo=dv.getUint32(o+42,true),nome=dec.decode(buf.subarray(o+46,o+46+nl));
+    const ds=lo+30+dv.getUint16(lo+26,true)+dv.getUint16(lo+28,true),dados=buf.subarray(ds,ds+cz);
+    const texto=met===0?dec.decode(dados):await new Response(new Blob([dados]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text();
+    out.push({nome,texto});o+=46+nl+el+cl}
+  return out}
+async function bancoBackup(){
+  const b=$('bk-bkpb'),m=$('bk-bkpm'),F=['COI','MAN','FIS','OBRAS'];b.disabled=true;
+  try{
+    const arqs=[];
+    for(const f of F){
+      const ds=Object.keys(bancoIdxDe(f)).sort();if(!ds.length)continue;
+      const dias=[];for(let i=0;i<ds.length;i+=6){m.textContent='Lendo '+f+'… '+Math.min(i+6,ds.length)+' de '+ds.length+' dias';
+        const l=await Promise.all(ds.slice(i,i+6).map(d=>bancoDia(f,d)));l.forEach((x,j)=>dias.push({d:ds[i+j],x}))}
+      const J=bancoJunta(dias.map(o=>o.x)),parts=['\uFEFF'+['Data'].concat(J.cols).map(csvCel).join(';')+'\r\n'];
+      let k=0;
+      for(const o of dias){const mp=J.cols.map(c=>o.x.cols.indexOf(c)),L=[];for(const row of o.x.rows)L.push([o.d].concat(mp.map(ix=>ix<0?'':row[ix])).map(csvCel).join(';'));
+        if(L.length)parts.push(L.join('\r\n')+'\r\n');if(++k%10===0){m.textContent='Montando '+f+'… '+k+' de '+dias.length+' dias';await new Promise(z=>setTimeout(z,0))}}
+      arqs.push({nome:f+'.csv',blob:new Blob(parts,{type:'text/csv;charset=utf-8'})})}
+    if(!arqs.length){m.textContent='O banco está vazio.';return}
+    m.textContent='Compactando…';const zip=await zipMonta(arqs),hoje=new Date().toISOString().slice(0,10);
+    const a=document.createElement('a');a.href=URL.createObjectURL(zip);a.download='BANCO SIGA - backup '+hoje+'.zip';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),60000);
+    m.textContent='Backup baixado ('+(zip.size/1048576).toFixed(1).replace('.',',')+' MB). Guarde na pasta Backup de siga.';
+  }catch(e){m.textContent='Não foi possível gerar o backup: '+(e.message||e)}
+  finally{b.disabled=false}
+}
+async function bancoRestaurar(file){
+  const m=$('bk-bkpm');if(!file||!db||!podeSalvar)return;
+  try{
+    m.textContent='Lendo o backup…';const arqs=await zipLe(file);let novos=0,jaTinha=0;const fontes=[];
+    for(const a of arqs){const f=a.nome.replace(/\.csv$/i,'').toUpperCase();if(!['COI','MAN','FIS','OBRAS'].includes(f))continue;
+      const T=csvLer(a.texto);if(T.length<2||T[0][0]!=='Data')continue;const cols=T[0].slice(1),dias={};
+      for(let i=1;i<T.length;i++){const d=T[i][0];if(!/^\d{4}-\d{2}-\d{2}$/.test(d))continue;(dias[d]=dias[d]||[]).push(T[i].slice(1))}
+      for(const d of Object.keys(dias)){if((bancoIdx[f]||{})[d]){delete dias[d];jaTinha++}else novos++}
+      if(Object.keys(dias).length)fontes.push({fonte:f,nome:file.name,banco:{cols,dias}})}
+    if(!novos){m.textContent='Nada a restaurar: os '+jaTinha+' dia(s) do backup já estão no banco.';return}
+    if(!confirm('Restaurar '+novos+' dia(s) que não estão no banco?\n\n'+jaTinha+' dia(s) que já existem não serão alterados.'))return;
+    let n=0;for(const p of fontes){for(const d of Object.keys(p.banco.dias)){m.textContent='Restaurando '+p.fonte+' '+dataBR(d)+'… '+(++n)+' de '+novos;
+      await bancoSalvar({fonte:p.fonte,nome:p.nome,banco:{cols:p.banco.cols,dias:{[d]:p.banco.dias[d]}}},true)}}
+    await bancoGravaIdx();m.textContent=novos+' dia(s) restaurado(s).';montarBanco();
+  }catch(e){m.textContent='Não foi possível restaurar: '+(e.message||e)}
+}
 /* Exclui do banco o relatório de uma fonte num dia (ex.: arquivo enviado sem querer) e o que ele alimentou */
 async function bancoExcluirDia(){
   const f=bancoSel.fonte,d=bancoSel.dia;if(!db||!d||d==='mes')return;
