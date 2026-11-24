@@ -298,8 +298,8 @@ button.ac-k{cursor:pointer}button.ac-k:hover,.ac-k.on{box-shadow:0 0 0 2px var(-
 .heat td.nm{position:sticky;left:0;background:var(--surface);z-index:1;padding:0 10px 0 0;font-size:12px;font-weight:700;min-width:170px;max-width:220px;white-space:normal;line-height:1.2}
 .heat td.c{min-width:38px;height:30px;text-align:center;font-size:11px;font-weight:800;border-radius:6px;cursor:pointer;font-variant-numeric:tabular-nums}
 .heat td.c:hover{outline:2px solid var(--accent);outline-offset:-1px}
-.heat td.c.sup{background:var(--sup);color:#fff}.heat td.c.ate{background:#9fd58a;color:#173d08}
-.heat td.c.par{background:#f6c77d;color:#5a3300}.heat td.c.nao{background:var(--nao);color:#fff}.heat td.c.nd{background:var(--sunken);color:var(--soft)}
+.heat td.c.sup{background:var(--sup);color:var(--sup-t,#fff)}.heat td.c.ate{background:var(--ate-heat,#9fd58a);color:var(--ate-heat-t,#173d08)}
+.heat td.c.par{background:var(--par-heat,#f6c77d);color:var(--par-heat-t,#5a3300)}.heat td.c.nao{background:var(--nao);color:var(--nao-t,#fff)}.heat td.c.nd{background:var(--sunken);color:var(--soft)}
 .heat td.tt{min-width:64px;padding-left:8px}
 .heat-leg{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted)}
 .heat-leg span{display:inline-flex;align-items:center;gap:6px}
@@ -339,6 +339,8 @@ input[type=text],input[type=date],input[type=time]{width:100%;min-width:0;border
 .tl-chips{display:flex;flex-wrap:wrap;gap:6px}.tl-chips span{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:3px 9px;font-size:12px}.tl-chg{margin-top:8px;font-size:12.5px}.tl-chg ul{margin:4px 0 0;padding-left:18px}.tl-chg li{margin:2px 0}.tl-chg s{color:var(--muted)}.tl-chg b{color:var(--c)}
 .tl-lac{position:relative;margin:0 0 16px;padding:6px 12px;border:2px dashed #c9a227;border-radius:10px;background:#fff8e1;color:#7a5b00;font-size:12.5px;font-weight:700}.tl-lac:before{content:'';position:absolute;left:-30px;top:12px;width:12px;height:12px;border-radius:50%;background:#c9a227}
 @keyframes tlIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.mt-ind{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:14px;background:var(--surface)}.mt-ind h4{margin:0 0 10px;font-size:14px;display:flex;align-items:center;gap:8px}
+.mt-cores{display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);align-items:flex-end}.mt-cor{display:grid;gap:4px;font-size:11.5px;font-weight:700;color:var(--muted)}.mt-cor span{display:flex;align-items:center;gap:8px}.mt-cor input[type=color]{width:46px;height:32px;padding:2px;border:1px solid var(--line);border-radius:8px;background:var(--surface);cursor:pointer}.mt-cor code{font-size:11px;color:var(--muted)}
 .hist-row{border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:10px;display:grid;gap:8px;background:var(--sunken)}.hist-row .hh-top{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end}.hist-row .hh-j{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}.hist-row .hh-j input{padding:6px 4px;text-align:center}.hist-row label{font-size:11px;font-weight:700;color:var(--muted)}.hist-row input{width:100%}
 .jor{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .btn.del{color:var(--nao);border-color:#f0b9b9}
@@ -437,9 +439,9 @@ html[data-tema="escuro"] .agr td.ps-in,html[data-tema="escuro"] .agr td.ps-fora,
 .igrid .utab td{padding:5px 6px}.igrid .utab th{padding:6px 6px;white-space:nowrap}
 .ichart svg{width:100%;height:auto;min-height:200px}
 .idot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
-.agr td.i-g,.idot.i-g{background:#00A86B;color:#fff}.agr td.i-y,.idot.i-y{background:#FFB703;color:#3D2B00}.agr td.i-r,.idot.i-r{background:#D90429;color:#fff}
+.agr td.i-g,.idot.i-g{background:var(--ini-g,#00A86B);color:var(--ini-g-t,#fff)}.agr td.i-y,.idot.i-y{background:var(--ini-y,#FFB703);color:var(--ini-y-t,#3D2B00)}.agr td.i-r,.idot.i-r{background:var(--ini-r,#D90429);color:var(--ini-r-t,#fff)}
 .ipill{display:inline-block;min-width:48px;text-align:center;border-radius:6px;font-weight:800;font-size:11px;padding:1px 6px}
-.ipill.i-g{background:#00A86B;color:#fff}.ipill.i-y{background:#FFB703;color:#3D2B00}.ipill.i-r{background:#D90429;color:#fff}
+.ipill.i-g{background:var(--ini-g,#00A86B);color:var(--ini-g-t,#fff)}.ipill.i-y{background:var(--ini-y,#FFB703);color:var(--ini-y-t,#3D2B00)}.ipill.i-r{background:var(--ini-r,#D90429);color:var(--ini-r-t,#fff)}
 @media (max-width:1500px){.igrid{grid-template-columns:1fr 1fr}.igrid>:first-child{grid-column:1/-1}}
 @media (max-width:760px){.igrid{grid-template-columns:1fr}}
 .rgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.25fr);gap:16px;align-items:stretch}
@@ -1748,7 +1750,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     </div>
     <div class="panel">
       <div class="phd"><h3>Horário da 1ª atividade depois do checklist de início do turno</h3><div class="busca"><input type="search" id="i-busca" placeholder="Buscar prefixo…" aria-label="Buscar prefixo"></div></div>
-      <div class="heat-leg"><span><i style="background:#00A86B"></i>até 09:00</span><span><i style="background:#FFB703"></i>09:01 a 09:30</span><span><i style="background:#D90429"></i>após 09:30</span><span class="muted">· passe o mouse no horário para ver o mapa da base até a 1ª atividade</span></div>
+      <div class="heat-leg"><span><i style="background:var(--ini-g,#00A86B)"></i>até 09:00</span><span><i style="background:var(--ini-y,#FFB703)"></i>09:01 a 09:30</span><span><i style="background:var(--ini-r,#D90429)"></i>após 09:30</span><span class="muted">· passe o mouse no horário para ver o mapa da base até a 1ª atividade</span></div>
       <div class="tw diario-w"><table class="diario agr igr" id="iGrade"></table></div>
     </div>
   </section>
@@ -1944,7 +1946,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     <div class="panel">
       <div class="phd"><h3>Mapa de calor · estrutura × dia</h3><small>clique num quadrado para ver o dia</small></div>
       <div class="heat-w"><table class="heat" id="heat"></table></div>
-      <div class="heat-leg"><span><i style="background:var(--sup)"></i>Supera (≥ 98%)</span><span><i style="background:#9fd58a"></i>Atende (93% a 98%)</span><span><i style="background:#f6c77d"></i>Parcial (85% a 93%)</span><span><i style="background:var(--nao)"></i>Não atende (&lt; 85%)</span><span><i style="background:var(--sunken)"></i>Sem turno previsto</span></div>
+      <div class="heat-leg"><span><i style="background:var(--sup)"></i>Supera (≥ 98%)</span><span><i style="background:var(--ate-heat,#9fd58a)"></i>Atende (93% a 98%)</span><span><i style="background:var(--par-heat,#f6c77d)"></i>Parcial (85% a 93%)</span><span><i style="background:var(--nao)"></i>Não atende (&lt; 85%)</span><span><i style="background:var(--sunken)"></i>Sem turno previsto</span></div>
     </div>
   </section>
 
@@ -2145,21 +2147,13 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
       <div class="tw"><table><thead><tr><th>Data</th><th>Dia</th><th>Feriado</th><th>Abrangência</th><th></th></tr></thead><tbody id="t-fer"></tbody></table></div>
     </div>
     <div class="panel" data-tabp="metas" hidden>
-      <div class="phd"><h3>Metas e faixas de cor dos indicadores</h3><small>valem para os painéis, cores, gráficos, cobranças e planilhas exportadas</small></div>
-      <div class="cad-g2">
-        <div class="fld"><label>Disponibilidade · meta (%)</label><input type="text" id="mt-dispMeta" inputmode="decimal"></div>
-        <div class="fld"><label>Disponibilidade · supera (%)</label><input type="text" id="mt-dispSup" inputmode="decimal"></div>
-        <div class="fld"><label>Disponibilidade · atende parcial a partir de (%)</label><input type="text" id="mt-dispPar" inputmode="decimal"></div>
-        <div class="fld"><label>UPS · meta (%)</label><input type="text" id="mt-upsMeta" inputmode="decimal"></div>
-        <div class="fld"><label>Aderência · supera (%)</label><input type="text" id="mt-aderSup" inputmode="decimal"></div>
-        <div class="fld"><label>Aderência · atende (%)</label><input type="text" id="mt-aderMeta" inputmode="decimal"></div>
-        <div class="fld"><label>Aderência · atende parcial a partir de (%)</label><input type="text" id="mt-aderPar" inputmode="decimal"></div>
-        <div class="fld"><label>Início das atividades · verde até (hh:mm)</label><input type="text" id="mt-iniOk" maxlength="5"></div>
-        <div class="fld"><label>Início das atividades · amarelo até (hh:mm)</label><input type="text" id="mt-iniAt" maxlength="5"></div>
-      </div>
-      <div class="cad-fil"><button class="btn primary" type="button" id="b-mtSalva">Salvar metas</button><button class="btn" type="button" id="b-mtPadrao">Voltar ao padrão</button></div>
+      <div class="phd"><h3>Metas e faixas de cor por indicador</h3><small>as metas e as cores valem para os painéis, gráficos, cobranças e planilhas de cada indicador</small></div>
+      <div class="mt-ind" data-mind="disp"><h4>Disponibilidade</h4><small class="muted">Meta e limites das faixas, em % do turno previsto.</small><div class="cad-g2" style="margin-top:8px"><div class="fld"><label>Meta (%)</label><input type="text" id="mt-dispMeta" inputmode="decimal"></div><div class="fld"><label>Supera a partir de (%)</label><input type="text" id="mt-dispSup" inputmode="decimal"></div><div class="fld"><label>Atende parcial a partir de (%)</label><input type="text" id="mt-dispPar" inputmode="decimal"></div></div><div class="mt-cores"><label class="mt-cor"><span>Supera</span><span><input type="color" id="mc-disp-sup" data-ind="disp" data-k="sup"><code></code></span></label><label class="mt-cor"><span>Atende</span><span><input type="color" id="mc-disp-ate" data-ind="disp" data-k="ate"><code></code></span></label><label class="mt-cor"><span>Atende parcial</span><span><input type="color" id="mc-disp-par" data-ind="disp" data-k="par"><code></code></span></label><label class="mt-cor"><span>Não atende</span><span><input type="color" id="mc-disp-nao" data-ind="disp" data-k="nao"><code></code></span></label><button class="btn sm" type="button" data-rstc="disp">Cores padrão</button></div></div>
+      <div class="mt-ind" data-mind="ups"><h4>UPS</h4><small class="muted">Meta de atingimento da UPS. A classificação por classe (A, B, C, D) segue a regra do contrato e não muda aqui.</small><div class="cad-g2" style="margin-top:8px"><div class="fld"><label>Meta (%)</label><input type="text" id="mt-upsMeta" inputmode="decimal"></div></div><div class="mt-cores"><label class="mt-cor"><span>Supera</span><span><input type="color" id="mc-ups-sup" data-ind="ups" data-k="sup"><code></code></span></label><label class="mt-cor"><span>Atende</span><span><input type="color" id="mc-ups-ate" data-ind="ups" data-k="ate"><code></code></span></label><label class="mt-cor"><span>Atende parcial</span><span><input type="color" id="mc-ups-par" data-ind="ups" data-k="par"><code></code></span></label><label class="mt-cor"><span>Não atende</span><span><input type="color" id="mc-ups-nao" data-ind="ups" data-k="nao"><code></code></span></label><button class="btn sm" type="button" data-rstc="ups">Cores padrão</button></div></div>
+      <div class="mt-ind" data-mind="ader"><h4>Aderência à escala</h4><small class="muted">Limites das faixas, em % de aderência.</small><div class="cad-g2" style="margin-top:8px"><div class="fld"><label>Supera a partir de (%)</label><input type="text" id="mt-aderSup" inputmode="decimal"></div><div class="fld"><label>Atende a partir de (%)</label><input type="text" id="mt-aderMeta" inputmode="decimal"></div><div class="fld"><label>Atende parcial a partir de (%)</label><input type="text" id="mt-aderPar" inputmode="decimal"></div></div><div class="mt-cores"><label class="mt-cor"><span>Supera</span><span><input type="color" id="mc-ader-sup" data-ind="ader" data-k="sup"><code></code></span></label><label class="mt-cor"><span>Atende</span><span><input type="color" id="mc-ader-ate" data-ind="ader" data-k="ate"><code></code></span></label><label class="mt-cor"><span>Atende parcial</span><span><input type="color" id="mc-ader-par" data-ind="ader" data-k="par"><code></code></span></label><label class="mt-cor"><span>Não atende</span><span><input type="color" id="mc-ader-nao" data-ind="ader" data-k="nao"><code></code></span></label><button class="btn sm" type="button" data-rstc="ader">Cores padrão</button></div></div>
+      <div class="mt-ind" data-mind="ini"><h4>Início das atividades</h4><small class="muted">Horários que separam as faixas do início da 1ª atividade.</small><div class="cad-g2" style="margin-top:8px"><div class="fld"><label>Verde até (hh:mm)</label><input type="text" id="mt-iniOk" maxlength="5"></div><div class="fld"><label>Amarelo até (hh:mm)</label><input type="text" id="mt-iniAt" maxlength="5"></div></div><div class="mt-cores"><label class="mt-cor"><span>Verde (cedo)</span><span><input type="color" id="mc-ini-g" data-ind="ini" data-k="g"><code></code></span></label><label class="mt-cor"><span>Amarelo</span><span><input type="color" id="mc-ini-y" data-ind="ini" data-k="y"><code></code></span></label><label class="mt-cor"><span>Vermelho (tarde)</span><span><input type="color" id="mc-ini-r" data-ind="ini" data-k="r"><code></code></span></label><button class="btn sm" type="button" data-rstc="ini">Cores padrão</button></div></div>
+      <div class="cad-fil"><button class="btn primary" type="button" id="b-mtSalva">Salvar metas e cores</button><button class="btn" type="button" id="b-mtPadrao">Voltar tudo ao padrão</button></div>
       <div id="mtMsg"></div>
-      <small class="muted">A classificação por classe da UPS (A, B, C, D) segue a regra do contrato e não muda aqui.</small>
     </div>
     <div class="panel" data-tabp="aderencia" hidden>
       <div class="phd"><h3>Horário previsto de início (aderência) por subtipo</h3><small>o checklist é comparado com o horário previsto da estrutura. Em branco = a estrutura não entra na aderência</small></div>
@@ -2548,7 +2542,28 @@ let cfg=null, hist=null, dbDocs=[], locais=[], resumo=[], ultimaData=null, fonte
 /* metas, faixas de cor e listas de exceção: valores de fábrica; o que for salvo em Cadastros vale no lugar */
 const METAS_PAD={dispMeta:.93,dispSup:.98,dispPar:.85,upsMeta:.75,aderSup:.90,aderMeta:.85,aderPar:.75,iniOk:540,iniAt:570};
 const METAS=window.METAS=Object.assign(window.METAS||{},METAS_PAD); /* também em window: o cálculo da disponibilidade (script separado) lê as metas daqui */
+/* cores das faixas por indicador (Cadastros > Metas e faixas de cor); sem escolha, valem as cores de fábrica */
+const COR4={sup:'#2b7a0f',ate:'#3C9E18',par:'#a35a00',nao:'#C00000'};
+const PAL_PAD={disp:Object.assign({},COR4),ups:Object.assign({},COR4),ader:Object.assign({},COR4),ini:{g:'#00A86B',y:'#FFB703',r:'#D90429'}};
+const PAL={disp:{},ups:{},ader:{},ini:{}};
+const corPal=(ind,k)=>(PAL[ind]&&PAL[ind][k])||PAL_PAD[ind][k];
+const corPers=(ind,k)=>!!(PAL[ind]&&PAL[ind][k]&&PAL[ind][k].toLowerCase()!==PAL_PAD[ind][k].toLowerCase());
+const corRgb=h=>{h=String(h).replace('#','');return [0,2,4].map(i=>parseInt(h.slice(i,i+2),16)||0)};
+const corSoft=h=>'#'+corRgb(h).map(c=>Math.round(c+(255-c)*.88).toString(16).padStart(2,'0')).join('');
+const corTinta=h=>{const [r,g,b]=corRgb(h);return (.299*r+.587*g+.114*b)>165?'#1d1d1d':'#ffffff'};
+/* cor de célula dos mapas de calor: o padrão usa tons mais claros para "atende" e "parcial"; cor escolhida vale como está */
+const HEAT_PAD={sup:['#2b7a0f','#fff'],ate:['#9fd58a','#173d08'],par:['#f6c77d','#5a3300'],nao:['#C00000','#fff']};
+const corHeat=(ind,k)=>corPers(ind,k)?[corPal(ind,k),corTinta(corPal(ind,k))]:(ind==='ini'?[corPal(ind,k),corTinta(corPal(ind,k))]:HEAT_PAD[k]);
+function aplicarCores(){
+  const ESC={disp:['section[data-pag="painel"]','section[data-pag="cobranca"]','section[data-pag="prefixos"]','#modalDia[data-ind="disp"]'],ups:['section[data-pag^="ups-"]','#modalDia[data-ind="ups"]'],ader:['section[data-pag^="ader-"]','#modalDia[data-ind="ader"]'],ini:['section[data-pag="ini-painel"]','#modalDia[data-ind="ini"]']};
+  let css='';
+  for(const ind of ['disp','ups','ader']){let v='';
+    for(const k of ['sup','ate','par','nao'])if(corPers(ind,k)){const c=corPal(ind,k);v+='--'+k+':'+c+';--'+k+'-soft:'+corSoft(c)+';--'+k+'-t:'+corTinta(c)+';';if(k==='ate'||k==='par')v+='--'+k+'-heat:'+c+';--'+k+'-heat-t:'+corTinta(c)+';'}
+    if(v)css+=ESC[ind].join(',')+'{'+v+'}\n'}
+  {let v='';for(const k of ['g','y','r'])if(corPers('ini',k)){const c=corPal('ini',k);v+='--ini-'+k+':'+c+';--ini-'+k+'-t:'+corTinta(c)+';'}if(v)css+=ESC.ini.join(',')+'{'+v+'}\n'}
+  let el=document.getElementById('coresInd');if(!el){el=document.createElement('style');el.id='coresInd';document.head.appendChild(el)}el.textContent=css}
 function aplicarMetas(){const o=(cad&&cad.metas)||{};for(const k in METAS_PAD)METAS[k]=Number.isFinite(o[k])?o[k]:METAS_PAD[k];
+  {const oc=o.cores||{};for(const ind in PAL){PAL[ind]={};for(const k in PAL_PAD[ind]){const c=oc[ind]&&oc[ind][k];if(typeof c==='string'&&/^#[0-9a-fA-F]{6}$/.test(c))PAL[ind][k]=c}}try{aplicarCores()}catch(e){console.error('cores',e)}}
   document.querySelectorAll('[data-lim="meta"]').forEach(b=>b.textContent='Abaixo da meta ('+Math.round(METAS.dispMeta*100)+'%)');
   document.querySelectorAll('[data-lim="par"]').forEach(b=>b.textContent='Não atende ('+Math.round(METAS.dispPar*100)+'%)')}
 function aplicarListas(){const o=(cad&&cad.listas)||{};
@@ -3394,7 +3409,9 @@ function renderMetasCad(){
   const pc=k=>String(Math.round(METAS[k]*10000)/100).replace('.',',');
   for(const k of ['dispMeta','dispSup','dispPar','upsMeta','aderSup','aderMeta','aderPar'])$('mt-'+k).value=pc(k);
   $('mt-iniOk').value=minParaHora(METAS.iniOk);$('mt-iniAt').value=minParaHora(METAS.iniAt);
-  document.querySelectorAll('[data-tabp="metas"] input').forEach(i=>{i.disabled=!podeSalvar;i.oninput=()=>{mtSuja=true}});
+  document.querySelectorAll('[data-tabp="metas"] input[type=color]').forEach(c=>{const v=corPal(c.dataset.ind,c.dataset.k);c.value=v;if(c.nextElementSibling)c.nextElementSibling.textContent=v+(corPers(c.dataset.ind,c.dataset.k)?'':' · padrão')});
+  document.querySelectorAll('[data-tabp="metas"] input').forEach(i=>{i.disabled=!podeSalvar;i.oninput=()=>{mtSuja=true;if(i.type==='color'&&i.nextElementSibling)i.nextElementSibling.textContent=i.value}});
+  document.querySelectorAll('[data-rstc]').forEach(b=>{b.disabled=!podeSalvar;b.onclick=()=>{const ind=b.dataset.rstc;document.querySelectorAll('input[type=color][data-ind="'+ind+'"]').forEach(c=>{c.value=PAL_PAD[ind][c.dataset.k];if(c.nextElementSibling)c.nextElementSibling.textContent=c.value+' · padrão'});mtSuja=true}});
   $('b-mtSalva').hidden=$('b-mtPadrao').hidden=!podeSalvar;
 }
 function renderBases(){const t=$('t-bases');if(!t)return;
@@ -3413,8 +3430,9 @@ $('b-mtSalva')&&($('b-mtSalva').onclick=async()=>{
   if(!(o.dispPar<o.dispMeta&&o.dispMeta<=o.dispSup)){$('mtMsg').innerHTML='<div class="note err">Disponibilidade: parcial deve ser menor que a meta, e a meta não pode passar de "supera".</div>';return}
   if(!(o.aderPar<o.aderMeta&&o.aderMeta<=o.aderSup)){$('mtMsg').innerHTML='<div class="note err">Aderência: parcial menor que "atende", e "atende" não pode passar de "supera".</div>';return}
   if(!(o.iniOk<o.iniAt)){$('mtMsg').innerHTML='<div class="note err">Início das atividades: o horário do amarelo deve ser depois do verde.</div>';return}
+  {const cores={};document.querySelectorAll('[data-tabp="metas"] input[type=color]').forEach(c=>{const ind=c.dataset.ind,k=c.dataset.k;if(c.value.toLowerCase()!==PAL_PAD[ind][k].toLowerCase()){(cores[ind]=cores[ind]||{})[k]=c.value}});if(Object.keys(cores).length)o.cores=cores}
   $('mtMsg').innerHTML='';
-  if(await salvarCad('metas',o,'Metas salvas.')){mtSuja=false;renderMetasCad()}
+  if(await salvarCad('metas',o,'Metas e cores salvas.')){mtSuja=false;renderMetasCad();try{montar();montarUPS();montarAder();renderIni()}catch(e){}}
 });
 $('b-mtPadrao')&&($('b-mtPadrao').onclick=async()=>{if(await salvarCad('metas',{},'Metas voltaram ao padrão.')){mtSuja=false;renderMetasCad()}});
 /* pendências: o que ainda precisa de cadastro */
@@ -3906,7 +3924,7 @@ const baixarDisp=async()=>{
 
 /* ---------- print do painel (imagem) ---------- */
 function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
-function corCls(p){return {sup:'#2b7a0f',ate:'#3C9E18',par:'#a35a00',nao:'#C00000',nd:'#8a7f82'}[cls(p)]}
+function corCls(p){const k=cls(p);return k==='nd'?'#8a7f82':corPal('disp',k)}
 function softCls(p){return {sup:'#e3f3dc',ate:'#eef8e9',par:'#fff3e0',nao:'#fbe5e5',nd:'#f1eded'}[cls(p)]}
 function corta(c,t,w){if(c.measureText(t).width<=w)return t;while(t.length&&c.measureText(t+'…').width>w)t=t.slice(0,-1);return t+'…'}
 async function gerarPrint(){
@@ -3982,7 +4000,7 @@ async function gerarPrint(){
     c.beginPath();pts.forEach((q,i)=>i?c.lineTo(X(i),Y(q.pct)):c.moveTo(X(i),Y(q.pct)));c.lineTo(X(pts.length-1),yb);c.lineTo(X(0),yb);c.closePath();c.fillStyle=ga;c.fill();
     c.beginPath();pts.forEach((q,i)=>i?c.lineTo(X(i),Y(q.pct)):c.moveTo(X(i),Y(q.pct)));c.strokeStyle='#711424';c.lineWidth=2.5;c.stroke();
     const passo=Math.ceil(pts.length/16);
-    pts.forEach((q,i)=>{const cc=cls(q.pct),last=i===pts.length-1;c.beginPath();c.arc(X(i),Y(q.pct),last?5.5:3.5,0,Math.PI*2);c.fillStyle='#fff';c.fill();c.lineWidth=2;c.strokeStyle=(cc==='nao'||cc==='par')?'#C00000':'#711424';c.stroke();
+    pts.forEach((q,i)=>{const cc=cls(q.pct),last=i===pts.length-1;c.beginPath();c.arc(X(i),Y(q.pct),last?5.5:3.5,0,Math.PI*2);c.fillStyle='#fff';c.fill();c.lineWidth=2;c.strokeStyle=(cc==='nao'||cc==='par')?corPal('disp','nao'):'#711424';c.stroke();
       if(i%passo===0||last){c.fillStyle='#6b6a6a';c.font='600 11px '+F;c.textAlign=last&&pts.length>1?'right':i===0&&pts.length>1?'left':'center';c.fillText(q.k.slice(8,10)+'/'+q.k.slice(5,7),X(i),yb+22);c.textAlign='left'}
       if(last){c.fillStyle='#2b2a2a';c.font='800 13px '+F;c.textAlign='center';c.fillText(pct(q.pct),Math.min(X(i),x1-24),Y(q.pct)-12);c.textAlign='left'}});
   }
@@ -3993,7 +4011,7 @@ async function gerarPrint(){
   c.textAlign='center';
   dias.forEach((d,i)=>{const w=new Date(d+'T00:00:00Z').getUTCDay();c.fillStyle=(w===0||w===6)?'#711424':'#6b6a6a';c.font='700 11px '+F;c.fillText(d.slice(8,10),cx0+i*cw+cw/2,y2+56);c.font='600 9.5px '+F;c.fillText(semana(d).slice(0,3),cx0+i*cw+cw/2,y2+68)});
   c.font='700 11px '+F;c.fillStyle='#6b6a6a';c.fillText('MÊS',W-P-20-totW/2,y2+62);
-  const HC={sup:['#2b7a0f','#fff'],ate:['#9fd58a','#173d08'],par:['#f6c77d','#5a3300'],nao:['#C00000','#fff'],nd:['#eaeaea','#a0a0a0']};
+  const HC={sup:corHeat('disp','sup'),ate:corHeat('disp','ate'),par:corHeat('disp','par'),nao:corHeat('disp','nao'),nd:['#eaeaea','#a0a0a0']};
   let hy=y2+78;
   for(const e of U.est){
     c.textAlign='left';c.fillStyle='#2b2a2a';c.font='700 12px '+F;c.fillText(corta(c,e.k,nmW-14),P+20,hy+19);
@@ -4002,7 +4020,7 @@ async function gerarPrint(){
     hy+=32;
   }
   c.textAlign='left';let lgx=P+20;hy+=16;
-  [['#2b7a0f','Supera (≥ 98%)'],['#9fd58a','Atende (93% a 98%)'],['#f6c77d','Parcial (85% a 93%)'],['#C00000','Não atende (< 85%)'],['#eaeaea','Sem turno previsto']].forEach(l=>{rr(c,lgx,hy-11,14,14,4);c.fillStyle=l[0];c.fill();c.fillStyle='#6b6a6a';c.font='600 12px '+F;c.fillText(l[1],lgx+20,hy);lgx+=c.measureText(l[1]).width+48});
+  [[HC.sup[0],'Supera (≥ 98%)'],[HC.ate[0],'Atende (93% a 98%)'],[HC.par[0],'Parcial (85% a 93%)'],[HC.nao[0],'Não atende (< 85%)'],['#eaeaea','Sem turno previsto']].forEach(l=>{rr(c,lgx,hy-11,14,14,4);c.fillStyle=l[0];c.fill();c.fillStyle='#6b6a6a';c.font='600 12px '+F;c.fillText(l[1],lgx+20,hy);lgx+=c.measureText(l[1]).width+48});
   // rodapé
   const agora=new Date();c.font='600 12px '+F;c.fillStyle='#6b6a6a';
   c.fillText('Disponibilidade = turno real ÷ turno previsto · Meta '+Math.round(METAS.dispMeta*100)+'% · Fonte: SIGA (COI, MAN, OBRAS e FIS)',P,H-28);
@@ -5109,7 +5127,7 @@ function renderIni(){
     const bw=(W-L0-R)/pd.length,X=i=>L0+bw*i+bw/2,Y=v=>T+(top-v)/(top-y0)*(H-T-B);
     let s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Média de início por dia">';
     for(let v=y0;v<=top;v+=60)s+='<line class="grid" x1="'+L0+'" x2="'+(W-R)+'" y1="'+Y(v)+'" y2="'+Y(v)+'"/><text x="'+(L0-6)+'" y="'+(Y(v)+4)+'" text-anchor="end">'+aHM(v)+'</text>';
-    pd.forEach((x,i)=>{const w=Math.min(48,bw*.7),c={g:'#00A86B',y:'#FFB703',r:'#D90429'}[I_COR(x.v)];
+    pd.forEach((x,i)=>{const w=Math.min(48,bw*.7),c=corPal('ini',I_COR(x.v));
       s+='<rect x="'+(X(i)-w/2)+'" y="'+Y(x.v)+'" width="'+w+'" height="'+(Y(y0)-Y(x.v))+'" rx="3" fill="'+c+'"><title>'+dataBR(x.d)+': média '+aHM(x.v)+'</title></rect>';
       s+='<text x="'+X(i)+'" y="'+(Y(x.v)-6)+'" text-anchor="middle" style="fill:#2b2a2a;font-weight:800;font-size:'+(pd.length>16?9.5:11.5)+'px">'+aHM(x.v)+'</text>';
       s+='<text x="'+X(i)+'" y="'+(H-12)+'" text-anchor="middle" style="font-size:10.5px;font-weight:700">'+(+x.d.slice(8))+' '+semana(x.d).slice(0,3).toUpperCase()+'</text>'});
@@ -5453,7 +5471,7 @@ function motivosAder(L){
 }
 document.addEventListener('click',e=>{const r=e.target.closest&&e.target.closest('#aMotT .a-mrow');if(!r||!AR)return;const k=r.dataset.mk;aMotAb=aMotAb===k?null:k;motivosAder(filtrarAder())});
 function aGaugeSvg(p,rot){
-  const c=aClass(p),cor={sup:'#2b7a0f',ate:'#3C9E18',par:'#a35a00',nao:'#C00000',nd:'#8a7f82'}[c.cls];
+  const c=aClass(p),cor=c.cls==='nd'?'#8a7f82':corPal('ader',c.cls);
   const cx=160,cy=150,R=120,ang=v=>Math.PI*(1-Math.max(0,Math.min(1,v))),pt=v=>[cx+R*Math.cos(ang(v)),cy-R*Math.sin(ang(v))];
   const arc=(a,b,col,w)=>{const [x0,y0]=pt(a),[x1,y1]=pt(b);return '<path d="M'+x0.toFixed(1)+' '+y0.toFixed(1)+' A'+R+' '+R+' 0 0 1 '+x1.toFixed(1)+' '+y1.toFixed(1)+'" fill="none" stroke="'+col+'" stroke-width="'+w+'" stroke-linecap="butt"/>'};
   let g='<svg viewBox="0 0 320 190" role="img" aria-label="'+rot+' '+pct(p)+'">'+arc(0,0.75,'#f6d5d5',22)+arc(0.75,0.85,'#fbe6c8',22)+arc(0.85,0.9,'#dcefd2',22)+arc(0.9,1,'#c7e7b9',22);
@@ -6074,7 +6092,7 @@ async function gerarPrintUps(){
   for(const a of TL)rowT(a.k,a);const tot={ups:0,meta:0,recs:new Set(),ed:new Set()};for(const l of L){tot.ups+=l.ups;tot.meta+=l.meta;if(l.n>0){tot.recs.add(l.rec);tot.ed.add(l.rec+'|'+l.data)}}rowT('Total',tot,true);
   card(rx,y,rw,hh);c.fillStyle='#2b2a2a';c.font='800 17px '+F;c.fillText('% de equipes A + B por base',rx+20,y+32);
   let by=y+52;const bw=(rw-40-2*10)/3;
-  SIGLAS.concat(['GERAL']).forEach((s,i)=>{const ts=s==='GERAL'?S.teams:S.teams.filter(t=>t.siglas.has(s));const p=pctAB(ts);const fx=UPSCalc.faixaBase(p).cls;const col={sup:'#2b7a0f',ate:'#3C9E18',par:'#a35a00',nao:'#C00000',nd:'#8a7f82'}[fx],bg={sup:'#e3f3dc',ate:'#eef8e9',par:'#fff3e0',nao:'#fbe5e5',nd:'#f1eded'}[fx];
+  SIGLAS.concat(['GERAL']).forEach((s,i)=>{const ts=s==='GERAL'?S.teams:S.teams.filter(t=>t.siglas.has(s));const p=pctAB(ts);const fx=UPSCalc.faixaBase(p).cls;const col=fx==='nd'?'#8a7f82':corPal('ups',fx),bg=fx==='nd'?'#f1eded':(corPers('ups',fx)?corSoft(corPal('ups',fx)):{sup:'#e3f3dc',ate:'#eef8e9',par:'#fff3e0',nao:'#fbe5e5'}[fx]);
     const x=rx+20+(i%3)*(bw+10),yb=by+Math.floor(i/3)*86;rr(c,x,yb,bw,76,12);c.fillStyle=bg;c.fill();c.fillStyle='#6b6a6a';c.font='800 12px '+F;c.textAlign='center';c.fillText(s,x+bw/2,yb+22);c.fillStyle=col;c.font='800 24px '+F;c.fillText(pct(p),x+bw/2,yb+52);c.font='600 11px '+F;c.fillStyle='#6b6a6a';c.fillText(ts.length+' equipes',x+bw/2,yb+68);c.textAlign='left'});
   // ritmo
   y+=hh+24;card(P,y,W-2*P,chH);c.fillStyle='#2b2a2a';c.font='800 17px '+F;c.fillText('Ritmo diário × acumulado',P+20,y+32);
@@ -6089,7 +6107,7 @@ async function gerarPrintUps(){
   y+=chH+24;card(P,y,W-2*P,mxH);c.fillStyle='#2b2a2a';c.font='800 17px '+F;c.fillText('UPS por mês · % de equipes em A ou B, por base',P+20,y+32);
   const mx0=P+120,mcw=(W-2*P-120-20)/Math.max(1,meses.length);c.font='700 11px '+F;c.fillStyle='#6b6a6a';c.textAlign='center';meses.forEach((mm,i)=>c.fillText(MESES[+mm.slice(5)-1].slice(0,3)+'/'+mm.slice(2,4),mx0+i*mcw+mcw/2,y+56));c.textAlign='left';
   SIGLAS.concat(['TOTAL']).forEach((s,j)=>{const yr=y+64+j*32;c.fillStyle='#2b2a2a';c.font=(s==='TOTAL'?'800 ':'700 ')+'13px '+F;c.fillText(s==='TOTAL'?'Total':s,P+20,yr+20);
-    meses.forEach((mm,i)=>{const a=ag[mm+'|'+s];const p=a?a.p:null;const fx=UPSCalc.faixaBase(p).cls;const bg={sup:'#2b7a0f',ate:'#9fd58a',par:'#f6c77d',nao:'#C00000',nd:'#eaeaea'}[fx],tc={sup:'#fff',ate:'#173d08',par:'#5a3300',nao:'#fff',nd:'#a0a0a0'}[fx];rr(c,mx0+i*mcw+2,yr+3,mcw-4,26,6);c.fillStyle=bg;c.fill();c.fillStyle=tc;c.font='800 11.5px '+F;c.textAlign='center';c.fillText(p==null?'–':(p*100).toFixed(1).replace('.',',')+'%',mx0+i*mcw+mcw/2,yr+20);c.textAlign='left'})});
+    meses.forEach((mm,i)=>{const a=ag[mm+'|'+s];const p=a?a.p:null;const fx=UPSCalc.faixaBase(p).cls;const hc=fx==='nd'?['#eaeaea','#a0a0a0']:corHeat('ups',fx),bg=hc[0],tc=hc[1];rr(c,mx0+i*mcw+2,yr+3,mcw-4,26,6);c.fillStyle=bg;c.fill();c.fillStyle=tc;c.font='800 11.5px '+F;c.textAlign='center';c.fillText(p==null?'–':(p*100).toFixed(1).replace('.',',')+'%',mx0+i*mcw+mcw/2,yr+20);c.textAlign='left'})});
   const agora=new Date();c.font='600 12px '+F;c.fillStyle='#6b6a6a';c.fillText('Meta 42 UPS por equipe-dia · Classe A ≥ 90,95% · B ≥ 75% · C ≥ 40,95% · D abaixo · Fonte: SIGA (COI)',P,H-24);c.textAlign='right';c.fillText('Gerado em '+agora.toLocaleDateString('pt-BR')+' às '+agora.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),W-P,H-24);c.textAlign='left';
   return cv;
 }
@@ -6729,6 +6747,7 @@ function tabDet(o){
     +'</tbody></table></div>';
 }
 function abrirDet(o){
+  try{$('modalDia').dataset.ind=indAtual()||''}catch(e){}
   $('mdTit').textContent=o.tit;
   const ks=o.kpis||[];
   $('mdCorpo').innerHTML=(ks.length?'<div class="md-k" style="grid-template-columns:repeat('+ks.length+',minmax(0,1fr))">'+ks.map(k=>'<div><span>'+k[0]+'</span><b class="'+(k[2]||'')+'">'+k[1]+'</b></div>').join('')+'</div>':'')
