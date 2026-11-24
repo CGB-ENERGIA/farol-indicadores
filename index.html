@@ -4120,12 +4120,52 @@ async function atvConcluidas(rec,d){
   out.sort((a,b)=>hm(a.i)-hm(b.i));
   return {temDia,out};
 }
-async function atvHtml(rec,d){
-  const {temDia,out}=await atvConcluidas(rec,d);
-  const h='<h4 style="margin:16px 0 6px;font-size:13.5px">Atividades concluídas no dia'+(temDia?' · '+out.length:'')+'</h4>';
-  if(!temDia)return h+'<p class="muted" style="margin:0;font-size:12.5px">Este dia ainda não está no banco SIGA. Envie os relatórios COI, MAN, OBRAS e FIS dele em Atualizar com o SIGA.</p>';
-  if(!out.length)return h+'<p class="muted" style="margin:0;font-size:12.5px">Nenhuma atividade concluída desta equipe nesse dia.</p>';
-  return h+'<div class="tw md-t"><table class="utab"><thead><tr><th>Tipo de atividade</th><th>Ordem de serviço</th><th>Início</th><th>Fim</th></tr></thead><tbody>'+out.map(x=>'<tr><td>'+esc(x.t)+'</td><td>'+esc(x.o)+'</td><td class="nw">'+esc(x.i)+'</td><td class="nw">'+esc(x.f)+'</td></tr>').join('')+'</tbody></table></div><p class="muted" style="margin:6px 0 0;font-size:11.5px">Não lista checklist de início de turno, almoço nem retorno à base.</p>';
+/* tabela única do dia na UPS: cada atividade com a classe, os pontos e o UPS (ou o motivo de não pontuar) */
+async function atvUnificada(rec,d,pt,u,pr){
+  if(!bancoIdxDe('COI')[d])return null;
+  const D=await bancoDia('COI',d),c=D.cols,ix=n=>c.indexOf(n),iR=ix('Recurso'),iS=ix('Status da Atividade');
+  if(iR<0||iS<0)return null;
+  const iSv=ix('Tipo de Atividade (2)')>=0?ix('Tipo de Atividade (2)'):ix('Tipo de Atividade'),iTa=iSv,iSub=ix('SubTipo de Causa - Text'),iO=ix('Ordem de Serviço'),iI=ix('Início'),iF=ix('Fim');
+  const col={Causa:ix('Tipo de Causa - Text'),Executada:ix('Tipo de Conclusão Executada'),NaoExecutada:ix('Tipo de Conclusão Não Executada'),Code:ix('Code'),LocalReligacao:ix('Local Religação'),GrupoCode:ix('Grupo Code'),Abrangencia:ix('Abrangência')};
+  const limpa=x=>['📡',' ','🚎','🏍','🛵'].reduce((t,ch)=>t.split(ch).join(''),String(x==null?'':x));
+  const hm=t=>{const m=/(\d+):(\d+)\s*([AP]M)?/i.exec(t||'');if(!m)return 9999;let h=+m[1]%12;if(/PM/i.test(m[3]||''))h+=12;else if(!m[3])h=+m[1];return h*60+ +m[2]};
+  const interna=/^(checklist in[ií]cio|retorno [aà] base|intervalo para almo|indisponibilidade)/i;
+  const L=[];
+  for(const r of D.rows){
+    if(limpa(r[iR])!==rec)continue;const st=String(r[iS]||'').trim().toLowerCase();if(st!=='concluído'&&st!=='não concluído')continue;
+    const a={Servico:String(iSv>=0&&r[iSv]||''),Status:st,TipoConclusao:''};
+    for(const k in col)a[k]=col[k]>=0&&r[col[k]]!=null?String(r[col[k]]):'';
+    a.TipoConclusao=a.NaoExecutada?'Não Executado':(a.Executada?'Executado':'');
+    const {k,cl}=UPSCalc.classificar(UCFG,a);
+    let cat,pts=null;
+    if(interna.test(a.Servico))cat='interna';
+    else if(cl==null)cat=k==null?'semregra':'foradp';
+    else if(cl==='(SEM CLASSIFICAÇÃO NO DE_PARA)')cat='semclass';
+    else{pts=pt(cl);cat=pts==null?'sempontos':/IMPROD/.test(cl)?'improd':'ok'}
+    L.push({s:String(iTa>=0&&r[iTa]||a.Servico),v:(()=>{try{const g=i=>i>=0&&r[i]!=null?String(r[i]):'';return prdPreco(rec,g(iO),a.Servico,a.Executada,a.NaoExecutada,a.LocalReligacao,a.GrupoCode,g(iSub),a.Status,a.Abrangencia,a.Code)}catch(e){return null}})(),o:iO>=0?r[iO]:'',i:iI>=0?r[iI]:'',f:iF>=0?r[iF]:'',cl,pts,cat,st});
+  }
+  L.sort((x,y)=>hm(x.i)-hm(y.i));
+  const MOT={semregra:['Sem regra de UPS','O serviço não se encaixa em nenhuma regra de chave.'],foradp:['Fora do DE_PARA','Existe regra, mas a chave não está no DE_PARA.'],semclass:['Sem classificação no DE_PARA','Está no DE_PARA sem classe.'],sempontos:['Classe sem pontos','A classe não tem pontos para esta base e estrutura.'],interna:['Não é produção','Checklist, retorno à base, almoço ou indisponibilidade.']};
+  const pontua=x=>x.cat==='ok'||x.cat==='improd';
+  const tot=L.reduce((a,x)=>a+(pontua(x)?x.pts:0),0),vt=L.reduce((a,x)=>a+(x.v||0),0);
+  const nSem=L.filter(x=>!pontua(x)&&x.cat!=='interna').length;
+  const diff=u!=null&&Math.abs(tot-u)>0.05,diffV=pr&&Math.abs(vt-pr[0])>0.5;
+  /* grupos: uma linha de resumo por classe (como a tabela por tipo) e, embaixo, cada atividade com ordem de serviço, horário e valor */
+  const G={};for(const x of L){const k=pontua(x)?'c:'+x.cl:'m:'+x.cat;const g=G[k]||(G[k]={k,nome:pontua(x)?x.cl:MOT[x.cat][0],dica:pontua(x)?'':MOT[x.cat][1],cat:pontua(x)?'ok':x.cat,imp:x.cat==='improd',it:[],ups:0,v:0});g.it.push(x);g.v+=x.v||0;if(pontua(x))g.ups+=x.pts}
+  const ordem=g=>g.cat==='ok'?0:g.cat==='interna'?2:1;
+  const grupos=Object.values(G).sort((a,b)=>ordem(a)-ordem(b)||b.ups-a.ups||b.it.length-a.it.length);
+  const lin=grupos.map(g=>{
+    const sem=g.cat!=='ok'&&g.cat!=='interna',tp=sem?'sem':g.cat==='interna'?'int':'ok',bg=sem?' style="background:var(--accent-soft)"':'';
+    const un=g.cat==='ok'?g.it[0].pts:null;
+    return '<tr data-uc="'+tp+'" class="uc-g"'+bg+'><td colspan="4"><b>'+esc(g.nome)+'</b>'+(g.imp?' <span class="pill nao">improdutiva</span>':'')+(sem?' <span class="pill nao" title="'+esc(g.dica)+'">não soma UPS</span>':'')+'</td><td class="n"><b>'+g.it.length+'</b></td><td class="n">'+(un==null?'–':n1(un))+'</td><td class="n"><b>'+(g.cat==='ok'?n1(g.ups):'0,0')+'</b></td><td class="n">'+(g.cat==='ok'&&tot?pct(g.ups/tot):'–')+'</td><td class="n"><b>'+brl(g.v)+'</b></td></tr>'
+    +g.it.map(x=>'<tr data-uc="'+tp+'"'+bg+'><td style="padding-left:22px">'+esc(x.s)+(x.st!=='concluído'?' <span class="pill par">não concluída</span>':'')+'</td><td>'+esc(x.o)+'</td><td class="nw">'+esc(x.i)+'</td><td class="nw">'+esc(x.f)+'</td><td class="n">1</td><td class="n">'+(pontua(x)?n1(x.pts):'–')+'</td><td class="n">'+(pontua(x)?n1(x.pts):'0,0')+'</td><td class="n">'+(pontua(x)&&tot?pct(x.pts/tot):'–')+'</td><td class="n">'+(x.v==null?'–':brl(x.v))+'</td></tr>').join('')}).join('');
+  return '<div class="sc-bar" style="margin:16px 0 8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><h4 style="margin:0;font-size:13.5px">Atividades do dia · '+L.length+'</h4><div class="tabs" role="group" aria-label="Filtro"><button type="button" data-ucf="todas" aria-pressed="true">Todas</button><button type="button" data-ucf="sem" aria-pressed="false">Sem pontuar'+(nSem?' · '+nSem:'')+'</button><button type="button" data-ucf="ok" aria-pressed="false">Pontuam</button></div></div>'
+    +'<div class="tw md-t"><table class="utab"><thead><tr><th>Tipo de atividade</th><th>Ordem de serviço</th><th>Início</th><th>Fim</th><th class="n">Qtd.</th><th class="n">Pontos</th><th class="n">UPS</th><th class="n">Participação</th><th class="n">Valor (R$)</th></tr></thead><tbody>'+(lin||'<tr><td colspan="9" class="empty">Nenhuma atividade desta equipe nesse dia.</td></tr>')+'</tbody><tfoot><tr><td colspan="4"><b>Total do dia</b></td><td class="n"><b>'+L.length+'</b></td><td></td><td class="n"><b>'+n1(tot)+'</b></td><td></td><td class="n"><b>'+brl(vt)+'</b></td></tr></tfoot></table></div>'
+    +'<p class="muted" style="margin:6px 0 0;font-size:11.5px">UPS = quantidade × pontos de cada classe. Linhas destacadas não somam UPS. O valor (R$) segue a regra de preços da Produção. Concluídas e não concluídas entram na conta, como no cálculo da UPS.'+(diff?' <b>Atenção:</b> a classe aqui foi refeita a partir do banco SIGA e o total ('+n1(tot)+') difere do UPS calculado ('+n1(u)+'); dias antigos podem não ter todas as colunas.':'')+(diffV?' <b>Atenção:</b> a soma dos valores ('+brl(vt)+') difere da produção do dia ('+brl(pr[0])+').':'')+'</p>';
+}
+function atvFiltra(box){
+  box.querySelectorAll('[data-ucf]').forEach(b=>b.onclick=()=>{const f=b.dataset.ucf;box.querySelectorAll('[data-ucf]').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));
+    box.querySelectorAll('tbody tr[data-uc]').forEach(tr=>{tr.hidden=f==='sem'?tr.dataset.uc!=='sem':f==='ok'?tr.dataset.uc!=='ok':false})});
 }
 /* ---------- UPS: detalhe por equipe / dia ---------- */
 function upsDet(rec,d){
@@ -4140,12 +4180,15 @@ function upsDet(rec,d){
     const pr=(typeof PR!=='undefined'&&PR&&PR.dias&&PR.dias[d]&&PR.dias[d][rec])||null;
     const sr=ac._semregra||0,imp=it.filter(x=>/IMPROD/.test(x.k)).reduce((s,x)=>s+x.q,0);
     abrirDet({tit:rec+' · '+semana(d)+', '+dataBR(d),kpis:[['UPS no dia',n1(u)],['Meta do dia',n1(mt)],['Produção do dia',pr?brl(pr[0]):'–'],['Atividades',n0(n)],['Concluídas',pr?n0(pr[1]):'–'],['Sem pontuação',sr,sr>n/3?'mal':'']],
-      extra:'<div id="atvBox"><h4 style="margin:16px 0 6px;font-size:13.5px">Atividades concluídas no dia</h4><p class="muted" style="margin:0;font-size:12.5px">Carregando…</p></div>',
+      semTab:true,
+      extra:'<div id="atvBox"><p class="muted" style="margin:16px 0 0;font-size:12.5px">Carregando as atividades do dia…</p></div>',
       aviso:esc(c0.sigla||'')+' · '+esc(c0.tipo||'')+' · meta de 42 UPS por dia (verde a partir de 38,3)'+(imp?' · <b>'+imp+'</b> improdutiva(s)':''),
       cols:['wTipo de atividade','nQtd.','nPontos','nUPS','nParticipação'],
       rows:it.map(x=>['<b>'+esc(x.k)+'</b>'+(/IMPROD/.test(x.k)?' <span class="pill nao">improdutiva</span>':''),x.q,x.p==null?'–':n1(x.p),x.p==null?'–':n1(x.q*x.p),u&&x.p?pct(x.q*x.p/u):'–']).concat(sr?[['<span class="muted">Sem regra de UPS</span>',sr,'–','0,0','–']]:[]),
       rodape:'UPS = quantidade × pontos de cada tipo. Atividades sem regra ou improdutivas não somam UPS.'});
-    atvHtml(rec,d).then(h=>{const b=$('atvBox');if(b)b.innerHTML=h}).catch(()=>{});
+    {const resumo={cols:['wTipo de atividade','nQtd.','nPontos','nUPS','nParticipação'],rows:it.map(x=>['<b>'+esc(x.k)+'</b>'+(/IMPROD/.test(x.k)?' <span class="pill nao">improdutiva</span>':''),x.q,x.p==null?'–':n1(x.p),x.p==null?'–':n1(x.q*x.p),u&&x.p?pct(x.q*x.p/u):'–']).concat(sr?[['<span class="muted">Sem regra de UPS</span>',sr,'–','0,0','–']]:[])};
+     const fallback=msg=>tabDet(resumo)+'<p class="muted" style="margin:8px 0 0;font-size:11.5px">UPS = quantidade × pontos de cada tipo. Atividades sem regra ou improdutivas não somam UPS.</p>'+(msg?'<p class="muted" style="margin:8px 0 0;font-size:12.5px">'+msg+'</p>':'');
+     atvUnificada(rec,d,pt,u,pr).then(h=>{const b=$('atvBox');if(!b)return;if(h==null){b.innerHTML=fallback('As atividades deste dia ainda não estão no banco SIGA, por isso aparece só o resumo por tipo. Envie o COI do dia em Atualizar com o SIGA.');return}b.innerHTML=h;atvFiltra(b)}).catch(()=>{const b=$('atvBox');if(b)b.innerHTML=fallback('Não foi possível listar as atividades deste dia.')})}
   }else{
     const g={};for(const l of LL){const a=g[l.data]||(g[l.data]={u:0,mt:0,n:0});a.u+=l.ups;a.mt+=l.meta;a.n+=l.n}
     const ds=Object.keys(g).sort();let cu=0,cm=0;
@@ -5895,14 +5938,17 @@ $('d-mes').addEventListener('change',()=>{preencherDiasDef();if(evModo==='mes')e
 ['d-dia',...DF].forEach(id=>$(id).addEventListener('change',()=>{$(id).classList.toggle('on',!!$(id).value&&id!=='d-dia');renderDef()}));
 $('d-busca').addEventListener('input',()=>renderDef());
 /* ---------- detalhe genérico (clique em barras, quadrados e KPIs) ---------- */
+function tabDet(o){
+  return '<div class="tw md-t"><table class="utab"><thead><tr>'+o.cols.map(c=>'<th'+(c[0]==='n'?' class="n"':'')+'>'+c.slice(1)+'</th>').join('')+'</tr></thead><tbody>'
+    +(o.rows.length?o.rows.map(r=>'<tr>'+r.map((v,i)=>'<td'+(o.cols[i][0]==='n'?' class="n"':o.cols[i][0]==='w'?' class="nw"':'')+'>'+v+'</td>').join('')+'</tr>').join(''):'<tr><td colspan="'+o.cols.length+'" class="empty">Nada para mostrar aqui.</td></tr>')
+    +'</tbody></table></div>';
+}
 function abrirDet(o){
   $('mdTit').textContent=o.tit;
   const ks=o.kpis||[];
   $('mdCorpo').innerHTML=(ks.length?'<div class="md-k" style="grid-template-columns:repeat('+ks.length+',minmax(0,1fr))">'+ks.map(k=>'<div><span>'+k[0]+'</span><b class="'+(k[2]||'')+'">'+k[1]+'</b></div>').join('')+'</div>':'')
     +(o.aviso?'<p class="muted" style="margin:0 0 8px;font-size:12.5px">'+o.aviso+'</p>':'')
-    +'<div class="tw md-t"><table class="utab"><thead><tr>'+o.cols.map(c=>'<th'+(c[0]==='n'?' class="n"':'')+'>'+c.slice(1)+'</th>').join('')+'</tr></thead><tbody>'
-    +(o.rows.length?o.rows.map(r=>'<tr>'+r.map((v,i)=>'<td'+(o.cols[i][0]==='n'?' class="n"':o.cols[i][0]==='w'?' class="nw"':'')+'>'+v+'</td>').join('')+'</tr>').join(''):'<tr><td colspan="'+o.cols.length+'" class="empty">Nada para mostrar aqui.</td></tr>')
-    +'</tbody></table></div>'+(o.rodape?'<p class="muted" style="margin:8px 0 0;font-size:11.5px">'+o.rodape+'</p>':'')+(o.extra||'');
+    +(o.semTab?'':tabDet(o)+(o.rodape?'<p class="muted" style="margin:8px 0 0;font-size:11.5px">'+o.rodape+'</p>':''))+(o.extra||'');
   const b=$('b-mdFiltra');b.hidden=!o.filtra;
   if(o.filtra){b.textContent=o.filtra.txt;b.onclick=()=>{$('modalDia').hidden=true;o.filtra.fn();window.scrollTo({top:0,behavior:'smooth'})}}
   $('modalDia').hidden=false;
