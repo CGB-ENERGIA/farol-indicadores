@@ -1744,7 +1744,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     <div class="igrid">
       <div class="panel ptab"><div class="acap">Média por equipe · dias úteis</div><div class="chart ichart" id="iChart"></div></div>
       <div class="panel ptab"><div class="acap">% dos turnos por faixa de horário</div><div class="tw"><table class="utab"><thead><tr><th>Base</th><th class="n"><i class="idot i-g"></i>até 09:00</th><th class="n"><i class="idot i-y"></i>09:01 a 09:30</th><th class="n"><i class="idot i-r"></i>após 09:30</th></tr></thead><tbody id="iFaixas"></tbody></table></div></div>
-      <div class="panel ptab"><div class="acap">Deslocamento até a 1ª atividade</div><div class="tw"><table class="utab"><thead><tr><th>Base</th><th class="n">Distância média (km)</th><th class="n">Desloc. médio</th></tr></thead><tbody id="iDesl"></tbody></table></div><p class="muted" style="font-size:11px;margin:8px 4px 0">Linha reta da base até a 1ª atividade × 1,35 (estrada), a 40 km/h.</p></div>
+      <div class="panel ptab"><div class="acap">Deslocamento até a 1ª atividade</div><div class="tw"><table class="utab"><thead><tr><th>Base</th><th class="n">Distância média (km)</th><th class="n">Desloc. estimado</th><th class="n" title="Média do Tempo de Deslocamento informado no SIGA na 1ª atividade do turno">Desloc. SIGA</th></tr></thead><tbody id="iDesl"></tbody></table></div><p class="muted" style="font-size:11px;margin:8px 4px 0">Estimado: linha reta da base até a 1ª atividade × 1,35 (estrada), a 40 km/h. SIGA: média do tempo de deslocamento registrado na 1ª atividade do turno (só turnos com valor informado).</p></div>
     </div>
     <div class="panel">
       <div class="phd"><h3>Horário da 1ª atividade depois do checklist de início do turno</h3><div class="busca"><input type="search" id="i-busca" placeholder="Buscar prefixo…" aria-label="Buscar prefixo"></div></div>
@@ -2123,7 +2123,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     <div id="cadNota"></div>
     <div class="panel" data-tabp="prefixos">
       <div class="phd"><div class="busca"><input type="search" id="cadBusca" placeholder="Buscar prefixos, estrutura ou base (vários: separe por espaço ou vírgula)…" aria-label="Buscar no cadastro"><span class="muted" id="cadCont"></span></div><button class="btn primary" id="b-novoPref" type="button"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Novo prefixo</button></div>
-      <div class="cad-fil"><div class="fld"><label for="cfBase">Base</label><select id="cfBase"></select></div><div class="fld"><label for="cfGer">Gerência</label><select id="cfGer"></select></div><div class="fld"><label for="cfEst">Estrutura</label><select id="cfEst"></select></div><div class="fld"><label for="cfTipo">Tipo de equipe</label><select id="cfTipo"></select></div><div class="fld"><label for="cfSit">Situação</label><select id="cfSit"><option value="">Todas</option><option value="per">Com mais de um período</option><option value="sm">Sem meta de produção</option></select></div><button class="btn sm" type="button" id="cfLimpa">Limpar filtros</button></div>
+      <div class="cad-fil"><div class="fld"><label for="cfBase">Base</label><select id="cfBase"></select></div><div class="fld"><label for="cfGer">Gerência</label><select id="cfGer"></select></div><div class="fld"><label for="cfEst">Estrutura</label><select id="cfEst"></select></div><div class="fld"><label for="cfTipo">Tipo de equipe</label><select id="cfTipo"></select></div><div class="fld"><label for="cfSit">Situação</label><select id="cfSit"><option value="">Todas</option><option value="per">Com mais de um período</option><option value="sm">Sem meta de produção</option></select></div><div class="fld"><label for="cfTurno">Turno do prefixo</label><select id="cfTurno"><option value="">Todos</option><option value="M">Manhã (final 001M ou 002M)</option><option value="T">Tarde (final 001T ou 002T)</option></select></div><button class="btn sm" type="button" id="cfLimpa">Limpar filtros</button></div>
       <div class="cad-sel" id="cadSelBar" hidden><span id="cadSelTxt"></span><button class="btn primary sm" type="button" id="b-cadMassa">Editar selecionados</button><button class="btn sm" type="button" id="b-cadSelTodos">Selecionar todos os filtrados</button><button class="btn sm" type="button" id="b-cadSelLimpa">Limpar seleção</button></div>
       <div class="tw"><table><thead><tr><th style="width:34px"><input type="checkbox" id="cadAll" aria-label="Selecionar todos da lista"></th><th>Prefixo</th><th>Estrutura</th><th>Gerência</th><th>Base</th><th>Jornada</th><th>Meta produção</th><th></th></tr></thead><tbody id="t-cad"></tbody></table></div>
     </div>
@@ -2501,7 +2501,10 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
         /* Início = 1º checklist do dia; sem checklist (dados antigos ou equipe que não abriu), vale a regra anterior: menor início de qualquer atividade */
         const ini = a ? (a[5] != null ? a[5] : (a[0] != null ? a[0] : 0)) : 0;
         const fimT = a ? (a[2] != null ? a[2] : (a[1] != null ? a[1] : 0)) : 0;
-        const disp = fimT < ini ? 0 : fimT - ini;
+        /* turno que passa da meia-noite: o retorno à base / última atividade cai no dia seguinte (até 1,5x a jornada, mín. 12 h); acima disso, ou fim "00:00" sem dado, o fim é inconsistente e o turno fica sem horas */
+        const lim = Math.max(720, 1.5 * ((p.j && p.j[wd]) || 480));
+        const fimR = (a && fimT > 0 && fimT < ini && fimT + 1440 - ini <= lim) ? fimT + 1440 : fimT;
+        const disp = fimR < ini ? 0 : fimR - ini;
         let alm = a ? a[3] : 0;
         if (alm === 0 && wd < 5 && p.g === 'GOMAN') alm = 120;
         const ind = a ? a[4] : 0;
@@ -2510,7 +2513,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
         const ti = Number.isFinite(p.ini) ? p.ini : null, tf = Number.isFinite(p.fim) ? p.fim : null;
         let dentro = null;
         if (a && ti != null && tf != null && tf > ti && disp > 0) {
-          dentro = Math.max(0, Math.min(fimT, tf) - Math.max(ini, ti));
+          dentro = Math.max(0, Math.min(fimR, tf) - Math.max(ini, ti));
           real = alm + ind > disp ? 0 : Math.max(0, dentro - (alm + ind) * (dentro / disp));
         }
         const feriado = cfg.folgas[p.b + '|' + p.e + '|' + data] || cfg.feriados[data] || (cfg.mun && cfg.mun[String(p.b).toUpperCase() + '|' + data]) || '';
@@ -3039,7 +3042,7 @@ function munMapa(){const m={},add=(b,d,n)=>{if(b&&d)m[String(b).toUpperCase()+'|
   return m}
 /* plantão que trabalha todos os dias não para em feriado */
 function isentoFeriado(p){const i=estInfo(p.e)||{},todos=p.dias?p.dias==='T':i.d==='t',plantao=(i.gr||i.t||String(p.e||'')).toUpperCase().indexOf('PLANTÃO')===0||/PLANT[ÃA]O/i.test(String(p.e||''));return plantao&&todos}
-function efetivo(){const pf=aplicar(cfgBase.prefixos,cad.prefixos||{});return Object.assign({},cfgBase,{prefixos:pf,mun:munMapa(),isentoFeriado,nomeEst:e=>{const i=estInfo(e);return (i&&i.t)||e},pref:(rec,data)=>resolvePref(pf,rec,data),feriados:aplicar(cfgBase.feriados,cad.feriados||{}),folgas:aplicar(cfgBase.folgas,cad.folgas||{})})}
+function efetivo(){const pf=aplicar(cfgBase.prefixos,cad.prefixos||{});for(const k in pf){const v=pf[k];if(v&&v.b&&baseNorm(v.b)!==v.b)pf[k]=Object.assign({},v,{b:baseNorm(v.b)})}return Object.assign({},cfgBase,{prefixos:pf,mun:munMapa(),isentoFeriado,nomeEst:e=>{const i=estInfo(e);return (i&&i.t)||e},pref:(rec,data)=>resolvePref(pf,rec,data),feriados:aplicar(cfgBase.feriados,cad.feriados||{}),folgas:aplicar(cfgBase.folgas,cad.folgas||{})})}
 function montar(){
   if(!cfgBase||!hist) return;
   cfg=efetivo();
@@ -3213,7 +3216,7 @@ function abrirDiaEst(rows,e,d){
   const fer=L.find(r=>r.feriado);
   $('mdTit').textContent=e+' · '+semana(d)+', '+dataBR(d);
   const ord=L.slice().sort((a,b)=>{const x=a.prev?a.real/a.prev:9,y=b.prev?b.real/b.prev:9;return x-y||a.rec.localeCompare(b.rec)});
-  const linha=r=>{const p=r.prev?r.real/r.prev:null,sit=!r.ativo||(!r.real&&r.ini==null)?'<span class="pill nao">Sem atividade</span>':!r.prev?'<span class="pill nd">Sem previsto</span>':'<span class="pill '+cls(p)+'">'+Disp.classificar(p).txt+'</span>';
+  const linha=r=>{const p=r.prev?r.real/r.prev:null,sit=!r.ativo||(!r.real&&r.ini==null)?'<span class="pill nao">Sem atividade</span>':(r.ativo&&r.ini!=null&&r.fim!=null&&r.disp===0&&r.fim<r.ini)?'<span class="pill par" title="O fim registrado é anterior ao início (atividade encerrada fora do dia ou dado errado no SIGA). O turno não é contado.">Fim inconsistente</span>':!r.prev?'<span class="pill nd">Sem previsto</span>':'<span class="pill '+cls(p)+'">'+Disp.classificar(p).txt+'</span>';
     return '<tr><td class="nw"><b class="mono">'+esc(r.rec)+'</b></td><td class="nw">'+esc(r.base)+'</td><td class="n">'+(r.ini!=null&&r.ativo?hhmm(r.ini):'–')+'</td><td class="n">'+(r.fim!=null&&r.ativo?hhmm(r.fim):'–')+'</td><td class="n">'+(r.alm?hhmm(r.alm):'–')+'</td><td class="n">'+(r.ind?hhmm(r.ind):'–')+'</td><td class="n"><b>'+hhmm(r.real)+'</b></td><td class="n">'+hhmm(r.prev)+'</td><td class="n"><b>'+(p==null?'–':pct(p))+'</b></td><td>'+sit+'</td></tr>'};
   $('mdCorpo').innerHTML='<div class="md-k"><div><span>Disponibilidade</span><b class="'+(pp==null?'':cls(pp))+'">'+(pp==null?'–':pct(pp))+'</b></div><div><span>Turno real</span><b>'+hhmm(R)+'</b></div><div><span>Previsto</span><b>'+hhmm(P)+'</b></div><div><span>Equipes</span><b>'+L.length+'</b></div><div><span>Sem atividade</span><b>'+semAt+'</b></div></div>'
     +(fer?'<p class="muted" style="margin:0 0 8px;font-size:12.5px">Feriado / folga: '+esc(fer.feriado)+'</p>':'')
@@ -3446,13 +3449,14 @@ function renderCadastros(){try{renderEstruturas()}catch(e){console.error('estrut
   const unq=f=>[...new Set(P0.map(([k,v])=>f(k,v)).filter(Boolean))].sort();
   const fill=(id,L,tx)=>{const el=$(id),v=el.value;el.innerHTML='<option value="">'+tx+'</option>'+L.map(x=>'<option>'+esc(x)+'</option>').join('');el.value=L.includes(v)?v:''};
   fill('cfBase',unq((k,v)=>v.b),'Todas');fill('cfGer',unq((k,v)=>v.g),'Todas');fill('cfEst',unq((k,v)=>v.e),'Todas');fill('cfTipo',unq(k=>classeEq(k).t),'Todos');
-  const fb=$('cfBase').value,fg=$('cfGer').value,fe=$('cfEst').value,ft=$('cfTipo').value,fs=$('cfSit').value;
+  const fb=$('cfBase').value,fg=$('cfGer').value,fe=$('cfEst').value,ft=$('cfTipo').value,fs=$('cfSit').value,ftn=$('cfTurno').value;
   const lst=P0.filter(([k,v])=>{
     if(q.length){const tx=(k+' '+v.e+' '+v.b+' '+v.g).toUpperCase();if(!q.some(t=>tx.includes(t)))return false}
     if(fb&&v.b!==fb)return false;if(fg&&v.g!==fg)return false;if(fe&&v.e!==fe)return false;
     const pi=PCFG&&PCFG.idx&&PCFG.idx[k];
     if(ft&&classeEq(k).t!==ft)return false;
     if(fs==='per'&&periodosPref(v).length<2)return false;
+    if(ftn&&turnoPref(k,v)!==ftn)return false;
     if(fs==='sm'&&pi&&pi.meta>0)return false;
     return true}).sort((a,b)=>a[0]<b[0]?-1:1);
   cadVis=lst.map(x=>x[0]);for(const k of [...cadSel])if(!cfg.prefixos[k])cadSel.delete(k);
@@ -3467,8 +3471,8 @@ function renderCadastros(){try{renderEstruturas()}catch(e){console.error('estrut
   $('dlEst').innerHTML=ests.map(v=>'<option value="'+esc(v)+'">').join('');$('dlBase').innerHTML=bases.map(v=>'<option value="'+esc(v)+'">').join('');$('dlGer').innerHTML=gers.map(v=>'<option value="'+esc(v)+'">').join('');
 }
 $('cadBusca').addEventListener('input',renderCadastros);
-['cfBase','cfGer','cfEst','cfTipo','cfSit'].forEach(i=>$(i).addEventListener('change',renderCadastros));
-$('cfLimpa').onclick=()=>{['cfBase','cfGer','cfEst','cfTipo','cfSit'].forEach(i=>$(i).value='');$('cadBusca').value='';renderCadastros()};
+['cfBase','cfGer','cfEst','cfTipo','cfSit','cfTurno'].forEach(i=>$(i).addEventListener('change',renderCadastros));
+$('cfLimpa').onclick=()=>{['cfBase','cfGer','cfEst','cfTipo','cfSit','cfTurno'].forEach(i=>$(i).value='');$('cadBusca').value='';renderCadastros()};
 $('cadAll').onchange=e=>{$('t-cad').querySelectorAll('.cad-ck').forEach(c=>{c.checked=e.target.checked;e.target.checked?cadSel.add(c.value):cadSel.delete(c.value)});cadSelPinta()};
 $('b-cadSelTodos').onclick=()=>{cadVis.forEach(k=>cadSel.add(k));renderCadastros()};
 $('b-cadSelLimpa').onclick=()=>{cadSel.clear();renderCadastros()};
@@ -3608,7 +3612,8 @@ function prdAplicarCad(){
   for(const k in ov){const o=ov[k];if(o===null){delete mapa[k];continue}if(!o)continue;
     let p=mapa[k];if(!p){if(o.pm==null&&!o.pt)continue;p=mapa[k]=[k,o.b||'',o.pe||o.e||'',0,'']}
     if(o.b)p[1]=o.b;if(o.pe)p[2]=o.pe;if(o.pm!=null)p[3]=o.pm;if(o.pt)p[4]=o.pt}
-  for(const p of Object.values(mapa)){const v=cfg&&cfg.prefixos&&cfg.prefixos[p[0]],m=v&&estPrd(v.e);if(m){p[4]=m[0];p[2]=m[1]}}
+  /* a base vem do cadastro de Cadastros; sem cadastro, o nome do arquivo de produção entra sem acento, como no cadastro (evita "SANTA INES" e "SANTA INÊS" lado a lado) */
+  for(const p of Object.values(mapa)){const v=cfg&&cfg.prefixos&&cfg.prefixos[p[0]],m=v&&estPrd(v.e);if(m){p[4]=m[0];p[2]=m[1]}p[1]=(v&&v.b)||String(p[1]||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toUpperCase()}
   PCFG.prefixos=Object.values(mapa);PCFG.idx=null;
 }
 function perHtml(q){q=q||{};const j=q.j||[480,480,480,480,480,0,0];
@@ -3636,6 +3641,8 @@ const TL_COR={'PLANTÃO':'#711424','LIGAÇÃO NOVA':'#2f6fe0','CORTE E RELIGAÇ�
 const tlCor=g=>TL_COR[g]||'#6b6a6a',DIAS_AB=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
 function jorTxt(j){if(!Array.isArray(j)||!j.length)return '–';const seg=[];let i=0;while(i<7){let k=i;while(k+1<7&&(j[k+1]||0)===(j[i]||0))k++;seg.push((i===k?DIAS_AB[i]:DIAS_AB[i]+'–'+DIAS_AB[k])+' '+((j[i]||0)?minParaHora(j[i]):'folga'));i=k+1}return seg.join(' · ')}
 function tlPeriodos(k){const v=cfg.prefixos[k];let per=periodosPref(v);const n0=per.length;if(!per.length){const pi=PCFG&&PCFG.idx&&PCFG.idx[k],i=estInfo(v.e);per=[{de:'',ate:'',e:v.e,j:v.j,pm:pi&&pi.meta!=null?pi.meta:(v.pm!=null?v.pm:null),dias:v.dias||(i&&i.d==='u'?'U':'T'),ini:Number.isFinite(v.ini)?v.ini:null,fim:Number.isFinite(v.fim)?v.fim:null}]}const m=mesclaPeriodos(per);return{per:m,uniu:n0-m.length}}
+/* turno do prefixo dos plantões 16h: final 001M/002M = manhã, 001T/002T = tarde (só vale para o plantão 16h) */
+function turnoPref(k,v){if(aderGrupo((v&&v.e)||'')!=='16H')return '';const m=/(?:001|002)([MT])$/.exec(String(k).toUpperCase());return m?m[1]:''}
 function abrirTimeline(k){
   const v=cfg.prefixos[k];if(!v)return;const TP=tlPeriodos(k),per=TP.per,hoje=hojeIso(),T=x=>Date.parse(x+'T00:00:00Z');
   const nome=e=>{const i=estInfo(e);return (i&&i.t)||e||'–'},grp=e=>{const i=estInfo(e);return i&&(i.gr||i.t)},dd=(a,b)=>Math.round((T(b)-T(a))/864e5)+1;
@@ -3685,7 +3692,7 @@ $('b-novoPref').onclick=()=>abrirPref(null);
 $('formPref').addEventListener('submit',e=>{e.preventDefault();$('b-salvaPref').click()});
 $('b-fechaCad').onclick=fecharPref;$('cadFundo').onclick=fecharPref;
 $('b-salvaPref').onclick=async()=>{
-  const k=$('cpPref').value.trim(),g=$('cpGer').value.trim().toUpperCase(),b=$('cpBase').value.trim().toUpperCase(),err=m=>{$('cpMsg').innerHTML='<div class="note err">'+m+'</div>'};
+  const k=$('cpPref').value.trim(),g=$('cpGer').value.trim().toUpperCase(),b=baseNorm($('cpBase').value),err=m=>{$('cpMsg').innerHTML='<div class="note err">'+m+'</div>'};
   if(!k||!g||!b){err('Preencha prefixo, gerência e base.');return}
   if(!editPref&&cfg.prefixos[k]){err('Esse prefixo já existe. Use Editar na lista.');return}
   const per=[];
@@ -5017,6 +5024,8 @@ const IF_=['i-base','i-tipo','i-rec'];
 const IF_NOME={'i-base':'Base','i-tipo':'Tipo de equipe','i-rec':'Prefixo'};
 const I_COR=t=>t==null?null:t<=METAS.iniOk?'g':t<=METAS.iniAt?'y':'r';
 const I_SIGLAS=['BCB','BDC','ITM','PDS','PDT','STI'];
+/* base sempre como no cadastro: maiúsculo e sem acento (evita "SANTA INES" e "SANTA INÊS" lado a lado) */
+function baseNorm(b){return String(b==null?'':b).normalize('NFD').replace(/[̀-ͯ]/g,'').trim().toUpperCase()}
 const iNomeBase=s=>NOME_SIGLA[s]||(s==='BDC'?'Barra do Corda':s);
 /* MAN/OBRAS → por dia e prefixo: c = 1º checklist de início do turno; a = atividades seguintes [min, lat, lon, tipo, cidade, bairro] */
 function iniDeLinhas(rows){
@@ -5110,7 +5119,8 @@ function renderIni(){
   const bases=I_SIGLAS.filter(s=>L.some(l=>l.base===s));
   const pc=v=>'<td class="n">'+(v==null?'–':pct(v))+'</td>';
   $('iFaixas').innerHTML=bases.map(b=>{const B=L.filter(l=>l.base===b);return '<tr data-ibase="'+b+'" title="Clique para ver as equipes de '+b+'"><td><b>'+b+'</b></td>'+pc(iPctF(B,'g'))+pc(iPctF(B,'y'))+pc(iPctF(B,'r'))+'</tr>'}).join('')+'<tr class="tot"><td>Geral</td>'+pc(iPctF(L,'g'))+pc(iPctF(L,'y'))+pc(iPctF(L,'r'))+'</tr>';
-  $('iDesl').innerHTML=bases.map(b=>{const D=iDesl(L.filter(l=>l.base===b));return '<tr><td><b>'+b+'</b></td><td class="n">'+(D.km==null?'–':n1(D.km))+'</td><td class="n">'+iHmin(D.min)+'</td></tr>'}).join('')+(()=>{const D=iDesl(L);return '<tr class="tot"><td>Geral</td><td class="n">'+(D.km==null?'–':n1(D.km))+'</td><td class="n">'+iHmin(D.min)+'</td></tr>'})();
+  $('iDesl').innerHTML=bases.map(b=>{const D=iDesl(L.filter(l=>l.base===b));return '<tr><td><b>'+b+'</b></td><td class="n">'+(D.km==null?'–':n1(D.km))+'</td><td class="n">'+iHmin(D.min)+'</td><td class="n" id="iSg-'+b+'">…</td></tr>'}).join('')+(()=>{const D=iDesl(L);return '<tr class="tot"><td>Geral</td><td class="n">'+(D.km==null?'–':n1(D.km))+'</td><td class="n">'+iHmin(D.min)+'</td><td class="n" id="iSg-ALL">…</td></tr>'})();
+  iniSigaTabela(L,bases);
   // grade prefixo × dia
   const recs=[...new Set(L.map(l=>l.rec))].sort((a,b)=>{const ba=a.split('-')[1],bb=b.split('-')[1];return ba===bb?(a<b?-1:1):(ba<bb?-1:1)});
   const idx={};for(const l of L)idx[l.rec+'|'+l.data]=l;IIDX=idx;
@@ -5170,21 +5180,34 @@ function iMapaHtml(l){
 }
 /* mapa real (OpenStreetMap) com a rota pelas estradas; se não carregar, fica o esquema acima */
 /* atividades do dia da equipe no banco SIGA (MAN, OBRAS, COI, FIS): horário, tipo, OS, cidade, status e deslocamento informado */
-async function iniAtividadesDia(rec,d){
-  const out=[];
+const iAtvCache=new Map(),iChv=x=>String(x||'').replace(/[^A-Za-z0-9-]/g,'');
+async function iniIdxDia(d){
+  const ver=d+'|'+['MAN','OBRAS','COI','FIS'].map(f=>bancoIdxDe(f)[d]||0).join(','),c0=iAtvCache.get(d);if(c0&&c0.ver===ver)return c0.m;
+  const m=new Map();
   for(const f of ['MAN','OBRAS','COI','FIS']){if(!bancoIdxDe(f)[d])continue;
     const D=await bancoDia(f,d),c=D.cols,ix=n=>c.indexOf(n),iR=ix('Recurso');if(iR<0)continue;
     const iT=ix('Tipo de Atividade#2')>=0?ix('Tipo de Atividade#2'):ix('Tipo de Atividade (2)')>=0?ix('Tipo de Atividade (2)'):ix('Tipo de Atividade'),g=(r,n)=>{const i=ix(n);return i<0||r[i]==null?'':String(r[i]).trim()};
-    for(const r of D.rows){if(String(r[iR]||'').replace(/[^A-Za-z0-9-]/g,'')!==rec.replace(/[^A-Za-z0-9-]/g,''))continue;
-      out.push({f,ini:Disp.parseHora(r[ix('Início')]),fim:Disp.parseHora(r[ix('Fim')]),tipo:iT>=0&&r[iT]!=null?String(r[iT]).trim():'',os:g(r,'Ordem de Serviço')||g(r,'Número da Nota'),cid:g(r,'Cidade'),bai:g(r,'Bairro'),end:g(r,'Endereço'),st:g(r,'Status da Atividade'),desl:g(r,'Tempo de Deslocamento'),dur:g(r,'Duração'),obs:g(r,'Observação')})}}
-  out.sort((a,b)=>(a.ini==null?1e9:a.ini)-(b.ini==null?1e9:b.ini));return out}
+    const iI=ix('Início'),iF=ix('Fim');
+    for(const r of D.rows){const k=iChv(r[iR]);let L=m.get(k);if(!L)m.set(k,L=[]);
+      L.push({f,ini:Disp.parseHora(r[iI]),fim:Disp.parseHora(r[iF]),tipo:iT>=0&&r[iT]!=null?String(r[iT]).trim():'',os:g(r,'Ordem de Serviço')||g(r,'Número da Nota'),cid:g(r,'Cidade'),bai:g(r,'Bairro'),end:g(r,'Endereço'),st:g(r,'Status da Atividade'),desl:g(r,'Tempo de Deslocamento'),dur:g(r,'Duração'),obs:g(r,'Observação')})}}
+  iAtvCache.set(d,{ver,m});return m}
+async function iniAtividadesDia(rec,d){const m=await iniIdxDia(d),out=(m.get(iChv(rec))||[]).slice();out.sort((a,b)=>(a.ini==null?1e9:a.ini)-(b.ini==null?1e9:b.ini));return out}
+/* deslocamento informado no SIGA para a 1ª atividade do turno (minutos); null se não houver */
+async function iniSigaDe(l){const A=await iniAtividadesDia(l.rec,l.data),prim=A.find(a=>a.ini!=null&&a.ini===l.t&&!/^checklist/i.test(a.tipo));if(!prim||!prim.desl)return null;const m=Disp.parseHora(prim.desl);return m==null?null:m}
+let iSigaTok=0;
+async function iniSigaTabela(L,bases){
+  const tok=++iSigaTok,por={},tot={s:0,n:0};
+  const L2=L.slice();for(let i=0;i<L2.length;i+=40){const parte=await Promise.all(L2.slice(i,i+40).map(l=>iniSigaDe(l).then(v=>({l,v})).catch(()=>({l,v:null}))));if(tok!==iSigaTok)return;
+    for(const {l,v} of parte){if(v==null||v<=0)continue;const o=por[l.base]||(por[l.base]={s:0,n:0});o.s+=v;o.n++;tot.s+=v;tot.n++}}
+  const ch=(id,o)=>{const e=$(id);if(!e)return;e.textContent=o&&o.n?iHmin(Math.round(o.s/o.n)):'–';e.title=o&&o.n?o.n+' turno(s) com deslocamento informado no SIGA':'sem deslocamento informado no SIGA'};
+  for(const b of bases)ch('iSg-'+b,por[b]);ch('iSg-ALL',tot)}
 let iMapG=null,iDiaTok=0;
 async function iniDia(ik){
   const l=IIDX[ik];if(!l)return;const tok=++iDiaTok;
   if(iMapG){try{iMapG.remove()}catch(e){}iMapG=null}
   const eq=ICFG.equipes[l.rec.toUpperCase()]||[],bLa=eq[2],bLo=eq[3],temP=l.la!=null&&l.lo!=null,cor=I_COR(l.t),est=l.km;
   abrirDet({tit:l.rec+' · '+semana(l.data)+', '+dataBR(l.data)+' · início das atividades',
-    kpis:[['1ª atividade',aHM(l.t),cor==='g'?'sup':cor==='y'?'par':'nao'],['Faixa',iFx(l.t).replace(/<[^>]+>/g,'')],['Base',esc(l.base)],['Distância','<span id="iKmR">'+(est!=null?'≈ '+n1(est)+' km':'–')+'</span>'],['Deslocamento','<span id="iMinR">'+(est!=null?'≈ '+iHmin(Math.round(est/ICFG.velocidade*60)):'–')+'</span>'],['Checklist','<span id="iChk">…</span>']],
+    kpis:[['1ª atividade',aHM(l.t),cor==='g'?'sup':cor==='y'?'par':'nao'],['Faixa',iFx(l.t).replace(/<[^>]+>/g,'')],['Base',esc(l.base)],['Distância','<span id="iKmR">'+(est!=null?'≈ '+n1(est)+' km':'–')+'</span>'],['Desloc. rota','<span id="iMinR">'+(est!=null?'≈ '+iHmin(Math.round(est/ICFG.velocidade*60)):'–')+'</span>'],['Desloc. SIGA','<span id="iSigaK">…</span>'],['Checklist','<span id="iChk">…</span>']],
     aviso:esc(l.info||''),semTab:true,
     extra:'<div class="im-g" id="iMapaG"></div><p class="muted" id="iMapaGn" style="font-size:11.5px;margin:4px 0 12px">'+(temP?'Carregando o mapa…':'')+'</p><div id="iAtvIni"><p class="muted" style="font-size:12.5px">Carregando as atividades do dia…</p></div>'});
   if(temP){ctLeaflet(()=>{const el=$('iMapaG');if(!el||tok!==iDiaTok)return;
@@ -5207,6 +5230,7 @@ async function iniDia(ik){
   if(!A.length){$('iAtvIni').innerHTML='<p class="muted" style="font-size:12.5px">As atividades deste dia ainda não estão no banco SIGA (MAN, OBRAS ou COI).</p>';return}
   const prim=A.find(a=>a.ini!=null&&a.ini===l.t&&!/^checklist/i.test(a.tipo))||A.find(a=>a.ini!=null&&(c0==null||a.ini>c0)&&!/^checklist/i.test(a.tipo));
   const kv=(k,v)=>v?'<div><span>'+k+'</span><b>'+esc(v)+'</b></div>':'';
+  if($('iSigaK')){const sm=prim&&prim.desl?Disp.parseHora(prim.desl):null;$('iSigaK').textContent=sm!=null?iHmin(sm):'–';$('iSigaK').title='Tempo de Deslocamento registrado no SIGA para esta atividade'}
   const bloco=prim?'<h4 style="margin:6px 0 8px;font-size:13.5px">1ª atividade do dia</h4><div class="md-k" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">'+kv('Tipo',prim.tipo)+kv('Ordem / nota',prim.os)+kv('Início',aHM(prim.ini))+kv('Fim',prim.fim!=null?aHM(prim.fim):'')+kv('Status',prim.st)+kv('Cidade',prim.cid)+kv('Bairro',prim.bai)+kv('Endereço',prim.end)+kv('Deslocamento (SIGA)',prim.desl)+kv('Duração',prim.dur)+kv('Fonte',prim.f)+'</div>'+(prim.obs?'<p class="muted" style="margin:0 0 10px;font-size:12px">Obs.: '+esc(prim.obs)+'</p>':''):'';
   const seq=A.slice(0,40).map(a=>'<tr'+(a===prim?' style="background:var(--accent-soft)"':'')+'><td class="nw"><b>'+(a.ini!=null?aHM(a.ini):'–')+'</b>'+(a.fim!=null?' – '+aHM(a.fim):'')+'</td><td>'+esc(a.tipo)+(a===prim?' <span class="pill ate">1ª atividade</span>':'')+'</td><td>'+esc(a.os)+'</td><td>'+esc(a.cid)+'</td><td>'+esc(a.st)+'</td><td class="n">'+esc(a.desl)+'</td></tr>').join('');
   $('iAtvIni').innerHTML=bloco+'<h4 style="margin:10px 0 6px;font-size:13.5px">Atividades do dia · '+A.length+'</h4><div class="tw md-t"><table class="utab"><thead><tr><th>Horário</th><th>Atividade</th><th>Ordem / nota</th><th>Cidade</th><th>Status</th><th class="n">Deslocamento (SIGA)</th></tr></thead><tbody>'+seq+'</tbody></table></div>'+(A.length>40?'<p class="muted" style="font-size:11.5px;margin:6px 0 0">Mostrando as 40 primeiras.</p>':'')
@@ -5295,6 +5319,10 @@ function lerAjusteEscala(wb){
   return {just,ajustes};
 }
 /* regras do horário de início da aderência: valores de fábrica; o que for salvo em Cadastros > Aderência à escala vale no lugar */
+/* grupo da estrutura para o prazo do indicador Primeiro serviço: 16H, 8H, LGN, CORTE, SEED, MOTO (pelo cadastro de subtipos; nomes antigos da planilha são reconhecidos pelo texto) */
+function aderGrupo(est){const E=String(est||'').trim().toUpperCase(),i=estInfo(E);
+  if(i&&i.t){if(i.t==='PLANTÃO 16H')return '16H';if(i.t==='PLANTÃO MOTO')return 'MOTO';if(i.t==='PLANTÃO 8H')return '8H';if(i.gr==='LIGAÇÃO NOVA')return 'LGN';if(i.gr==='CORTE E RELIGAÇÃO')return 'CORTE';if(i.gr==='SEED MONEY')return 'SEED'}
+  if(/16 HORAS/.test(E))return '16H';if(/MOTO/.test(E))return 'MOTO';if(/SEED/.test(E))return 'SEED';if(/CORTE/.test(E))return 'CORTE';if(/LIGA[ÇC][ÃA]O NOVA/.test(E))return 'LGN';if(/PLANT[ÃA]O.*8 HORAS/.test(E))return '8H';return ''}
 const AR_PADRAO_EST=est=>est==='PLANTÃO 16 HORAS 4X4'?{m:420,t:900,dom:true}:A_T8.includes(est)?{h:480,dom:A_TODOS.includes(est)}:null;
 function aderRegraEst(est){const o=cad.aderRegras&&cad.aderRegras.est&&cad.aderRegras.est[est];return o||AR_PADRAO_EST(est)}
 function aderTol(){const o=cad.aderRegras||{};return{atr:Number.isFinite(o.tolAtr)?o.tolAtr:30,ant:Number.isFinite(o.tolAnt)?o.tolAnt:120}}
@@ -5333,7 +5361,8 @@ function montarAder(){
       const mot=[];if(act&&act[2])for(const m of act[2])mot.push({k:m[0],t:m[1]||'',i:m[2],d:m[3],o:'COI'});
       if(j&&(j[1]||j[0]!=null))mot.push({k:'Justificativa da planilha (AJUSTE ESCALA)',t:j[1]||'',i:j[0],d:null,o:'Planilha'});
       if(inter.has(rec+'|'+d)&&!mot.some(m=>/interjornada/i.test(m.k)))mot.push({k:'Interjornada',t:'(registro histórico da escala)',i:null,d:null,o:'Histórico'});
-      linhas.push({rec,data:d,mes:d.slice(0,7),base:baseDia||base,est:(iE&&iE.t)||cDia.sub||'',coord:c0.coord||'',turno,lim,chk,first:act?act[1]:null,tem:!!act,inter:inter.has(rec+'|'+d),st,just:j?j[1]:'',mot});
+      const ov=!!ajd||INICIO_FIXO[rec]!=null||!!(j&&j[0]!=null);
+      linhas.push({ov,rec,data:d,mes:d.slice(0,7),base:baseDia||base,est:(iE&&iE.t)||cDia.sub||'',coord:c0.coord||'',turno,lim,chk,first:act?act[1]:null,tem:!!act,inter:inter.has(rec+'|'+d),st,just:j?j[1]:'',mot});
     }}
   AR={linhas,ultima:d1,dias};
   preencherFiltrosAder();if(indAtual()==='ader')renderAder();renderInicio();
@@ -5477,9 +5506,17 @@ function aderDet(rec,d){
 
 /* ---------- Primeiro serviço (Kaizen) — visão dentro da Aderência ----------
    1º serviço = menor início de atividade do dia entre 05:00 e 23:00 (mesma regra do Kaizen, já gravada em l.first).
-   Limite = início da escala da equipe no dia (l.lim, já com os ajustes da planilha AJUSTE ESCALA).
+   Prazo = psLim(l): regra fixa por tipo de equipe (ver abaixo); sem regra, ou com horário ajustado à mão, vale o início da escala (l.lim).
    Dentro da meta: 1º serviço <= limite (+ tolerância opcional de 0, 15 ou 30 min). Interjornada não entra na conta (amarelo).
    Média do horário: não conta domingo, e no sábado só conta 1º serviço até 12:00 (regra do GOMAN). */
+/* Prazo do 1º serviço (indicador Primeiro serviço): plantão 16H manhã (final 001M/002M) 07:30 e tarde (001T/002T) 15:30;
+   ligação nova, corte, seed money e plantão moto 08:30. Demais estruturas e dias com horário ajustado à mão seguem a escala (l.lim). */
+function psLim(l){
+  if(l.lim==null||l.ov)return l.lim;
+  const pv=prefEm(l.rec,l.data),g=pv?aderGrupo(pv.e):'';
+  if(g==='16H'){const m=/(?:001|002)([MT])$/.exec(String(l.rec).toUpperCase());return m?(m[1]==='M'?450:930):l.lim}
+  if(g==='LGN'||g==='CORTE'||g==='SEED'||g==='MOTO')return 510;
+  return l.lim}
 let aModo='ader';try{aModo=localStorage.getItem('aModo')==='ps'?'ps':'ader'}catch(e){}
 let ordemPS={k:'pct',dir:-1};let PS_TOL=30;try{const v=localStorage.getItem('psTol');if(v!=null&&[0,15,30].includes(+v))PS_TOL=+v}catch(e){}
 const PS_ST={DENTRO:['Dentro da meta','ate'],FORA:['Fora da meta','nao'],INT:['Interjornada','par'],SEM:['Sem atividade','nd'],LIVRE:['Folga / sem turno','nd'],DOM:['Domingo','nd']};
@@ -5490,7 +5527,7 @@ function psSt(l){
   if(l.lim==null)return 'LIVRE';
   if(l.first==null)return 'SEM';
   if(psInter(l))return 'INT';
-  return l.first<=l.lim+PS_TOL?'DENTRO':'FORA';
+  return l.first<=psLim(l)+PS_TOL?'DENTRO':'FORA';
 }
 function statsPS(L){
   let din=0,fo=0,it=0,atS=0,atN=0,mS=0,mN=0;const eq=new Set();
@@ -5498,12 +5535,12 @@ function statsPS(L){
     if(st==='INT')it++;
     if(st!=='DENTRO'&&st!=='FORA')continue;
     eq.add(l.rec);
-    if(st==='DENTRO')din++;else{fo++;atS+=l.first-l.lim;atN++}
+    if(st==='DENTRO')din++;else{fo++;atS+=l.first-psLim(l);atN++}
     if(!(psDow(l.data)===6&&l.first>720)){mS+=l.first;mN++}}
   const tot=din+fo;
   return {dentro:din,fora:fo,tot,pct:tot?din/tot:null,inter:it,atraso:atN?Math.round(atS/atN):null,media:mN?mS/mN:null,eq:eq.size};
 }
-const psDf=l=>l.first==null||l.lim==null?'–':(l.first-l.lim>0?'+':'')+(l.first-l.lim)+' min';
+const psDf=l=>l.first==null||l.lim==null?'–':(l.first-psLim(l)>0?'+':'')+(l.first-psLim(l))+' min';
 const psPill=l=>{const x=PS_ST[psSt(l)];return '<span class="pill '+x[1]+'">'+x[0]+'</span>'};
 function psKpis(S){return [['Dentro da meta',S.dentro.toLocaleString('pt-BR')],['Fora da meta',S.fora.toLocaleString('pt-BR')],['% dentro da meta',pct(S.pct)],['Média 1º serviço',S.media==null?'–':aHM(S.media)]].map(x=>'<div class="akpi"><span>'+x[0]+'</span><b>'+x[1]+'</b></div>').join('')}
 function renderPS(L,m,ult){
@@ -5530,7 +5567,7 @@ function gradePS(L,m){
     const s=statsPS(Object.values(linha));
     h+='<tr><td class="nm" data-psn="'+esc(r)+'" title="Clique para ver o mês de '+esc(r)+'">'+esc(r)+'</td>'+dias.map(d=>{const l=linha[d];if(!l)return'<td class="c"></td>';
       const st=psSt(l);if(st==='DOM'||st==='LIVRE')return'<td class="c"></td>';
-      const tip=esc(r)+' · '+dataBR(d)+' · escala '+aHM(l.lim)+(l.first!=null?' · 1º serviço '+aHM(l.first)+' ('+psDf(l)+')':' · sem atividade')+(st==='INT'?' · INTERJORNADA: não entra na conta':'')+(l.just?' · '+esc(l.just):'');
+      const tip=esc(r)+' · '+dataBR(d)+' · prazo '+aHM(psLim(l))+(l.first!=null?' · 1º serviço '+aHM(l.first)+' ('+psDf(l)+')':' · sem atividade')+(st==='INT'?' · INTERJORNADA: não entra na conta':'')+(l.just?' · '+esc(l.just):'');
       if(st==='SEM')return '<td class="c ps-sem" data-ps="'+esc(r)+'|'+d+'" title="'+tip+'">–</td>';
       const cl=st==='DENTRO'?'ps-in':st==='FORA'?'ps-fora':'ps-int';
       return '<td class="c '+cl+'" data-ps="'+esc(r)+'|'+d+'" title="'+tip+' · clique para detalhar">'+aHM(l.first)+'</td>'}).join('')+'<td class="n">'+aPct(s.pct)+'</td></tr>'}
@@ -5538,9 +5575,9 @@ function gradePS(L,m){
   if(!recs.length)$('psGrade').innerHTML='<tbody><tr><td><div class="empty">Nenhuma equipe com turno neste filtro.</div></td></tr></tbody>';
 }
 function atrasosPS(L){
-  const A=L.filter(l=>psSt(l)==='FORA').map(l=>Object.assign({df:l.first-l.lim},l)).sort((a,b)=>b.df-a.df||(a.rec<b.rec?-1:1)).slice(0,15);
+  const A=L.filter(l=>psSt(l)==='FORA').map(l=>Object.assign({df:l.first-psLim(l)},l)).sort((a,b)=>b.df-a.df||(a.rec<b.rec?-1:1)).slice(0,15);
   $('psAtrN').textContent=A.length?A.length+' de '+L.filter(l=>psSt(l)==='FORA').length+' turnos fora da meta':'';
-  $('psAtrT').innerHTML=A.length?'<thead><tr><th>Equipe</th><th>Base</th><th>Data</th><th class="n">Escala</th><th class="n">1º serviço</th><th class="n">Atraso</th></tr></thead><tbody>'+A.map(l=>'<tr data-psn="'+esc(l.rec)+'" style="cursor:pointer"><td><b>'+esc(l.rec)+'</b></td><td>'+l.base+'</td><td>'+dataBR(l.data)+' <span class="muted">'+semana(l.data).slice(0,3)+'</span></td><td class="n">'+aHM(l.lim)+'</td><td class="n">'+aHM(l.first)+'</td><td class="n"><b>+'+(l.df>=60?Math.floor(l.df/60)+'h'+String(l.df%60).padStart(2,'0'):l.df+' min')+'</b></td></tr>').join('')+'</tbody>':'<tbody><tr><td><div class="empty">Nenhum turno fora da meta neste filtro.</div></td></tr></tbody>';
+  $('psAtrT').innerHTML=A.length?'<thead><tr><th>Equipe</th><th>Base</th><th>Data</th><th class="n">Prazo</th><th class="n">1º serviço</th><th class="n">Atraso</th></tr></thead><tbody>'+A.map(l=>'<tr data-psn="'+esc(l.rec)+'" style="cursor:pointer"><td><b>'+esc(l.rec)+'</b></td><td>'+l.base+'</td><td>'+dataBR(l.data)+' <span class="muted">'+semana(l.data).slice(0,3)+'</span></td><td class="n">'+aHM(l.lim)+'</td><td class="n">'+aHM(l.first)+'</td><td class="n"><b>+'+(l.df>=60?Math.floor(l.df/60)+'h'+String(l.df%60).padStart(2,'0'):l.df+' min')+'</b></td></tr>').join('')+'</tbody>':'<tbody><tr><td><div class="empty">Nenhum turno fora da meta neste filtro.</div></td></tr></tbody>';
 }
 function rankPos(arr,key){let rk=0,prev;arr.forEach(x=>{if(x[key]!==prev){rk++;prev=x[key]}x.rk=rk})}
 function rankingPS(L,S){
@@ -5569,12 +5606,12 @@ function psDet(rec,d){
   const Ls=AR.linhas.filter(l=>l.rec===rec&&(d?l.data===d:l.mes===m)).sort((a,b)=>a.data<b.data?-1:1);
   if(!Ls.length)return;
   const S=statsPS(Ls),l0=Ls[0];
-  const kp=d?[['Escala',l0.lim!=null?aHM(l0.lim):'–'],['1º serviço',l0.first!=null?aHM(l0.first):'–'],['Diferença',psDf(l0),psSt(l0)==='FORA'?'mal':''],['Situação',PS_ST[psSt(l0)][0]]]
+  const kp=d?[['Prazo',l0.lim!=null?aHM(psLim(l0)):'–'],['1º serviço',l0.first!=null?aHM(l0.first):'–'],['Diferença',psDf(l0),psSt(l0)==='FORA'?'mal':''],['Situação',PS_ST[psSt(l0)][0]]]
     :[['Dentro da meta',pct(S.pct)],['Turnos dentro',S.dentro+' de '+S.tot],['Interjornadas',S.inter],['Média 1º serviço',S.media==null?'–':aHM(S.media)]];
   abrirDet({tit:rec+' · 1º serviço · '+(d?semana(d)+', '+dataBR(d):mesNome(m).replace(/^./,c=>c.toUpperCase())),
     kpis:kp,aviso:esc(l0.base)+' · '+esc(l0.est)+(l0.coord?' · coord. '+esc(l0.coord):''),
-    cols:['wDia','nEscala','n1º serviço','nDiferença','cSituação','wObservação'],
-    rows:Ls.map(l=>[dataBR(l.data)+' <span class="muted">'+semana(l.data).slice(0,3)+'</span>',l.lim!=null?aHM(l.lim):'–',l.first!=null?aHM(l.first):'–',psDf(l),psPill(l),esc([l.just||'',psInter(l)&&!l.just?'Interjornada':''].filter(Boolean).join(' | '))||'<span class="muted">–</span>']),
+    cols:['wDia','nPrazo','n1º serviço','nDiferença','cSituação','wObservação'],
+    rows:Ls.map(l=>[dataBR(l.data)+' <span class="muted">'+semana(l.data).slice(0,3)+'</span>',l.lim!=null?aHM(psLim(l)):'–',l.first!=null?aHM(l.first):'–',psDf(l),psPill(l),esc([l.just||'',psInter(l)&&!l.just?'Interjornada':''].filter(Boolean).join(' | '))||'<span class="muted">–</span>']),
     rodape:'Dentro da meta: 1ª atividade do dia (entre 05:00 e 23:00) até o horário de início da escala'+(PS_TOL?' + '+PS_TOL+' min de tolerância':'')+'. Interjornada não entra na conta.',
     filtra:{txt:'Filtrar o painel em '+rec,fn:()=>{$('a-rec').value=rec;$('a-rec').classList.add('on');renderAder()}}});
 }
@@ -6735,7 +6772,7 @@ function tmDeLinhas(rows){
   const g=(r,i)=>i<0?'':prdTxt(r[i]),dias={};let n=0;
   for(const r of rows.slice(1)){if(!r)continue;const st=g(r,c.st).trim();if(c.st>=0&&st!=='concluído'&&st!=='não concluído')continue;
     const rec=g(r,c.rec).trim().split(/\s+/)[0];if(!rec)continue;const d=Disp.parseData(r[c.dat]);if(!d)continue;
-    const pi=PCFG.idx[rec],b=c.B>=0?g(r,c.B).trim():(pi?pi.base:(TM&&TM.gb[rec])||'');
+    const pi=PCFG.idx[rec],b=baseNorm(c.B>=0?g(r,c.B).trim():(pi?pi.base:(TM&&TM.gb[rec])||''));
     const A=g(r,iK),sub=/^SEMFLENG/.test(A)?g(r,c.M):/^(MISTEC|ORCNXBTN)/.test(A)?g(r,c.AV):(g(r,c.R)||g(r,c.U));
     const E=tmMin(r[c.E]),D=tmMin(r[c.D]);
     const o=(dias[d]||(dias[d]={}))[rec]||(dias[d][rec]={b,a:{}}),e=((o.a[A]||(o.a[A]={}))[sub||'']||(o.a[A][sub||'']=[0,0,0,0]));
@@ -6801,7 +6838,7 @@ function renderTm(){
   }else if(p==='tm-prefixo'){
     const R=tmSoma(x=>okM(x)&&okB(x)?x.rec+'|'+x.a:null),RG=tmSoma(x=>okM(x)&&okB(x)?x.rec:null),AG=tmSoma(x=>okM(x)&&okB(x)?x.a:null),GG=tmSoma(x=>okM(x)&&okB(x)?'g':null).g;
     const q=($('tq-busca').value||'').trim().toUpperCase();
-    let recs=Object.keys(RG).filter(r=>!q||r.toUpperCase().includes(q)||String(TM.gb[r]||'').toUpperCase().includes(q)).map(r=>({r,b:TM.gb[r]||'',e:RG[r]}));
+    let recs=Object.keys(RG).filter(r=>!q||r.toUpperCase().includes(q)||String(TM.gb[r]||'').toUpperCase().includes(q)).map(r=>({r,b:baseNorm(TM.gb[r]||''),e:RG[r]}));
     const k=ordemTP.k,dr=ordemTP.dir,val=o=>k==='base'?o.b+'|'+o.r:k==='rec'?o.r:k==='n'?o.e[1]:k==='tme'?(tmE(o.e)||0):k==='tmd'?(tmD(o.e)||0):(tmE(R[o.r+'|'+k])||-1);
     recs.sort((a,b)=>{const x=val(a),y=val(b);return (x<y?-1:x>y?1:0)*dr});
     $('tqPrefN').textContent=recs.length+' prefixo(s) · cor: vermelho = 8% acima da média da atividade, verde = 8% abaixo';
@@ -6994,7 +7031,7 @@ function mixDeLinhas(rows){
   if(c.rec<0||c.dat<0||c.st<0||iK<0)throw new Error('Colunas do SIGA não encontradas');
   const g=(r,i)=>i<0?'':prdTxt(r[i]),dias={};let n=0;
   for(const r of rows.slice(1)){if(!r)continue;const st=g(r,c.st).trim();if(st!=='concluído'&&st!=='não concluído')continue;
-    const rec=g(r,c.rec).trim().split(/\s+/)[0],pi=PCFG.idx[rec],bs=pi?pi.base:(MX&&MX.gb[rec])||'';if(!bs)continue;const d=Disp.parseData(r[c.dat]);if(!d)continue;
+    const rec=g(r,c.rec).trim().split(/\s+/)[0],pi=PCFG.idx[rec],bs=baseNorm(pi?pi.base:(MX&&MX.gb[rec])||'');if(!bs)continue;const d=Disp.parseData(r[c.dat]);if(!d)continue;
     const K=g(r,iK),R=g(r,c.R),U=g(r,c.U),BJ=g(r,c.BJ),BK=g(r,c.BK),Q=g(r,c.Q);
     const o=dias[d]||(dias[d]={n:{},m:{},c:{},b:{}});o.b[rec]=bs;n++;
     if(Q==='NORMAL ATE A MEDICAO')o.n[rec]=(o.n[rec]||0)+1;
@@ -7018,7 +7055,7 @@ function montarMix(){
   const ds=Object.keys(dias).sort();MX={dias,ds,gb,fonte,ult:ds[ds.length-1],meses:[...new Set(ds.map(d=>d.slice(0,7)))]};
   preencherFiltrosMix();if(indAtual()==='mix')renderMix();renderInicio();
 }
-const mxBase=(o,rec)=>o.b&&rec in o.b?o.b[rec]:MX.gb[rec]||(PCFG.idx[rec]&&PCFG.idx[rec].base)||'';
+const mxBase=(o,rec)=>baseNorm(o.b&&rec in o.b?o.b[rec]:MX.gb[rec]||(PCFG.idx[rec]&&PCFG.idx[rec].base)||'');
 function preencherFiltrosMix(){
   const keep=(id,vals,todos,lb)=>{const v=$(id).value;opts($(id),vals,todos,lb);if(v&&vals.includes(v))$(id).value=v};
   const bs=new Set();for(const d of MX.ds){const o=MX.dias[d];for(const k of ['n','m','c'])for(const r in o[k]||{}){const b=mxBase(o,r);if(b)bs.add(b)}}
