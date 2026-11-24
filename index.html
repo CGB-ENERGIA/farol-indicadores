@@ -2533,9 +2533,10 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
 
   function classificar(p) {
     if (p == null || isNaN(p)) return { txt: 'Sem dados', cls: 'nd' };
-    if (p >= METAS.dispSup) return { txt: 'Supera esperado', cls: 'sup' };
-    if (p > METAS.dispMeta) return { txt: 'Atende esperado', cls: 'ate' };
-    if (p > METAS.dispPar) return { txt: 'Atende parcial', cls: 'par' };
+    const M = root.METAS || { dispSup: 0.98, dispMeta: 0.93, dispPar: 0.85 };
+    if (p >= M.dispSup) return { txt: 'Supera esperado', cls: 'sup' };
+    if (p > M.dispMeta) return { txt: 'Atende esperado', cls: 'ate' };
+    if (p > M.dispPar) return { txt: 'Atende parcial', cls: 'par' };
     return { txt: 'Não atende', cls: 'nao' };
   }
 
@@ -2552,7 +2553,7 @@ const FONTES=['COI','MAN','OBRAS','FIS'];
 let cfg=null, hist=null, dbDocs=[], locais=[], resumo=[], ultimaData=null, fontesPorData={};
 /* metas, faixas de cor e listas de exceção: valores de fábrica; o que for salvo em Cadastros vale no lugar */
 const METAS_PAD={dispMeta:.93,dispSup:.98,dispPar:.85,upsMeta:.75,aderSup:.90,aderMeta:.85,aderPar:.75,iniOk:540,iniAt:570};
-const METAS=Object.assign({},METAS_PAD);
+const METAS=window.METAS=Object.assign(window.METAS||{},METAS_PAD); /* também em window: o cálculo da disponibilidade (script separado) lê as metas daqui */
 function aplicarMetas(){const o=(cad&&cad.metas)||{};for(const k in METAS_PAD)METAS[k]=Number.isFinite(o[k])?o[k]:METAS_PAD[k];
   document.querySelectorAll('[data-lim="meta"]').forEach(b=>b.textContent='Abaixo da meta ('+Math.round(METAS.dispMeta*100)+'%)');
   document.querySelectorAll('[data-lim="par"]').forEach(b=>b.textContent='Não atende ('+Math.round(METAS.dispPar*100)+'%)')}
