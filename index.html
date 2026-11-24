@@ -1409,6 +1409,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     <div class="fld"><label for="a-mes">Mês</label><select id="a-mes"></select></div>
     <div class="fld"><label for="a-dia">Dia</label><select id="a-dia"></select></div>
     <div class="grp">Equipes</div>
+    <div class="fld"><label for="a-ger">Grupo</label><div class="msel" id="a-ger" data-todos="Todos" data-nome="grupo(s)"></div></div>
     <div class="fld"><label for="a-base">Base</label><div class="msel" id="a-base" data-todos="Todas" data-nome="base(s)"></div></div>
     <div class="fld"><label for="a-est">Estrutura</label><div class="msel" id="a-est" data-todos="Todas" data-nome="estrutura(s)"></div></div>
     <div class="fld"><label for="a-tipo">Tipo de equipe</label><div class="msel" id="a-tipo" data-todos="Todos" data-nome="tipo(s)"></div></div>
@@ -2964,7 +2965,7 @@ function msInit(el){
 function msSel(id){const st=$(id).msel;return st&&st.sel.size?st.sel:null}
 function msTxt(id){const s=msSel(id);return s?[...s].join(', '):''}
 document.addEventListener('click',()=>document.querySelectorAll('.msel-p').forEach(p=>p.hidden=true));document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.msel-p').forEach(p=>p.hidden=true)});
-['f-dia','f-base','f-ger','f-est','f-tipo','p-ct','p-base','p-tipo','p-rec','u-mes','a-base','a-est','a-tipo','a-rec','i-base','i-tipo','i-rec','q-base','q-tipo','x-base','x-tipo','t-mun','t-ef','d-pri','d-tat','d-dist','d-tipo','d-ger','d-pep','u-base','u-tipo','u-coord','u-rec'].forEach(id=>msInit($(id)));
+['f-dia','f-base','f-ger','f-est','f-tipo','p-ct','p-base','p-tipo','p-rec','u-mes','a-ger','a-base','a-est','a-tipo','a-rec','i-base','i-tipo','i-rec','q-base','q-tipo','x-base','x-tipo','t-mun','t-ef','d-pri','d-tat','d-dist','d-tipo','d-ger','d-pep','u-base','u-tipo','u-coord','u-rec'].forEach(id=>msInit($(id)));
 function opts(sel,vals,todos,lbl){
   if(sel.msel){sel.msel.setOpts(vals,lbl);return}
   const atual=sel.value;
@@ -4482,8 +4483,10 @@ $('i-busca').addEventListener('input',()=>renderIni());
 document.querySelectorAll('[data-ifunil]').forEach(b=>b.onclick=()=>abrirGaveta());
 /* ================= ADERÊNCIA À ESCALA (réplica do Power BI "Aderência à Escala - GSTC") ================= */
 let ACFG=null,AHIST=null,aderDocs=[],aderLocais={},ajusteLocal=null,aderAjDb=null,AR=null,ordemA={k:'rank',dir:1};
-const AF=['a-dia','a-base','a-est','a-tipo','a-rec'];
-const AF_NOME={'a-dia':'Dia','a-base':'Base','a-est':'Estrutura','a-tipo':'Tipo de equipe','a-rec':'Prefixo'};
+/* Equipes cujo início real difere da escala importada: horário fixo em minutos (13:00 = 780). Ajuste da planilha AJUSTE ESCALA ainda tem prioridade. */
+const INICIO_FIXO={'MA-ITM-M001M':780,'MA-VGD-E001M':780};
+const AF=['a-dia','a-ger','a-base','a-est','a-tipo','a-rec'];
+const AF_NOME={'a-dia':'Dia','a-ger':'Grupo','a-base':'Base','a-est':'Estrutura','a-tipo':'Tipo de equipe','a-rec':'Prefixo'};
 const A_T8=['PLANTÃO LEVE 8 HORAS TRIO CARRO 4X4','LIGAÇÃO NOVA MULTI 4X4','CORTE E RELIGAÇÃO LEVE','CORTE E RELIGAÇÃO (SEED MONEY)','LIGAÇÃO NOVA MULTI LEVE','PLANTÃO LEVE 8 HORAS TRIO CARRO LEVE','PLANTÃO LEVE 8 HORAS ADM MOTO'];
 const A_TODOS=['PLANTÃO LEVE 8 HORAS TRIO CARRO 4X4','PLANTÃO LEVE 8 HORAS TRIO CARRO LEVE','PLANTÃO 16 HORAS 4X4'];
 const aHM=m=>{if(m==null)return'';m=Math.round(m);return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0')};
@@ -4540,7 +4543,7 @@ function montarAder(){
     for(let d=d0;d<=d1;d=UPSCalc.addDias(d,1)){
       const i=aDif(d,ini);let turno=null;
       const ajd=ajustes.find(a=>a[0].toUpperCase()===rec.toUpperCase()&&d>=a[1]&&d<=a[2]);
-      for(const c of L){if(i<0||!c.d||c.d[i]!=='1')continue;const t=ajd?ajd[3]:turnoPadrao(c,d);if(t!=null&&(turno==null||t>turno))turno=t}
+      for(const c of L){if(i<0||!c.d||c.d[i]!=='1')continue;const t=ajd?ajd[3]:(INICIO_FIXO[rec]!=null?INICIO_FIXO[rec]:turnoPadrao(c,d));if(t!=null&&(turno==null||t>turno))turno=t}
       const act=(dias[d]||{})[rec]||null;
       if(turno==null&&!(act&&act[0]!=null))continue;
       const j=just[rec+'|'+d];const lim=j&&j[0]!=null?j[0]:turno;
@@ -4560,6 +4563,7 @@ function preencherFiltrosAder(){
   const meses=[...new Set(AR.linhas.map(l=>l.mes))].sort().reverse();const pm=$('a-mes').value;
   opts($('a-mes'),meses,null,mesNome);$('a-mes').value=pm&&meses.includes(pm)?pm:meses[0];
   const keep=(id,vals,todos,lbl)=>{const v=$(id).value;opts($(id),vals,todos,lbl);if(v&&vals.includes(v))$(id).value=v};
+  keep('a-ger',[...new Set(AR.linhas.map(l=>vgGerDe(l.rec)).filter(Boolean))].sort(),'Todos');
   keep('a-base',['BCB','ITM','PDS','PDT','STI'],'Todas',s=>s+' · '+NOME_SIGLA[s]);
   keep('a-est',[...new Set(AR.linhas.map(l=>l.est).filter(Boolean))].sort(),'Todas');
   atualizaTipos();
@@ -4567,9 +4571,9 @@ function preencherFiltrosAder(){
   preencherDiaAder();
 }
 function preencherDiaAder(){const m=$('a-mes').value,v=$('a-dia').value;const ds=Object.keys(AR.dias).filter(d=>d.startsWith(m)).sort().reverse();opts($('a-dia'),ds,'Mês inteiro',d=>dataBR(d)+' · '+semana(d).slice(0,3));if(v&&ds.includes(v))$('a-dia').value=v}
-function recAderOpts(){if(!AR)return;const b=msSel('a-base'),e=msSel('a-est'),t=msSel('a-tipo');recOpts('a-rec',[...new Set(AR.linhas.filter(l=>(!b||b.has(l.base))&&(!e||e.has(l.est))&&(!t||t.has(tipoDe(l.rec)))).map(l=>l.rec))].sort(),'Todos')}
-function filtrarAder(semMes){const m=$('a-mes').value,dia=$('a-dia').value,b=msSel('a-base'),e=msSel('a-est'),t=msSel('a-tipo'),r=msSel('a-rec');
-  return AR.linhas.filter(l=>(semMes||l.mes===m)&&(semMes||!dia||l.data===dia)&&(!b||b.has(l.base))&&(!e||e.has(l.est))&&(!t||t.has(tipoDe(l.rec)))&&(!r||r.has(l.rec)))}
+function recAderOpts(){if(!AR)return;const g=msSel('a-ger'),b=msSel('a-base'),e=msSel('a-est'),t=msSel('a-tipo');recOpts('a-rec',[...new Set(AR.linhas.filter(l=>(!g||g.has(vgGerDe(l.rec)))&&(!b||b.has(l.base))&&(!e||e.has(l.est))&&(!t||t.has(tipoDe(l.rec)))).map(l=>l.rec))].sort(),'Todos')}
+function filtrarAder(semMes){const m=$('a-mes').value,dia=$('a-dia').value,g=msSel('a-ger'),b=msSel('a-base'),e=msSel('a-est'),t=msSel('a-tipo'),r=msSel('a-rec');
+  return AR.linhas.filter(l=>(semMes||l.mes===m)&&(semMes||!dia||l.data===dia)&&(!g||g.has(vgGerDe(l.rec)))&&(!b||b.has(l.base))&&(!e||e.has(l.est))&&(!t||t.has(tipoDe(l.rec)))&&(!r||r.has(l.rec)))}
 function statsAder(L){
   let ade=0,tot=0,aus=0,atS=0,atN=0,mS=0,mN=0;
   for(const l of L){if(l.st==='ADE'||l.st==='FORA'||l.st==='AUS'){tot++;if(l.st==='ADE')ade++}
@@ -4668,7 +4672,7 @@ function rankingAder(L,S){
   document.querySelectorAll('th.sorta').forEach(th=>{th.textContent=th.textContent.replace(/ [▲▼]$/,'');if(th.dataset.k===k)th.textContent+=dir>0?' ▲':' ▼'});
 }
 document.querySelectorAll('th.sorta').forEach(th=>th.addEventListener('click',()=>{const k=th.dataset.k;ordemA=ordemA.k===k?{k,dir:-ordemA.dir}:{k,dir:['rank','rec','base','est'].includes(k)?1:-1};renderAder()}));
-['a-mes','a-dia','a-base','a-est','a-tipo','a-rec'].forEach(id=>$(id).addEventListener('change',()=>{if(id==='a-mes'){$('a-dia').value='';preencherDiaAder()}$(id).classList.toggle('on',!!$(id).value&&id!=='a-mes');renderAder()}));
+['a-mes','a-dia','a-ger','a-base','a-est','a-tipo','a-rec'].forEach(id=>$(id).addEventListener('change',()=>{if(id==='a-mes'){$('a-dia').value='';preencherDiaAder()}$(id).classList.toggle('on',!!$(id).value&&id!=='a-mes');renderAder()}));
 $('a-busca').addEventListener('input',()=>{if(AR)gradeAder(filtrarAder(),$('a-mes').value)});
 document.querySelectorAll('[data-afunil]').forEach(b=>b.onclick=()=>abrirGaveta());
 /* ---------- Aderência: detalhe por equipe / dia ---------- */
@@ -4698,7 +4702,7 @@ function aderDet(rec,d){
    Dentro da meta: 1º serviço <= limite (+ tolerância opcional de 0, 15 ou 30 min). Interjornada não entra na conta (amarelo).
    Média do horário: não conta domingo, e no sábado só conta 1º serviço até 12:00 (regra do GOMAN). */
 let aModo='ader';try{aModo=localStorage.getItem('aModo')==='ps'?'ps':'ader'}catch(e){}
-let ordemPS={k:'pct',dir:-1};let PS_TOL=0;try{PS_TOL=[0,15,30].includes(+localStorage.getItem('psTol'))?+localStorage.getItem('psTol'):0}catch(e){}
+let ordemPS={k:'pct',dir:-1};let PS_TOL=30;try{const v=localStorage.getItem('psTol');if(v!=null&&[0,15,30].includes(+v))PS_TOL=+v}catch(e){}
 const PS_ST={DENTRO:['Dentro da meta','ate'],FORA:['Fora da meta','nao'],INT:['Interjornada','par'],SEM:['Sem atividade','nd'],LIVRE:['Folga / sem turno','nd'],DOM:['Domingo','nd']};
 const psDow=d=>new Date(d+'T12:00:00Z').getUTCDay();
 const psInter=l=>!!l.inter||(l.mot||[]).some(m=>/interjornada/i.test(m.k));
