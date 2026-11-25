@@ -6,7 +6,7 @@
   window.FAROL_WEB = true;
   var API = '/api/', sessao = null, resolver;
   var pronto = new Promise(function (r) { resolver = r; });
-  var ARQ = /^(config|ader_config|def_config|ini_config|prod_config|ups_config|ups_semclasse|historico(_[a-z]+)?)\.json$/;
+  var ARQ = /^(config|ader_config|def_config|ini_config|prod_config|ups_config)\.json$/;
 
   /* ---------- chamadas à API ---------- */
   function api(caminho, opc) {

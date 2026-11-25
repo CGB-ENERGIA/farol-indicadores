@@ -2061,10 +2061,8 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
       <div class="bk-bar"><div class="tabs" id="bk-tabs"></div>
         <select id="bk-mes" class="bk-in"></select><select id="bk-dia" class="bk-in"></select>
         <input id="bk-busca" class="bk-in" type="search" placeholder="Buscar em todas as colunas">
-        <button class="btn" id="bk-xls" type="button">Baixar Excel</button><button class="btn del" id="bk-del" type="button" hidden>Excluir este dia</button><button class="btn" id="bk-dsr" type="button" hidden title="Refaz o resumo da disponibilidade de todos os dias do banco com o almoço e a indisponibilidade apontados no SIGA">Recalcular disponibilidade (almoço)</button><button class="btn" id="bk-psr" type="button" hidden title="Calcula o 1º serviço depois do checklist de todos os dias do COI que já estão no banco">Recalcular 1º serviço</button></div>
-      <div class="bk-hist" id="bk-hist" hidden><label class="btn" for="bk-f">Carregar histórico (só no banco)</label><input type="file" id="bk-f" accept=".xlsx,.xls,.csv,.json" multiple hidden><span class="muted" id="bk-hmsg">Selecione os arquivos antigos do SIGA (COI, MAN, FIS, OBRAS). Eles entram só no banco e não mexem em nenhum indicador.</span></div>
-      <div class="bk-hist" id="bk-bkp" hidden><button class="btn" id="bk-bkpb" type="button">Baixar backup do banco (.zip)</button><label class="btn" for="bk-rest" id="bk-restl" hidden>Restaurar de backup</label><input type="file" id="bk-rest" accept=".zip" hidden><span class="muted" id="bk-bkpm">Um arquivo .zip com um CSV por fonte (COI, MAN, FIS, OBRAS). Abre no Excel; guarde na pasta Backup de siga. Restaurar só preenche dias que não estão no banco.</span></div>
-      <div class="bk-hist" id="bk-imp" hidden><button class="btn" id="bk-impb" type="button">Importar banco inicial (arquivos banco2026)</button><span class="muted" id="bk-impt">Carrega no banco os dias de COI, MAN, FIS e OBRAS de 01/01 a 10/11/2026. Dias que já estão no banco não são sobrescritos.</span></div>
+        <button class="btn" id="bk-xls" type="button">Baixar Excel</button><button class="btn del" id="bk-del" type="button" hidden>Excluir este dia</button></div>
+      <div class="bk-hist" id="bk-bkp" hidden><button class="btn primary" id="bk-bkpb" type="button">Baixar backup do banco</button><span class="muted" id="bk-bkpm">Um arquivo Excel (.xlsx) com uma aba para cada fonte (COI, MAN, FIS e OBRAS) e as abas de Defeitos, com todos os registros históricos. É o backup dos dados operacionais do SIGA que alimentam os indicadores (não inclui usuários, cadastros nem regras). Guarde na pasta Backup de siga.</span></div>
       <div class="prog" id="prog-imp" hidden><div class="prog-t"></div><div class="prog-b"><i></i></div></div>
       <div class="bk-res" id="bk-res"></div>
       <div class="bk-tw"><table class="bk-t" id="bk-t"></table></div>
@@ -4302,55 +4300,9 @@ async function bancoPeriodo(f,mes,dia){
   return bancoJunta(out);
 }
 const MESES_B=['','janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
-/* importa a exportação do Banco SIGA publicada junto com a página (banco2026_parteNde5.json); não sobrescreve dias já existentes */
-let bancoImportando=false;
-/* Disponibilidade: gera o resumo por equipe e dia (dias/{data}_{fonte}) a partir das linhas do banco, só nos dias que ainda não têm resumo.
-   Substitui o historico.json: usa a regra atual (início = 1º checklist). Não sobrescreve dias enviados pelo site. */
-async function diasDoBanco(tx){
-  if(!db||!podeSalvar)return 0;
-  const tem=new Set(dbDocs.map(d=>d.data+'_'+d.fonte)),itens=[];let n=0;
-  for(const f of ['COI','MAN','OBRAS','FIS'])for(const d of Object.keys(bancoIdx[f]||{}).sort())if(d>'2026-05-31'&&!tem.has(d+'_'+f))itens.push([f,d]);
-  for(let i=0;i<itens.length;i++){
-    const [f,d]=itens[i];if(tx)tx.textContent='Gerando resumos da disponibilidade… '+(i+1)+' de '+itens.length;
-    const D=await bancoDia(f,d);if(!D.rows.length)continue;
-    const hdr=D.cols.map(c=>c==='Tipo de Atividade (2)'?'Tipo de Atividade':c==='Tipo de Atividade'?'Tipo de Atividade (1)':c);
-    let r;try{r=Disp.agregarArquivo([hdr].concat(D.rows),f)}catch(e){continue}
-    const eq=r.dias[d];if(!eq||!Object.keys(eq).length)continue;
-    await db.collection('dias').doc(d+'_'+f).set({data:d,fonte:f,arquivo:'Banco SIGA',eq,enviadoEm:new Date().toISOString()});n++;
-  }
-  return n;
-}
-async function bancoImportar(){
-  if(bancoImportando||!db||!podeSalvar)return;bancoImportando=true;
-  const btn=$('bk-impb'),tx=$('bk-impt');btn.disabled=true;
-  const antes={};for(const f in bancoIdx)antes[f]=Object.assign({},bancoIdx[f]);
-  const novos={COI:{},MAN:{},FIS:{},OBRAS:{}};let n=0,ign=0,falhas=0;
-  try{
-    for(let parte=1;parte<=5;parte++){
-      tx.textContent='Lendo a parte '+parte+' de 5…';progSet('prog-imp',(parte-1)/5,'Lendo a parte '+parte+' de 5…');
-      const r=await fetch('banco2026_parte'+parte+'de5.json');if(!r.ok)throw new Error('Não foi possível ler a parte '+parte);
-      const d=await r.json(),fila=[];
-      for(const x of d.docs){if((antes[x.fonte]||{})[x.data]){ign++;continue}fila.push(x)}
-      for(let i=0;i<fila.length;i+=4){
-        await Promise.all(fila.slice(i,i+4).map(async x=>{const {id,...resto}=x;try{await db.collection('banco').doc(id||(x.fonte+'_'+x.data+'_'+x.k)).set(resto);n++}catch(e){falhas++}}));
-        tx.textContent='Gravando… '+n.toLocaleString('pt-BR')+' documentos (parte '+parte+' de 5)';progSet('prog-imp',(parte-1+Math.min(1,(i+4)/Math.max(1,fila.length)))/5,'Gravando parte '+parte+' de 5 · '+n.toLocaleString('pt-BR')+' documentos gravados');
-      }
-      for(const f of Object.keys(d.idx||{}))for(const dia in d.idx[f])if(!(antes[f]||{})[dia])(novos[f]=novos[f]||{})[dia]=d.idx[f][dia];
-    }
-    if(falhas)throw new Error(falhas+' documento(s) não foram gravados; o índice não foi atualizado. Tente de novo.');
-    for(const f in novos)bancoIdx[f]=Object.assign({},bancoIdx[f]||{},novos[f]);
-    await bancoGravaIdx();bancoMem={};
-    const ng=await diasDoBanco(tx);
-    progSet('prog-imp',1,'Concluído');setTimeout(()=>progSet('prog-imp',false),2500);tx.textContent='Pronto: '+n.toLocaleString('pt-BR')+' documentos importados'+(ng?' · '+ng.toLocaleString('pt-BR')+' resumos de disponibilidade gerados':'')+(ign?' · '+ign.toLocaleString('pt-BR')+' ignorados (dias que já estavam no banco)':'')+'.';
-    toast('Banco SIGA importado.');montarBanco();
-  }catch(e){progSet('prog-imp',false);tx.textContent=(e&&e.message)||'Não foi possível importar.'}
-  btn.disabled=false;bancoImportando=false;
-}
 async function montarBanco(){
   const box=$('bk-tabs');if(!box)return;
-  $('bk-hist').hidden=!podeSalvar;
-  $('bk-imp').hidden=!podeSalvar||!db||!!window.FAROL_WEB;$('bk-impb').onclick=bancoImportar;
-  $('bk-bkp').hidden=!podeSalvar;$('bk-restl').hidden=!db;$('bk-bkpb').onclick=bancoBackup;$('bk-rest').onchange=e=>{bancoRestaurar(e.target.files[0]);e.target.value=''};
+  $('bk-bkp').hidden=!ehAdm();$('bk-bkpb').onclick=bancoBackup;
   const F=['COI','MAN','FIS','OBRAS'];
   box.innerHTML=F.map(f=>{const n=Object.keys(bancoIdxDe(f)).length;return '<button type="button" data-f="'+f+'" aria-pressed="'+(bancoSel.fonte===f)+'">'+f+' · '+n+' dias</button>'}).join('');
   box.querySelectorAll('button').forEach(b=>b.onclick=()=>{bancoSel.fonte=b.dataset.f;bancoSel.dia='';montarBanco()});
@@ -4361,7 +4313,7 @@ async function montarBanco(){
   const dm=dias.filter(d=>d.slice(0,7)===bancoSel.mes);
   if(bancoSel.dia!=='mes'&&!dm.includes(bancoSel.dia))bancoSel.dia=dm[0]||'mes';
   sd.innerHTML='<option value="mes">Mês inteiro</option>'+dm.map(d=>'<option value="'+d+'">'+dataBR(d)+' · '+idx[d].toLocaleString('pt-BR')+'</option>').join('');sd.value=bancoSel.dia;
-  $('bk-del').hidden=!podeSalvar||!db||bancoSel.dia==='mes'||!bancoSel.dia;$('bk-del').onclick=bancoExcluirDia;$('bk-dsr').hidden=!ehAdm()||!db;$('bk-dsr').onclick=diasRecalcular;$('bk-psr').hidden=!ehAdm()||!db||bancoSel.fonte!=='COI';$('bk-psr').onclick=psRecalcular;
+  $('bk-del').hidden=!podeSalvar||!db||bancoSel.dia==='mes'||!bancoSel.dia;$('bk-del').onclick=bancoExcluirDia;
   sm.onchange=()=>{bancoSel.mes=sm.value;bancoSel.dia='';montarBanco()};sd.onchange=()=>{bancoSel.dia=sd.value;montarBanco()};
   const qi=$('bk-busca');qi.oninput=()=>{bancoSel.q=qi.value;bancoTabela()};
   if(document.querySelector('section[data-pag="atualizar"]').hidden)return;
@@ -4371,124 +4323,117 @@ async function montarBanco(){
   bancoCache=D;bancoTabela();
 }
 let bancoCache={cols:[],rows:[]};
-/* ---------- backup do banco: .zip com um CSV por fonte (;, UTF-8 com BOM, 1ª coluna = Data) ---------- */
+/* ---------- backup do banco: um .xlsx com uma aba por fonte (COI, MAN, FIS, OBRAS) e as bases de Defeitos ----------
+   Escrito em fluxo (linha a linha, comprimido na hora), porque são milhões de células: o gerador comum de Excel estouraria a memória.
+   Cada aba aguenta até 1.000.000 de linhas; acima disso o sistema abre a aba seguinte (ex.: COI, COI (2)). */
 const CRC_T=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
-function crc32(u8){let c=0xFFFFFFFF;for(let i=0;i<u8.length;i++)c=CRC_T[(c^u8[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0}
-const csvCel=v=>{v=v==null?'':String(v);return /[;"\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
-function csvLer(txt){ /* texto -> linhas de células, separador ; e aspas */
-  const out=[];let row=[],cur='',q=false;if(txt.charCodeAt(0)===0xFEFF)txt=txt.slice(1);
-  for(let i=0;i<txt.length;i++){const ch=txt[i];
-    if(q){if(ch==='"'){if(txt[i+1]==='"'){cur+='"';i++}else q=false}else cur+=ch}
-    else if(ch==='"')q=true;else if(ch===';'){row.push(cur);cur=''}
-    else if(ch==='\n'){row.push(cur);cur='';out.push(row);row=[]}else if(ch!=='\r')cur+=ch}
-  if(cur!==''||row.length){row.push(cur);out.push(row)}return out}
-async function zipMonta(arqs){ /* arqs: [{nome, blob}] -> Blob .zip (deflate) */
-  const enc=new TextEncoder(),partes=[],cen=[];let off=0;
-  const d=new Date(),dt=((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate(),tm=(d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1);
-  for(const a of arqs){
-    const raw=new Uint8Array(await a.blob.arrayBuffer()),crc=crc32(raw);
-    const z=new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer());
-    const nm=enc.encode(a.nome),h=new DataView(new ArrayBuffer(30));
-    h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint16(8,8,true);h.setUint16(10,tm,true);h.setUint16(12,dt,true);h.setUint32(14,crc,true);h.setUint32(18,z.length,true);h.setUint32(22,raw.length,true);h.setUint16(26,nm.length,true);h.setUint16(28,0,true);
-    partes.push(h.buffer,nm,z);
-    const c=new DataView(new ArrayBuffer(46));
-    c.setUint32(0,0x02014b50,true);c.setUint16(4,20,true);c.setUint16(6,20,true);c.setUint16(8,0x0800,true);c.setUint16(10,8,true);c.setUint16(12,tm,true);c.setUint16(14,dt,true);c.setUint32(16,crc,true);c.setUint32(20,z.length,true);c.setUint32(24,raw.length,true);c.setUint16(28,nm.length,true);c.setUint32(42,off,true);
-    cen.push(c.buffer,nm);off+=30+nm.length+z.length}
-  let cs=0;for(let i=0;i<cen.length;i++)cs+=cen[i].byteLength;
-  const e=new DataView(new ArrayBuffer(22));e.setUint32(0,0x06054b50,true);e.setUint16(8,arqs.length,true);e.setUint16(10,arqs.length,true);e.setUint32(12,cs,true);e.setUint32(16,off,true);
-  return new Blob([...partes,...cen,e.buffer],{type:'application/zip'})}
-async function zipLe(blob){ /* Blob .zip -> [{nome, texto}] */
-  const buf=new Uint8Array(await blob.arrayBuffer()),dv=new DataView(buf.buffer);let e=-1;
-  for(let i=buf.length-22;i>=Math.max(0,buf.length-65600);i--)if(dv.getUint32(i,true)===0x06054b50){e=i;break}
-  if(e<0)throw new Error('Arquivo .zip inválido.');
-  const n=dv.getUint16(e+10,true);let o=dv.getUint32(e+16,true);const out=[],dec=new TextDecoder();
-  for(let i=0;i<n;i++){
-    if(dv.getUint32(o,true)!==0x02014b50)throw new Error('Arquivo .zip inválido.');
-    const met=dv.getUint16(o+10,true),cz=dv.getUint32(o+20,true),nl=dv.getUint16(o+28,true),el=dv.getUint16(o+30,true),cl=dv.getUint16(o+32,true),lo=dv.getUint32(o+42,true),nome=dec.decode(buf.subarray(o+46,o+46+nl));
-    const ds=lo+30+dv.getUint16(lo+26,true)+dv.getUint16(lo+28,true),dados=buf.subarray(ds,ds+cz);
-    const texto=met===0?dec.decode(dados):await new Response(new Blob([dados]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text();
-    out.push({nome,texto});o+=46+nl+el+cl}
-  return out}
-async function bancoBackup(){
-  const b=$('bk-bkpb'),m=$('bk-bkpm'),F=['COI','MAN','FIS','OBRAS'];b.disabled=true;
-  try{
-    const arqs=[];
-    for(const f of F){
-      const ds=Object.keys(bancoIdxDe(f)).sort();if(!ds.length)continue;
-      const dias=[];for(let i=0;i<ds.length;i+=6){m.textContent='Lendo '+f+'… '+Math.min(i+6,ds.length)+' de '+ds.length+' dias';
-        const l=await Promise.all(ds.slice(i,i+6).map(d=>bancoDia(f,d)));l.forEach((x,j)=>dias.push({d:ds[i+j],x}))}
-      const J=bancoJunta(dias.map(o=>o.x)),parts=['\uFEFF'+['Data'].concat(J.cols).map(csvCel).join(';')+'\r\n'];
-      let k=0;
-      for(const o of dias){const mp=J.cols.map(c=>o.x.cols.indexOf(c)),L=[];for(const row of o.x.rows)L.push([o.d].concat(mp.map(ix=>ix<0?'':row[ix])).map(csvCel).join(';'));
-        if(L.length)parts.push(L.join('\r\n')+'\r\n');if(++k%10===0){m.textContent='Montando '+f+'… '+k+' de '+dias.length+' dias';await new Promise(z=>setTimeout(z,0))}}
-      arqs.push({nome:f+'.csv',blob:new Blob(parts,{type:'text/csv;charset=utf-8'})})}
-    if(!arqs.length){m.textContent='O banco está vazio.';return}
-    m.textContent='Compactando…';const zip=await zipMonta(arqs),hoje=new Date().toISOString().slice(0,10);
-    const a=document.createElement('a');a.href=URL.createObjectURL(zip);a.download='BANCO SIGA - backup '+hoje+'.zip';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),60000);
-    m.textContent='Backup baixado ('+(zip.size/1048576).toFixed(1).replace('.',',')+' MB). Guarde na pasta Backup de siga.';
-  }catch(e){m.textContent='Não foi possível gerar o backup: '+(e.message||e)}
-  finally{b.disabled=false}
+const crcAtual=(c,u8)=>{for(let i=0;i<u8.length;i++)c=CRC_T[(c^u8[i])&255]^(c>>>8);return c};
+class ZipFluxo{
+  constructor(){this.partes=[];this.cen=[];this.off=0;this.enc=new TextEncoder();const d=new Date();this.dt=((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate();this.tm=(d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1)}
+  _p(u8){this.partes.push(u8);this.off+=u8.length}
+  async arquivo(nome,gerar){
+    const nm=this.enc.encode(nome),inicio=this.off,h=new DataView(new ArrayBuffer(30));
+    h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0808,true);h.setUint16(8,8,true);h.setUint16(10,this.tm,true);h.setUint16(12,this.dt,true);h.setUint16(26,nm.length,true);
+    this._p(new Uint8Array(h.buffer));this._p(nm);
+    const cs=new CompressionStream('deflate-raw'),w=cs.writable.getWriter(),rd=cs.readable.getReader();let crc=0xFFFFFFFF,usize=0,csize=0;
+    const leitura=(async()=>{for(;;){const {done,value}=await rd.read();if(done)break;this._p(value);csize+=value.length}})();
+    await gerar(async s=>{const u=this.enc.encode(s);crc=crcAtual(crc,u);usize+=u.length;await w.write(u)});
+    await w.close();await leitura;crc=(crc^0xFFFFFFFF)>>>0;
+    const dd=new DataView(new ArrayBuffer(16));dd.setUint32(0,0x08074b50,true);dd.setUint32(4,crc,true);dd.setUint32(8,csize,true);dd.setUint32(12,usize,true);this._p(new Uint8Array(dd.buffer));
+    this.cen.push({nm,crc,csize,usize,inicio});
+  }
+  fim(){
+    const c0=this.off;
+    for(const e of this.cen){const c=new DataView(new ArrayBuffer(46));c.setUint32(0,0x02014b50,true);c.setUint16(4,20,true);c.setUint16(6,20,true);c.setUint16(8,0x0808,true);c.setUint16(10,8,true);c.setUint16(12,this.tm,true);c.setUint16(14,this.dt,true);c.setUint32(16,e.crc,true);c.setUint32(20,e.csize,true);c.setUint32(24,e.usize,true);c.setUint16(28,e.nm.length,true);c.setUint32(42,e.inicio,true);this._p(new Uint8Array(c.buffer));this._p(e.nm)}
+    const f=new DataView(new ArrayBuffer(22));f.setUint32(0,0x06054b50,true);f.setUint16(8,this.cen.length,true);f.setUint16(10,this.cen.length,true);f.setUint32(12,this.off-c0,true);f.setUint32(16,c0,true);this._p(new Uint8Array(f.buffer));
+    return new Blob(this.partes,{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  }
 }
-async function bancoRestaurar(file){
-  const m=$('bk-bkpm');if(!file||!db||!podeSalvar)return;
+const XLSX_LIMITE=1000000,XML_CAB='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n';
+const xmlT=v=>String(v).replace(/[&<>]/g,c=>c==='&'?'&amp;':c==='<'?'&lt;':'&gt;').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F￾￿]/g,'');
+const xCel=v=>{if(v==null||v==='')return '<c/>';if(typeof v==='number'&&isFinite(v))return '<c><v>'+v+'</v></c>';const t=xmlT(v);return '<c t="inlineStr"><is><t'+(/^\s|\s$/.test(t)?' xml:space="preserve"':'')+'>'+t+'</t></is></c>'};
+const xCab=v=>'<c s="1" t="inlineStr"><is><t>'+xmlT(v)+'</t></is></c>';
+/* grava uma aba (ou mais, se passar de 1.000.000 de linhas) lendo as linhas de um gerador assíncrono; devolve quantas linhas escreveu */
+async function xlsxAba(zip,abas,nome,cols,gerador){
+  const it=gerador();let pend=await it.next(),total=0,parte=0;
+  do{
+    parte++;const arq='xl/worksheets/sheet'+(abas.length+1)+'.xml';let n=0;
+    await zip.arquivo(arq,async esc=>{
+      await esc(XML_CAB+'<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><sheetData><row r="1">'+cols.map(xCab).join('')+'</row>');
+      let buf='';
+      while(!pend.done&&n<XLSX_LIMITE){n++;buf+='<row r="'+(n+1)+'">'+pend.value.map(xCel).join('')+'</row>';if(buf.length>262144){await esc(buf);buf=''}pend=await it.next()}
+      await esc(buf+'</sheetData></worksheet>');
+    });
+    abas.push({nome:parte===1?nome:nome+' ('+parte+')',arq});total+=n;
+  }while(!pend.done);
+  return total;
+}
+async function xlsxFecha(zip,abas){
+  const ns='xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"',rel='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+  await zip.arquivo('[Content_Types].xml',async e=>e(XML_CAB+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'+abas.map(a=>'<Override PartName="/'+a.arq+'" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>').join('')+'</Types>'));
+  await zip.arquivo('_rels/.rels',async e=>e(XML_CAB+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="'+rel+'/officeDocument" Target="xl/workbook.xml"/></Relationships>'));
+  await zip.arquivo('xl/workbook.xml',async e=>e(XML_CAB+'<workbook '+ns+' xmlns:r="'+rel+'"><sheets>'+abas.map((a,i)=>'<sheet name="'+xmlT(a.nome)+'" sheetId="'+(i+1)+'" r:id="rId'+(i+1)+'"/>').join('')+'</sheets></workbook>'));
+  await zip.arquivo('xl/_rels/workbook.xml.rels',async e=>e(XML_CAB+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+abas.map((a,i)=>'<Relationship Id="rId'+(i+1)+'" Type="'+rel+'/worksheet" Target="worksheets/sheet'+(i+1)+'.xml"/>').join('')+'<Relationship Id="rId'+(abas.length+1)+'" Type="'+rel+'/styles" Target="styles.xml"/></Relationships>'));
+  await zip.arquivo('xl/styles.xml',async e=>e(XML_CAB+'<styleSheet '+ns+'><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>'));
+}
+/* lê um dia direto do Neon, sem guardar em memória (o backup passa por todos os dias) */
+async function bancoDiaCru(f,d){
+  let cols=[],rows=[],nk=1;
+  for(let k=0;k<nk;k++){const sn=await db.collection('banco').doc(f+'_'+d+'_'+k).get();if(!sn.exists)break;const x=sn.data();nk=x.nk||1;cols=x.cols||cols;rows=rows.concat(JSON.parse(x.z?await ungz(x.z):x.j))}
+  return {cols,rows};
+}
+async function bancoColsDia(f,d){const sn=await db.collection('banco').doc(f+'_'+d+'_0').get();return sn.exists?(sn.data().cols||[]):[]}
+async function bancoBackup(){
+  if(!ehAdm()||!db)return;
+  const b=$('bk-bkpb'),m=$('bk-bkpm'),F=['COI','MAN','FIS','OBRAS'],texto0=m.textContent;b.disabled=true;
+  const num=v=>Number(v).toLocaleString('pt-BR');
   try{
-    m.textContent='Lendo o backup…';const arqs=await zipLe(file);let novos=0,jaTinha=0;const fontes=[];
-    for(const a of arqs){const f=a.nome.replace(/\.csv$/i,'').toUpperCase();if(!['COI','MAN','FIS','OBRAS'].includes(f))continue;
-      const T=csvLer(a.texto);if(T.length<2||T[0][0]!=='Data')continue;const cols=T[0].slice(1),dias={};
-      for(let i=1;i<T.length;i++){const d=T[i][0];if(!/^\d{4}-\d{2}-\d{2}$/.test(d))continue;(dias[d]=dias[d]||[]).push(T[i].slice(1))}
-      for(const d of Object.keys(dias)){if((bancoIdx[f]||{})[d]){delete dias[d];jaTinha++}else novos++}
-      if(Object.keys(dias).length)fontes.push({fonte:f,nome:file.name,banco:{cols,dias}})}
-    if(!novos){m.textContent='Nada a restaurar: os '+jaTinha+' dia(s) do backup já estão no banco.';return}
-    if(!confirm('Restaurar '+novos+' dia(s) que não estão no banco?\n\n'+jaTinha+' dia(s) que já existem não serão alterados.'))return;
-    let n=0;for(const p of fontes){for(const d of Object.keys(p.banco.dias)){m.textContent='Restaurando '+p.fonte+' '+dataBR(d)+'… '+(++n)+' de '+novos;
-      await bancoSalvar({fonte:p.fonte,nome:p.nome,banco:{cols:p.banco.cols,dias:{[d]:p.banco.dias[d]}}},true)}}
-    await bancoGravaIdx();m.textContent=novos+' dia(s) restaurado(s).';montarBanco();
-  }catch(e){m.textContent='Não foi possível restaurar: '+(e.message||e)}
+    const zip=new ZipFluxo(),abas=[],resumo=[],alertas=[];
+    const total=F.reduce((s,f)=>s+Object.values(bancoIdx[f]||{}).reduce((a,x)=>a+x,0),0)||1;let feitas=0;
+    for(const f of F){
+      const idx=bancoIdx[f]||{},ds=Object.keys(idx).sort(),esperado=ds.reduce((a,d)=>a+idx[d],0);
+      if(!ds.length){resumo.push(f+': sem dados');continue}
+      /* cabeçalho = colunas do primeiro e do último dia (iguais na prática); cada dia é encaixado pelo nome da coluna */
+      const cols=[...new Set([...(await bancoColsDia(f,ds[0])),...(await bancoColsDia(f,ds[ds.length-1]))])];
+      async function* linhas(){
+        let prox=bancoDiaCru(f,ds[0]);
+        for(let i=0;i<ds.length;i++){
+          const D=await prox;if(i+1<ds.length)prox=bancoDiaCru(f,ds[i+1]);
+          const mp=cols.map(c=>D.cols.indexOf(c));
+          for(const r of D.rows)yield [ds[i]].concat(mp.map(ix=>ix<0?null:r[ix]));
+          feitas+=idx[ds[i]];m.textContent='Lendo e gravando '+f+'… dia '+(i+1)+' de '+ds.length+' · '+num(feitas)+' de '+num(total)+' registros';progSet('prog-imp',Math.min(.9,feitas/total*.9),'Backup do banco · '+f+' · '+Math.round(feitas/total*100)+'%');
+        }
+      }
+      const n=await xlsxAba(zip,abas,f,['Dia (banco)'].concat(cols),linhas);
+      resumo.push(f+': '+num(n)+' registro(s) em '+ds.length+' dia(s)');
+      if(n!==esperado)alertas.push(f+': o arquivo tem '+num(n)+' registros e o índice do banco indica '+num(esperado)+'.');
+    }
+    /* Defeitos: base histórica (um registro por intervalo em tratativa), entradas, fotos diárias e itens fora */
+    m.textContent='Gravando as abas de Defeitos…';
+    if(typeof DHIST!=='undefined'&&DHIST){
+      const S=DHIST.s,ob=a=>defObj(a,S),dt=n=>n==null||n<0?'':dIso(n);
+      const cab=['ID','PEP','SIGLA','PRIORIDADE','TIPO','DESCRIÇÃO','RECOMENDAÇÃO','MUNICÍPIO','DISTRITAL','NOTA','CÓDIGO','DATA FISCALIZAÇÃO','DATA VENCIMENTO','STATUS'];
+      const campos=o=>[o.id,o.pep,o.sigla,o.pri,o.tipo,o.desc,o.recom,o.mun,o.dist,o.nota,o.cod,o.fisc||'',o.venc||'',o.st];
+      const n1=await xlsxAba(zip,abas,'DEFEITOS',cab.concat(['DATA INÍCIO','DATA FIM','VÁLIDO','QTD']),async function*(){for(const x of DHIST.iv){const o=ob(DHIST.a[x[0]]);yield campos(o).concat([dt(x[1]),dt(x[2]),x[3],x[4]])}});
+      const n2=await xlsxAba(zip,abas,'DEFEITOS_NV',['ID','DATA INÍCIO','DATA FIM'],async function*(){for(const x of (DHIST.nv||[]))yield [x[0],dt(x[1]),dt(x[2])]});
+      const docs=defDocs.slice().sort((a,b)=>a.data<b.data?-1:1);
+      const n3=await xlsxAba(zip,abas,'DEFEITOS_DIA',['Dia (banco)'].concat(cab,['VÁLIDO']),async function*(){for(const d of docs)for(const x of d.itens){const o=defObj(x);yield [d.data].concat(campos(o),[x[14]])}});
+      const n4=await xlsxAba(zip,abas,'DEFEITOS_FORA',['Dia (banco)','ID'],async function*(){for(const d of docs)for(const id of (d.fora||[]))yield [d.data,id]});
+      resumo.push('DEFEITOS: '+num(n1)+' intervalo(s), '+num(n3)+' item(ns) de '+docs.length+' foto(s) diária(s)');
+      if(n1!==DHIST.iv.length)alertas.push('DEFEITOS: '+num(n1)+' linhas contra '+num(DHIST.iv.length)+' no banco.');
+    }else alertas.push('A base de Defeitos ainda não foi carregada; abra a página de Defeitos e tente de novo.');
+    m.textContent='Compactando…';progSet('prog-imp',.95,'Finalizando o arquivo');
+    await xlsxFecha(zip,abas);const blob=zip.fim();
+    const a=new Date(),p2=x=>String(x).padStart(2,'0'),nome='BACKUP_BANCO_SIGA_'+p2(a.getDate())+'-'+p2(a.getMonth()+1)+'-'+a.getFullYear()+'_'+p2(a.getHours())+'-'+p2(a.getMinutes())+'.xlsx';
+    const url=URL.createObjectURL(blob),l=document.createElement('a');l.href=url;l.download=nome;document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(url),120000);
+    progSet('prog-imp',1,'Concluído');setTimeout(()=>progSet('prog-imp',false),2500);
+    m.innerHTML='<b>Backup pronto:</b> '+esc(nome)+' ('+(blob.size/1048576).toFixed(1).replace('.',',')+' MB). '+resumo.map(esc).join(' · ')+'.'+(alertas.length?' <b style="color:#b0122a">Atenção:</b> '+alertas.map(esc).join(' '):' Contagens conferidas com o banco.')+' Este arquivo é o backup dos dados operacionais do SIGA (não inclui usuários, cadastros nem regras).';
+  }catch(e){console.error(e);progSet('prog-imp',false);m.textContent='Não foi possível gerar o backup: '+(e.message||e)}
+  finally{b.disabled=false}
 }
 /* Exclui do banco o relatório de uma fonte num dia (ex.: arquivo enviado sem querer) e o que ele alimentou */
 let psRecalcOn=false;
 /* Recalcula o 1º serviço (depois do checklist) dos dias de COI que já estão no banco e grava em ader/{dia}. Roda uma vez; só mexe nos dias que ainda não têm o dado. */
-let dsrOn=false;
-/* refaz dias/{data}_{fonte} a partir das linhas do banco: almoço e indisponibilidade reais, sem desconto em dobro */
-async function diasRecalcular(){
-  if(!ehAdm()||!db||dsrOn)return;
-  const itens=[];for(const f of ['COI','MAN','OBRAS','FIS'])for(const d of Object.keys(bancoIdx[f]||{}).sort())if(d>'2026-05-31')itens.push([f,d]);
-  const ok0=await dlg({tit:'Recalcular a disponibilidade',html:'<p>Refaz o resumo da disponibilidade de <b>'+itens.length+'</b> dia(s)/fonte(s) lendo o banco SIGA: usa o almoço e a indisponibilidade realmente apontados (inclusive no FIS) e não conta nada em dobro.</p><p class="muted">Pode levar alguns minutos. Não feche a página.</p>',ok:'Recalcular'});if(!ok0)return;
-  const b=$('bk-dsr');b.disabled=true;dsrOn=true;let ok=0,erro=0;
-  try{for(let i=0;i<itens.length;i++){const [f,d]=itens[i];b.textContent='Recalculando '+(i+1)+'/'+itens.length+'…';
-    try{const D=await bancoDia(f,d);if(!D.rows.length)continue;
-      const hdr=D.cols.map(c=>c==='Tipo de Atividade (2)'?'Tipo de Atividade':c==='Tipo de Atividade'?'Tipo de Atividade (1)':c);
-      const r=Disp.agregarArquivo([hdr].concat(D.rows),f),eq=r.dias[d];if(!eq||!Object.keys(eq).length)continue;
-      const ant=dbDocs.find(x=>x.data===d&&x.fonte===f);
-      await db.collection('dias').doc(d+'_'+f).set({data:d,fonte:f,arquivo:(ant&&ant.arquivo)||'Banco SIGA',eq,enviadoEm:(ant&&ant.enviadoEm)||new Date().toISOString(),recalculadoEm:new Date().toISOString()});ok++;
-    }catch(e){console.error(e);erro++}}
-  }finally{dsrOn=false;b.disabled=false;b.textContent='Recalcular disponibilidade (almoço)'}
-  toast('Disponibilidade recalculada: '+ok+' dia(s)'+(erro?' · '+erro+' com erro':'')+'. Recarregue a página.');
-}
-async function psRecalcular(){
-  if(!ehAdm()||!db||!AR||psRecalcOn)return;
-  const dias=Object.keys(bancoIdxDe('COI')).sort();
-  const falta=dias.filter(d=>{const eq=AR.dias[d];return !eq||Object.values(eq).some(a=>!a||a.length<4)});
-  if(!falta.length){alert('Todos os dias do COI que estão no banco já têm o 1º serviço calculado.');return}
-  if(!confirm('Calcular o 1º serviço depois do checklist de '+falta.length+' dia(s) do COI?\n\nLê o banco de cada dia e atualiza só a aderência (campo do 1º serviço). A aderência por checklist continua igual. Pode levar alguns minutos; não feche a página.'))return;
-  const b=$('bk-psr');b.disabled=true;psRecalcOn=true;let ok=0,erro=0;
-  try{
-    for(let i=0;i<falta.length;i++){const d=falta[i];b.textContent='Recalculando '+(i+1)+'/'+falta.length+'…';
-      try{
-        const D=await bancoDia('COI',d);if(!D.rows.length){erro++;continue}
-        const cols=D.cols.map(c=>c==='Tipo de Atividade#2'?'Tipo de Atividade2':c);
-        const novo=(aderDeLinhas([cols].concat(D.rows))||{})[d]||{};
-        const base=AR.dias[d]||{},eq={};
-        for(const rec in base){const a=base[rec].slice();while(a.length<3)a.push(null);a[3]=novo[rec]?novo[rec][3]:null;eq[rec]=a}
-        for(const rec in novo)if(!eq[rec])eq[rec]=novo[rec];
-        await db.collection('ader').doc(d).set({data:d,arquivo:'recálculo do banco SIGA (1º serviço)',eq,enviadoEm:new Date().toISOString()});
-        delete bancoMem['COI|'+d];ok++;
-      }catch(e){console.error(e);erro++}
-    }
-  }finally{psRecalcOn=false;b.disabled=false;b.textContent='Recalcular 1º serviço'}
-  montarAder();
-  alert('1º serviço calculado em '+ok+' dia(s)'+(erro?'; '+erro+' dia(s) falharam (rode de novo para tentar só esses).':'.'));
-}
 async function bancoExcluirDia(){
   const f=bancoSel.fonte,d=bancoSel.dia;if(!db||!d||d==='mes')return;
   const n=(bancoIdx[f]||{})[d]||0;
@@ -4515,31 +4460,6 @@ function bancoTabela(){
   t.innerHTML='<thead><tr>'+cols.map((c,i)=>keep[i]?'<th>'+esc(c)+'</th>':'').join('')+'</tr></thead><tbody>'+rows.slice(0,500).map(r=>'<tr>'+r.map((v,i)=>keep[i]?'<td title="'+esc(v)+'">'+esc(v)+'</td>':'').join('')+'</tr>').join('')+'</tbody>';
   $('bk-res').textContent=rows.length.toLocaleString('pt-BR')+' atividade(s)'+(rows.length>500?' · mostrando as 500 primeiras (o Excel leva todas)':'');
 }
-$('bk-f').onchange=async e=>{
-  const fs=[...e.target.files];e.target.value='';if(!fs.length||!db||!podeSalvar)return;
-  const msg=$('bk-hmsg');let ok=0,pul=0,dias=0,err=0,sujo=0,ja=0;
-  fs.sort((a,b)=>a.name.localeCompare(b.name));
-  for(let i=0;i<fs.length;i++){const f=fs[i];msg.textContent='Carregando '+(i+1)+' de '+fs.length+' · '+f.name;
-    try{
-      if(/\.json$/i.test(f.name)){ /* pacote de banco já preparado: {idx, docs:[{id,...}]} */
-        const pk=JSON.parse(await f.text());if(!pk||!Array.isArray(pk.docs)){pul++;continue}
-        for(let j=0;j<pk.docs.length;j++){const x=pk.docs[j];if(!x.id||!x.fonte||!x.data)continue;
-          if(j%25===0)msg.textContent='Carregando '+(i+1)+' de '+fs.length+' · '+f.name+' · '+j+'/'+pk.docs.length;
-          const id=x.id;delete x.id;await db.collection('banco').doc(id).set(x);delete bancoMem[x.fonte+'|'+x.data];dias++}
-        for(const fo in (pk.idx||{})){bancoIdx[fo]=Object.assign(bancoIdx[fo]||{},pk.idx[fo])}
-        await bancoGravaIdx();ok++;continue}
-      const fonte=Disp.fonteDoArquivo(f.name);if(!BANCO_COLS[fonte]){pul++;continue}
-      const wb=XLSX.read(new Uint8Array(await f.arrayBuffer()),{type:'array',codepage:65001});
-      const ws=wb.Sheets['Page 1']||wb.Sheets[wb.SheetNames[0]];
-      const b=bancoDeLinhas(XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:null}),fonte);if(!b){pul++;continue}
-      for(const d in b.dias){if(((bancoIdx[fonte]||{})[d]||0)>=b.dias[d].length){ja++;continue}
-        await bancoSalvar({fonte,nome:f.name,banco:{cols:b.cols,dias:{[d]:b.dias[d]}}},true);dias++;sujo++}
-      ok++;if(sujo>=15){await bancoGravaIdx();sujo=0}
-    }catch(e2){err++;console.error('BH',f.name,e2&&e2.message)}}
-  try{await bancoGravaIdx()}catch(e3){err++}
-  msg.textContent='Pronto: '+ok+' arquivo(s) lido(s), '+dias+' dia(s) gravado(s)'+(ja?', '+ja+' já estavam no banco':'')+(pul?', '+pul+' ignorado(s)':'')+(err?', '+err+' com erro':'')+'.';
-  montarBanco();
-};
 $('bk-xls').onclick=async()=>{
   if(!downloads){toast('Download indisponível nesta visualização.');return}
   if(typeof XLSX==='undefined'){toast('Biblioteca de Excel indisponível.');return}
@@ -7818,15 +7738,12 @@ document.querySelectorAll('[data-dfunil]').forEach(b=>b.onclick=()=>abrirGaveta(
 })();
 /* ---------- início ---------- */
 mostrarPagina();
-Promise.all([fetch('ups_config.json').then(r=>r.json()),fetch('historico_ups.json').then(r=>r.json())]).then(([c,h])=>{UCFG=c;UCFG0={tabups:Object.assign({},c.tabups),depara:Object.assign({},c.depara),regras:c.regras.slice(),base:c.base,processo:c.processo};UHIST=h;aplicarRegrasUps();montarUPS()}).catch(e=>console.error('UPS',e&&e.stack||e));
-fetch('ups_semclasse.json').then(r=>r.json()).then(j=>{SEMC=j;renderSemClasse()}).catch(()=>{});
-Promise.all([fetch('ini_config.json').then(r=>r.json()),fetch('historico_inicio.json').then(r=>r.json())]).then(([c,h])=>{ICFG=c;IHIST=h;montarIni()}).catch(()=>{});
-Promise.all([fetch('prod_config.json').then(r=>r.json()),fetch('historico_prod.json').then(r=>r.json())]).then(([c,h])=>{PCFG=c;PHIST=h;aplicarPrecos();montarPrd();montarMix();montarTm()}).catch(()=>{});
-fetch('historico_tm.json').then(r=>r.json()).then(h=>{TMH=h;montarTm()}).catch(()=>{});
-fetch('historico_mix.json').then(r=>r.json()).then(h=>{MH=h;montarMix()}).catch(()=>{});
-fetch('historico_trafo.json').then(r=>r.json()).then(h=>{TH=h;montarTrf()}).catch(()=>{});
-Promise.all([fetch('def_config.json').then(r=>r.json()),fetch('historico_defeitos.json').then(r=>r.json())]).then(([c,h])=>{DCFG=c;DHIST=h;montarDef()}).catch(()=>{});
-Promise.all([fetch('ader_config.json').then(r=>r.json()),fetch('historico_ader.json').then(r=>r.json())]).then(([c,h])=>{ACFG=c;AHIST=h;montarAder()}).catch(()=>{});
+Promise.all([fetch('ups_config.json').then(r=>r.json()),Promise.resolve({dias:{}}) /* o histórico da UPS agora vem do Neon (coleção ups) */]).then(([c,h])=>{UCFG=c;UCFG0={tabups:Object.assign({},c.tabups),depara:Object.assign({},c.depara),regras:c.regras.slice(),base:c.base,processo:c.processo};UHIST=h;aplicarRegrasUps();montarUPS()}).catch(e=>console.error('UPS',e&&e.stack||e));
+fetch('ini_config.json').then(r=>r.json()).then(c=>{ICFG=c;montarIni()}).catch(()=>{}); /* o histórico do início vem do Neon (coleção inicio_hist) */
+Promise.all([fetch('prod_config.json').then(r=>r.json()),Promise.resolve({dias:{}}) /* o histórico da produção agora vem do Neon (coleção prod) */]).then(([c,h])=>{PCFG=c;PHIST=h;aplicarPrecos();montarPrd();montarMix();montarTm()}).catch(()=>{});
+MH={recs:[],base:[],dias:{},fonte:''}; /* o histórico do Mix agora vem do Neon (coleção mix) */
+fetch('def_config.json').then(r=>r.json()).then(c=>{DCFG=c;montarDef()}).catch(()=>{}); /* o histórico de defeitos vem do Neon (coleção defeitos_hist) */
+Promise.all([fetch('ader_config.json').then(r=>r.json()),Promise.resolve({dias:{}}) /* o histórico da aderência agora vem do Neon (coleção ader) */]).then(([c,h])=>{ACFG=c;AHIST=h;montarAder()}).catch(()=>{});
 Promise.all([fetch('config.json').then(r=>r.json()),Promise.resolve({dias:{},recursos:[]}) /* histórico da disponibilidade agora vem só do Neon (coleção dias) */]).then(([c,h])=>{cfgBase=c;hist=h;montar()}).catch(()=>{$('gauges').innerHTML='<div class="note err">Não foi possível carregar o histórico.</div>'});
 /* Carga inicial: cada tela chega por um pedido diferente e antes cada chegada recalculava tudo (4 a 10 vezes cada tela).
    Aqui as chamadas montarX() feitas durante a carga ficam retidas; quando os dados param de chegar (ou passam 8 s), cada tela roda UMA vez, na ordem das dependências,
@@ -7871,6 +7788,12 @@ montarTrf=cargaEmbrulhar('montarTrf',montarTrf);montarBanco=cargaEmbrulhar('mont
   db.collection('trafo').onSnapshot(snap=>{trfDocs={};trfAcDb=null;for(const x of snap.docs){const d=x.data();if(!d||!d.rows)continue;try{if(x.id==='acoes')trfAcDb=JSON.parse(d.rows);else if(d.m)trfDocs[d.m]=JSON.parse(d.rows)}catch(e){}}montarTrf()},()=>{});
   db.collection('prod').onSnapshot(snap=>{prdDocs={};for(const x of snap.docs){const d=x.data();if(!d||!d.data||!d.eq)continue;try{prdDocs[d.data]={eq:JSON.parse(d.eq),arquivo:d.arquivo,enviadoEm:d.enviadoEm,ultFim:d.ultFim?[d.ultFim.split('|')[0],+d.ultFim.split('|')[1]]:null}}catch(e){}}montarPrd()},()=>{});
   db.collection('defeitos').onSnapshot(snap=>{defDocs=snap.docs.map(d=>d.data()).filter(d=>d&&d.data&&Array.isArray(d.itens)).map(d=>({data:d.data,fora:d.fora||[],itens:d.itens.map(x=>typeof x==='string'?JSON.parse(x):x)}));montarDef()},()=>{});
+  /* históricos que têm forma própria: guardados no Neon em pedaços (um documento por dia, mês ou lote) */
+  const ordenados=snap=>snap.docs.slice().sort((p,q)=>p.id<q.id?-1:p.id>q.id?1:0);
+  db.collection('inicio_hist').onSnapshot(snap=>{const dias={};let fonte='';for(const x of snap.docs){const d=x.data();if(x.id==='meta'){fonte=(d&&d.fonte)||'';continue}if(!d||!d.data||!d.j)continue;try{dias[d.data]=JSON.parse(d.j)}catch(e){}}IHIST={fonte,dias};montarIni()},()=>{});
+  db.collection('tm_hist').onSnapshot(snap=>{let meta=null;const m={};for(const x of snap.docs){const d=x.data();if(!d||!d.j)continue;try{if(x.id==='meta')meta=JSON.parse(d.j);else if(d.mes)m[d.mes]=JSON.parse(d.j)}catch(e){}}if(meta){TMH=Object.assign({},meta,{m});montarTm()}},()=>{});
+  db.collection('defeitos_hist').onSnapshot(snap=>{let meta=null;const a=[],iv=[],nv=[];for(const x of ordenados(snap)){const d=x.data();if(!d||!d.j)continue;try{const v=JSON.parse(d.j);if(x.id==='meta')meta=v;else if(x.id.startsWith('a_'))a.push(...v);else if(x.id.startsWith('iv_'))iv.push(...v);else if(x.id.startsWith('nv_'))nv.push(...v)}catch(e){}}if(meta){DHIST={d0:meta.d0,ult:meta.ult,s:meta.s,a,iv,nv};montarDef()}},()=>{});
+  db.collection('trafo_hist').onSnapshot(snap=>{let meta=null;const notas=[],acoes=[];for(const x of ordenados(snap)){const d=x.data();if(!d||!d.j)continue;try{const v=JSON.parse(d.j);if(x.id==='meta')meta=v;else if(x.id.startsWith('notas_'))notas.push(...v);else if(x.id.startsWith('acoes_'))acoes.push(...v)}catch(e){}}if(meta){TH={notas,acoes,arquivo:meta.arquivo,ult:meta.ult};montarTrf()}},()=>{});
   db.collection('hierarquia').onSnapshot(snap=>{const d=snap.docs.find(x=>x.id==='equipes');HIER=d?d.data():null;hierPintar();if(hierAtivo())hierRemontar()},()=>{});
   db.collection('ader').onSnapshot(snap=>{aderDocs=snap.docs.map(d=>d.data()).filter(d=>d&&d.data&&d.eq);if(!psRecalcOn)montarAder()},()=>{});
   db.collection('config').onSnapshot(snap=>{
@@ -7878,7 +7801,7 @@ montarTrf=cargaEmbrulhar('montarTrf',montarTrf);montarBanco=cargaEmbrulhar('mont
     {const bi=snap.docs.find(d=>d.id==='bancoIdx');if(bi){try{const v=JSON.parse(bi.data().j);for(const f of ['COI','MAN','FIS','OBRAS'])v[f]=v[f]||{};bancoIdx=v;montarBanco();if(pag().id==='mix-causa')acMostrar();if(pag().id==='mix-corte')mxVarrerSem()}catch(e){}}}
     let esc=null,escInfo=null,fu={};
     for(const d of snap.docs){const v=d.data();if(v&&v.itens&&n[d.id]!==undefined)n[d.id]=v.itens;if(d.id==='escala'&&v&&Array.isArray(v.itens)){esc=v.itens;escInfo=(v.arquivo||'')+(v.editadoEm?' em '+new Date(v.editadoEm).toLocaleDateString('pt-BR'):'')}if(d.id==='feriadosUps'&&v&&v.itens)fu=v.itens}
-    cad=n;try{aplicarMetas();aplicarListas()}catch(e){console.error('metas',e)}{const as=JSON.stringify(n.naoCgb);if(as!==ncAssin){ncAssin=as;setTimeout(()=>{try{hierRemontar()}catch(e){}},0)}}escalaDb=esc;escalaDbInfo=escInfo;ferUps=fu;const aa=snap.docs.find(d=>d.id==='aderAjuste');aderAjDb=aa?aa.data():null;const dt=snap.docs.find(d=>d.id==='defTatico');defTatDb=dt?dt.data():null;const dtc=snap.docs.find(d=>d.id==='defTecnicos');defTecDb=dtc?dtc.data():null;{const uh=snap.docs.find(d=>d.id==='upsHoje'),uv=uh&&uh.data();try{upsHojeDb=uv&&uv.data&&uv.eq?{data:uv.data,eq:JSON.parse(uv.eq),em:uv.enviadoEm,arquivo:uv.arquivo}:null}catch(e){upsHojeDb=null}}{const de=snap.docs.find(d=>d.id==='dispExpurgos'),dv=de&&de.data();window.DISP_EXPURGO=(dv&&dv.itens)||{}}{const ig=snap.docs.find(d=>d.id==='upsIgnorados'),igd=ig&&ig.data();IGN=(igd&&igd.itens)||{}}{const pr=snap.docs.find(d=>d.id==='prodPrecos'),pd=pr&&pr.data();POVR=pd?{dp:pd.dp||{},esp:pd.esp||{},em:pd.editadoEm}:null;aplicarPrecos();try{renderPrecos()}catch(e){}}{const cr=snap.docs.find(d=>d.id==='corteRegras'),cd=cr&&cr.data();COVR=cd&&cd.itens||null;aplicarRegrasCorte();try{renderRgCorte()}catch(e){}}{const ur=snap.docs.find(d=>d.id==='upsRegras');UOVR=rgLer(ur?ur.data():null);aplicarRegrasUps();if(UCFG){montarUPS();renderRgUps()}}montar();try{montarPrd()}catch(e){}montarAder();montarDef();
+    cad=n;try{aplicarMetas();aplicarListas()}catch(e){console.error('metas',e)}{const as=JSON.stringify(n.naoCgb);if(as!==ncAssin){ncAssin=as;setTimeout(()=>{try{hierRemontar()}catch(e){}},0)}}escalaDb=esc;escalaDbInfo=escInfo;ferUps=fu;const aa=snap.docs.find(d=>d.id==='aderAjuste');aderAjDb=aa?aa.data():null;const dt=snap.docs.find(d=>d.id==='defTatico');defTatDb=dt?dt.data():null;const dtc=snap.docs.find(d=>d.id==='defTecnicos');defTecDb=dtc?dtc.data():null;{const uh=snap.docs.find(d=>d.id==='upsHoje'),uv=uh&&uh.data();try{upsHojeDb=uv&&uv.data&&uv.eq?{data:uv.data,eq:JSON.parse(uv.eq),em:uv.enviadoEm,arquivo:uv.arquivo}:null}catch(e){upsHojeDb=null}}{const de=snap.docs.find(d=>d.id==='dispExpurgos'),dv=de&&de.data();window.DISP_EXPURGO=(dv&&dv.itens)||{}}{const ig=snap.docs.find(d=>d.id==='upsIgnorados'),igd=ig&&ig.data();IGN=(igd&&igd.itens)||{}}{const sc=snap.docs.find(d=>d.id==='upsSemClasse'),scd=sc&&sc.data();if(scd&&scd.j){try{SEMC=JSON.parse(scd.j)}catch(e){}}}{const pr=snap.docs.find(d=>d.id==='prodPrecos'),pd=pr&&pr.data();POVR=pd?{dp:pd.dp||{},esp:pd.esp||{},em:pd.editadoEm}:null;aplicarPrecos();try{renderPrecos()}catch(e){}}{const cr=snap.docs.find(d=>d.id==='corteRegras'),cd=cr&&cr.data();COVR=cd&&cd.itens||null;aplicarRegrasCorte();try{renderRgCorte()}catch(e){}}{const ur=snap.docs.find(d=>d.id==='upsRegras');UOVR=rgLer(ur?ur.data():null);aplicarRegrasUps();if(UCFG){montarUPS();renderRgUps()}}montar();try{montarPrd()}catch(e){}montarAder();montarDef();
   },()=>{});
   renderCadastros();
   if(pendentes.length)atualizarLocais();

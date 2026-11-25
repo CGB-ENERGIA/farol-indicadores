@@ -85,7 +85,7 @@ A página **Usuários** também tem a aba **Todos os usuários** (buscar, **Edit
 - **Dia a dia do SIGA**: aba **Atualizar com o SIGA** do site, como antes. Reenviar um dia substitui o dia inteiro.
 
 ## O que fica pendente
-- **Leitura automática do OneDrive** (Graph/Azure): depende da TI aprovar o app. Quando sair, adicione em `vercel.json` `"crons": [{ "path": "/api/sync", "schedule": "0 9 * * *" }]` e as variáveis `AZURE_*`, `ONEDRIVE_*` e `SYNC_SECRET`. Veja `README-ONEDRIVE.md`.
+- **Leitura automática do OneDrive**: removida do projeto. Os relatórios entram só pela aba **Atualizar com o SIGA** e ficam no Neon, que é a única fonte de dados.
 - **Dados que estavam só no artefato** (dias já enviados): não migram sozinhos. Reenvie na aba Atualizar.
 - **Tamanho de envio**: a Vercel limita o corpo de uma requisição/resposta a 4,5 MB. O maior arquivo de dados hoje (`historico_ups.json`) tem 3 MB.
 

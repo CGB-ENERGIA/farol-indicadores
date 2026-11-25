@@ -2,16 +2,12 @@
   "name": "farol-de-indicadores",
   "version": "1.0.0",
   "private": true,
-  "description": "Central de Indicadores (CGB): site + sincronização dos relatórios do SIGA a partir do OneDrive",
+  "description": "Central de Indicadores (CGB): site com login, dados no Neon",
   "engines": {
     "node": ">=20"
   },
   "scripts": {
     "start": "node --env-file-if-exists=.env servidor.js",
-    "sync": "node --env-file-if-exists=.env scripts/sincronizar.js",
-    "testar-onedrive": "node --env-file-if-exists=.env scripts/testar-onedrive.js",
-    "importar-export": "node --env-file-if-exists=.env scripts/importar-export.js",
-    "importar-consolidado": "node --env-file-if-exists=.env scripts/importar-consolidado.js",
     "test": "node --test test/*.test.js",
     "criar-admin": "node --env-file-if-exists=.env scripts/criar-admin.js",
     "importar-banco-site": "node --env-file-if-exists=.env scripts/importar-banco-site.js",

@@ -52,7 +52,7 @@
     const tipos = h.map((x, i) => (x === 'Tipo de Atividade' ? i : -1)).filter(i => i >= 0);
     const iTipo = tipos.length > 1 ? tipos[1] : tipos[0];
     if (iRec < 0 || iData < 0 || iSt < 0 || iIni < 0 || iFim < 0) throw new Error('Colunas Recurso/Data/Status/Início/Fim não encontradas');
-    const dias = {}; let linhas = 0;
+    const dias = {}; let linhas = 0; const iv = {};
     for (let r = 1; r < rows.length; r++) {
       const row = rows[r]; if (!row) continue;
       const st = row[iSt]; if (!STATUS_OK.includes(st)) continue;
@@ -75,10 +75,15 @@
       const tipoCk = iTipo != null && iTipo >= 0 ? row[iTipo] : null;
       if (tipoCk != null && String(tipoCk).trim() === 'Checklist Início do Turno' && ini != null) a[5] = a[5] == null ? ini : Math.min(a[5], ini);
       if (tipo === 'Retorno à base' && ini != null) a[2] = a[2] == null ? ini : Math.max(a[2], ini);
-      if (tipo === 'Intervalo para almoço') a[3] += tt;
-      if (tipo === 'Indisponibilidade') a[4] += tt;
+      /* almoço e indisponibilidade: apontamento real do SIGA, em todas as fontes (inclusive FIS). Ficam guardados como intervalos para não contar em dobro (apontamentos repetidos ou indisponibilidade sobreposta ao almoço) */
+      const tAl = tipoCk != null ? String(tipoCk).trim() : null;
+      if (ini != null && tt > 0 && (tAl === 'Intervalo para almoço' || tAl === 'Indisponibilidade')) { const k2 = data + '|' + rec, o = iv[k2] || (iv[k2] = { d: data, r: rec, a: [], i: [] }); (tAl === 'Indisponibilidade' ? o.i : o.a).push([ini, ini + tt]); }
       linhas++;
     }
+    const uni = l => { const s = l.slice().sort((x, y) => x[0] - y[0]), o = []; for (const q of s) { const u = o[o.length - 1]; if (u && q[0] <= u[1]) u[1] = Math.max(u[1], q[1]); else o.push([q[0], q[1]]); } return o; };
+    const soma = l => l.reduce((t, q) => t + (q[1] - q[0]), 0);
+    const inter = (A, B) => { let t = 0; for (const x of A) for (const y of B) t += Math.max(0, Math.min(x[1], y[1]) - Math.max(x[0], y[0])); return t; };
+    for (const k in iv) { const o = iv[k], A = uni(o.a), I = uni(o.i), a = dias[o.d][o.r]; a[3] = soma(A); a[4] = Math.max(0, soma(I) - inter(A, I)); }
     return { dias, linhas };
   }
 
