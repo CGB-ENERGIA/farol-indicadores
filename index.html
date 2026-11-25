@@ -1,4 +1,21 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="icon" href="icons/favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}/* barra de rolagem personalizada (Chrome, Edge, Safari e Firefox) */
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="icon" href="icons/favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}.ptl-gap td{background:rgba(217,138,0,.14)!important;color:#8a5a00;font-weight:800;font-size:13px;padding-top:9px;padding-bottom:9px;border-top:1px dashed #d98a00;border-bottom:1px dashed #d98a00}
+html[data-tema="escuro"] .ptl-gap td{background:rgba(240,184,74,.16)!important;color:#f3c25c;border-color:#c98f1f}
+/* modo escuro: cores semânticas mais claras, para o texto manter contraste */
+html[data-tema="escuro"] .vgd.mal,html[data-tema="escuro"] .vgc.vgc-mal,html[data-tema="escuro"] .pct.cl-p-D,html[data-tema="escuro"] b.mal,html[data-tema="escuro"] small.mal,html[data-tema="escuro"] .dkc-d.mal,html[data-tema="escuro"] .dl-vc,html[data-tema="escuro"] .tq-r,html[data-tema="escuro"] .tre,html[data-tema="escuro"] .tef.R,html[data-tema="escuro"] .pv-big.mal b,html[data-tema="escuro"] button.btn.sm.del,html[data-tema="escuro"] .ac-alert.ruim .btn{color:#ff8090!important}
+html[data-tema="escuro"] .vgc.vgc-ok,html[data-tema="escuro"] .pct.cl-p-A,html[data-tema="escuro"] b.ok,html[data-tema="escuro"] small.ok,html[data-tema="escuro"] .dkc-d.ok,html[data-tema="escuro"] .tq-g,html[data-tema="escuro"] .tef.N,html[data-tema="escuro"] .pv-ok .pv-pos span,html[data-tema="escuro"] .pv-ok .pv-res b,html[data-tema="escuro"] .pv-ok b.ok{color:#74dc7b!important}
+html[data-tema="escuro"] .vgc.vgc-at,html[data-tema="escuro"] .vgn.vgn-at,html[data-tema="escuro"] b.par,html[data-tema="escuro"] .tef.A,html[data-tema="escuro"] .dl-7,html[data-tema="escuro"] .tqa-v small,html[data-tema="escuro"] .tpos.on span,html[data-tema="escuro"] .pv-par b.par{color:#f2bd52!important}
+html[data-tema="escuro"] .pct.cl-p-C{color:#ffa860!important}
+html[data-tema="escuro"] .pct.cl-p-B{color:#e8d44e!important}
+html[data-tema="escuro"] .vgt-s,html[data-tema="escuro"] .dtat{color:#82c0f7!important}
+html[data-tema="escuro"] .vgc.vgc-nd,html[data-tema="escuro"] .pv-tab th,html[data-tema="escuro"] .pv-ft span,html[data-tema="escuro"] .pv-pos span,html[data-tema="escuro"] .pv-eq small,html[data-tema="escuro"] .qd-c small,html[data-tema="escuro"] .qd-c small b,html[data-tema="escuro"] .qd-ch small,html[data-tema="escuro"] .qd-n small{color:#a9a9b3!important}
+html[data-tema="escuro"] .pv-ok .pv-pos span{color:#74dc7b!important}
+html[data-tema="escuro"] .cl.cl-A,html[data-tema="escuro"] .cl.cl-B,html[data-tema="escuro"] .cl.cl-C{color:#14110f!important}
+html[data-tema="escuro"] .ic-v,html[data-tema="escuro"] .bu-p b{filter:brightness(1.5)}
+html[data-tema="escuro"] .ac-k.sem.ruim,html[data-tema="escuro"] tr.ac-sem td{background:rgba(200,16,46,.16)!important}
+html[data-tema="escuro"] .dmz-h{background:rgba(0,0,0,.6)!important;color:#d9d9dd!important}
+html[data-tema="escuro"] td.c.sup,html[data-tema="escuro"] td.c.ate,html[data-tema="escuro"] td.c.par,html[data-tema="escuro"] td.c.nao{color:#14110f!important}
+html[data-tema="escuro"] .pv-mal .pv-res b{color:#ff8090!important}html[data-tema="escuro"] .pv-par .pv-res b{color:#f2bd52!important}
+/* barra de rolagem personalizada (Chrome, Edge, Safari e Firefox) */
 *{scrollbar-width:thin;scrollbar-color:#b9a3a8 transparent}
 html{scrollbar-color:#711424 #ece4e5}
 *::-webkit-scrollbar{width:10px;height:10px}
@@ -1325,7 +1342,9 @@ html[data-tema="escuro"] .en-hero{background:radial-gradient(1100px 480px at 85%
 .en-fx{overflow:hidden;flex:1;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}.en-tr{display:flex;gap:40px;white-space:nowrap;width:max-content;animation:enCorre 45s linear infinite}.en-tr span{opacity:.92}.en-tr i{font-style:normal;font-weight:800;color:#ffd1da}@keyframes enCorre{to{transform:translateX(-50%)}}
 @media (max-width:1250px){.en-hw{grid-template-columns:1fr}}
 @media (max-width:760px){.en-hero{padding:28px 20px 100px;border-radius:18px}.en-hero h1{font-size:28px}.en-saude{grid-template-columns:1fr;justify-items:center;text-align:center}.en-mini{width:100%}}
-@media (prefers-reduced-motion:reduce){.en-marca,.en-tr,.en-anel .fg{animation-duration:.01s!important;animation-iteration-count:1!important}}
+@media (prefers-reduced-motion:reduce){.en-marca,.en-anel .fg{animation-duration:.01s!important;animation-iteration-count:1!important}}
+/* o letreiro AGORA sempre rola (mesmo com animações reduzidas no sistema), para mostrar todos os indicadores; passa o mouse para pausar */
+.en-tr{animation:enCorre 45s linear infinite!important}.en-fx:hover .en-tr{animation-play-state:paused!important}
 @media print{.en-rede{display:none}}
 /* ---- cards dos indicadores no padrão dos cards de área ---- */
 section[data-pag="inicio"] #inicioCards{position:relative;z-index:2;margin:-74px 28px 0;gap:20px}
@@ -1898,6 +1917,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
 
   <!-- PÁGINA: TRAFOS · BLINDAGEM -->
   <section data-pag="trf-painel" class="upbi" hidden>
+    <div class="ct-teste" role="status"><b>TELA EM TESTE</b><span>Em validação: os números ainda estão sendo conferidos e podem mudar. Não use para decisões ou cobranças.</span></div>
     <div class="ubar"><div class="ubar-t"><h2>Blindagem de trafos</h2><span class="tbarSub"></span></div><div class="ubar-r"><button type="button" class="ufunil" data-tfunil aria-label="Abrir filtros" title="Filtros"><svg class="ico" viewBox="0 0 24 24"><path d="M3 5h18l-7 8.5V19l-4 2v-7.5z"/></svg><span class="ufn" data-tfn hidden></span></button></div></div>
     <div class="ativos ativosT"></div>
     <div class="dkg" id="tKpis"></div>
@@ -1910,6 +1930,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
 
   <!-- PÁGINA: TRAFOS · ÍNDICE -->
   <section data-pag="trf-indice" class="upbi" hidden>
+    <div class="ct-teste" role="status"><b>TELA EM TESTE</b><span>Em validação: os números ainda estão sendo conferidos e podem mudar. Não use para decisões ou cobranças.</span></div>
     <div class="ubar"><div class="ubar-t"><h2>Índice de reincidência de trafos</h2><span class="tbarSub"></span></div><div class="ubar-r"><button type="button" class="ufunil" data-tfunil aria-label="Abrir filtros" title="Filtros"><svg class="ico" viewBox="0 0 24 24"><path d="M3 5h18l-7 8.5V19l-4 2v-7.5z"/></svg><span class="ufn" data-tfn hidden></span></button></div></div>
     <div class="ativos ativosT"></div>
     <div class="dkg" id="tiKpis"></div>
@@ -2059,7 +2080,6 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
 
   <!-- PÁGINA: GESTÃO DE CONTINGÊNCIA (réplica da aba "Contingência" do BI; base única e compartilhada, qualquer usuário logado importa) -->
   <section data-pag="contingencia" style="display:grid;gap:16px;min-width:0" hidden>
-    <div class="ct-teste" role="status"><b>TELA EM TESTE</b><span>Em validação: os números ainda estão sendo conferidos e podem mudar. Não use para decisões ou cobranças.</span></div>
     <div class="ubar"><div class="ubar-t"><h2>Gestão de Contingência</h2><span>Atividades em campo, clientes afetados e serviços acima de 24 h · base compartilhada, atualizada para todos sem recarregar</span></div><div class="ubar-r"><button type="button" class="ufunil" data-afunil aria-label="Abrir filtros" title="Filtros"><svg class="ico" viewBox="0 0 24 24"><path d="M3 5h18l-7 8.5V19l-4 2v-7.5z"/></svg><span class="ufn" data-afn hidden></span></button></div></div>
     <div class="ct-topo">
       <div class="panel ct-ult"><div class="phd"><h3>Última atualização</h3><small id="ctSync"></small></div><div id="ctUlt" class="ct-ult-g"></div></div>
@@ -2100,7 +2120,6 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
 
   <!-- PÁGINA: FAROL DE PRAZOS (réplica da aba "Farol de Prazos" do BI; usa a mesma base da Gestão de Contingência) -->
   <section data-pag="prazos" style="display:grid;gap:16px;min-width:0" hidden>
-    <div class="ct-teste" role="status"><b>TELA EM TESTE</b><span>Em validação: os números ainda estão sendo conferidos e podem mudar. Não use para decisões ou cobranças.</span></div>
     <div class="ubar"><div class="ubar-t"><h2>Farol de Prazos</h2><span>Monitoramento de prazos regulatórios · calculado a cada minuto pelo horário de Brasília</span></div><div class="ubar-r"><button type="button" class="ufunil" data-afunil aria-label="Abrir filtros" title="Filtros"><svg class="ico" viewBox="0 0 24 24"><path d="M3 5h18l-7 8.5V19l-4 2v-7.5z"/></svg><span class="ufn" data-afn hidden></span></button></div></div>
     <div class="ct-sem" id="pzSem" hidden></div>
     <div id="pzPainel" style="display:grid;gap:16px;min-width:0">
@@ -6322,7 +6341,7 @@ async function prdTimeline(rec,d){
   const hm=t=>t==null?'–':hhmm(t),dur=(a,b)=>a==null||b==null?'–':(b<a?b+1440-a:b-a)+' min';
   let ac=0,gapT=0,ult=null,nProd=0;const rows=[];
   for(const a of A){
-    if(ult!=null&&a.ini!=null&&a.ini-ult>=15){gapT+=a.ini-ult;rows.push('<tr class="tl-gap"><td></td><td colspan="8" class="muted" style="font-size:12px">⏱ '+(a.ini-ult)+' min sem atividade registrada</td></tr>')}
+    if(ult!=null&&a.ini!=null&&a.ini-ult>=15){gapT+=a.ini-ult;rows.push('<tr class="ptl-gap"><td></td><td colspan="8">⏱ '+(a.ini-ult)+' min sem atividade registrada</td></tr>')}
     const prod=!a.nao&&a.v>0&&a.st==='concluído';if(prod){ac+=a.v;nProd++}else if(!a.nao&&a.v>0)ac+=a.v;
     const cor=a.nao?'#8a8a8a':a.st!=='concluído'?'#c8102e':a.v>0?'#2a8f30':'#d98a00',tp=a.nao?'Não produção':a.st!=='concluído'?'Não concluída':a.v>0?'Produção':'Sem valor';
     rows.push('<tr style="box-shadow:inset 4px 0 0 '+cor+'"><td class="nw" style="padding-left:14px"><b>'+hm(a.ini)+'</b></td><td class="nw">'+hm(a.fim)+'</td><td class="n nw">'+dur(a.ini,a.fim)+'</td><td>'+esc(a.k)+(a.loc?'<small class="muted" style="display:block">'+esc(a.loc)+'</small>':'')+'</td><td class="nw">'+esc(a.os)+'</td><td><span class="pill" style="background:'+cor+'22;color:'+cor+'">'+tp+'</span></td><td class="n nw">'+(a.nao?'–':a.v==null?'–':brl(a.v))+'</td><td class="n nw">'+(a.nao?'':brl(ac))+'</td></tr>');
@@ -6972,6 +6991,8 @@ function montarTm(){
   for(const d in up){if(d>TMH.ult||subst.has(d.slice(0,7))){const m=d.slice(0,7);for(const rec in up[d]){const o=up[d][rec];for(const a in o.a)for(const s in o.a[a])L.push({m,rec,b:o.b,a,s,e:o.a[a][s]})}}}
   for(const r in rb)gb[r]=Object.entries(rb[r]).sort((a,b)=>b[1]-a[1])[0][0];
   if(filtroAtivo())for(let i=L.length-1;i>=0;i--)if(!hierOk(L[i].rec))L.splice(i,1);
+  /* só equipes cadastradas (mesma regra da Produção do dia): o relatório do SIGA traz prefixos que não estão no cadastro */
+  if(PCFG){prdPrep();for(let i=L.length-1;i>=0;i--)if(!PCFG.idx[L[i].rec])L.splice(i,1)}
   const meses=[...new Set(L.map(x=>x.m))].sort();
   TM={L,meses,gb,ult:Object.keys(up).concat([TMH.ult]).sort().pop()};
   preencherFiltrosTm();if(indAtual()==='tm')renderTm();renderInicio();
