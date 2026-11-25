@@ -1,4 +1,17 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="icon" href="icons/favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><script>try{var __t=localStorage.getItem('farol.tema');if(__t==='escuro')document.documentElement.setAttribute('data-tema','escuro')}catch(e){}</script></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="icon" href="icons/favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}/* barra de rolagem personalizada (Chrome, Edge, Safari e Firefox) */
+*{scrollbar-width:thin;scrollbar-color:#b9a3a8 transparent}
+html{scrollbar-color:#711424 #ece4e5}
+*::-webkit-scrollbar{width:10px;height:10px}
+*::-webkit-scrollbar-track{background:transparent}
+html::-webkit-scrollbar-track{background:#ece4e5}
+*::-webkit-scrollbar-thumb{background:#c9b7bb;border-radius:999px;border:2px solid transparent;background-clip:content-box}
+*::-webkit-scrollbar-thumb:hover{background:#a5485b;background-clip:content-box;border:2px solid transparent}
+html::-webkit-scrollbar-thumb{background:#711424;background-clip:content-box;border:2px solid transparent}
+html::-webkit-scrollbar-thumb:hover{background:#4a0b16;background-clip:content-box;border:2px solid transparent}
+html[data-tema="escuro"]{scrollbar-color:#a5485b #1e1a1b}
+html[data-tema="escuro"]::-webkit-scrollbar-track{background:#1e1a1b}
+html[data-tema="escuro"]::-webkit-scrollbar-thumb{background:#a5485b;background-clip:content-box;border:2px solid transparent}
+</style><script>try{var __t=localStorage.getItem('farol.tema');if(__t==='escuro')document.documentElement.setAttribute('data-tema','escuro')}catch(e){}</script></head><body>
 <script src="farol-web.js"></script>
 <title>Central de Indicadores</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -1861,6 +1874,12 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     <div class="dcard"><div class="dch"><span class="dch-i"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="10" rx="1"/><rect x="13" y="3" width="8" height="6" rx="1"/><rect x="13" y="11" width="8" height="10" rx="1"/><rect x="3" y="15" width="8" height="6" rx="1"/></svg></span><div><h4>Local do corte por base</h4><small>Quantidade e participação</small></div></div><div id="xcBase"></div></div></div>
   </section>
 
+  <!-- PÁGINA: MIX GSTC · REGRAS DO TIPO DE CORTE -->
+  <section data-pag="mix-regras" class="upbi" hidden>
+    <div class="ubar"><div class="ubar-t"><h2>Regras do tipo de corte</h2><span>Em qual local do corte cada tipo de conclusão é contado · consulta para todos, só o administrador altera</span></div></div>
+    <div id="rgCorte" style="display:grid;gap:16px"></div>
+  </section>
+
   <!-- PÁGINA: MIX GSTC · AUDITORIA DE CAUSAS -->
   <section data-pag="mix-causa" class="upbi" hidden>
     <div class="ubar"><div class="ubar-t"><h2>Auditoria de causas</h2><span id="acSub">SEMFLENG, Assistência NR e Assistência SP concluídas · COI</span></div><div class="ubar-r"></div></div>
@@ -2104,7 +2123,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
 
   <!-- PÁGINA: UPS · REGRAS (administrador) -->
   <section data-pag="ups-regras" class="upbi" hidden>
-    <div class="ubar"><div class="ubar-t"><h2>Regras da UPS</h2><span>Pontuação, DE_PARA e regras de chave usadas no cálculo · só o administrador altera</span></div></div>
+    <div class="ubar"><div class="ubar-t"><h2>Regras da UPS</h2><span>Pontuação, DE_PARA e regras de chave usadas no cálculo · consulta para todos, só o administrador altera</span></div></div>
     <div id="rgUps" style="display:grid;gap:16px"></div>
   </section>
 
@@ -2589,7 +2608,7 @@ const pctCell=p=>'<span class="pct '+cls(p)+'">'+pct(p)+'</span>';
 /* ---------- menu lateral (páginas) ---------- */
 const ICON={relogio:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6M12 2v3"/>',mix:'<rect x="3" y="3" width="8" height="10" rx="1.5"/><rect x="13" y="3" width="8" height="6" rx="1.5"/><rect x="13" y="11" width="8" height="10" rx="1.5"/><rect x="3" y="15" width="8" height="6" rx="1.5"/>',raio:'<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',home:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>',alerta:'<path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/>',cad:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',sono:'<path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/>',cobra:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',painel:'<path d="M4 15a8 8 0 0 1 16 0"/><path d="M12 15l4-4"/><path d="M3 19h18"/>',lista:'<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/>',upload:'<path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v4h16v-4"/>',moeda:'<circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.5-1.2-1.7-1.8-3-1.8-1.7 0-3 .9-3 2.2 0 3 6 1.6 6 4.6 0 1.3-1.3 2.3-3 2.3-1.4 0-2.6-.7-3.1-1.9M12 6v1.7M12 16.8v1.7"/>',chave:'<path d="M14.7 6.3a4 4 0 0 0-5.4 5.2L3 17.8V21h3.2l6.3-6.3a4 4 0 0 0 5.2-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/>'};
 const ico=n=>'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">'+ICON[n]+'</svg>';
-const PAGINAS=[{id:'inicio',nm:'Visão geral',sub:'Resumo de todos os indicadores',ic:'home',g:'Geral'},{id:'painel',nm:'Painel',sub:'Estrutura, base e dia a dia',ic:'painel',g:'Disponibilidade'},{id:'prefixos',nm:'Por prefixo',sub:'Equipe por equipe',ic:'lista',g:'Disponibilidade'},{id:'cobranca',nm:'Cobrança do dia',sub:'Equipes abaixo da meta',ic:'cobra',g:'Disponibilidade'},{id:'ups-painel',nm:'Painel',sub:'Classes, bases e ritmo',ic:'painel',g:'UPS'},{id:'ups-prefixos',nm:'Por equipe',sub:'UPS, meta e classe',ic:'lista',g:'UPS'},{id:'ups-diario',nm:'Diário',sub:'Equipe × dia',ic:'cal',g:'UPS'},{id:'ups-cobranca',nm:'Cobrança',sub:'Equipes classe C e D',ic:'cobra',g:'UPS'},{id:'ups-regras',nm:'Regras da UPS',sub:'Pontuação, DE_PARA e regras',ic:'chave',g:'UPS',adm:true},{id:'ader-painel',nm:'Painel',sub:'Checklist × horário da escala',ic:'cal',g:'Aderência à escala'},{id:'ader-ranking',nm:'Ranking',sub:'Bases e equipes',ic:'lista',g:'Aderência à escala'},{id:'ini-painel',nm:'Painel',sub:'1ª atividade após o checklist',ic:'cal',g:'Início das atividades'},{id:'prd-dia',nm:'Visão diária',sub:'Meta x realizado em R$, em tempo real',ic:'painel',g:'Produção do dia'},{id:'def-painel',nm:'Tratamento',sub:'Total, entrantes e resolvidos',ic:'painel',g:'Atualização de defeitos'},{id:'def-evolucao',nm:'Evolução',sub:'Tipos e dia a dia do mês',ic:'cal',g:'Atualização de defeitos'},{id:'def-lista',nm:'Lista de defeitos',sub:'Banco de dados para cobrança',ic:'lista',g:'Atualização de defeitos'},{id:'tm-geral',nm:'Visão geral',sub:'TME e TMD por mês, base e atividade',ic:'painel',g:'TME / TMD'},{id:'tm-prefixo',nm:'Por prefixo',sub:'Prefixo × tipo de atividade',ic:'lista',g:'TME / TMD'},{id:'tm-detalhe',nm:'Detalhamento',sub:'Abrangência, conclusão e code',ic:'cal',g:'TME / TMD'},{id:'mix-normal',nm:'OS Normal',sub:'Quantidade por mês, base, dia e equipe',ic:'painel',g:'Mix GSTC'},{id:'mix-mistec',nm:'Miscelânea técnica',sub:'R$ executado por mês, base e equipe',ic:'lista',g:'Mix GSTC'},{id:'mix-corte',nm:'Tipo de corte',sub:'Local do corte e R$ por corte',ic:'cal',g:'Mix GSTC'},{id:'mix-causa',nm:'Auditoria de causas',sub:'Emergencial e assistências por causa',ic:'alerta',g:'Mix GSTC'},{id:'trf-painel',nm:'Blindagem',sub:'Efetividade dos trafos trabalhados',ic:'painel',g:'Trafos reincidentes'},{id:'trf-indice',nm:'Índice de reincidência',sub:'Mês a mês e trafos p/ blindagem',ic:'lista',g:'Trafos reincidentes'},{id:'contingencia',nm:'Painel',sub:'Atividades, clientes afetados e acima de 24 h',ic:'alerta',g:'Gestão de Contingência'},{id:'prazos',nm:'Painel',sub:'Prazos regulatórios',ic:'cobra',g:'Farol de Prazos'},{id:'atualizar',nm:'Atualizar com o SIGA',sub:'Enviar os 4 relatórios',ic:'upload',g:'Administração',adm:true},{id:'conferencia',nm:'Conferência',sub:'Avisos da base',ic:'alerta',g:'Administração',adm:true},{id:'cadastros',nm:'Cadastros',sub:'Prefixos, escala e feriados',ic:'cad',g:'Administração',adm:true}];
+const PAGINAS=[{id:'inicio',nm:'Visão geral',sub:'Resumo de todos os indicadores',ic:'home',g:'Geral'},{id:'painel',nm:'Painel',sub:'Estrutura, base e dia a dia',ic:'painel',g:'Disponibilidade'},{id:'prefixos',nm:'Por prefixo',sub:'Equipe por equipe',ic:'lista',g:'Disponibilidade'},{id:'cobranca',nm:'Cobrança do dia',sub:'Equipes abaixo da meta',ic:'cobra',g:'Disponibilidade'},{id:'ups-painel',nm:'Painel',sub:'Classes, bases e ritmo',ic:'painel',g:'UPS'},{id:'ups-prefixos',nm:'Por equipe',sub:'UPS, meta e classe',ic:'lista',g:'UPS'},{id:'ups-diario',nm:'Diário',sub:'Equipe × dia',ic:'cal',g:'UPS'},{id:'ups-cobranca',nm:'Cobrança',sub:'Equipes classe C e D',ic:'cobra',g:'UPS'},{id:'ups-regras',nm:'Regras da UPS',sub:'Pontuação, DE_PARA e regras',ic:'chave',g:'UPS'},{id:'ader-painel',nm:'Painel',sub:'Checklist × horário da escala',ic:'cal',g:'Aderência à escala'},{id:'ader-ranking',nm:'Ranking',sub:'Bases e equipes',ic:'lista',g:'Aderência à escala'},{id:'ini-painel',nm:'Painel',sub:'1ª atividade após o checklist',ic:'cal',g:'Início das atividades'},{id:'prd-dia',nm:'Visão diária',sub:'Meta x realizado em R$, em tempo real',ic:'painel',g:'Produção do dia'},{id:'def-painel',nm:'Tratamento',sub:'Total, entrantes e resolvidos',ic:'painel',g:'Atualização de defeitos'},{id:'def-evolucao',nm:'Evolução',sub:'Tipos e dia a dia do mês',ic:'cal',g:'Atualização de defeitos'},{id:'def-lista',nm:'Lista de defeitos',sub:'Banco de dados para cobrança',ic:'lista',g:'Atualização de defeitos'},{id:'tm-geral',nm:'Visão geral',sub:'TME e TMD por mês, base e atividade',ic:'painel',g:'TME / TMD'},{id:'tm-prefixo',nm:'Por prefixo',sub:'Prefixo × tipo de atividade',ic:'lista',g:'TME / TMD'},{id:'tm-detalhe',nm:'Detalhamento',sub:'Abrangência, conclusão e code',ic:'cal',g:'TME / TMD'},{id:'mix-normal',nm:'OS Normal',sub:'Quantidade por mês, base, dia e equipe',ic:'painel',g:'Mix GSTC'},{id:'mix-mistec',nm:'Miscelânea técnica',sub:'R$ executado por mês, base e equipe',ic:'lista',g:'Mix GSTC'},{id:'mix-corte',nm:'Tipo de corte',sub:'Local do corte e R$ por corte',ic:'cal',g:'Mix GSTC'},{id:'mix-regras',nm:'Regras do corte',sub:'Tipo de conclusão → local do corte',ic:'chave',g:'Mix GSTC'},{id:'mix-causa',nm:'Auditoria de causas',sub:'Emergencial e assistências por causa',ic:'alerta',g:'Mix GSTC'},{id:'trf-painel',nm:'Blindagem',sub:'Efetividade dos trafos trabalhados',ic:'painel',g:'Trafos reincidentes'},{id:'trf-indice',nm:'Índice de reincidência',sub:'Mês a mês e trafos p/ blindagem',ic:'lista',g:'Trafos reincidentes'},{id:'contingencia',nm:'Painel',sub:'Atividades, clientes afetados e acima de 24 h',ic:'alerta',g:'Gestão de Contingência'},{id:'prazos',nm:'Painel',sub:'Prazos regulatórios',ic:'cobra',g:'Farol de Prazos'},{id:'atualizar',nm:'Atualizar com o SIGA',sub:'Enviar os 4 relatórios',ic:'upload',g:'Administração',adm:true},{id:'conferencia',nm:'Conferência',sub:'Avisos da base',ic:'alerta',g:'Administração',adm:true},{id:'cadastros',nm:'Cadastros',sub:'Prefixos, escala e feriados',ic:'cad',g:'Administração',adm:true}];
 /* ---------- hierarquia das equipes (gerente / coordenador / supervisor): filtro global dos indicadores por prefixo ---------- */
 let HIER=null,HF={ger:'',coo:'',sup:''};
 try{Object.assign(HF,JSON.parse(localStorage.getItem('hier.f')||'{}'))}catch(e){}
@@ -3025,6 +3044,7 @@ function mostrarPagina(){
   if(p==='atualizar'){try{montarBanco()}catch(e){}$('opNota').hidden=!(podeEnviar&&!podeSalvar)}
   if(p==='contingencia'||p==='prazos')ctMostrar();else if(p==='conferencia')ctCarregar(false);
   if(p==='mix-causa')acMostrar();
+  if(p==='ups-regras')renderRgUps();if(p==='mix-regras')renderRgCorte();
   if(matchMedia('(max-width:1000px)').matches){document.body.classList.remove('rail-on');$('railFundo').hidden=true}
 }
 window.addEventListener('hashchange',mostrarPagina);
@@ -4118,7 +4138,7 @@ async function printIniLista(){
 $('b-copiar').onclick=()=>{
   const ind=indAtual(),propria=false; /* Disponibilidade: print da tela inteira, como aparece */
   if(propria&&(ind==='ups'?!UR:!ULT)){toast('O painel ainda está carregando.');return}
-  printUm=['def-painel','def-evolucao'].includes(pag().id)||!!(printAlvo&&printAlvo.id==='qdPanel'); /* Defeitos: 1 imagem só (dá para separar no botão) */
+  printUm=['def-painel','def-evolucao'].includes(pag().id)||!!(printAlvo&&(printAlvo.id==='qdPanel'||printAlvo.id==='mdCorpo')); /* detalhe do dia: sempre 1 imagem, a janela cresce até caber tudo */ /* Defeitos: 1 imagem só (dá para separar no botão) */
   printCv=null;printLista=null;printRot=null;abrirModalPrint('Gerando o print da tela…','',false);
   if(pag().id==='ini-painel'&&!printAlvo){printIniLista();return}
   const alvo=printAlvo;printAlvo=null;const cvP=propria&&!alvo?(ind==='ups'?gerarPrintUps():gerarPrint()):gerarPrintPagina(alvo);
@@ -4552,7 +4572,7 @@ const n1=v=>v==null?'–':(+v).toLocaleString('pt-BR',{minimumFractionDigits:1,m
 const clsPill=c=>c?'<span class="cl cl-'+c+'">'+c+'</span>':'<span class="pill nd">–</span>';
 const faixaCell=p=>'<span class="pct '+UPSCalc.faixaBase(p).cls+'">'+pct(p)+'</span>';
 const clsCell=p=>{const c=UPSCalc.classe(p);return '<span class="pct cl-p-'+(c||'x')+'">'+pct(p)+'</span>'};
-function indAtual(){const p=pag().id;if(p==='ups-regras')return null;if(p.startsWith('ups-'))return'ups';if(p.startsWith('ader-'))return'ader';if(p.startsWith('ini-'))return'ini';if(p.startsWith('def-'))return'def';if(p.startsWith('prd-'))return'prd';if(p.startsWith('trf-'))return'trf';if(p==='mix-causa')return null;if(p.startsWith('mix-'))return'mix';if(p.startsWith('tm-'))return'tm';if(['painel','prefixos','cobranca'].includes(p))return'disp';return null}
+function indAtual(){const p=pag().id;if(p==='ups-regras'||p==='mix-regras')return null;if(p.startsWith('ups-'))return'ups';if(p.startsWith('ader-'))return'ader';if(p.startsWith('ini-'))return'ini';if(p.startsWith('def-'))return'def';if(p.startsWith('prd-'))return'prd';if(p.startsWith('trf-'))return'trf';if(p==='mix-causa')return null;if(p.startsWith('mix-'))return'mix';if(p.startsWith('tm-'))return'tm';if(['painel','prefixos','cobranca'].includes(p))return'disp';return null}
 
 /* cadastro único: base e gerência editadas em Cadastros valem também na UPS (a escala continua dando a jornada e a estrutura da pontuação) */
 const siglaDeBase=b=>{const n=x=>String(x||'').toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim(),k=n(b);for(const sg of SIGLAS)if(n(NOME_SIGLA[sg])===k||sg===k)return sg;return ''};
@@ -4854,6 +4874,8 @@ async function atvUnificada(rec,d,pt,u,pr){
   const pontua=x=>x.cat==='ok'||x.cat==='improd';
   const tot=L.reduce((a,x)=>a+(pontua(x)?x.pts:0),0),vt=L.reduce((a,x)=>a+(x.v||0),0);
   const nSem=L.filter(x=>!pontua(x)).length;
+  /* só produção: checklist, almoço, retorno à base e indisponibilidade não contam */
+  {const prod=L.filter(x=>x.cat!=='interna'),kc=$('dkC'),kn=$('dkN');if(kc)kc.textContent=n0(prod.filter(x=>x.st==='concluído'&&x.cat!=='improd').length);if(kn)kn.textContent=n0(prod.filter(x=>x.st!=='concluído'||x.cat==='improd').length)}
   const diff=u!=null&&Math.abs(tot-u)>0.05,diffV=pr&&Math.abs(vt-pr[0])>0.5;
   /* grupos: uma linha de resumo por classe (como a tabela por tipo) e, embaixo, cada atividade com ordem de serviço, horário e valor */
   const G={};for(const x of L){const k=pontua(x)?'c:'+x.cl:'m:'+x.cat;const g=G[k]||(G[k]={k,nome:pontua(x)?x.cl:MOT[x.cat][0],dica:pontua(x)?'':MOT[x.cat][1],cat:pontua(x)?'ok':x.cat,imp:x.cat==='improd',it:[],ups:0,v:0});g.it.push(x);g.v+=x.v||0;if(pontua(x))g.ups+=x.pts}
@@ -4892,7 +4914,7 @@ function upsDet(rec,d){
     const it=Object.entries(ac).filter(([k])=>k[0]!=='_').map(([k,q])=>({k,q,p:pt(k)})).sort((a,b)=>(b.q*(b.p||0))-(a.q*(a.p||0)));
     const pr=(typeof PR!=='undefined'&&PR&&PR.dias&&PR.dias[d]&&PR.dias[d][rec])||null;
     const sr=ac._semregra||0,imp=it.filter(x=>/IMPROD/.test(x.k)).reduce((s,x)=>s+x.q,0);
-    abrirDet({tit:rec+' · '+semana(d)+', '+dataBR(d),kpis:[['UPS no dia',n1(u)],['Meta do dia',n1(mt)],['Produção do dia',pr?brl(pr[0]):'–'],['Atividades',n0(n)],['Concluídas',pr?n0(pr[1]):'–'],['Sem pontuação',sr,sr>n/3?'mal':'']],
+    abrirDet({tit:rec+' · '+semana(d)+', '+dataBR(d),kpis:[['UPS no dia',n1(u)],['Meta do dia',n1(mt)],['Produção do dia',pr?brl(pr[0]):'–'],['Concluídas','<i id="dkC" style="font:inherit">…</i>'],['Não concluídas','<i id="dkN" style="font:inherit">…</i>']],
       semTab:true,
       extra:'<div id="atvBox"><p class="muted" style="margin:16px 0 0;font-size:12.5px">Carregando as atividades do dia…</p></div>',
       aviso:esc(c0.sigla||'')+' · '+esc(c0.tipo||'')+' · meta de 42 UPS por dia (verde a partir de 38,3)'+(imp?' · <b>'+imp+'</b> improdutiva(s)':''),
@@ -4901,7 +4923,7 @@ function upsDet(rec,d){
       rodape:'UPS = quantidade × pontos de cada tipo. Atividades sem regra ou improdutivas não somam UPS.'});
     {const resumo={cols:['wTipo de atividade','nQtd.','nPontos','nUPS','nParticipação'],rows:it.map(x=>['<b>'+esc(x.k)+'</b>'+(/IMPROD/.test(x.k)?' <span class="pill nao">improdutiva</span>':''),x.q,x.p==null?'–':n1(x.p),x.p==null?'–':n1(x.q*x.p),u&&x.p?pct(x.q*x.p/u):'–']).concat(sr?[['<span class="muted">Sem regra de UPS</span>',sr,'–','0,0','–']]:[])};
      const fallback=msg=>tabDet(resumo)+'<p class="muted" style="margin:8px 0 0;font-size:11.5px">UPS = quantidade × pontos de cada tipo. Atividades sem regra ou improdutivas não somam UPS.</p>'+(msg?'<p class="muted" style="margin:8px 0 0;font-size:12.5px">'+msg+'</p>':'');
-     atvUnificada(rec,d,pt,u,pr).then(h=>{const b=$('atvBox');if(!b)return;if(h==null){b.innerHTML=fallback('As atividades deste dia ainda não estão no banco SIGA, por isso aparece só o resumo por tipo. Envie o COI do dia em Atualizar com o SIGA.');return}b.innerHTML=h;atvFiltra(b)}).catch(()=>{const b=$('atvBox');if(b)b.innerHTML=fallback('Não foi possível listar as atividades deste dia.')})}
+     atvUnificada(rec,d,pt,u,pr).then(h=>{const b=$('atvBox');if(!b)return;if(h==null){const kc=$('dkC'),kn=$('dkN');if(kc)kc.textContent=pr?n0(pr[1]):'–';if(kn)kn.textContent='–';b.innerHTML=fallback('As atividades deste dia ainda não estão no banco SIGA, por isso aparece só o resumo por tipo. Envie o COI do dia em Atualizar com o SIGA.');return}b.innerHTML=h;atvFiltra(b)}).catch(()=>{const b=$('atvBox');if(b)b.innerHTML=fallback('Não foi possível listar as atividades deste dia.')})}
   }else{
     const g={};for(const l of LL){const a=g[l.data]||(g[l.data]={u:0,mt:0,n:0});a.u+=l.ups;a.mt+=l.meta;a.n+=l.n}
     const ds=Object.keys(g).sort();let cu=0,cm=0;
@@ -5563,7 +5585,8 @@ function aderDet(rec,d){
 /* Prazo do 1º serviço (indicador Primeiro serviço): plantão 16H manhã (final 001M/002M) 07:30 e tarde (001T/002T) 15:30;
    ligação nova, corte, seed money e plantão moto 08:30. Demais estruturas e dias com horário ajustado à mão seguem a escala (l.lim). */
 function psLim(l){
-  if(l.lim==null||l.ov)return l.lim;
+  if(l.lim==null)return l.lim;
+  if(l.ov)return l.lim+30; /* horário ajustado à mão: prazo = início do turno + 30 min (13:00 → 13:30) */
   const pv=prefEm(l.rec,l.data),g=pv?aderGrupo(pv.e):'';
   if(g==='16H'){const m=/(?:001|002)([MT])$/.exec(String(l.rec).toUpperCase());return m?(m[1]==='M'?450:930):l.lim}
   if(g==='LGN'||g==='CORTE'||g==='SEED'||g==='MOTO')return 510;
@@ -5928,7 +5951,7 @@ function aplicarRegrasUps(){
   UCFG.regras=o.regras||UCFG0.regras;
 }
 async function rgGravar(mut,msg){
-  if(!db||!podeSalvar){toast('Você não tem permissão para alterar as regras.');return false}
+  if(!db||!ehAdm()){toast('Só administradores alteram as regras.');return false}
   const o=JSON.parse(JSON.stringify(UOVR||RG_VAZIO()));mut(o);
   for(const k in o.tp)if(UCFG0.tabups[k]===o.tp[k]||(o.tp[k]==null&&!(k in UCFG0.tabups)))delete o.tp[k];
   for(const k in o.dp){const a=UCFG0.depara[k],b=o.dp[k];if(b==null?!a:(a&&a.c===b.c&&a.p===b.p))delete o.dp[k]}
@@ -5971,6 +5994,10 @@ function renderRgUps0(){
   el.querySelectorAll('[data-rgt]').forEach(b=>b.onclick=()=>{rgTab=b.dataset.rgt;rgBusca='';renderRgUps()});
   const bq=$('rgBusca');if(bq)bq.oninput=()=>{rgBusca=bq.value;const pos=bq.selectionStart;renderRgUps();const n=$('rgBusca');n.focus();n.setSelectionRange(pos,pos)};
   for(const [id,vals,cur,set] of [['rgFb',bs,rgFb,v=>{rgFb=v}],['rgFe',es,rgFe,v=>{rgFe=v}]]){const e1=$(id);if(!e1)continue;const st=msInit(e1);st.setOpts(vals);if(cur)for(const v of cur)if(vals.includes(v))st.sel.add(v);st.pintar();e1.addEventListener('change',()=>{set(msSel(id));renderRgUps()})}
+  if(!ehAdm()){ /* consulta: sem edição, exclusão nem criação */
+    el.querySelectorAll('#b-rgNovo,#b-rgReset,[data-rgrest],[data-rgdel],[data-rgdpe],[data-rgdpr],[data-rgdpd],[data-rgre],[data-rgup],[data-rgdn],[data-rgrd]').forEach(b=>b.remove());
+    el.querySelectorAll('.rg-n').forEach(i=>{const sp=document.createElement('span');sp.textContent=i.value.replace('.',',');i.replaceWith(sp)});
+    return}
   if($('b-rgReset'))$('b-rgReset').onclick=()=>{if(confirm('Voltar todas as regras ao que está no Estudo UPS? As alterações feitas aqui serão apagadas.'))rgGravar(x=>{x.tp={};x.dp={};x.regras=null},'Regras restauradas ao original.')};
   $('b-rgNovo').onclick=()=>rgForm(rgTab,null);
   el.querySelectorAll('.rg-n').forEach(i=>i.onchange=()=>{const v=parseFloat(String(i.value).replace(',','.'));if(isNaN(v)||v<0){toast('Informe um número de pontos válido.');renderRgUps();return}rgGravar(x=>{x.tp[i.dataset.rgk]=v},'Pontuação atualizada.')});
@@ -7080,6 +7107,29 @@ const MX_LOC={D:'Disjuntor',M:'Medidor',P:'Poste',R:'Ramal',G:'Débito pago',N:'
 const MX_BCOR=['#4a0b16','#2f6f8f','#a5485b','#b8860b','#5f7d4e','#8a5a63','#555'];
 const MX_TC={'DISJUNTOR':'D','DISJUNTOR DESARMADO':'D','DÉBITO PAGO':'G','SUSPENSÃO NO POSTE/CPREDE':'P','DIFICIL ACESSO':'N','SOBRAS':'N','SUSPENSÃO - RAMAL RETIRADO':'R','POSTE/CPREDE':'P','RAMAL RETIRADO':'R','CONTINUA SUSPENSA':'N','MEDIDOR':'M','DEMOLIDO':'N','SUSPENSÃO NO BARRAMENTO/CPREDE':'M','NÃO LOCALIZADO':'N','SUSPENSÃO NO BEIRAL':'R','BEIRAL':'R','SUSPENSÃO - MEDIDOR RETIRADO':'M','OUTRO EQUIPAMENTO NO LOCAL':'N','NÃO PERMITIU A SUSPENSÃO':'N','NEGOCIAÇÃO SEED MONEY':'G','BAIXA POR RAJADA/ARRECADAÇÃO':'N','BARRAMENTO/CPREDE':'M'};
 const MXF=['x-base','x-tipo','x-mes','x-loc'],MXF_NOME={'x-base':'Base','x-tipo':'Tipo de equipe','x-mes':'Mês','x-loc':'Local do corte'};
+/* regras do tipo de corte: tipo de conclusão → local do corte (consulta para todos; edição só do administrador) */
+const MX_TC0=Object.assign({},MX_TC);let COVR=null;
+function aplicarRegrasCorte(){for(const k of Object.keys(MX_TC))delete MX_TC[k];Object.assign(MX_TC,MX_TC0);const o=COVR||{};for(const k in o){if(o[k]==null)delete MX_TC[k];else MX_TC[k]=o[k]}}
+async function corteGravar(mut,msg){
+  if(!db||!ehAdm()){toast('Só administradores alteram as regras.');return false}
+  const o=Object.assign({},COVR||{});mut(o);for(const k in o)if(o[k]===MX_TC0[k]||(o[k]==null&&!(k in MX_TC0)))delete o[k];
+  try{await db.collection('config').doc('corteRegras').set({itens:o,editadoEm:new Date().toISOString()});COVR=o;aplicarRegrasCorte();renderRgCorte();toast(msg||'Regra salva.');return true}catch(e){toast('Não foi possível salvar.');return false}
+}
+function renderRgCorte(){
+  const el=$('rgCorte');if(!el)return;const adm=ehAdm(),L=Object.entries(MX_TC).sort((a,b)=>a[1]<b[1]?-1:a[1]>b[1]?1:a[0]<b[0]?-1:1),o=COVR||{},nAlt=Object.keys(o).length;
+  const opL=v=>Object.entries(MX_LOC).map(([k,n])=>'<option value="'+k+'"'+(k===v?' selected':'')+'>'+n+'</option>').join('');
+  el.innerHTML='<div class="panel rgp"><div class="aviso-hd"><span class="ic i">'+AVI.i+'</span><div><h3>Como o local do corte é definido</h3><p>Para cada corte, o <b>tipo de conclusão</b> informado no SIGA (executada, não executada ou local de religação) define o <b>local do corte</b> usado no painel. Alterar uma regra vale para os <b>próximos arquivos enviados</b>; os dias já enviados guardam o local de quando foram processados.</p></div></div>'
+    +'<div class="rg-bar"><span class="muted" style="font-size:12.5px">'+L.length+' regras'+(nAlt?' · <b>'+nAlt+'</b> alteração(ões) em relação ao original':'')+'</span>'+(adm&&nAlt?'<button class="btn sm del" type="button" id="b-rcReset" style="margin-left:auto">Voltar ao original</button>':'')+'</div>'
+    +(adm?'<div class="rg-bar"><input id="rcNovoT" placeholder="Tipo de conclusão (texto igual ao SIGA)" style="min-width:300px"><select id="rcNovoL">'+opL('D')+'</select><button class="btn primary sm" type="button" id="b-rcNovo">+ Nova regra</button></div>':'')
+    +'<div class="tw" style="max-height:620px"><table class="utab"><thead><tr><th>Tipo de conclusão</th><th>Local do corte</th><th>Situação</th>'+(adm?'<th></th>':'')+'</tr></thead><tbody>'
+    +L.map(([k,v])=>{const alt=k in o,nov=!(k in MX_TC0);return '<tr><td><b>'+esc(k)+'</b></td><td>'+(adm?'<select data-rcl="'+esc(k)+'">'+opL(v)+'</select>':esc(MX_LOC[v]||v))+'</td><td>'+(nov?'<span class="rg-tag n">Nova</span>':alt?'<span class="rg-tag a">Alterada · era '+esc(MX_LOC[MX_TC0[k]])+'</span>':'<span class="muted">Original</span>')+'</td>'+(adm?'<td class="nw">'+(alt&&!nov?'<button class="btn sm" type="button" data-rcr="'+esc(k)+'">Restaurar</button> ':'')+'<button class="btn sm del" type="button" data-rcd="'+esc(k)+'">Excluir</button></td>':'')+'</tr>'}).join('')+'</tbody></table></div></div>';
+  if(!adm)return;
+  el.querySelectorAll('[data-rcl]').forEach(i=>i.onchange=()=>corteGravar(x=>{x[i.dataset.rcl]=i.value},'Regra atualizada.'));
+  el.querySelectorAll('[data-rcr]').forEach(b=>b.onclick=()=>corteGravar(x=>{delete x[b.dataset.rcr]},'Regra restaurada.'));
+  el.querySelectorAll('[data-rcd]').forEach(b=>b.onclick=()=>{if(confirm('Excluir a regra de '+b.dataset.rcd+'? Cortes com esse tipo de conclusão deixam de ser contados nos próximos envios.'))corteGravar(x=>{x[b.dataset.rcd]=null},'Regra excluída.')});
+  $('b-rcNovo').onclick=()=>{const t=$('rcNovoT').value.trim().toUpperCase();if(!t){toast('Informe o tipo de conclusão.');return}if(MX_TC[t]){toast('Essa regra já existe. Altere a linha existente.');return}corteGravar(x=>{x[t]=$('rcNovoL').value},'Regra criada.')};
+  if($('b-rcReset'))$('b-rcReset').onclick=()=>{if(confirm('Voltar todas as regras do corte ao original? As alterações feitas aqui serão apagadas.'))corteGravar(x=>{for(const k of Object.keys(x))delete x[k]},'Regras restauradas ao original.')};
+}
 /* COI do dia ou Banco do Relatório de Produção → {dia:{n,m,c,b}} (mesmas regras do Power BI Mix GSTC) */
 function mixDeLinhas(rows){
   prdPrep();const H=rows[0].map(x=>String(x==null?'':x).trim()),ix=n=>H.indexOf(n);
@@ -7480,7 +7530,7 @@ montarTrf=cargaEmbrulhar('montarTrf',montarTrf);montarBanco=cargaEmbrulhar('mont
     {const bi=snap.docs.find(d=>d.id==='bancoIdx');if(bi){try{const v=JSON.parse(bi.data().j);for(const f of ['COI','MAN','FIS','OBRAS'])v[f]=v[f]||{};bancoIdx=v;montarBanco();if(pag().id==='mix-causa')acMostrar()}catch(e){}}}
     let esc=null,escInfo=null,fu={};
     for(const d of snap.docs){const v=d.data();if(v&&v.itens&&n[d.id]!==undefined)n[d.id]=v.itens;if(d.id==='escala'&&v&&Array.isArray(v.itens)){esc=v.itens;escInfo=(v.arquivo||'')+(v.editadoEm?' em '+new Date(v.editadoEm).toLocaleDateString('pt-BR'):'')}if(d.id==='feriadosUps'&&v&&v.itens)fu=v.itens}
-    cad=n;try{aplicarMetas();aplicarListas()}catch(e){console.error('metas',e)}{const as=JSON.stringify(n.naoCgb);if(as!==ncAssin){ncAssin=as;setTimeout(()=>{try{hierRemontar()}catch(e){}},0)}}escalaDb=esc;escalaDbInfo=escInfo;ferUps=fu;const aa=snap.docs.find(d=>d.id==='aderAjuste');aderAjDb=aa?aa.data():null;const dt=snap.docs.find(d=>d.id==='defTatico');defTatDb=dt?dt.data():null;const dtc=snap.docs.find(d=>d.id==='defTecnicos');defTecDb=dtc?dtc.data():null;{const uh=snap.docs.find(d=>d.id==='upsHoje'),uv=uh&&uh.data();try{upsHojeDb=uv&&uv.data&&uv.eq?{data:uv.data,eq:JSON.parse(uv.eq),em:uv.enviadoEm,arquivo:uv.arquivo}:null}catch(e){upsHojeDb=null}}{const ur=snap.docs.find(d=>d.id==='upsRegras');UOVR=rgLer(ur?ur.data():null);aplicarRegrasUps();if(UCFG){montarUPS();renderRgUps()}}montar();try{montarPrd()}catch(e){}montarAder();montarDef();
+    cad=n;try{aplicarMetas();aplicarListas()}catch(e){console.error('metas',e)}{const as=JSON.stringify(n.naoCgb);if(as!==ncAssin){ncAssin=as;setTimeout(()=>{try{hierRemontar()}catch(e){}},0)}}escalaDb=esc;escalaDbInfo=escInfo;ferUps=fu;const aa=snap.docs.find(d=>d.id==='aderAjuste');aderAjDb=aa?aa.data():null;const dt=snap.docs.find(d=>d.id==='defTatico');defTatDb=dt?dt.data():null;const dtc=snap.docs.find(d=>d.id==='defTecnicos');defTecDb=dtc?dtc.data():null;{const uh=snap.docs.find(d=>d.id==='upsHoje'),uv=uh&&uh.data();try{upsHojeDb=uv&&uv.data&&uv.eq?{data:uv.data,eq:JSON.parse(uv.eq),em:uv.enviadoEm,arquivo:uv.arquivo}:null}catch(e){upsHojeDb=null}}{const cr=snap.docs.find(d=>d.id==='corteRegras'),cd=cr&&cr.data();COVR=cd&&cd.itens||null;aplicarRegrasCorte();try{renderRgCorte()}catch(e){}}{const ur=snap.docs.find(d=>d.id==='upsRegras');UOVR=rgLer(ur?ur.data():null);aplicarRegrasUps();if(UCFG){montarUPS();renderRgUps()}}montar();try{montarPrd()}catch(e){}montarAder();montarDef();
   },()=>{});
   renderCadastros();
   if(pendentes.length)atualizarLocais();
