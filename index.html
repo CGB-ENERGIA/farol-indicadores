@@ -1,5 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="icon" href="icons/favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}.ptl-gap td{background:rgba(217,138,0,.14)!important;color:#8a5a00;font-weight:800;font-size:13px;padding-top:9px;padding-bottom:9px;border-top:1px dashed #d98a00;border-bottom:1px dashed #d98a00}
-html[data-tema="escuro"] .ptl-gap td{background:rgba(240,184,74,.16)!important;color:#f3c25c;border-color:#c98f1f}
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="icon" href="icons/favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}.ptl-gap td{background:repeating-linear-gradient(135deg,#4d4749 0 9px,#3e393b 9px 18px)!important;color:#ffd43b!important;font-weight:800;font-size:13px;padding-top:8px;padding-bottom:8px;letter-spacing:.01em}
 /* modo escuro: cores semânticas mais claras, para o texto manter contraste */
 html[data-tema="escuro"] .vgd.mal,html[data-tema="escuro"] .vgc.vgc-mal,html[data-tema="escuro"] .pct.cl-p-D,html[data-tema="escuro"] b.mal,html[data-tema="escuro"] small.mal,html[data-tema="escuro"] .dkc-d.mal,html[data-tema="escuro"] .dl-vc,html[data-tema="escuro"] .tq-r,html[data-tema="escuro"] .tre,html[data-tema="escuro"] .tef.R,html[data-tema="escuro"] .pv-big.mal b,html[data-tema="escuro"] button.btn.sm.del,html[data-tema="escuro"] .ac-alert.ruim .btn{color:#ff8090!important}
 html[data-tema="escuro"] .vgc.vgc-ok,html[data-tema="escuro"] .pct.cl-p-A,html[data-tema="escuro"] b.ok,html[data-tema="escuro"] small.ok,html[data-tema="escuro"] .dkc-d.ok,html[data-tema="escuro"] .tq-g,html[data-tema="escuro"] .tef.N,html[data-tema="escuro"] .pv-ok .pv-pos span,html[data-tema="escuro"] .pv-ok .pv-res b,html[data-tema="escuro"] .pv-ok b.ok{color:#74dc7b!important}
@@ -15,6 +14,13 @@ html[data-tema="escuro"] .ac-k.sem.ruim,html[data-tema="escuro"] tr.ac-sem td{ba
 html[data-tema="escuro"] .dmz-h{background:rgba(0,0,0,.6)!important;color:#d9d9dd!important}
 html[data-tema="escuro"] td.c.sup,html[data-tema="escuro"] td.c.ate,html[data-tema="escuro"] td.c.par,html[data-tema="escuro"] td.c.nao{color:#14110f!important}
 html[data-tema="escuro"] .pv-mal .pv-res b{color:#ff8090!important}html[data-tema="escuro"] .pv-par .pv-res b{color:#f2bd52!important}
+/* Conferência: cards minimizáveis, ordenados por prioridade */
+#avisos,#avisosUps,#scUps{display:contents!important}#avisosUps>.vhead,#scUps>.vhead{display:none}section[data-pag="conferencia"]>h3.sec-t{display:none}
+.cf-card.cf-min>*:not(.aviso-hd){display:none!important}
+.cf-tg{flex:none;width:32px;height:32px;display:inline-grid;place-items:center;border:1px solid var(--line);background:var(--surface);color:var(--accent);border-radius:9px;cursor:pointer;padding:0;margin-left:8px}.cf-tg:hover{background:var(--accent-soft)}.cf-tg .ico{width:16px;height:16px;transition:transform .18s}.cf-card.cf-min .cf-tg .ico{transform:rotate(-90deg)}
+.cf-ok{flex:none;display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:800;color:#1f7a25;background:rgba(63,163,77,.14);border-radius:99px;padding:4px 10px;margin-right:6px}.cf-ok .ico{width:14px;height:14px;stroke-width:3}
+html[data-tema="escuro"] .cf-ok{color:#74dc7b;background:rgba(116,220,123,.14)}
+.cf-card.cf-min .aviso-hd{margin-bottom:0}
 /* barra de rolagem personalizada (Chrome, Edge, Safari e Firefox) */
 *{scrollbar-width:thin;scrollbar-color:#b9a3a8 transparent}
 html{scrollbar-color:#711424 #ece4e5}
@@ -2055,7 +2061,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
       <div class="bk-bar"><div class="tabs" id="bk-tabs"></div>
         <select id="bk-mes" class="bk-in"></select><select id="bk-dia" class="bk-in"></select>
         <input id="bk-busca" class="bk-in" type="search" placeholder="Buscar em todas as colunas">
-        <button class="btn" id="bk-xls" type="button">Baixar Excel</button><button class="btn del" id="bk-del" type="button" hidden>Excluir este dia</button><button class="btn" id="bk-psr" type="button" hidden title="Calcula o 1º serviço depois do checklist de todos os dias do COI que já estão no banco">Recalcular 1º serviço</button></div>
+        <button class="btn" id="bk-xls" type="button">Baixar Excel</button><button class="btn del" id="bk-del" type="button" hidden>Excluir este dia</button><button class="btn" id="bk-dsr" type="button" hidden title="Refaz o resumo da disponibilidade de todos os dias do banco com o almoço e a indisponibilidade apontados no SIGA">Recalcular disponibilidade (almoço)</button><button class="btn" id="bk-psr" type="button" hidden title="Calcula o 1º serviço depois do checklist de todos os dias do COI que já estão no banco">Recalcular 1º serviço</button></div>
       <div class="bk-hist" id="bk-hist" hidden><label class="btn" for="bk-f">Carregar histórico (só no banco)</label><input type="file" id="bk-f" accept=".xlsx,.xls,.csv,.json" multiple hidden><span class="muted" id="bk-hmsg">Selecione os arquivos antigos do SIGA (COI, MAN, FIS, OBRAS). Eles entram só no banco e não mexem em nenhum indicador.</span></div>
       <div class="bk-hist" id="bk-bkp" hidden><button class="btn" id="bk-bkpb" type="button">Baixar backup do banco (.zip)</button><label class="btn" for="bk-rest" id="bk-restl" hidden>Restaurar de backup</label><input type="file" id="bk-rest" accept=".zip" hidden><span class="muted" id="bk-bkpm">Um arquivo .zip com um CSV por fonte (COI, MAN, FIS, OBRAS). Abre no Excel; guarde na pasta Backup de siga. Restaurar só preenche dias que não estão no banco.</span></div>
       <div class="bk-hist" id="bk-imp" hidden><button class="btn" id="bk-impb" type="button">Importar banco inicial (arquivos banco2026)</button><span class="muted" id="bk-impt">Carrega no banco os dias de COI, MAN, FIS e OBRAS de 01/01 a 10/11/2026. Dias que já estão no banco não são sobrescritos.</span></div>
@@ -2155,6 +2161,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
       <input type="search" id="cadGlobal" placeholder="Buscar prefixo ou regra…" aria-label="Buscar nos cadastros"><small class="muted" id="cadGlobMsg" style="padding:0 4px"></small>
       <div class="cm-g">Equipes</div>
       <button type="button" data-tab="prefixos" data-kw="prefixo prefixos jornada equipe equipes base gerencia meta periodo periodos vigencia escala ups turno dias trabalhados contrato mix seed money estrutura estruturas subtipo subtipos tipo producao aderencia horario previsto tolerancia checklist primeiro servico" aria-pressed="true">Equipes, subtipos e horários</button>
+      <button type="button" data-tab="naocgb" data-kw="nao cgb outras empresas prefixo terceiros parceiros" aria-pressed="false">Prefixos de outras empresas (não CGB)</button>
       <div class="cm-g">Calendário</div>
       <button type="button" data-tab="feriados" data-kw="feriado feriados folga folgas ups base" aria-pressed="false">Feriados e folgas</button>
       <div class="cm-g">Indicadores</div>
@@ -2170,6 +2177,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
       <div class="cad-sel" id="cadSelBar" hidden><span id="cadSelTxt"></span><button class="btn primary sm" type="button" id="b-cadMassa">Editar selecionados</button><button class="btn sm" type="button" id="b-cadSelTodos">Selecionar todos os filtrados</button><button class="btn sm" type="button" id="b-cadSelLimpa">Limpar seleção</button></div>
       <div class="tw"><table><thead><tr><th style="width:34px"><input type="checkbox" id="cadAll" aria-label="Selecionar todos da lista"></th><th>Prefixo</th><th>Estrutura</th><th>Gerência</th><th>Base</th><th>Jornada</th><th>Meta produção</th><th></th></tr></thead><tbody id="t-cad"></tbody></table></div>
     </div>
+    <div class="panel" data-tabp="naocgb" hidden><div class="phd"><h3>Prefixos de outras empresas (não CGB)</h3></div><div id="ncCad" style="display:grid;gap:12px;padding:0 4px 8px"></div></div>
     <div class="panel" data-tabp="estruturas" hidden>
       <div class="phd"><h3>Subtipos · regras padrão</h3><small>nome nos indicadores, grupo, jornada, meta e dias trabalhados padrão: preenchem o período da equipe ao escolher o subtipo</small></div>
       <div class="tw"><table><thead><tr><th>Estrutura (SIGA)</th><th>Nome único da equipe</th><th>Grupo</th><th>Jornada padrão (seg a dom)</th><th>Meta padrão (R$)</th><th>Dias trabalhados padrão</th><th>Fim do turno padrão</th><th>Fora do Mix</th><th class="n">Equipes</th><th></th></tr></thead><tbody id="t-estr"></tbody></table></div>
@@ -2238,6 +2246,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
 <div class="modal" id="modalPrint" hidden><div class="modal-c pmod"><div class="modal-hd"><h3>Print do painel · pronto para enviar</h3><button class="fecha" id="b-fechaPrint" type="button" aria-label="Fechar"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="pm-st" id="printMsg" role="status"></div><div class="modal-bd pm-bd" id="printBd"><div class="pm-load" id="printLoad"><i></i>Gerando o print…</div><div id="printPartes" hidden></div></div><div class="modal-ft pm-ft"><button class="btn" id="b-zoomPrint" type="button">Ampliar</button><button class="btn" id="b-umPrint" type="button">Juntar em 1 imagem</button><span style="flex:1"></span><button class="btn" id="b-sharePrint" type="button" hidden>Compartilhar…</button><button class="btn primary" id="b-baixaPrint" type="button">Baixar as 2 imagens</button></div></div></div>
 <div class="modal" id="modalAGr" hidden><div class="modal-c magr"><div class="modal-hd"><h3 id="agrTit">Aderência à escala · todos os prefixos</h3><button class="fecha" id="b-fechaAGr" type="button" aria-label="Fechar"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="modal-bd" id="agrCorpo"></div></div></div>
 <div class="modal" id="modalEqp" hidden><div class="modal-c meqp"><div class="modal-hd"><h3 id="meTit">Todas as equipes</h3><button class="fecha" id="b-fechaEqp" type="button" aria-label="Fechar"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="modal-bd" id="meCorpo"></div></div></div>
+<div class="modal" id="modalDlg" hidden style="z-index:140"><div class="modal-c" style="max-width:520px;width:min(520px,94vw)"><div class="modal-hd"><h3 id="dlgTit">Confirmar</h3><button class="fecha" id="b-dlgX" type="button" aria-label="Fechar"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="modal-bd" id="dlgCorpo"></div><div class="modal-ft"><button class="btn" id="b-dlgNao" type="button">Cancelar</button><button class="btn primary" id="b-dlgSim" type="button">Confirmar</button></div></div></div>
 <div class="modal" id="modalDia" hidden><div class="modal-c mdia"><div class="modal-hd"><h3 id="mdTit">Detalhe do dia</h3><button class="fecha" id="b-fechaDia" type="button" aria-label="Fechar"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="modal-bd" id="mdCorpo"></div><div class="modal-ft"><button class="btn" id="b-mdFiltra" type="button">Filtrar o painel neste dia</button><button class="btn primary" id="b-mdPrint" type="button">Copiar print</button></div></div></div>
 <div class="modal" id="modalRg" hidden><div class="modal-c mlote"><div class="modal-hd"><h3 id="rgTit">Regra</h3><button class="fecha" id="b-fechaRg" type="button" aria-label="Fechar"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="modal-bd" id="rgCorpo"></div><div class="modal-ft"><span class="muted" id="rgMsg" style="margin-right:auto;font-size:12.5px"></span><button class="btn del" id="b-rgExclui" type="button" hidden>Excluir</button><button class="btn" id="b-rgCancela" type="button">Cancelar</button><button class="btn primary" id="b-rgSalva" type="button">Salvar</button></div></div></div>
 <div class="modal" id="modalLote" hidden><div class="modal-c mlote"><div class="modal-hd"><h3 id="ltTit">Cadastrar em lote</h3><button class="fecha" id="b-fechaLote" type="button" aria-label="Fechar"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="modal-bd" id="ltCorpo"></div><div class="modal-ft"><span class="muted" id="ltMsg" style="margin-right:auto;font-size:12.5px"></span><button class="btn" id="b-ltCancela" type="button">Cancelar</button><button class="btn primary" id="b-ltSalva" type="button">Salvar cadastros</button></div></div></div>
@@ -2482,7 +2491,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     const tipos = h.map((x, i) => (x === 'Tipo de Atividade' ? i : -1)).filter(i => i >= 0);
     const iTipo = tipos.length > 1 ? tipos[1] : tipos[0];
     if (iRec < 0 || iData < 0 || iSt < 0 || iIni < 0 || iFim < 0) throw new Error('Colunas Recurso/Data/Status/Início/Fim não encontradas');
-    const dias = {}; let linhas = 0;
+    const dias = {}; let linhas = 0; const iv = {};
     for (let r = 1; r < rows.length; r++) {
       const row = rows[r]; if (!row) continue;
       const st = row[iSt]; if (!STATUS_OK.includes(st)) continue;
@@ -2505,10 +2514,15 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
       const tipoCk = iTipo != null && iTipo >= 0 ? row[iTipo] : null;
       if (tipoCk != null && String(tipoCk).trim() === 'Checklist Início do Turno' && ini != null) a[5] = a[5] == null ? ini : Math.min(a[5], ini);
       if (tipo === 'Retorno à base' && ini != null) a[2] = a[2] == null ? ini : Math.max(a[2], ini);
-      if (tipo === 'Intervalo para almoço') a[3] += tt;
-      if (tipo === 'Indisponibilidade') a[4] += tt;
+      /* almoço e indisponibilidade: apontamento real do SIGA, em todas as fontes (inclusive FIS). Ficam guardados como intervalos para não contar em dobro (apontamentos repetidos ou indisponibilidade sobreposta ao almoço) */
+      const tAl = tipoCk != null ? String(tipoCk).trim() : null;
+      if (ini != null && tt > 0 && (tAl === 'Intervalo para almoço' || tAl === 'Indisponibilidade')) { const k2 = data + '|' + rec, o = iv[k2] || (iv[k2] = { d: data, r: rec, a: [], i: [] }); (tAl === 'Indisponibilidade' ? o.i : o.a).push([ini, ini + tt]); }
       linhas++;
     }
+    const uni = l => { const s = l.slice().sort((x, y) => x[0] - y[0]), o = []; for (const q of s) { const u = o[o.length - 1]; if (u && q[0] <= u[1]) u[1] = Math.max(u[1], q[1]); else o.push([q[0], q[1]]); } return o; };
+    const soma = l => l.reduce((t, q) => t + (q[1] - q[0]), 0);
+    const inter = (A, B) => { let t = 0; for (const x of A) for (const y of B) t += Math.max(0, Math.min(x[1], y[1]) - Math.max(x[0], y[0])); return t; };
+    for (const k in iv) { const o = iv[k], A = uni(o.a), I = uni(o.i), a = dias[o.d][o.r]; a[3] = soma(A); a[4] = Math.max(0, soma(I) - inter(A, I)); }
     return { dias, linhas };
   }
 
@@ -2537,8 +2551,10 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
         const ini = a ? (a[5] != null ? a[5] : (a[0] != null ? a[0] : 0)) : 0;
         const fimT = a ? (a[2] != null ? a[2] : (a[1] != null ? a[1] : 0)) : 0;
         /* turno que passa da meia-noite: o retorno à base / última atividade cai no dia seguinte (até 1,5x a jornada, mín. 12 h); acima disso, ou fim "00:00" sem dado, o fim é inconsistente e o turno fica sem horas */
-        const lim = Math.max(720, 1.5 * ((p.j && p.j[wd]) || 480));
+        const lim = Math.max(1080, 1.5 * ((p.j && p.j[wd]) || 480));
+        const EXP = (root.DISP_EXPURGO || {})[rec + '|' + data] || null; /* expurgo do administrador: o dia da equipe não entra na conta (horários continuam visíveis) */
         const fimR = (a && fimT > 0 && fimT < ini && fimT + 1440 - ini <= lim) ? fimT + 1440 : fimT;
+        const noite = !!(a && fimR !== fimT); /* turno que terminou no dia seguinte (ex.: 16:59 até 05:06): as horas são contadas */
         const disp = fimR < ini ? 0 : fimR - ini;
         let alm = a ? a[3] : 0;
         if (alm === 0 && wd < 5 && p.g === 'GOMAN') alm = 120;
@@ -2554,7 +2570,8 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
         const feriado = cfg.folgas[p.b + '|' + p.e + '|' + data] || cfg.feriados[data] || (cfg.mun && cfg.mun[String(p.b).toUpperCase() + '|' + data]) || '';
         const jor = p.j[wd];
         const prev = feriado === '' ? jor : ((cfg.isentoFeriado ? cfg.isentoFeriado(p) : p.e.includes('PLANTÃO')) ? jor : 0);
-        out.push({ rec, data, mes: data.slice(0, 7), dia: DIAS[wd], base: p.b, ger: p.g, est: cfg.nomeEst ? cfg.nomeEst(p.e) : p.e, ini: a ? ini : null, fim: a ? fimT : null, ti, tf, dentro, disp, alm, ind, real, prev: prev == null ? 0 : prev, feriado, ativo: !!a });
+        if (EXP) { real = 0; dentro = null; }
+        out.push({ rec, data, mes: data.slice(0, 7), dia: DIAS[wd], base: p.b, ger: p.g, est: cfg.nomeEst ? cfg.nomeEst(p.e) : p.e, ini: a ? ini : null, fim: a ? fimT : null, ti, tf, dentro, disp, alm, ind, real, prev: EXP ? 0 : (prev == null ? 0 : prev), feriado, ativo: !!a, noite, exp: EXP });
       }
     }
     return out;
@@ -3065,7 +3082,7 @@ function mostrarPagina(){
   if(p==='atualizar'){try{montarBanco()}catch(e){}$('opNota').hidden=!(podeEnviar&&!podeSalvar)}
   if(p==='contingencia'||p==='prazos')ctMostrar();else if(p==='conferencia')ctCarregar(false);
   if(p==='mix-causa')acMostrar();
-  if(p==='ups-regras')renderRgUps();if(p==='prd-precos')renderPrecos();if(p==='mix-corte'){renderRgCorte();mxVarrerSem()}
+  if(p==='ups-regras')renderRgUps();if(p==='prd-precos')renderPrecos();if(p==='conferencia'){Object.keys(cfMin).forEach(k=>delete cfMin[k]);cfAplicar()}if(p==='mix-corte'){renderRgCorte();mxVarrerSem()}
   if(matchMedia('(max-width:1000px)').matches){document.body.classList.remove('rail-on');$('railFundo').hidden=true}
 }
 window.addEventListener('hashchange',mostrarPagina);
@@ -3266,6 +3283,21 @@ function delta(atual,ant,rot){
   const c=Math.abs(pp)<0.05?'eq':pp>0?'up':'down', seta=c==='eq'?'=':c==='up'?'↑':'↓';
   return '<span class="delta '+c+'" title="Antes: '+pct(ant)+'">'+seta+' '+a+' p.p.'+(rot?' <small>'+rot+'</small>':'')+'</span>';
 }
+/* caixa de confirmação do próprio sistema (no lugar de janelas do navegador): dlg({tit,html,ok,perigo}) → null (cancelou) ou {motivo} */
+function dlg(o){return new Promise(res=>{const m=$('modalDlg');$('dlgTit').textContent=o.tit||'Confirmar';$('dlgCorpo').innerHTML=o.html||'';$('b-dlgSim').textContent=o.ok||'Confirmar';$('b-dlgSim').classList.toggle('del',!!o.perigo);m.hidden=false;
+  const kd=e=>{if(e.key==='Escape')fim(null)};
+  const fim=v=>{m.hidden=true;$('b-dlgSim').onclick=$('b-dlgNao').onclick=$('b-dlgX').onclick=null;m.onclick=null;document.removeEventListener('keydown',kd);res(v)};
+  document.addEventListener('keydown',kd);
+  $('b-dlgSim').onclick=()=>fim({motivo:(($('dlgMotivo')||{}).value||'').trim()});$('b-dlgNao').onclick=$('b-dlgX').onclick=()=>fim(null);m.onclick=e=>{if(e.target===m)fim(null)};
+  const f=$('dlgMotivo');setTimeout(()=>{(f||$('b-dlgSim')).focus()},40)})}
+const dlgMotivo='<div class="fld" style="margin-top:10px"><label for="dlgMotivo">Motivo (opcional)</label><textarea id="dlgMotivo" rows="3" style="width:100%" placeholder="Por que esta decisão?"></textarea></div>';
+/* expurgo (administrador): tira o dia de uma equipe da conta da disponibilidade; os horários seguem visíveis */
+async function dispExpurgar(rec,e,d,semModal){
+  if(!db||!ehAdm()){toast('Só administradores podem expurgar.');return}
+  const itens=Object.assign({},window.DISP_EXPURGO||{}),k=rec+'|'+d;
+  if(itens[k])delete itens[k];else{const m=await dlg({tit:'Expurgar o dia de '+rec,html:'<p><b>'+esc(rec)+'</b> em <b>'+dataBR(d)+'</b>: o dia sai da conta da disponibilidade (previsto e realizado). Os horários continuam visíveis para conferência e você pode restaurar depois.</p>'+dlgMotivo,ok:'Expurgar',perigo:true});if(!m)return;itens[k]={motivo:m.motivo,em:new Date().toISOString()}}
+  try{await db.collection('config').doc('dispExpurgos').set({itens,editadoEm:new Date().toISOString()});window.DISP_EXPURGO=itens;montar();if(!semModal)abrirDiaEst(resumo,e,d);toast(itens[k]?'Dia expurgado.':'Dia restaurado.')}catch(er){toast('Não foi possível salvar.')}
+}
 /* clique no mapa de calor: equipes daquela estrutura no dia, uma a uma */
 function abrirDiaEst(rows,e,d){
   const L=rows.filter(r=>r.est===e&&r.data===d&&(r.prev>0||r.ativo||r.real>0));
@@ -3273,12 +3305,13 @@ function abrirDiaEst(rows,e,d){
   const fer=L.find(r=>r.feriado);
   $('mdTit').textContent=e+' · '+semana(d)+', '+dataBR(d);
   const ord=L.slice().sort((a,b)=>{const x=a.prev?a.real/a.prev:9,y=b.prev?b.real/b.prev:9;return x-y||a.rec.localeCompare(b.rec)});
-  const linha=r=>{const p=r.prev?r.real/r.prev:null,sit=!r.ativo||(!r.real&&r.ini==null)?'<span class="pill nao">Sem atividade</span>':(r.ativo&&r.ini!=null&&r.fim!=null&&r.disp===0&&r.fim<r.ini)?'<span class="pill par" title="O fim registrado é anterior ao início (atividade encerrada fora do dia ou dado errado no SIGA). O turno não é contado.">Fim inconsistente</span>':!r.prev?'<span class="pill nd">Sem previsto</span>':'<span class="pill '+cls(p)+'">'+Disp.classificar(p).txt+'</span>';
-    return '<tr><td class="nw"><b class="mono">'+esc(r.rec)+'</b></td><td class="nw">'+esc(r.base)+'</td><td class="n">'+(r.ini!=null&&r.ativo?hhmm(r.ini):'–')+'</td><td class="n">'+(r.fim!=null&&r.ativo?hhmm(r.fim):'–')+'</td><td class="n">'+(r.alm?hhmm(r.alm):'–')+'</td><td class="n">'+(r.ind?hhmm(r.ind):'–')+'</td><td class="n"><b>'+hhmm(r.real)+'</b></td><td class="n">'+hhmm(r.prev)+'</td><td class="n"><b>'+(p==null?'–':pct(p))+'</b></td><td>'+sit+'</td></tr>'};
+  const linha=r=>{const p=r.prev?r.real/r.prev:null,sit=!r.ativo||(!r.real&&r.ini==null)?'<span class="pill nao">Sem atividade</span>':r.exp?'<span class="pill nd" title="Expurgado pelo administrador'+(r.exp.motivo?': '+esc(r.exp.motivo):'')+'. O dia da equipe não entra na conta.">Expurgado</span>':(r.ativo&&r.ini!=null&&r.fim!=null&&r.disp===0&&r.fim<r.ini)?'<span class="pill par" title="O fim registrado é anterior ao início (atividade encerrada fora do dia ou dado errado no SIGA). O turno não é contado.">Fim inconsistente</span>':!r.prev?'<span class="pill nd">Sem previsto</span>':'<span class="pill '+cls(p)+'">'+Disp.classificar(p).txt+'</span>';
+    return '<tr><td class="nw"><b class="mono">'+esc(r.rec)+'</b></td><td class="nw">'+esc(r.base)+'</td><td class="n">'+(r.ini!=null&&r.ativo?hhmm(r.ini):'–')+'</td><td class="n">'+(r.fim!=null&&r.ativo?hhmm(r.fim)+(r.noite?' <small class="muted" title="O turno terminou no dia seguinte">+1 dia</small>':''):'–')+'</td><td class="n">'+(r.alm?hhmm(r.alm):'–')+'</td><td class="n">'+(r.ind?hhmm(r.ind):'–')+'</td><td class="n"><b>'+hhmm(r.real)+'</b></td><td class="n">'+hhmm(r.prev)+'</td><td class="n"><b>'+(p==null?'–':pct(p))+'</b></td><td>'+sit+(r.noite&&!r.exp?' <span class="pill nd" title="Turno que terminou no dia seguinte: as horas foram contadas">Virou o dia</span>':'')+'</td>'+(ehAdm()?'<td class="nw"><button type="button" class="btn sm'+(r.exp?'':' del')+'" data-expu="'+esc(r.rec)+'" title="'+(r.exp?'Voltar a contar este dia':'Tirar este dia da conta (os horários continuam visíveis)')+'">'+(r.exp?'Restaurar':'Expurgar')+'</button></td>':'')+'</tr>'};
   $('mdCorpo').innerHTML='<div class="md-k"><div><span>Disponibilidade</span><b class="'+(pp==null?'':cls(pp))+'">'+(pp==null?'–':pct(pp))+'</b></div><div><span>Turno real</span><b>'+hhmm(R)+'</b></div><div><span>Previsto</span><b>'+hhmm(P)+'</b></div><div><span>Equipes</span><b>'+L.length+'</b></div><div><span>Sem atividade</span><b>'+semAt+'</b></div></div>'
     +(fer?'<p class="muted" style="margin:0 0 8px;font-size:12.5px">Feriado / folga: '+esc(fer.feriado)+'</p>':'')
-    +'<div class="tw md-t"><table class="utab"><thead><tr><th>Prefixo</th><th>Base</th><th class="n">Início</th><th class="n">Fim</th><th class="n">Almoço</th><th class="n">Indisp.</th><th class="n">Turno real</th><th class="n">Previsto</th><th class="n">%</th><th>Situação</th></tr></thead><tbody>'
-    +(ord.map(linha).join('')||'<tr><td colspan="10" class="empty">Nenhuma equipe neste quadrado.</td></tr>')+'</tbody></table></div><p class="muted" style="margin:8px 0 0;font-size:11.5px">'+esc(e)+' · '+dataBR(d)+' · ordenado da menor para a maior disponibilidade</p>';
+    +'<div class="tw md-t"><table class="utab"><thead><tr><th>Prefixo</th><th>Base</th><th class="n">Início</th><th class="n">Fim</th><th class="n">Almoço</th><th class="n">Indisp.</th><th class="n">Turno real</th><th class="n">Previsto</th><th class="n">%</th><th>Situação</th>'+(ehAdm()?'<th></th>':'')+'</tr></thead><tbody>'
+    +(ord.map(linha).join('')||'<tr><td colspan="11" class="empty">Nenhuma equipe neste quadrado.</td></tr>')+'</tbody></table></div><p class="muted" style="margin:8px 0 0;font-size:11.5px">'+esc(e)+' · '+dataBR(d)+' · ordenado da menor para a maior disponibilidade</p>';
+  $('mdCorpo').querySelectorAll('[data-expu]').forEach(b=>b.onclick=()=>dispExpurgar(b.dataset.expu,e,d));
   $('b-mdFiltra').hidden=false;$('b-mdFiltra').textContent='Filtrar o painel neste dia';
   $('b-mdFiltra').onclick=()=>{$('modalDia').hidden=true;$('f-dia').value=d;$('f-dia').classList.add('on');render();toast('Mostrando '+dataBR(d)+'.');window.scrollTo({top:0,behavior:'smooth'})};
   $('modalDia').hidden=false;
@@ -3310,21 +3343,17 @@ function renderAvisos(todosMes,diaRef){
   $('ativosAv').querySelectorAll('[data-tira]').forEach(b=>b.onclick=()=>{const id=b.dataset.tira;$(id).value='';$(id).classList.remove('on');render()});
   const m=$('f-mes').value, grupos=[];
   // 1. sem cadastro (relatórios do SIGA e base de contingência): cadastrar ou marcar como não CGB
-  const semCad={};
-  for(const d in diasAgg){if(!d.startsWith(m))continue;for(const r in diasAgg[d]){const p=cfg.prefixos[r];if((!p||!p.b)&&!ehNaoCgb(r)){const a=semCad[r]||(semCad[r]={rec:r,dias:0,ult:'',ct:0});a.dias++;if(d>a.ult)a.ult=d}}}
+  const semCad={},corte=ultimaData?Disp.addDays(ultimaData,-30):'';
+  for(const d in diasAgg){if(d<corte)continue;for(const r in diasAgg[d]){const p=cfg.prefixos[r];if((!p||!p.b)&&!ehNaoCgb(r)){const a=semCad[r]||(semCad[r]={rec:r,dias:0,ult:'',ct:0});a.dias++;if(d>a.ult)a.ult=d}}}
   for(const r of CT.rows){const p=cfg.prefixos[r.rec];if((p&&p.b)||ehNaoCgb(r.rec))continue;const a=semCad[r.rec]||(semCad[r.rec]={rec:r.rec,dias:0,ult:'',ct:0});a.ct++}
   {const ok=r=>/^MA-[A-Z0-9]+-[A-Z0-9]+$/.test(String(r||''));
-   const ext=[['UPS',()=>(UR&&UR.escala||[]).map(c=>c.rec)],['Produção',()=>PR&&PR.dias?Object.values(PR.dias).flatMap(o=>Object.keys(o||{})):[]],['Início das atividades',()=>IR&&IR.linhas?IR.linhas.map(l=>l.rec):[]]];
+   const ext=[['UPS',()=>(UR&&UR.escala||[]).map(c=>c.rec)],['Produção',()=>PR&&PR.dias?Object.entries(PR.dias).filter(([d])=>d>=corte).flatMap(([,o])=>Object.keys(o||{})):[]],['Início das atividades',()=>IR&&IR.linhas?IR.linhas.filter(l=>l.data>=corte).map(l=>l.rec):[]]];
    for(const [nm,fn] of ext){let L=[];try{L=fn()}catch(e){}for(const r of new Set(L)){if(!ok(r)||ehNaoCgb(r))continue;const p=cfg.prefixos[r];if(p&&p.b)continue;const a=semCad[r]||(semCad[r]={rec:r,dias:0,ult:'',ct:0});(a.ou=a.ou||[]).push(nm)}}}
   const l1=Object.values(semCad).sort((a,b)=>(b.dias+b.ct+(b.ou?b.ou.length:0))-(a.dias+a.ct+(a.ou?a.ou.length:0)));
   const onde=a=>(a.dias?'<span class="tag-site">Relatórios do SIGA · '+a.dias+' dia(s)</span>':'')+(a.ct?'<span class="tag-site">Contingência · '+a.ct+' atividade(s)</span>':'')+(a.ou||[]).map(x=>'<span class="tag-site">'+x+'</span>').join('');
-  grupos.push({t:'r',tit:'Prefixos sem cadastro',sub:'Aparecem em algum indicador (relatórios do SIGA, contingência, UPS, produção, início das atividades), mas não estão em Cadastros, e por isso ficam fora dos cálculos. Se o prefixo é da CGB, use Cadastrar. Se é de outra empresa, use Não é da CGB: ele sai de todos os indicadores do site.',n:l1.length,
+  grupos.push({t:'r',tit:'Prefixos novos para classificar',sub:'Prefixos que apareceram nas bases nos últimos 30 dias e ainda não foram tratados: não estão em Cadastros nem foram marcados como outra empresa, e por isso ficam fora dos cálculos. Se é da CGB, use Cadastrar. Se é de outra empresa, use Não é da CGB. Depois disso o prefixo sai desta lista. A lista de prefixos de outras empresas fica em Cadastros.',n:l1.length,
     lote:l1.length&&podeSalvar,
     tab:l1.length?'<thead><tr>'+(podeSalvar?'<th style="width:34px"><input type="checkbox" class="lt-all" aria-label="Selecionar todos"></th>':'')+'<th>Prefixo no SIGA</th><th>Onde aparece</th><th>Último dia</th><th></th></tr></thead><tbody>'+l1.map(a=>'<tr>'+(podeSalvar?'<td><input type="checkbox" class="lt-ck" value="'+esc(a.rec)+'" aria-label="Selecionar '+esc(a.rec)+'"></td>':'')+'<td><b>'+esc(a.rec)+'</b></td><td>'+onde(a)+'</td><td>'+(a.ult?dataBR(a.ult):'–')+'</td><td style="white-space:nowrap">'+(podeSalvar?'<button class="btn sm" type="button" data-novo="'+esc(a.rec)+'">Cadastrar</button> <button class="btn sm" type="button" data-nc="'+esc(a.rec)+'" title="Prefixo de outra empresa: some de todos os indicadores">Não é da CGB</button>':'')+'</td></tr>').join('')+'</tbody>':''});
-  // 1b. prefixos já marcados como não CGB (para conferir e desfazer)
-  const ncl=Object.entries(ncMapa()).map(([k,v])=>({k,rec:(v&&v.rec)||k,por:v&&v.por,em:v&&v.em})).sort((a,b)=>a.rec<b.rec?-1:1);
-  grupos.push({t:'i',info:true,tit:'Prefixos de outras empresas (não CGB)',sub:'Estes prefixos foram marcados como não CGB e não aparecem em nenhum indicador. Se marcou por engano, use Voltar a considerar.',n:ncl.length,vazio:'Nenhum prefixo marcado como não CGB.',
-    tab:ncl.length?'<thead><tr><th>Prefixo</th><th>Marcado por</th><th>Em</th><th></th></tr></thead><tbody>'+ncl.map(a=>'<tr><td><b>'+esc(a.rec)+'</b></td><td>'+esc(a.por||'–')+'</td><td>'+(a.em?new Date(a.em).toLocaleDateString('pt-BR'):'–')+'</td><td>'+(podeSalvar?'<button class="btn sm" type="button" data-ncv="'+esc(a.rec)+'">Voltar a considerar</button>':'')+'</td></tr>').join('')+'</tbody>':''});
   // 2. sem atividade no dia
   const doDia=todosMes.filter(r=>r.data===diaRef&&r.prev>0&&!r.ativo);
   const seguidos=r=>{let n=0;const rs=resumo.filter(x=>x.rec===r.rec&&x.data<=diaRef&&x.prev>0).sort((a,b)=>a.data<b.data?1:-1);for(const x of rs){if(x.ativo)break;n++}return n};
@@ -3338,8 +3367,13 @@ function renderAvisos(todosMes,diaRef){
   const l4=todosMes.filter(r=>r.data===diaRef&&r.prev>0&&r.ativo&&(r.real/r.prev>1.5||r.fim<r.ini));
   grupos.push({t:'a',tit:'Horários para conferir em '+(diaRef?dataBR(diaRef):'–'),sub:'Disponibilidade acima de 150% ou fim antes do início (tempo zerado). Pode ser lançamento errado no SIGA.',n:l4.length,
     tab:l4.length?'<thead><tr><th>Prefixo</th><th>Estrutura</th><th>Início</th><th>Fim</th><th class="n">Real</th><th class="n">Disp.</th></tr></thead><tbody>'+l4.map(r=>'<tr><td><b>'+esc(r.rec)+'</b></td><td>'+esc(r.est)+'</td><td>'+hhmm(r.ini)+'</td><td>'+hhmm(r.fim)+'</td><td class="n">'+hhmm(r.real)+'</td><td class="n">'+pctCell(r.real/r.prev)+'</td></tr>').join('')+'</tbody>':''});
+  /* expurgos de horários (disponibilidade): os mesmos registros que o cálculo está usando; filtros por mês, data, estrutura e prefixo */
+  grupos[grupos.length-1].extra='<div id="expCard"></div>';
+  ['semcad','semativ','relat','horarios'].forEach((k,i)=>{grupos[i].key=k;grupos[i].tier=i===0?1:2});
   nAvisos=grupos.filter(g=>!g.info).reduce((s,g)=>s+g.n,0);
-  $('avisos').innerHTML=grupos.map(g=>'<div class="panel"><div class="aviso-hd"><span class="ic '+(g.n&&!g.info?g.t:'i')+'">'+(g.n&&!g.info?AVI.r:AVI.i)+'</span><div><h3>'+g.tit+'</h3><p>'+g.sub+'</p></div><span class="n">'+g.n+'</span></div>'+(g.n?(g.lote?'<div class="lt-bar"><span class="muted">Marque os prefixos e trate todos de uma vez.</span><button class="btn sm" type="button" id="b-nc" disabled>Não é da CGB</button><button class="btn primary sm" type="button" id="b-lote" disabled>Cadastrar selecionados</button></div>':'')+'<div class="tw"><table>'+g.tab+'</table></div>':'<div class="aviso-ok">'+AVI.ok+(g.vazio||'Nada para conferir.')+'</div>')+'</div>').join('');
+  $('avisos').innerHTML=grupos.map(g=>'<div class="panel cf-card" data-cf-k="'+g.key+'" data-cf-t="'+g.tier+'" data-cf-n="'+(g.info?0:g.n)+'"><div class="aviso-hd"><span class="ic '+(g.n&&!g.info?g.t:'i')+'">'+(g.n&&!g.info?AVI.r:AVI.i)+'</span><div><h3>'+g.tit+'</h3><p>'+g.sub+'</p></div><span class="n">'+g.n+'</span></div>'+(g.n?(g.lote?'<div class="lt-bar"><span class="muted">Marque os prefixos e trate todos de uma vez.</span><button class="btn sm" type="button" id="b-nc" disabled>Não é da CGB</button><button class="btn primary sm" type="button" id="b-lote" disabled>Cadastrar selecionados</button></div>':'')+'<div class="tw"><table>'+g.tab+'</table></div>':'<div class="aviso-ok">'+AVI.ok+(g.vazio||'Nada para conferir.')+'</div>')+(g.extra||'')+'</div>').join('');
+  renderExpurgos(m);
+  cfAplicar();
   $('avisos').querySelectorAll('[data-novo]').forEach(b=>b.onclick=()=>abrirPref(null,b.dataset.novo));
   $('avisos').querySelectorAll('[data-nc]').forEach(b=>b.onclick=()=>marcarNaoCgb([b.dataset.nc]));
   $('avisos').querySelectorAll('[data-ncv]').forEach(b=>b.onclick=()=>marcarNaoCgb([b.dataset.ncv],true));
@@ -3350,6 +3384,34 @@ function renderAvisos(todosMes,diaRef){
   if(document.querySelector('.rail .count')||nAvisos)renderRail();
 }
 
+let expF={mes:null,dia:'',est:'',rec:''};
+function renderExpurgos(mTela){
+  const el=$('expCard');if(!el)return;const all=resumo.filter(x=>x.exp),F=expF;if(F.mes==null)F.mes=mTela||'';
+  const meses=[...new Set(all.map(x=>x.mes))].sort().reverse(),ests=[...new Set(all.map(x=>x.est))].sort(),recs=[...new Set(all.map(x=>x.rec))].sort();
+  const L=all.filter(x=>(!F.mes||x.mes===F.mes)&&(!F.dia||x.data===F.dia)&&(!F.est||x.est===F.est)&&(!F.rec||x.rec===F.rec)).sort((a,b)=>a.data<b.data?1:a.data>b.data?-1:a.rec<b.rec?-1:1);
+  const op=(v,cur,t)=>'<option value="'+esc(v)+'"'+(v===cur?' selected':'')+'>'+esc(t||v)+'</option>';
+  el.innerHTML='<div class="aviso-hd" style="border-top:1px solid var(--line);margin-top:6px"><span class="ic i">'+AVI.i+'</span><div><h3>Expurgos de horários</h3><p>Dias de equipes que o administrador tirou da conta da disponibilidade (previsto e realizado). Os horários continuam visíveis para conferência.</p></div><span class="n">'+L.length+'</span></div>'
+   +'<div class="cad-fil" style="padding:0 16px 10px"><div class="fld"><label for="exMes">Mês</label><select id="exMes"><option value="">Todos os meses</option>'+meses.map(x=>op(x,F.mes,mesNome(x))).join('')+'</select></div><div class="fld"><label for="exDia">Data</label><input type="date" id="exDia" value="'+esc(F.dia)+'"></div><div class="fld"><label for="exEst">Estrutura</label><select id="exEst"><option value="">Todas</option>'+ests.map(x=>op(x,F.est)).join('')+'</select></div><div class="fld"><label for="exRec">Prefixo</label><select id="exRec"><option value="">Todos</option>'+recs.map(x=>op(x,F.rec)).join('')+'</select></div><button class="btn sm" type="button" id="exLimpa">Limpar filtros</button></div>'
+   +(L.length?'<div class="tw"><table><thead><tr><th>Prefixo</th><th>Estrutura</th><th>Data</th><th>Início</th><th>Fim</th><th>Motivo</th><th>Expurgado em</th>'+(ehAdm()?'<th></th>':'')+'</tr></thead><tbody>'+L.map(x=>'<tr><td><b>'+esc(x.rec)+'</b></td><td>'+esc(x.est)+'</td><td>'+dataBR(x.data)+'</td><td>'+(x.ini!=null?hhmm(x.ini):'–')+'</td><td>'+(x.fim!=null?hhmm(x.fim)+(x.noite?' <small class="muted">+1 dia</small>':''):'–')+'</td><td>'+esc(x.exp.motivo||'–')+'</td><td>'+(x.exp.em?new Date(x.exp.em).toLocaleDateString('pt-BR'):'–')+'</td>'+(ehAdm()?'<td class="nw"><button type="button" class="btn sm" data-expr="'+esc(x.rec)+'|'+x.data+'|'+esc(x.est)+'">Restaurar</button></td>':'')+'</tr>').join('')+'</tbody></table></div>':'<div class="aviso-ok">'+AVI.ok+(all.length?'Nenhum expurgo com esses filtros.':'Nenhum expurgo registrado.')+'</div>');
+  const set=(k,id)=>$(id).onchange=()=>{expF[k]=$(id).value;if(k==='dia'&&expF.dia)expF.mes='';if(k==='mes'&&expF.mes)expF.dia='';renderExpurgos(mTela)};
+  set('mes','exMes');set('dia','exDia');set('est','exEst');set('rec','exRec');
+  $('exLimpa').onclick=()=>{expF={mes:'',dia:'',est:'',rec:''};renderExpurgos(mTela)};
+  el.querySelectorAll('[data-expr]').forEach(b=>b.onclick=()=>{const [rc,dt,es]=b.dataset.expr.split('|');dispExpurgar(rc,es,dt,true)});
+}
+/* cards da Conferência: minimizar/expandir, "Validado" pela situação real dos dados e ordem por prioridade
+   (1 = itens novos aguardando validação, 2 = pendências, 3 = validados) */
+const cfMin={};
+function cfAplicar(){
+  document.querySelectorAll('section[data-pag="conferencia"] .cf-card').forEach(c=>{
+    const k=c.dataset.cfK,n=+c.dataset.cfN||0,val=n===0,hd=c.querySelector('.aviso-hd');if(!hd)return;
+    const min=(k in cfMin)?cfMin[k]:val;
+    c.classList.toggle('cf-min',min);c.classList.toggle('cf-val',val);c.style.order=String((val?3:(+c.dataset.cfT||2))*10);
+    hd.querySelectorAll('.cf-tg,.cf-ok').forEach(x=>x.remove());
+    if(val){const o=document.createElement('span');o.className='cf-ok';o.innerHTML='<svg class="ico" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Validado';hd.insertBefore(o,hd.querySelector('.n'))}
+    const t=document.createElement('button');t.type='button';t.className='cf-tg';t.setAttribute('aria-expanded',String(!min));t.title=min?'Expandir':'Minimizar';t.innerHTML='<svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>';
+    t.onclick=()=>{cfMin[k]=!c.classList.contains('cf-min');cfAplicar()};hd.appendChild(t);
+  });
+}
 /* marca (ou desfaz) prefixos de outras empresas: cadastro único, vale para todos os indicadores */
 async function marcarNaoCgb(lista,desfazer){
   if(!lista.length)return;
@@ -3371,6 +3433,7 @@ const CAD_INTRO={
  prefixos:'Tudo sobre as equipes numa tela só: 1) equipes e seus períodos de vigência, 2) regras padrão de cada subtipo, 3) horário previsto de início (aderência) e 4) a escala importada da planilha, que os períodos vão substituir.',
  estruturas:'Regras de cada subtipo: nome nos indicadores, grupo, jornada e meta padrão, e o horário previsto de início (aderência) com a tolerância. Ao escolher o subtipo de uma equipe, o período é preenchido com isto.',
  escala:'Escala mensal usada pela UPS e pela aderência: quais dias cada equipe trabalha.',
+ naocgb:'Prefixos que aparecem no SIGA mas pertencem a outras empresas. Eles saem de todos os indicadores e deixam de aparecer como prefixo novo na Conferência.',
  feriados:'Feriados gerais, folgas de uma base e feriados da UPS por tipo de equipe e base, num só lugar.',
  folgas:'Folgas por base e estrutura: dias em que a equipe não conta como prevista.',
  ferups:'Feriados em que a meta da UPS não conta para um tipo de equipe e base.',
@@ -3498,7 +3561,19 @@ function renderCadPend(){
   if(!/\d/.test(v)){for(const b of document.querySelectorAll('.cad-menu [data-tab]')){if((sem(b.textContent)+' '+b.dataset.kw).split(/\s+/).some(w=>w&&(w===t||(t.length>=4&&w.startsWith(t)))))alvo=b;if(alvo)break}}
   if(alvo){alvo.click();$('cadGlobMsg').textContent='Aberto: '+alvo.textContent}
   else{document.querySelector('[data-tab="prefixos"]').click();$('cadBusca').value=v;renderCadastros();$('cadGlobMsg').textContent=cadVis.length+' prefixo(s) encontrado(s)'}})}
-function renderCadastros(){try{renderEstruturas()}catch(e){console.error('estruturas',e)}try{renderMetasCad();renderListasCad();renderCadPend();if(!$('cadIntro').textContent)$('cadIntro').textContent=CAD_INTRO[abaCad]||''}catch(e){console.error('metasCad',e)}try{renderAderRegras()}catch(e){console.error('aderRegras',e)}
+function renderNaoCgbCad(){
+  const el=$('ncCad');if(!el)return;const adm=podeSalvar&&!modoEquipe;
+  const L=Object.entries(ncMapa()).map(([k,v])=>({k,rec:(v&&v.rec)||k,por:v&&v.por,em:v&&v.em})).sort((a,b)=>a.rec<b.rec?-1:1);
+  el.innerHTML=(adm?'<div class="rg-bar"><input id="ncNovo" placeholder="Prefixo (ex.: MA-XXX-E001M)" style="min-width:260px;text-transform:uppercase"><button class="btn primary sm" type="button" id="b-ncAdd">Marcar como não CGB</button><span class="muted" style="font-size:12.5px">O prefixo sai de todos os indicadores.</span></div>':'')
+   +(L.length?'<div class="tw"><table class="utab"><thead><tr><th>Prefixo</th><th>Marcado por</th><th>Em</th>'+(adm?'<th></th>':'')+'</tr></thead><tbody>'+L.map(a=>'<tr><td><b>'+esc(a.rec)+'</b></td><td>'+esc(a.por||'–')+'</td><td>'+(a.em?new Date(a.em).toLocaleDateString('pt-BR'):'–')+'</td>'+(adm?'<td class="nw"><button class="btn sm" type="button" data-ncv="'+esc(a.rec)+'">Voltar a considerar</button></td>':'')+'</tr>').join('')+'</tbody></table></div>':'<div class="aviso-ok">'+AVI.ok+'Nenhum prefixo marcado como não CGB.</div>')
+   +'<p class="muted" style="margin:0;font-size:12px">'+L.length+' prefixo(s) de outras empresas. Prefixos novos que ainda não foram classificados aparecem na Conferência.</p>';
+  el.querySelectorAll('[data-ncv]').forEach(b=>b.onclick=()=>marcarNaoCgb([b.dataset.ncv],true));
+  const ad=$('b-ncAdd');if(ad)ad.onclick=async()=>{const v=($('ncNovo').value||'').trim().toUpperCase();if(!/^MA-[A-Z0-9]+-[A-Z0-9]+$/.test(v)){toast('Informe o prefixo no formato MA-BASE-EQUIPE.');return}
+    if(ehNaoCgb(v)){toast('Esse prefixo já está marcado como não CGB.');return}
+    if(cfg.prefixos[v]&&cfg.prefixos[v].b){const r=await dlg({tit:'Prefixo já cadastrado',html:'<p><b>'+esc(v)+'</b> está cadastrado como equipe da CGB. Marcar como não CGB faz o prefixo sair de todos os indicadores.</p>',ok:'Marcar como não CGB',perigo:true});if(!r)return}
+    marcarNaoCgb([v])};
+}
+function renderCadastros(){try{renderNaoCgbCad()}catch(e){console.error('naocgb',e)}try{renderEstruturas()}catch(e){console.error('estruturas',e)}try{renderMetasCad();renderListasCad();renderCadPend();if(!$('cadIntro').textContent)$('cadIntro').textContent=CAD_INTRO[abaCad]||''}catch(e){console.error('metasCad',e)}try{renderAderRegras()}catch(e){console.error('aderRegras',e)}
   if(!cfg)return;
   $('cadModo').textContent=podeSalvar?'Alterações valem para todos que abrem o painel.':'Somente leitura';
   $('cadNota').innerHTML=podeSalvar?'':'<div class="note">Você pode consultar os cadastros. Só quem tem permissão de edição consegue alterar.</div>';
@@ -4286,7 +4361,7 @@ async function montarBanco(){
   const dm=dias.filter(d=>d.slice(0,7)===bancoSel.mes);
   if(bancoSel.dia!=='mes'&&!dm.includes(bancoSel.dia))bancoSel.dia=dm[0]||'mes';
   sd.innerHTML='<option value="mes">Mês inteiro</option>'+dm.map(d=>'<option value="'+d+'">'+dataBR(d)+' · '+idx[d].toLocaleString('pt-BR')+'</option>').join('');sd.value=bancoSel.dia;
-  $('bk-del').hidden=!podeSalvar||!db||bancoSel.dia==='mes'||!bancoSel.dia;$('bk-del').onclick=bancoExcluirDia;$('bk-psr').hidden=!ehAdm()||!db||bancoSel.fonte!=='COI';$('bk-psr').onclick=psRecalcular;
+  $('bk-del').hidden=!podeSalvar||!db||bancoSel.dia==='mes'||!bancoSel.dia;$('bk-del').onclick=bancoExcluirDia;$('bk-dsr').hidden=!ehAdm()||!db;$('bk-dsr').onclick=diasRecalcular;$('bk-psr').hidden=!ehAdm()||!db||bancoSel.fonte!=='COI';$('bk-psr').onclick=psRecalcular;
   sm.onchange=()=>{bancoSel.mes=sm.value;bancoSel.dia='';montarBanco()};sd.onchange=()=>{bancoSel.dia=sd.value;montarBanco()};
   const qi=$('bk-busca');qi.oninput=()=>{bancoSel.q=qi.value;bancoTabela()};
   if(document.querySelector('section[data-pag="atualizar"]').hidden)return;
@@ -4373,6 +4448,23 @@ async function bancoRestaurar(file){
 /* Exclui do banco o relatório de uma fonte num dia (ex.: arquivo enviado sem querer) e o que ele alimentou */
 let psRecalcOn=false;
 /* Recalcula o 1º serviço (depois do checklist) dos dias de COI que já estão no banco e grava em ader/{dia}. Roda uma vez; só mexe nos dias que ainda não têm o dado. */
+let dsrOn=false;
+/* refaz dias/{data}_{fonte} a partir das linhas do banco: almoço e indisponibilidade reais, sem desconto em dobro */
+async function diasRecalcular(){
+  if(!ehAdm()||!db||dsrOn)return;
+  const itens=[];for(const f of ['COI','MAN','OBRAS','FIS'])for(const d of Object.keys(bancoIdx[f]||{}).sort())if(d>'2026-05-31')itens.push([f,d]);
+  const ok0=await dlg({tit:'Recalcular a disponibilidade',html:'<p>Refaz o resumo da disponibilidade de <b>'+itens.length+'</b> dia(s)/fonte(s) lendo o banco SIGA: usa o almoço e a indisponibilidade realmente apontados (inclusive no FIS) e não conta nada em dobro.</p><p class="muted">Pode levar alguns minutos. Não feche a página.</p>',ok:'Recalcular'});if(!ok0)return;
+  const b=$('bk-dsr');b.disabled=true;dsrOn=true;let ok=0,erro=0;
+  try{for(let i=0;i<itens.length;i++){const [f,d]=itens[i];b.textContent='Recalculando '+(i+1)+'/'+itens.length+'…';
+    try{const D=await bancoDia(f,d);if(!D.rows.length)continue;
+      const hdr=D.cols.map(c=>c==='Tipo de Atividade (2)'?'Tipo de Atividade':c==='Tipo de Atividade'?'Tipo de Atividade (1)':c);
+      const r=Disp.agregarArquivo([hdr].concat(D.rows),f),eq=r.dias[d];if(!eq||!Object.keys(eq).length)continue;
+      const ant=dbDocs.find(x=>x.data===d&&x.fonte===f);
+      await db.collection('dias').doc(d+'_'+f).set({data:d,fonte:f,arquivo:(ant&&ant.arquivo)||'Banco SIGA',eq,enviadoEm:(ant&&ant.enviadoEm)||new Date().toISOString(),recalculadoEm:new Date().toISOString()});ok++;
+    }catch(e){console.error(e);erro++}}
+  }finally{dsrOn=false;b.disabled=false;b.textContent='Recalcular disponibilidade (almoço)'}
+  toast('Disponibilidade recalculada: '+ok+' dia(s)'+(erro?' · '+erro+' com erro':'')+'. Recarregue a página.');
+}
 async function psRecalcular(){
   if(!ehAdm()||!db||!AR||psRecalcOn)return;
   const dias=Object.keys(bancoIdxDe('COI')).sort();
@@ -5894,6 +5986,43 @@ function renderGerencias(m,crit,rsM,uL,aL,iL){
   el.querySelectorAll('[data-vgger]').forEach(b=>b.onclick=()=>{vgGerSel=b.dataset.vgger;renderVisaoGeral();const t=$('vgCrit');if(t)t.closest('.panel').scrollIntoView({behavior:'smooth',block:'start'})});
 }
 $('vgCritMais').onclick=()=>{vgTodas=!vgTodas;renderVisaoGeral()};
+/* ---------- atividades fora do DE_PARA: ver o que foi apontado, ir para a regra ou ignorar (administrador) ---------- */
+let IGN={},scOrigem=null;const fdpCache={};
+async function fdpAtividades(d){
+  if(fdpCache[d]&&fdpCache[d].ver===(bancoIdxDe('COI')[d]||0)&&fdpCache[d].dp===UCFG.depara)return fdpCache[d].L;
+  const L=[];if(!bancoIdxDe('COI')[d])return L;
+  const D=await bancoDia('COI',d),c=D.cols,ix=n=>c.indexOf(n),iR=ix('Recurso'),iS=ix('Status da Atividade');if(iR<0||iS<0)return L;
+  const iSv=ix('Tipo de Atividade (2)')>=0?ix('Tipo de Atividade (2)'):ix('Tipo de Atividade'),iO=ix('Ordem de Serviço'),iI=ix('Início'),iF=ix('Fim');
+  const col={Causa:ix('Tipo de Causa - Text'),Executada:ix('Tipo de Conclusão Executada'),NaoExecutada:ix('Tipo de Conclusão Não Executada'),Code:ix('Code'),LocalReligacao:ix('Local Religação'),GrupoCode:ix('Grupo Code'),Abrangencia:ix('Abrangência')};
+  for(const r of D.rows){const rec=String(r[iR]==null?'':r[iR]).replace(/[📡🚎🏍🛵\s]/g,''),st=String(r[iS]||'').trim().toLowerCase();if(st!=='concluído'&&st!=='não concluído')continue;
+    const a={Servico:String(iSv>=0&&r[iSv]||''),Status:st,TipoConclusao:''};for(const k in col)a[k]=col[k]>=0&&r[col[k]]!=null?String(r[col[k]]):'';a.TipoConclusao=a.NaoExecutada?'Não Executado':(a.Executada?'Executado':'');
+    const {k,cl}=UPSCalc.classificar(UCFG,a);if(cl!=null||k==null)continue;
+    L.push({d,rec,serv:a.Servico,os:iO>=0&&r[iO]!=null?String(r[iO]):'',ini:iI>=0&&r[iI]!=null?String(r[iI]):'',fim:iF>=0&&r[iF]!=null?String(r[iF]):'',chave:k,ex:a.Executada,nex:a.NaoExecutada,st})}
+  fdpCache[d]={ver:bancoIdxDe('COI')[d]||0,dp:UCFG.depara,L};return L;
+}
+/* tira da tabela as atividades cuja chave já foi ignorada ou já tem regra, e acerta as contagens */
+async function fdpRefina(){
+  const d=UR&&UR.ultima,box=$('avFdp');if(!d||!box)return;const L=await fdpAtividades(d);if(!L.length)return;
+  const por={};for(const x of L)if(!IGN[x.chave])por[x.rec]=(por[x.rec]||0)+1;
+  const tb=box.querySelector('tbody');if(!tb)return;
+  tb.querySelectorAll('tr[data-fdpr]').forEach(tr=>{const n=por[tr.dataset.fdpr];if(!n)tr.remove();else tr.querySelector('.n').textContent=n});
+  const rest=tb.querySelectorAll('tr[data-fdpr]').length;box.querySelector('.aviso-hd>.n').textContent=rest;box.dataset.cfN=String(rest);setTimeout(cfAplicar,0);
+  if(!rest){const tw=box.querySelector('.tw');if(tw)tw.outerHTML='<div class="aviso-ok">'+AVI.ok+'Nenhuma atividade fora do DE_PARA pendente neste dia.</div>';const ic=box.querySelector('.aviso-hd .ic');if(ic){ic.className='ic i';ic.innerHTML=AVI.i}}
+  else if(ehAdm())tb.querySelectorAll('tr[data-fdpr]').forEach(tr=>{tr.style.cursor='pointer';tr.onclick=()=>fdpAbrir(tr.dataset.fdpr,d)});
+}
+async function ignGravar(chaves,marca,motivo){
+  if(!db||!ehAdm()){toast('Só administradores podem ignorar ocorrências.');return false}
+  const it=Object.assign({},IGN);for(const k of chaves){if(marca)it[k]={em:new Date().toISOString(),motivo:motivo||''};else delete it[k]}
+  try{await db.collection('config').doc('upsIgnorados').set({itens:it,editadoEm:new Date().toISOString()});IGN=it;return true}catch(e){toast('Não foi possível salvar.');return false}
+}
+async function fdpAbrir(rec,d){
+  abrirDet({tit:rec+' · fora do DE_PARA · '+dataBR(d),kpis:[],semTab:true,aviso:'',extra:'<div id="fdpBox"><p class="muted" style="margin:12px 0 0;font-size:12.5px">Carregando as atividades…</p></div>'});
+  const L=(await fdpAtividades(d)).filter(x=>x.rec===rec&&!IGN[x.chave]),box=$('fdpBox');if(!box)return;
+  box.innerHTML='<p class="muted" style="margin:0 0 8px;font-size:12.5px"><b>'+L.length+'</b> atividade(s) de '+esc(rec)+' em '+dataBR(d)+' com a chave fora do DE_PARA. Confira o que foi apontado e siga para a regra: lá você cadastra a regra ou ignora a ocorrência.</p>'
+    +(L.length&&ehAdm()?'<div style="margin:0 0 8px"><button type="button" class="btn sm primary" id="b-fdpRegra">Ir para regra</button></div>':'')
+    +tabDet({cols:['wInício','wFim','wServiço','wChave','wTipo de conclusão','wOrdem de serviço','wStatus'],rows:L.map(x=>[esc(x.ini),esc(x.fim),'<b>'+esc(x.serv)+'</b>','<code style="font-size:11.5px">'+esc(x.chave)+'</code>',esc(x.nex||x.ex||'–'),esc(x.os),x.st==='concluído'?'Concluído':'<span class="pill par">Não concluído</span>'])});
+  const bt=$('b-fdpRegra');if(bt)bt.onclick=()=>{scOrigem={rec,d,itens:L,chaves:[...new Set(L.map(x=>x.chave))]};scFiltro='todos';scBusca='';$('modalDia').hidden=true;renderSemClasse();const el=$('scUps');if(el)el.scrollIntoView({behavior:'smooth',block:'start'})};
+}
 /* ---------- conferência da UPS ---------- */
 function renderAvisosUps(){
   const el=$('avisosUps');if(!el||!UR)return;
@@ -5905,14 +6034,17 @@ function renderAvisosUps(){
   const semEsc=UR.linhas.filter(l=>l.data===UR.ultima&&!l.cod&&l.n>0);
   grupos.push({t:'a',tit:'Produção sem escala em '+(UR.ultima?dataBR(UR.ultima):'–'),sub:'Equipes com atividade no SIGA, mas sem X na planilha de equipes nesse dia. A produção delas não entra na UPS.',n:semEsc.length,tab:semEsc.length?'<thead><tr><th>Prefixo</th><th class="n">Atividades</th></tr></thead><tbody>'+semEsc.sort((a,b)=>b.n-a.n).map(l=>'<tr><td><b>'+esc(l.rec)+'</b></td><td class="n">'+l.n+'</td></tr>').join('')+'</tbody>':''});
   const fdp=UR.linhas.filter(l=>l.data===UR.ultima&&l.foraDp>0);
-  grupos.push({t:'a',tit:'Atividades fora do DE_PARA em '+(UR.ultima?dataBR(UR.ultima):'–'),sub:'A chave do serviço não existe na tabela DE_PARA do Estudo UPS, então a atividade não pontua.',n:fdp.length,tab:fdp.length?'<thead><tr><th>Prefixo</th><th class="n">Atividades</th></tr></thead><tbody>'+fdp.map(l=>'<tr><td><b>'+esc(l.rec)+'</b></td><td class="n">'+l.foraDp+'</td></tr>').join('')+'</tbody>':''});
-  nAvisosUps=grupos.reduce((s,g)=>s+(g.n?1:0),0);
-  el.innerHTML='<div class="vhead"><div><h3 class="sec-t">UPS</h3></div></div>'+grupos.map(g=>'<div class="panel"><div class="aviso-hd"><span class="ic '+(g.n&&!g.info?g.t:'i')+'">'+(g.n&&!g.info?AVI.r:AVI.i)+'</span><div><h3>'+g.tit+'</h3><p>'+g.sub+'</p></div><span class="n">'+g.n+'</span></div>'+(g.n?'<div class="tw"><table>'+g.tab+'</table></div>':'<div class="aviso-ok">'+AVI.ok+(g.vazio||'Nada para conferir.')+'</div>')+'</div>').join('');
+  grupos.push({id:'avFdp',t:'a',tit:'Atividades fora do DE_PARA em '+(UR.ultima?dataBR(UR.ultima):'–'),sub:'A chave do serviço não existe na tabela DE_PARA do Estudo UPS, então a atividade não pontua. Clique no prefixo para ver o que foi apontado e marcar como visto.',n:fdp.length,tab:fdp.length?'<thead><tr><th>Prefixo</th><th class="n">Atividades</th></tr></thead><tbody>'+fdp.map(l=>'<tr data-fdpr="'+esc(l.rec)+'" class="clk" title="Ver as atividades"><td><b>'+esc(l.rec)+'</b></td><td class="n">'+l.foraDp+'</td></tr>').join('')+'</tbody>':''});
+  ['dias','semesc','fdp'].forEach((k,i)=>{grupos[i].key=k;grupos[i].tier=k==='fdp'?1:2});
+  nAvisosUps=grupos.reduce((s,g)=>s+(g.n?1:0),0);setTimeout(()=>{try{fdpRefina()}catch(e){}},0);
+  el.innerHTML='<div class="vhead"><div><h3 class="sec-t">UPS</h3></div></div>'+grupos.map(g=>'<div class="panel cf-card"'+(g.id?' id="'+g.id+'"':'')+' data-cf-k="'+g.key+'" data-cf-t="'+g.tier+'" data-cf-n="'+g.n+'"><div class="aviso-hd"><span class="ic '+(g.n&&!g.info?g.t:'i')+'">'+(g.n&&!g.info?AVI.r:AVI.i)+'</span><div><h3>'+g.tit+'</h3><p>'+g.sub+'</p></div><span class="n">'+g.n+'</span></div>'+(g.n?'<div class="tw"><table>'+g.tab+'</table></div>':'<div class="aviso-ok">'+AVI.ok+(g.vazio||'Nada para conferir.')+'</div>')+'</div>').join('');
+  cfAplicar();
 }
 
 
 /* ---------- serviços sem classificação UPS (conferência) ---------- */
 let SEMC=null,scFiltro='todos',scBusca='';
+const SC_MOT_IGN=['Ignoradas','Ocorrências marcadas como ignoradas pelo administrador: não contam como pendência.'];
 const SC_MOT={semregra:['Sem regra','O serviço não se encaixa em nenhuma regra de chave, então não chega ao DE_PARA.'],foradp:['Fora do DE_PARA','A chave do serviço não existe na tabela DE_PARA.'],semclass:['Sem classe','A chave existe no DE_PARA, mas a coluna da classe está vazia.']};
 function scGrupos(){
   const G={};const add=(g,fonteDoc)=>{const k=g.cat+'§'+g.id,o=G[k]||(G[k]={cat:g.cat,id:g.id,serv:g.serv,tc:g.tc||'',causa:g.causa||'',ex:g.ex||'',nex:g.nex||'',n:0,d0:g.d0||null,d1:g.d1||null,recs:{}});
@@ -5921,6 +6053,9 @@ function scGrupos(){
   const ate=SEMC?SEMC.ate:'';if(SEMC)SEMC.grupos.forEach(g=>add(g));
   let diasSc=0;const comSc=new Set();
   for(const d of upsDocs){if(!d.sc||!d.sc.length||d.data<=ate)continue;comSc.add(d.data);d.sc.forEach(g=>add(Object.assign({},g,{d0:d.data,d1:d.data})))}
+  /* a origem vinda da Conferência entra na lista mesmo que o envio do dia não tenha detalhado o serviço */
+  if(scOrigem)for(const it of scOrigem.itens){const k='foradp§'+it.chave;if(!G[k])G[k]={cat:'foradp',id:it.chave,serv:it.serv,tc:'',causa:'',ex:it.ex,nex:it.nex,n:0,d0:scOrigem.d,d1:scOrigem.d,recs:{},sint:1}}
+  if(scOrigem){const cont={};for(const it of scOrigem.itens)cont[it.chave]=(cont[it.chave]||0)+1;for(const g of Object.values(G))if(g.sint){g.n=cont[g.id]||0;g.recs={[scOrigem.rec]:g.n}}}
   return {lista:Object.values(G).sort((a,b)=>b.n-a.n),comSc};
 }
 function scSemDetalhe(comSc){
@@ -5930,27 +6065,36 @@ function scSemDetalhe(comSc){
 }
 function renderSemClasse(){
   const el=$('scUps');if(!el||!SEMC||!UR)return;
-  const {lista,comSc}=scGrupos(),sd=scSemDetalhe(comSc);
+  const {lista:lista0,comSc}=scGrupos(),sd=scSemDetalhe(comSc);
+  const resolvida=g=>{const d=UCFG.depara[String(g.id).toUpperCase()];return g.cat==='foradp'&&d&&d.c},ignorada=g=>!!IGN[g.id];
+  const lista=lista0.filter(g=>!ignorada(g)&&!resolvida(g)),listaIgn=lista0.filter(ignorada);
   const totAt=UR.linhas.reduce((s,l)=>s+(l.n||0),0)||1,tot=lista.reduce((s,g)=>s+g.n,0);
-  const cont={todos:lista.length};for(const c in SC_MOT)cont[c]=lista.filter(g=>g.cat===c).length;
+  const cont={todos:lista.length,ignoradas:listaIgn.length};for(const c in SC_MOT)cont[c]=lista.filter(g=>g.cat===c).length;
   const q=scBusca.trim().toUpperCase();
-  const f=lista.filter(g=>(scFiltro==='todos'||g.cat===scFiltro)&&(!q||(g.serv+' '+g.id+' '+g.ex+' '+g.causa).toUpperCase().includes(q)));
+  const chOr=scOrigem?new Set(scOrigem.chaves):null;
+  const f=(scFiltro==='ignoradas'?listaIgn:lista).filter(g=>(scFiltro==='todos'||scFiltro==='ignoradas'||g.cat===scFiltro)&&(!chOr||chOr.has(g.id))&&(!q||(g.serv+' '+g.id+' '+g.ex+' '+g.causa).toUpperCase().includes(q)));
   const det=g=>{if(g.cat==='semregra')return [g.tc,g.causa,g.ex].filter(Boolean).join(' · ')||'—';const r=g.id.startsWith(g.serv)?g.id.slice(g.serv.length):g.id;return r||'—'};
   const bs=g=>{const b={};for(const r in g.recs){const p=r.split('-');b[p[1]||'?']=(b[p[1]||'?']||0)+g.recs[r]}return Object.entries(b).sort((a,b)=>b[1]-a[1])};
-  el.innerHTML='<div class="vhead"><div><h3 class="sec-t">Serviços sem classificação UPS</h3></div></div><div class="panel scp">'
+  el.innerHTML='<div class="vhead"><div><h3 class="sec-t">Serviços sem classificação UPS</h3></div></div><div class="panel scp cf-card" data-cf-k="sc" data-cf-t="1" data-cf-n="'+lista.length+'">'
    +'<div class="aviso-hd"><span class="ic '+(tot?'a':'i')+'">'+(tot?AVI.r:AVI.i)+'</span><div><h3>Atividades que não pontuam na UPS</h3><p>Lista dos serviços executados que ficam sem classe. Dados do Estudo UPS até '+dataBR(SEMC.ate)+' e dos envios do COI depois dessa data. Use a coluna "Classe UPS" do Excel para decidir a classificação.</p></div><span class="n">'+lista.length+'</span></div>'
    +'<div class="sc-k"><div><span>Atividades sem pontuar</span><b>'+tot.toLocaleString('pt-BR')+'</b></div><div><span>% de todas as atividades</span><b>'+(100*tot/totAt).toFixed(1).replace('.',',')+'%</b></div><div><span>Serviços diferentes</span><b>'+lista.length+'</b></div></div>'
    +(sd.n?'<div class="note warn" style="margin:0">Em '+sd.dias.length+' dia(s) ('+dataBR(sd.dias[0])+(sd.dias.length>1?' a '+dataBR(sd.dias[sd.dias.length-1]):'')+') há <b>'+sd.n.toLocaleString('pt-BR')+'</b> atividades sem classe, mas esses envios foram feitos antes deste painel e não guardaram o nome do serviço. Reenvie o COI desses dias para detalhar.</div>':'')
-   +'<div class="sc-bar"><div class="tabs" role="group" aria-label="Motivo">'+[['todos','Todos']].concat(Object.entries(SC_MOT).map(([k,v])=>[k,v[0]])).map(([k,t])=>'<button type="button" data-scf="'+k+'" aria-pressed="'+(scFiltro===k)+'">'+t+' <small>'+cont[k]+'</small></button>').join('')+'</div><input type="search" id="scBusca" placeholder="Buscar serviço ou chave" value="'+esc(scBusca)+'"><button class="btn sm" type="button" id="b-scXls">Baixar lista em Excel</button></div>'
-   +'<div class="tw"><table class="utab" id="t-sc"><thead><tr><th>Motivo</th><th>Serviço</th><th>Detalhe / chave</th><th class="n">Atividades</th><th class="n">% do total</th><th>Bases</th><th>Período</th></tr></thead><tbody>'
-   +(f.length?f.map((g,i)=>'<tr data-sci="'+i+'" class="clk"><td><span class="sc-tag sc-'+g.cat+'" title="'+esc(SC_MOT[g.cat][1])+'">'+SC_MOT[g.cat][0]+'</span></td><td><b>'+esc(g.serv||'—')+'</b></td><td class="sc-d" title="'+esc(g.id)+'">'+esc(det(g))+'</td><td class="n"><b>'+g.n.toLocaleString('pt-BR')+'</b></td><td class="n">'+(100*g.n/tot).toFixed(1).replace('.',',')+'%</td><td>'+bs(g).slice(0,4).map(([b,n])=>b+' <small class="muted">'+n+'</small>').join(' · ')+'</td><td class="nw">'+(g.d0?dataBR(g.d0).slice(0,5)+' a '+dataBR(g.d1).slice(0,5):'')+'</td></tr>').join(''):'<tr><td colspan="7" class="empty">Nenhum serviço com esse filtro.</td></tr>')
+   +(scOrigem?'<div class="note warn" style="margin:0;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>Filtro aplicado pela Conferência: <b>'+esc(scOrigem.rec)+'</b> em <b>'+dataBR(scOrigem.d)+'</b> · '+scOrigem.chaves.length+' chave(s) fora do DE_PARA ('+scOrigem.itens.length+' atividade(s)).</span><button type="button" class="btn sm" id="b-scSemOrigem" style="margin-left:auto">Remover filtro</button></div>':'')
+   +'<div class="sc-bar"><div class="tabs" role="group" aria-label="Motivo">'+[['todos','Todos']].concat(Object.entries(SC_MOT).map(([k,v])=>[k,v[0]]),[['ignoradas','Ignoradas']]).map(([k,t])=>'<button type="button" data-scf="'+k+'" aria-pressed="'+(scFiltro===k)+'">'+t+' <small>'+cont[k]+'</small></button>').join('')+'</div><input type="search" id="scBusca" placeholder="Buscar serviço ou chave" value="'+esc(scBusca)+'"><button class="btn sm" type="button" id="b-scXls">Baixar lista em Excel</button></div>'
+   +'<div class="tw"><table class="utab" id="t-sc"><thead><tr><th>Motivo</th><th>Serviço</th><th>Detalhe / chave</th><th class="n">Atividades</th><th class="n">% do total</th><th>Bases</th><th>Período</th>'+(ehAdm()?'<th>Ação</th>':'')+'</tr></thead><tbody>'
+   +(f.length?f.map((g,i)=>'<tr data-sci="'+i+'" class="clk"><td><span class="sc-tag sc-'+g.cat+'" title="'+esc(SC_MOT[g.cat][1])+'">'+SC_MOT[g.cat][0]+'</span></td><td><b>'+esc(g.serv||'—')+'</b></td><td class="sc-d" title="'+esc(g.id)+'">'+esc(det(g))+'</td><td class="n"><b>'+g.n.toLocaleString('pt-BR')+'</b></td><td class="n">'+(100*g.n/(scFiltro==='ignoradas'?(listaIgn.reduce((x,y)=>x+y.n,0)||1):tot)).toFixed(1).replace('.',',')+'%</td><td>'+bs(g).slice(0,4).map(([b,n])=>b+' <small class="muted">'+n+'</small>').join(' · ')+'</td><td class="nw">'+(g.d0?dataBR(g.d0).slice(0,5)+' a '+dataBR(g.d1).slice(0,5):'')+'</td>'+(ehAdm()?'<td class="nw">'+(scFiltro==='ignoradas'?'<button type="button" class="btn sm" data-screa="'+i+'">Reativar</button>':(g.cat==='semregra'?'<span class="muted" title="Serviço sem regra de chave: crie a regra em Regras da UPS > Regras de chave">sem regra de chave</span> ':'<button type="button" class="btn sm primary" data-scnova="'+i+'">Cadastrar regra</button> ')+'<button type="button" class="btn sm" data-scign="'+i+'" title="Não criar regra: a ocorrência deixa de ser pendência">Ignorar</button>')+'</td>':'')+'</tr>').join(''):'<tr><td colspan="8" class="empty">Nenhum serviço com esse filtro.</td></tr>')
    +'</tbody></table></div><p class="muted" style="margin:0;font-size:12px">Clique em uma linha para ver as equipes que executaram o serviço.</p></div>';
   el.querySelectorAll('[data-scf]').forEach(b=>b.onclick=()=>{scFiltro=b.dataset.scf;renderSemClasse()});
+  const so=$('b-scSemOrigem');if(so)so.onclick=()=>{scOrigem=null;renderSemClasse()};
+  el.querySelectorAll('[data-scnova]').forEach(b=>b.onclick=e=>{e.stopPropagation();const g=f[+b.dataset.scnova];rgForm('depara',null,g.id)});
+  el.querySelectorAll('[data-scign]').forEach(b=>b.onclick=async e=>{e.stopPropagation();const g=f[+b.dataset.scign];const rs=await dlg({tit:'Ignorar regra',html:'<p>A chave abaixo deixa de aparecer como pendência. <b>Nenhuma regra é criada e o DE_PARA não muda.</b> Você pode reativar depois na aba <b>Ignoradas</b>.</p><p><code style="font-size:12px">'+esc(g.id)+'</code></p><p class="muted" style="font-size:12.5px">'+g.n.toLocaleString('pt-BR')+' atividade(s) · '+esc(g.serv||'')+'</p>'+dlgMotivo,ok:'Ignorar'});if(!rs)return;if(await ignGravar([g.id],true,rs.motivo)){toast('Ocorrência ignorada.');renderSemClasse();fdpRefina()}});
+  el.querySelectorAll('[data-screa]').forEach(b=>b.onclick=async e=>{e.stopPropagation();const g=f[+b.dataset.screa];if(await ignGravar([g.id],false)){toast('Ocorrência reativada.');renderSemClasse();fdpRefina()}});
   const bq=$('scBusca');bq.oninput=()=>{scBusca=bq.value;const pos=bq.selectionStart;renderSemClasse();const n=$('scBusca');n.focus();n.setSelectionRange(pos,pos)};
   el.querySelectorAll('tr[data-sci]').forEach(tr=>tr.onclick=()=>{const g=f[+tr.dataset.sci];
     abrirDet({tit:g.serv||'Serviço sem classificação',kpis:[['Atividades',g.n.toLocaleString('pt-BR')],['Equipes',Object.keys(g.recs).length],['Motivo',SC_MOT[g.cat][0]]],
       aviso:esc(SC_MOT[g.cat][1])+' <br>Chave: <code>'+esc(g.id)+'</code>',cols:['wEquipe','nAtividades','n% do serviço'],
       rows:Object.entries(g.recs).sort((a,b)=>b[1]-a[1]).slice(0,40).map(([r,n])=>['<b>'+esc(r)+'</b>',n,(100*n/g.n).toFixed(0)+'%']),rodape:Object.keys(g.recs).length>40?'Mostrando as 40 equipes com mais atividades.':'' })});
+  cfAplicar();
   $('b-scXls').onclick=async()=>{
     const cab=['Motivo','Serviço','Chave (DE_PARA)','Tipo de conclusão','Causa','Executada','Não executada','Atividades','% do total','Primeiro dia','Último dia','Bases','Equipes (mais atividades)','Classe UPS (preencher)','Observação'];
     const linhas=lista.map(g=>[SC_MOT[g.cat][0],g.serv,g.id,g.tc,g.causa,g.ex,g.nex,g.n,+(100*g.n/tot).toFixed(2),g.d0?dataBR(g.d0):'',g.d1?dataBR(g.d1):'',bs(g).map(([b,n])=>b+' ('+n+')').join(', '),Object.entries(g.recs).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([r,n])=>r+' ('+n+')').join(', '),'','']);
@@ -6032,25 +6176,38 @@ function renderRgUps0(){
   el.querySelectorAll('[data-rgup]').forEach(b=>b.onclick=()=>mov(+b.dataset.rgup,-1));el.querySelectorAll('[data-rgdn]').forEach(b=>b.onclick=()=>mov(+b.dataset.rgdn,1));
   el.querySelectorAll('[data-rgrd]').forEach(b=>b.onclick=()=>{const i=+b.dataset.rgrd;if(confirm('Excluir a regra '+(i+1)+' ('+UCFG.regras[i][1]+')?'))rgGravar(x=>{const R=(x.regras||UCFG.regras).map(r=>r.slice());R.splice(i,1);x.regras=R.map((r,n)=>[n+1].concat(r.slice(1)))},'Regra excluída.')});
 }
-function rgForm(tipo,ref){
+/* pontos da classe escolhida: editáveis no cadastro e na alteração do DE_PARA */
+function rgPtsPintar(){
+  const box=$('rgPtsBox');if(!box)return;const c=($('rgCls').value||'').trim().toUpperCase();
+  if(!c){box.innerHTML='<small class="muted">Escolha ou digite a classe para ver e editar os pontos.</small>';return}
+  const L=Object.entries(UCFG.tabups).map(([k,v])=>Object.assign(rgDecomp(k),{k,v})).filter(x=>x.c===c).sort((a,b)=>a.b+a.e<b.b+b.e?-1:1);
+  box.innerHTML=L.length?'<div class="tw" style="max-height:200px"><table class="utab"><thead><tr><th>Base</th><th>Estrutura</th><th class="n">Pontos</th></tr></thead><tbody>'+L.map(x=>'<tr><td>'+esc(x.b)+'</td><td>'+esc(x.e)+'</td><td class="n"><input type="number" step="0.01" min="0" max="1000" class="rg-n rgp-i" data-k="'+esc(x.k)+'" value="'+(+(+x.v).toFixed(4))+'"></td></tr>').join('')+'</tbody></table></div><small class="muted">Pontos desta classe por base e estrutura. Alterar aqui recalcula a UPS de todos os dias.</small>'
+    :'<small class="muted">Esta classe ainda não tem pontuação. Informe os pontos para valer em todas as bases e estruturas (depois dá para ajustar caso a caso em Pontuação). Em branco, a classe fica sem pontos e não pontua.</small><input type="number" step="0.01" min="0" max="1000" id="rgPtsAll" placeholder="Pontos" style="width:140px">';
+}
+function rgForm(tipo,ref,pre){
   const bs=[...new Set(Object.values(UCFG0.base))].sort(),es=[...new Set(Object.values(UCFG0.processo))],cls=rgClasses();
   const op=(L,v,vazio)=>(vazio?'<option value="">'+vazio+'</option>':'')+L.map(x=>'<option'+(x===v?' selected':'')+'>'+esc(x)+'</option>').join('');
   const f=(l,i,c,ajuda)=>'<div class="fld"><label for="'+i+'">'+l+'</label>'+c+(ajuda?'<small class="muted">'+ajuda+'</small>':'')+'</div>';
   let tit,corpo,exc=false;rgEdit={tipo,ref};
   if(tipo==='pont'){tit='Nova pontuação';corpo=f('Base','rgBase','<select id="rgBase">'+op(bs,'')+'</select>')+f('Estrutura','rgEst','<select id="rgEst">'+op(es,'')+'</select>')+f('Classe','rgCls','<input id="rgCls" list="rgClsL" placeholder="Escolha ou digite uma classe"><datalist id="rgClsL">'+cls.map(c=>'<option value="'+esc(c)+'">').join('')+'</datalist>')+f('Pontos','rgPts','<input id="rgPts" type="number" step="0.01" min="0">')}
   else if(tipo==='depara'){const v=ref?UCFG.depara[ref]:null;tit=ref?'Editar DE_PARA':'Novo DE_PARA';exc=!!ref;
-    corpo=f('Chave','rgChave','<input id="rgChave" value="'+esc(ref||'')+'"'+(ref?' readonly':'')+' placeholder="Serviço + conclusão, como a regra de chave monta"> ',ref?'A chave não muda; para outra chave, crie uma nova linha.':'Use MAIÚSCULAS, igual à chave gerada (veja a lista de serviços sem classificação na Conferência).')+f('Classe','rgCls','<input id="rgCls" list="rgClsL" value="'+esc(v&&v.c||'')+'" placeholder="Em branco = sem classe"><datalist id="rgClsL">'+cls.map(c=>'<option value="'+esc(c)+'">').join('')+'</datalist>')+f('P','rgP','<select id="rgP"><option value="1"'+(!v||v.p===1?' selected':'')+'>1 · pontuável</option><option value="0"'+(v&&v.p===0?' selected':'')+'>0</option></select>')}
+    corpo=f('Chave','rgChave','<input id="rgChave" value="'+esc(ref||pre||'')+'"'+(ref?' readonly':'')+' placeholder="Serviço + conclusão, como a regra de chave monta"> ',ref?'A chave não muda; para outra chave, crie uma nova linha.':'Use MAIÚSCULAS, igual à chave gerada (veja a lista de serviços sem classificação na Conferência).')+f('Classe','rgCls','<input id="rgCls" list="rgClsL" value="'+esc(v&&v.c||'')+'" placeholder="Em branco = sem classe"><datalist id="rgClsL">'+cls.map(c=>'<option value="'+esc(c)+'">').join('')+'</datalist>')+f('Pontuação da classe','rgPtsBox','<div id="rgPtsBox"></div>')+f('P','rgP','<select id="rgP"><option value="1"'+(!v||v.p===1?' selected':'')+'>1 · pontuável</option><option value="0"'+(v&&v.p===0?' selected':'')+'>0</option></select>')}
   else{const r=ref!=null?UCFG.regras[ref]:[0,'',null,null,null,'K',null];tit=ref!=null?'Editar regra '+(ref+1):'Nova regra';exc=ref!=null;
     corpo=f('Serviço (Tipo de Atividade)','rgTa','<input id="rgTa" value="'+esc(r[1]||'')+'">','Texto igual ao do relatório, por exemplo: LIGANOVA - Ligação Nova')+f('Tipo de conclusão','rgQt','<input id="rgQt" value="'+esc(r[2]||'')+'">','Em branco = qualquer. Ex.: Não Executado')+f('Tipo de causa','rgQo','<input id="rgQo" value="'+esc(r[3]||'')+'">','Em branco = qualquer')+f('Conclusão executada','rgQr','<input id="rgQr" value="'+esc(r[4]||'')+'">','Em branco = qualquer')
       +f('Monta a chave com','rgFmt','<input id="rgFmt" value="'+esc(r[5]||'')+'" placeholder="K+R">','Letras separadas por +: '+Object.entries(RG_CAMPOS).map(([k,n])=>'<b>'+k+'</b> '+n).join(' · '))+f('Ou texto fixo','rgLit','<input id="rgLit" value="'+esc(r[6]||'')+'">','Se preencher, a chave é sempre esse texto (ignora as letras).')}
-  $('rgTit').textContent=tit;$('rgCorpo').innerHTML='<div style="display:grid;gap:12px">'+corpo+'</div>';$('rgMsg').textContent='';$('b-rgExclui').hidden=!exc||tipo==='pont';$('modalRg').hidden=false;
+  $('rgTit').textContent=tit;$('rgCorpo').innerHTML='<div style="display:grid;gap:12px">'+corpo+'</div>';$('rgMsg').textContent='';if($('rgPtsBox')){rgPtsPintar();$('rgCls').oninput=rgPtsPintar}$('b-rgExclui').hidden=!exc||tipo==='pont';$('modalRg').hidden=false;
 }
 $('b-fechaRg').onclick=$('b-rgCancela').onclick=()=>{$('modalRg').hidden=true};
 $('b-rgExclui').onclick=()=>{const e=rgEdit;if(!e)return;if(e.tipo==='depara'){$('modalRg').hidden=true;if(confirm('Excluir esta linha do DE_PARA?'))rgGravar(x=>{x.dp[e.ref]=null},'Linha do DE_PARA excluída.')}else if(e.tipo==='regras'){$('modalRg').hidden=true;if(confirm('Excluir esta regra?'))rgGravar(x=>{const R=(x.regras||UCFG.regras).map(r=>r.slice());R.splice(e.ref,1);x.regras=R.map((r,n)=>[n+1].concat(r.slice(1)))},'Regra excluída.')}};
 $('b-rgSalva').onclick=async()=>{
   const e=rgEdit;if(!e)return;const v=i=>($(i)?$(i).value:'').trim(),erro=m=>{$('rgMsg').textContent=m};let ok=false;
   if(e.tipo==='pont'){const b=v('rgBase'),es=v('rgEst'),c=v('rgCls').toUpperCase(),pt=parseFloat(v('rgPts').replace(',','.'));if(!b||!es||!c||isNaN(pt)||pt<0)return erro('Preencha base, estrutura, classe e pontos.');const k=(b+es+c).toUpperCase();ok=await rgGravar(x=>{x.tp[k]=pt},'Pontuação criada.')}
-  else if(e.tipo==='depara'){const k=v('rgChave').toUpperCase(),c=v('rgCls').toUpperCase();if(!k)return erro('Informe a chave.');if(!e.ref&&UCFG.depara[k])return erro('Essa chave já existe. Edite a linha existente.');ok=await rgGravar(x=>{x.dp[k]={c:c||null,p:+v('rgP')}},e.ref?'DE_PARA atualizado.':'DE_PARA criado.')}
+  else if(e.tipo==='depara'){const k=v('rgChave').toUpperCase(),c=v('rgCls').toUpperCase();if(!k)return erro('Informe a chave.');if(!e.ref&&UCFG.depara[k])return erro('Essa chave já existe. Edite a linha existente.');
+    const pts={};let ruim=false;document.querySelectorAll('#rgPtsBox .rgp-i').forEach(i=>{const x=parseFloat(String(i.value).replace(',','.'));if(isNaN(x)||x<0||x>1000)ruim=true;else if(x!==UCFG.tabups[i.dataset.k])pts[i.dataset.k]=x});
+    const ta=$('rgPtsAll');let todos=null;if(ta&&ta.value!==''){todos=parseFloat(String(ta.value).replace(',','.'));if(isNaN(todos)||todos<0||todos>1000)ruim=true}
+    if(ruim)return erro('Pontuação inválida: informe um número entre 0 e 1000.');
+    const bs0=[...new Set(Object.values(UCFG0.base))],es0=[...new Set(Object.values(UCFG0.processo))];
+    ok=await rgGravar(x=>{x.dp[k]={c:c||null,p:+v('rgP')};for(const kk in pts)x.tp[kk]=pts[kk];if(todos!=null&&c)for(const b of bs0)for(const es of es0)x.tp[(b+es+c).toUpperCase()]=todos},e.ref?'DE_PARA atualizado.':'DE_PARA criado.')}
   else{const ta=v('rgTa'),fmt=v('rgFmt').toUpperCase().replace(/\s/g,''),lit=v('rgLit');if(!ta)return erro('Informe o serviço.');if(!lit&&!fmt)return erro('Informe as letras da chave ou um texto fixo.');if(!lit&&fmt.split('+').some(c=>!RG_CAMPOS[c]))return erro('Letras válidas: '+Object.keys(RG_CAMPOS).join(', ')+'.');
     const nova=[0,ta,v('rgQt')||null,v('rgQo')||null,v('rgQr')||null,lit?null:fmt,lit||null];
     ok=await rgGravar(x=>{const R=(x.regras||UCFG.regras).map(r=>r.slice());if(e.ref!=null)R[e.ref]=nova;else R.push(nova);x.regras=R.map((r,n)=>[n+1].concat(r.slice(1)))},e.ref!=null?'Regra atualizada.':'Regra criada.')}
@@ -6341,7 +6498,7 @@ async function prdTimeline(rec,d){
   const hm=t=>t==null?'–':hhmm(t),dur=(a,b)=>a==null||b==null?'–':(b<a?b+1440-a:b-a)+' min';
   let ac=0,gapT=0,ult=null,nProd=0;const rows=[];
   for(const a of A){
-    if(ult!=null&&a.ini!=null&&a.ini-ult>=15){gapT+=a.ini-ult;rows.push('<tr class="ptl-gap"><td></td><td colspan="8">⏱ '+(a.ini-ult)+' min sem atividade registrada</td></tr>')}
+    if(ult!=null&&a.ini!=null&&a.ini-ult>=15){gapT+=a.ini-ult;rows.push('<tr class="ptl-gap"><td></td><td colspan="8">⏱ Sem atividade registrada · '+((g0)=>g0>=60?Math.floor(g0/60)+' h'+(g0%60?' '+String(g0%60).padStart(2,'0')+' min':''):g0+' min')(a.ini-ult)+'</td></tr>')}
     const prod=!a.nao&&a.v>0&&a.st==='concluído';if(prod){ac+=a.v;nProd++}else if(!a.nao&&a.v>0)ac+=a.v;
     const cor=a.nao?'#8a8a8a':a.st!=='concluído'?'#c8102e':a.v>0?'#2a8f30':'#d98a00',tp=a.nao?'Não produção':a.st!=='concluído'?'Não concluída':a.v>0?'Produção':'Sem valor';
     rows.push('<tr style="box-shadow:inset 4px 0 0 '+cor+'"><td class="nw" style="padding-left:14px"><b>'+hm(a.ini)+'</b></td><td class="nw">'+hm(a.fim)+'</td><td class="n nw">'+dur(a.ini,a.fim)+'</td><td>'+esc(a.k)+(a.loc?'<small class="muted" style="display:block">'+esc(a.loc)+'</small>':'')+'</td><td class="nw">'+esc(a.os)+'</td><td><span class="pill" style="background:'+cor+'22;color:'+cor+'">'+tp+'</span></td><td class="n nw">'+(a.nao?'–':a.v==null?'–':brl(a.v))+'</td><td class="n nw">'+(a.nao?'':brl(ac))+'</td></tr>');
@@ -7721,7 +7878,7 @@ montarTrf=cargaEmbrulhar('montarTrf',montarTrf);montarBanco=cargaEmbrulhar('mont
     {const bi=snap.docs.find(d=>d.id==='bancoIdx');if(bi){try{const v=JSON.parse(bi.data().j);for(const f of ['COI','MAN','FIS','OBRAS'])v[f]=v[f]||{};bancoIdx=v;montarBanco();if(pag().id==='mix-causa')acMostrar();if(pag().id==='mix-corte')mxVarrerSem()}catch(e){}}}
     let esc=null,escInfo=null,fu={};
     for(const d of snap.docs){const v=d.data();if(v&&v.itens&&n[d.id]!==undefined)n[d.id]=v.itens;if(d.id==='escala'&&v&&Array.isArray(v.itens)){esc=v.itens;escInfo=(v.arquivo||'')+(v.editadoEm?' em '+new Date(v.editadoEm).toLocaleDateString('pt-BR'):'')}if(d.id==='feriadosUps'&&v&&v.itens)fu=v.itens}
-    cad=n;try{aplicarMetas();aplicarListas()}catch(e){console.error('metas',e)}{const as=JSON.stringify(n.naoCgb);if(as!==ncAssin){ncAssin=as;setTimeout(()=>{try{hierRemontar()}catch(e){}},0)}}escalaDb=esc;escalaDbInfo=escInfo;ferUps=fu;const aa=snap.docs.find(d=>d.id==='aderAjuste');aderAjDb=aa?aa.data():null;const dt=snap.docs.find(d=>d.id==='defTatico');defTatDb=dt?dt.data():null;const dtc=snap.docs.find(d=>d.id==='defTecnicos');defTecDb=dtc?dtc.data():null;{const uh=snap.docs.find(d=>d.id==='upsHoje'),uv=uh&&uh.data();try{upsHojeDb=uv&&uv.data&&uv.eq?{data:uv.data,eq:JSON.parse(uv.eq),em:uv.enviadoEm,arquivo:uv.arquivo}:null}catch(e){upsHojeDb=null}}{const pr=snap.docs.find(d=>d.id==='prodPrecos'),pd=pr&&pr.data();POVR=pd?{dp:pd.dp||{},esp:pd.esp||{},em:pd.editadoEm}:null;aplicarPrecos();try{renderPrecos()}catch(e){}}{const cr=snap.docs.find(d=>d.id==='corteRegras'),cd=cr&&cr.data();COVR=cd&&cd.itens||null;aplicarRegrasCorte();try{renderRgCorte()}catch(e){}}{const ur=snap.docs.find(d=>d.id==='upsRegras');UOVR=rgLer(ur?ur.data():null);aplicarRegrasUps();if(UCFG){montarUPS();renderRgUps()}}montar();try{montarPrd()}catch(e){}montarAder();montarDef();
+    cad=n;try{aplicarMetas();aplicarListas()}catch(e){console.error('metas',e)}{const as=JSON.stringify(n.naoCgb);if(as!==ncAssin){ncAssin=as;setTimeout(()=>{try{hierRemontar()}catch(e){}},0)}}escalaDb=esc;escalaDbInfo=escInfo;ferUps=fu;const aa=snap.docs.find(d=>d.id==='aderAjuste');aderAjDb=aa?aa.data():null;const dt=snap.docs.find(d=>d.id==='defTatico');defTatDb=dt?dt.data():null;const dtc=snap.docs.find(d=>d.id==='defTecnicos');defTecDb=dtc?dtc.data():null;{const uh=snap.docs.find(d=>d.id==='upsHoje'),uv=uh&&uh.data();try{upsHojeDb=uv&&uv.data&&uv.eq?{data:uv.data,eq:JSON.parse(uv.eq),em:uv.enviadoEm,arquivo:uv.arquivo}:null}catch(e){upsHojeDb=null}}{const de=snap.docs.find(d=>d.id==='dispExpurgos'),dv=de&&de.data();window.DISP_EXPURGO=(dv&&dv.itens)||{}}{const ig=snap.docs.find(d=>d.id==='upsIgnorados'),igd=ig&&ig.data();IGN=(igd&&igd.itens)||{}}{const pr=snap.docs.find(d=>d.id==='prodPrecos'),pd=pr&&pr.data();POVR=pd?{dp:pd.dp||{},esp:pd.esp||{},em:pd.editadoEm}:null;aplicarPrecos();try{renderPrecos()}catch(e){}}{const cr=snap.docs.find(d=>d.id==='corteRegras'),cd=cr&&cr.data();COVR=cd&&cd.itens||null;aplicarRegrasCorte();try{renderRgCorte()}catch(e){}}{const ur=snap.docs.find(d=>d.id==='upsRegras');UOVR=rgLer(ur?ur.data():null);aplicarRegrasUps();if(UCFG){montarUPS();renderRgUps()}}montar();try{montarPrd()}catch(e){}montarAder();montarDef();
   },()=>{});
   renderCadastros();
   if(pendentes.length)atualizarLocais();
