@@ -1786,6 +1786,11 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
       <div id="pvCorpo"></div>
     </div>
   </section>
+  <!-- PÁGINA: PRODUÇÃO · PREÇOS DAS ATIVIDADES -->
+  <section data-pag="prd-precos" class="upbi" hidden>
+    <div class="ubar"><div class="ubar-t"><h2>Preços das atividades</h2><span>Regras e valor de cada atividade na Produção do dia · consulta para todos, só o administrador altera</span></div></div>
+    <div id="rgPrc" style="display:grid;gap:16px"></div>
+  </section>
   <!-- PÁGINA: DEFEITOS · TRATAMENTO -->
   <section data-pag="def-painel" class="upbi" hidden>
     <div class="ubar"><div class="ubar-t"><h2>Tratamento de defeitos</h2><span class="dbarSub"></span></div><div class="ubar-r"><button type="button" class="ufunil" data-dfunil aria-label="Abrir filtros" title="Filtros"><svg class="ico" viewBox="0 0 24 24"><path d="M3 5h18l-7 8.5V19l-4 2v-7.5z"/></svg><span class="ufn" data-dfn hidden></span></button></div></div>
@@ -1868,10 +1873,12 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
   <section data-pag="mix-corte" class="upbi" hidden>
     <div class="ubar"><div class="ubar-t"><h2>Tipo de corte</h2><span class="xbarSub"></span></div><div class="ubar-r"><button type="button" class="ufunil" data-xfunil aria-label="Abrir filtros" title="Filtros"><svg class="ico" viewBox="0 0 24 24"><path d="M3 5h18l-7 8.5V19l-4 2v-7.5z"/></svg><span class="ufn" data-xfn hidden></span></button></div></div>
     <div class="ativos ativosX"></div>
+    <div id="xcAviso"></div>
     <div class="dkg" id="xcKpis"></div>
-    <div class="dcard"><div class="dch"><span class="dch-i"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><div><h4>Local do corte por mês</h4><small>Quantidade e participação de cada local · clique num mês para filtrar</small></div></div><div id="xcMes"></div></div>
+    <div class="dcard"><div class="dch"><span class="dch-i"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><div><h4>Local do corte por mês</h4><small>Clique num mês ou num trecho colorido (local) para filtrar</small></div><button type="button" class="btn sm" id="xcPct" style="margin-left:auto">Ver em quantidade</button></div><div id="xcMes"></div></div>
     <div class="xg2"><div class="dcard"><div class="dch"><span class="dch-i"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><div><h4>Média de R$ por corte</h4><small>R$ ÷ cortes com preço, mês a mês</small></div></div><div id="xcMed"></div></div>
-    <div class="dcard"><div class="dch"><span class="dch-i"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="10" rx="1"/><rect x="13" y="3" width="8" height="6" rx="1"/><rect x="13" y="11" width="8" height="10" rx="1"/><rect x="3" y="15" width="8" height="6" rx="1"/></svg></span><div><h4>Local do corte por base</h4><small>Quantidade e participação</small></div></div><div id="xcBase"></div></div></div>
+    <div class="dcard"><div class="dch"><span class="dch-i"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="10" rx="1"/><rect x="13" y="3" width="8" height="6" rx="1"/><rect x="13" y="11" width="8" height="10" rx="1"/><rect x="3" y="15" width="8" height="6" rx="1"/></svg></span><div><h4>Local do corte por base</h4><small>Clique numa base ou num trecho colorido para filtrar</small></div></div><div id="xcBase"></div></div></div>
+    <div class="dcard" id="xcRankW"><div class="dch"><span class="dch-i"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><div><h4>Ranking de equipes</h4><small id="xcRkSub">Cortes por equipe e onde cada uma corta · clique no título da coluna para ordenar · clique na equipe para ver os cortes</small></div></div><div id="xcRk"></div></div>
     <div class="dcard" id="rgCorteW"><div class="dch"><span class="dch-i"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span><div><h4>Regras do tipo de corte</h4><small>Em qual local do corte cada tipo de conclusão é contado · consulta para todos, só o administrador altera</small></div></div><div id="rgCorte" style="display:grid;gap:12px"></div></div>
   </section>
 
@@ -2603,7 +2610,7 @@ const pctCell=p=>'<span class="pct '+cls(p)+'">'+pct(p)+'</span>';
 /* ---------- menu lateral (páginas) ---------- */
 const ICON={relogio:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6M12 2v3"/>',mix:'<rect x="3" y="3" width="8" height="10" rx="1.5"/><rect x="13" y="3" width="8" height="6" rx="1.5"/><rect x="13" y="11" width="8" height="10" rx="1.5"/><rect x="3" y="15" width="8" height="6" rx="1.5"/>',raio:'<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',home:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>',alerta:'<path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/>',cad:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',sono:'<path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/>',cobra:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',painel:'<path d="M4 15a8 8 0 0 1 16 0"/><path d="M12 15l4-4"/><path d="M3 19h18"/>',lista:'<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/>',upload:'<path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v4h16v-4"/>',moeda:'<circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.5-1.2-1.7-1.8-3-1.8-1.7 0-3 .9-3 2.2 0 3 6 1.6 6 4.6 0 1.3-1.3 2.3-3 2.3-1.4 0-2.6-.7-3.1-1.9M12 6v1.7M12 16.8v1.7"/>',chave:'<path d="M14.7 6.3a4 4 0 0 0-5.4 5.2L3 17.8V21h3.2l6.3-6.3a4 4 0 0 0 5.2-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/>'};
 const ico=n=>'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">'+ICON[n]+'</svg>';
-const PAGINAS=[{id:'inicio',nm:'Visão geral',sub:'Resumo de todos os indicadores',ic:'home',g:'Geral'},{id:'painel',nm:'Painel',sub:'Estrutura, base e dia a dia',ic:'painel',g:'Disponibilidade'},{id:'prefixos',nm:'Por prefixo',sub:'Equipe por equipe',ic:'lista',g:'Disponibilidade'},{id:'cobranca',nm:'Cobrança do dia',sub:'Equipes abaixo da meta',ic:'cobra',g:'Disponibilidade'},{id:'ups-painel',nm:'Painel',sub:'Classes, bases e ritmo',ic:'painel',g:'UPS'},{id:'ups-prefixos',nm:'Por equipe',sub:'UPS, meta e classe',ic:'lista',g:'UPS'},{id:'ups-diario',nm:'Diário',sub:'Equipe × dia',ic:'cal',g:'UPS'},{id:'ups-cobranca',nm:'Cobrança',sub:'Equipes classe C e D',ic:'cobra',g:'UPS'},{id:'ups-regras',nm:'Regras da UPS',sub:'Pontuação, DE_PARA e regras',ic:'chave',g:'UPS'},{id:'ader-painel',nm:'Painel',sub:'Checklist × horário da escala',ic:'cal',g:'Aderência à escala'},{id:'ader-ranking',nm:'Ranking',sub:'Bases e equipes',ic:'lista',g:'Aderência à escala'},{id:'ini-painel',nm:'Painel',sub:'1ª atividade após o checklist',ic:'cal',g:'Início das atividades'},{id:'prd-dia',nm:'Visão diária',sub:'Meta x realizado em R$, em tempo real',ic:'painel',g:'Produção do dia'},{id:'def-painel',nm:'Tratamento',sub:'Total, entrantes e resolvidos',ic:'painel',g:'Atualização de defeitos'},{id:'def-evolucao',nm:'Evolução',sub:'Tipos e dia a dia do mês',ic:'cal',g:'Atualização de defeitos'},{id:'def-lista',nm:'Lista de defeitos',sub:'Banco de dados para cobrança',ic:'lista',g:'Atualização de defeitos'},{id:'tm-geral',nm:'Visão geral',sub:'TME e TMD por mês, base e atividade',ic:'painel',g:'TME / TMD'},{id:'tm-prefixo',nm:'Por prefixo',sub:'Prefixo × tipo de atividade',ic:'lista',g:'TME / TMD'},{id:'tm-detalhe',nm:'Detalhamento',sub:'Abrangência, conclusão e code',ic:'cal',g:'TME / TMD'},{id:'mix-normal',nm:'OS Normal',sub:'Quantidade por mês, base, dia e equipe',ic:'painel',g:'Mix GSTC'},{id:'mix-mistec',nm:'Miscelânea técnica',sub:'R$ executado por mês, base e equipe',ic:'lista',g:'Mix GSTC'},{id:'mix-corte',nm:'Tipo de corte',sub:'Local do corte e R$ por corte',ic:'cal',g:'Mix GSTC'},{id:'mix-causa',nm:'Auditoria de causas',sub:'Emergencial e assistências por causa',ic:'alerta',g:'Mix GSTC'},{id:'trf-painel',nm:'Blindagem',sub:'Efetividade dos trafos trabalhados',ic:'painel',g:'Trafos reincidentes'},{id:'trf-indice',nm:'Índice de reincidência',sub:'Mês a mês e trafos p/ blindagem',ic:'lista',g:'Trafos reincidentes'},{id:'contingencia',nm:'Painel',sub:'Atividades, clientes afetados e acima de 24 h',ic:'alerta',g:'Gestão de Contingência'},{id:'prazos',nm:'Painel',sub:'Prazos regulatórios',ic:'cobra',g:'Farol de Prazos'},{id:'atualizar',nm:'Atualizar com o SIGA',sub:'Enviar os 4 relatórios',ic:'upload',g:'Administração',adm:true},{id:'conferencia',nm:'Conferência',sub:'Avisos da base',ic:'alerta',g:'Administração',adm:true},{id:'cadastros',nm:'Cadastros',sub:'Prefixos, escala e feriados',ic:'cad',g:'Administração',adm:true}];
+const PAGINAS=[{id:'inicio',nm:'Visão geral',sub:'Resumo de todos os indicadores',ic:'home',g:'Geral'},{id:'painel',nm:'Painel',sub:'Estrutura, base e dia a dia',ic:'painel',g:'Disponibilidade'},{id:'prefixos',nm:'Por prefixo',sub:'Equipe por equipe',ic:'lista',g:'Disponibilidade'},{id:'cobranca',nm:'Cobrança do dia',sub:'Equipes abaixo da meta',ic:'cobra',g:'Disponibilidade'},{id:'ups-painel',nm:'Painel',sub:'Classes, bases e ritmo',ic:'painel',g:'UPS'},{id:'ups-prefixos',nm:'Por equipe',sub:'UPS, meta e classe',ic:'lista',g:'UPS'},{id:'ups-diario',nm:'Diário',sub:'Equipe × dia',ic:'cal',g:'UPS'},{id:'ups-cobranca',nm:'Cobrança',sub:'Equipes classe C e D',ic:'cobra',g:'UPS'},{id:'ups-regras',nm:'Regras da UPS',sub:'Pontuação, DE_PARA e regras',ic:'chave',g:'UPS'},{id:'ader-painel',nm:'Painel',sub:'Checklist × horário da escala',ic:'cal',g:'Aderência à escala'},{id:'ader-ranking',nm:'Ranking',sub:'Bases e equipes',ic:'lista',g:'Aderência à escala'},{id:'ini-painel',nm:'Painel',sub:'1ª atividade após o checklist',ic:'cal',g:'Início das atividades'},{id:'prd-dia',nm:'Visão diária',sub:'Meta x realizado em R$, em tempo real',ic:'painel',g:'Produção do dia'},{id:'prd-precos',nm:'Preços das atividades',sub:'Regras e valor de cada atividade',ic:'chave',g:'Produção do dia'},{id:'def-painel',nm:'Tratamento',sub:'Total, entrantes e resolvidos',ic:'painel',g:'Atualização de defeitos'},{id:'def-evolucao',nm:'Evolução',sub:'Tipos e dia a dia do mês',ic:'cal',g:'Atualização de defeitos'},{id:'def-lista',nm:'Lista de defeitos',sub:'Banco de dados para cobrança',ic:'lista',g:'Atualização de defeitos'},{id:'tm-geral',nm:'Visão geral',sub:'TME e TMD por mês, base e atividade',ic:'painel',g:'TME / TMD'},{id:'tm-prefixo',nm:'Por prefixo',sub:'Prefixo × tipo de atividade',ic:'lista',g:'TME / TMD'},{id:'tm-detalhe',nm:'Detalhamento',sub:'Abrangência, conclusão e code',ic:'cal',g:'TME / TMD'},{id:'mix-normal',nm:'OS Normal',sub:'Quantidade por mês, base, dia e equipe',ic:'painel',g:'Mix GSTC'},{id:'mix-mistec',nm:'Miscelânea técnica',sub:'R$ executado por mês, base e equipe',ic:'lista',g:'Mix GSTC'},{id:'mix-corte',nm:'Tipo de corte',sub:'Local do corte e R$ por corte',ic:'cal',g:'Mix GSTC'},{id:'mix-causa',nm:'Auditoria de causas',sub:'Emergencial e assistências por causa',ic:'alerta',g:'Mix GSTC'},{id:'trf-painel',nm:'Blindagem',sub:'Efetividade dos trafos trabalhados',ic:'painel',g:'Trafos reincidentes'},{id:'trf-indice',nm:'Índice de reincidência',sub:'Mês a mês e trafos p/ blindagem',ic:'lista',g:'Trafos reincidentes'},{id:'contingencia',nm:'Painel',sub:'Atividades, clientes afetados e acima de 24 h',ic:'alerta',g:'Gestão de Contingência'},{id:'prazos',nm:'Painel',sub:'Prazos regulatórios',ic:'cobra',g:'Farol de Prazos'},{id:'atualizar',nm:'Atualizar com o SIGA',sub:'Enviar os 4 relatórios',ic:'upload',g:'Administração',adm:true},{id:'conferencia',nm:'Conferência',sub:'Avisos da base',ic:'alerta',g:'Administração',adm:true},{id:'cadastros',nm:'Cadastros',sub:'Prefixos, escala e feriados',ic:'cad',g:'Administração',adm:true}];
 /* ---------- hierarquia das equipes (gerente / coordenador / supervisor): filtro global dos indicadores por prefixo ---------- */
 let HIER=null,HF={ger:'',coo:'',sup:''};
 try{Object.assign(HF,JSON.parse(localStorage.getItem('hier.f')||'{}'))}catch(e){}
@@ -3039,7 +3046,7 @@ function mostrarPagina(){
   if(p==='atualizar'){try{montarBanco()}catch(e){}$('opNota').hidden=!(podeEnviar&&!podeSalvar)}
   if(p==='contingencia'||p==='prazos')ctMostrar();else if(p==='conferencia')ctCarregar(false);
   if(p==='mix-causa')acMostrar();
-  if(p==='ups-regras')renderRgUps();if(p==='mix-corte'){renderRgCorte();mxVarrerSem()}
+  if(p==='ups-regras')renderRgUps();if(p==='prd-precos')renderPrecos();if(p==='mix-corte'){renderRgCorte();mxVarrerSem()}
   if(matchMedia('(max-width:1000px)').matches){document.body.classList.remove('rail-on');$('railFundo').hidden=true}
 }
 window.addEventListener('hashchange',mostrarPagina);
@@ -4567,7 +4574,7 @@ const n1=v=>v==null?'–':(+v).toLocaleString('pt-BR',{minimumFractionDigits:1,m
 const clsPill=c=>c?'<span class="cl cl-'+c+'">'+c+'</span>':'<span class="pill nd">–</span>';
 const faixaCell=p=>'<span class="pct '+UPSCalc.faixaBase(p).cls+'">'+pct(p)+'</span>';
 const clsCell=p=>{const c=UPSCalc.classe(p);return '<span class="pct cl-p-'+(c||'x')+'">'+pct(p)+'</span>'};
-function indAtual(){const p=pag().id;if(p==='ups-regras')return null;if(p.startsWith('ups-'))return'ups';if(p.startsWith('ader-'))return'ader';if(p.startsWith('ini-'))return'ini';if(p.startsWith('def-'))return'def';if(p.startsWith('prd-'))return'prd';if(p.startsWith('trf-'))return'trf';if(p==='mix-causa')return null;if(p.startsWith('mix-'))return'mix';if(p.startsWith('tm-'))return'tm';if(['painel','prefixos','cobranca'].includes(p))return'disp';return null}
+function indAtual(){const p=pag().id;if(p==='ups-regras'||p==='prd-precos')return null;if(p.startsWith('ups-'))return'ups';if(p.startsWith('ader-'))return'ader';if(p.startsWith('ini-'))return'ini';if(p.startsWith('def-'))return'def';if(p.startsWith('prd-'))return'prd';if(p.startsWith('trf-'))return'trf';if(p==='mix-causa')return null;if(p.startsWith('mix-'))return'mix';if(p.startsWith('tm-'))return'tm';if(['painel','prefixos','cobranca'].includes(p))return'disp';return null}
 
 /* cadastro único: base e gerência editadas em Cadastros valem também na UPS (a escala continua dando a jornada e a estrutura da pontuação) */
 const siglaDeBase=b=>{const n=x=>String(x||'').toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim(),k=n(b);for(const sg of SIGLAS)if(n(NOME_SIGLA[sg])===k||sg===k)return sg;return ''};
@@ -6233,6 +6240,100 @@ function preencherFiltrosPrd(){
   {const O=['GSTC','GOMAN','GERE'],G=[...new Set(PCFG.prefixos.map(p=>prdGer(p[0])))].sort((a,b)=>((O.indexOf(a)+1)||9)-((O.indexOf(b)+1)||9)||a.localeCompare(b));opts($('p-ger'),G,'Todos')}
   opts($('p-ct'),[...new Set(PCFG.prefixos.map(p=>String(ct[p[0]]||'(sem contrato)')))].sort(),'Todos');opts($('p-base'),[...new Set(PCFG.prefixos.map(p=>p[1]))].sort(),'Todas');atualizaTipos();opts($('p-rec'),PCFG.prefixos.map(p=>p[0]).sort(),'Todas');
 }
+/* ---------- preços das atividades: regras da chave + preço de cada chave (administrador edita) ---------- */
+let POVR=null,prcTab='precos',prcBusca='',prcSvc='';
+function aplicarPrecos(){
+  if(!PCFG)return;if(!PCFG._dp0){PCFG._dp0=Object.assign({},PCFG.dePara);PCFG._esp0={pExsvgdis:PCFG.pExsvgdis,pMistec:PCFG.pMistec,pAtualizar:PCFG.pAtualizar}}
+  const o=POVR||{dp:{},esp:{}},dp=Object.assign({},PCFG._dp0);for(const k in o.dp){if(o.dp[k]==null)delete dp[k];else dp[k]=o.dp[k]}PCFG.dePara=dp;
+  for(const k of ['pExsvgdis','pMistec','pAtualizar'])PCFG[k]=o.esp&&o.esp[k]!=null?o.esp[k]:PCFG._esp0[k];
+}
+async function precoGravar(mut,msg){
+  if(!db||!ehAdm()){toast('Só administradores alteram os preços.');return false}
+  const o=JSON.parse(JSON.stringify(POVR||{dp:{},esp:{}}));o.dp=o.dp||{};o.esp=o.esp||{};mut(o);
+  for(const k in o.dp)if(o.dp[k]===PCFG._dp0[k]||(o.dp[k]==null&&!(k in PCFG._dp0)))delete o.dp[k];
+  for(const k in o.esp)if(o.esp[k]===PCFG._esp0[k])delete o.esp[k];
+  try{await db.collection('config').doc('prodPrecos').set({dp:o.dp,esp:o.esp,editadoEm:new Date().toISOString()});POVR={dp:o.dp,esp:o.esp,em:new Date().toISOString()};aplicarPrecos();renderPrecos();toast(msg||'Preço salvo.');return true}catch(e){toast('Não foi possível salvar.');return false}
+}
+const PRC_SVC=['RELIGABT - Religação de Baixa Tensão','RELIGAAT - Religação de Alta Tensão','SUSPFORN - Corte','DSBTPDCL - Desligamento De Unidade Consumidora','DESLORAM - Deslocamento de Ramal','DSBTPROV - Desligamento por Ligação Provisória','DSTEMPOR - Desligamento Temporário','INSPTECN - Inspeção Técnica','LIGANOVA - Ligação Nova','LIGPROVI - Ligação Provisória','MISTEC - Miscelanea Técnica','MUDMEDLC - Mudança de Medidor de Local','NIVELTEN - Nível de Tensão','PDARVOBT - Poda de Árvore BT','REATIVAC - Ligação Nova - Reativação','ALMODTAR - Alteração de Modalidade Tarifária BT','SEMFLENG - Serviço Emergencial-Falta de  Energia','Assistência NR','TROCPABT - Troca Padrão Baixa Tensão (BT)','ORCNXBTN - Orçamento de Conexão BT'];
+const PRC_KL=PRC_SVC.map(k=>[k.toLowerCase(),k]).sort((a,b)=>b[0].length-a[0].length);
+const prcSplit=ch=>{const m=PRC_KL.find(x=>ch.startsWith(x[0]));return m?[m[1],ch.slice(m[0].length)]:['Outros (chave começa pelo código)',ch]};
+const PRC_REGRAS=[
+  ['SUSPFORN - Corte','Serviço + Não executada + Executada + Local de religação'],
+  ['RELIGABT, RELIGAAT','Serviço + Executada + Não executada + Local de religação'],
+  ['DSBTPDCL, DSTEMPOR, INSPTECN, ALMODTAR','Serviço + Executada + Não executada'],
+  ['DESLORAM, DSBTPROV, LIGANOVA, LIGPROVI, MUDMEDLC, PDARVOBT, REATIVAC, TROCPABT','Serviço + Executada'],
+  ['MISTEC - Miscelanea Técnica','Serviço + Grupo code + Executada'],
+  ['NIVELTEN - Nível de Tensão','Somente o serviço'],
+  ['SEMFLENG - Serviço Emergencial (subtipo NORMAL ATE A MEDICAO)','Serviço + subtipo de causa'],
+  ['SEMFLENG - Serviço Emergencial e Assistência NR (demais)','Serviço + Status da atividade + Abrangência'],
+  ['ORCNXBTN - Orçamento de Conexão BT','Code + Executada']];
+function renderPrecos(){try{renderPrecos0()}catch(e){console.error('prc',e&&e.stack||e)}}
+function renderPrecos0(){
+  const el=$('rgPrc');if(!el||!PCFG)return;prdPrep();const adm=ehAdm(),o=POVR||{dp:{},esp:{}},nAlt=Object.keys(o.dp||{}).length+Object.keys(o.esp||{}).length;
+  const dp=PCFG.dePara,L=Object.entries(dp).map(([k,v])=>{const [sv,det]=prcSplit(k);return{k,v,sv,det}});
+  const svcs=[...new Set(L.map(x=>x.sv))].sort(),q=prcBusca.trim().toLowerCase();
+  const F=L.filter(x=>(!prcSvc||x.sv===prcSvc)&&(!q||x.k.includes(q))).sort((a,b)=>a.sv<b.sv?-1:a.sv>b.sv?1:a.k<b.k?-1:1);
+  const n2=v=>(+v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  let h='<div class="panel rgp"><div class="aviso-hd"><span class="ic i">'+AVI.i+'</span><div><h3>Como o preço de uma atividade é definido</h3><p>Cada atividade concluída ou não concluída gera uma <b>chave</b>, montada a partir de campos do SIGA (veja <b>Regras da chave</b>). O preço é o valor dessa chave na tabela <b>Preços por chave</b>. Atividades sem chave na tabela valem R$ 0,00, exceto as <b>regras especiais</b>. Alterar um preço vale para os <b>próximos arquivos enviados</b>; os dias já enviados guardam o valor de quando foram processados.</p></div></div>'
+    +'<div class="rg-bar"><div class="tabs" role="group" aria-label="Preços">'+[['precos','Preços por chave',L.length],['regras','Regras da chave',PRC_REGRAS.length],['esp','Regras especiais',4]].map(([k,t,n])=>'<button type="button" data-prct="'+k+'" aria-pressed="'+(prcTab===k)+'">'+t+' <small>'+n+'</small></button>').join('')+'</div>'
+    +'<span class="muted" style="margin-left:auto;font-size:12.5px">'+(nAlt?'<b>'+nAlt+'</b> alteração(ões) em relação ao original'+(o.em?' · última em '+new Date(o.em).toLocaleDateString('pt-BR'):''):'Nenhuma alteração: preços iguais ao Relatório de Produção')+'</span>'+(adm&&nAlt?'<button class="btn sm del" type="button" id="b-prcReset">Voltar ao original</button>':'')+'</div>';
+  if(prcTab==='precos'){
+    h+='<div class="rg-bar"><select id="prcSvc"><option value="">Todos os serviços</option>'+svcs.map(x=>'<option'+(x===prcSvc?' selected':'')+'>'+esc(x)+'</option>').join('')+'</select><input type="search" id="prcBusca" placeholder="Buscar na chave" value="'+esc(prcBusca)+'">'+(adm?'<input id="prcNK" placeholder="Nova chave (minúsculas, igual à chave gerada)" style="min-width:280px"><input id="prcNV" type="number" step="0.01" min="0" placeholder="Preço" style="width:110px"><button class="btn primary sm" type="button" id="b-prcNovo">+ Novo preço</button>':'')+'</div>'
+      +'<div class="tw" style="max-height:620px"><table class="utab"><thead><tr><th>Serviço</th><th>Complemento da chave (conclusão, local, grupo…)</th><th class="n">Preço (R$)</th><th>Situação</th>'+(adm?'<th></th>':'')+'</tr></thead><tbody>'
+      +(F.slice(0,400).map(x=>{const orig=PCFG._dp0[x.k],alt=x.k in (o.dp||{}),nov=orig==null;return '<tr><td><b>'+esc(x.sv)+'</b></td><td class="sc-d">'+esc(x.det||'(somente o serviço)')+'</td><td class="n">'+(adm?'<input type="number" step="0.01" min="0" class="rg-n" data-prck="'+esc(x.k)+'" value="'+(+(+x.v).toFixed(4))+'">':n2(x.v))+'</td><td>'+(nov?'<span class="rg-tag n">Novo</span>':alt?'<span class="rg-tag a" title="Original: '+n2(orig)+'">Alterado · era '+n2(orig)+'</span>':'<span class="muted">Original</span>')+'</td>'+(adm?'<td class="nw">'+(alt&&!nov?'<button class="btn sm" type="button" data-prcr="'+esc(x.k)+'">Restaurar</button> ':'')+'<button class="btn sm del" type="button" data-prcd="'+esc(x.k)+'">Excluir</button></td>':'')+'</tr>'}).join('')||'<tr><td colspan="5" class="empty">Nada com esses filtros.</td></tr>')+'</tbody></table></div>'+(F.length>400?'<p class="muted" style="margin:0;font-size:12px">Mostrando 400 de '+F.length+'. Use os filtros.</p>':'');
+  }else if(prcTab==='regras'){
+    h+='<div class="tw"><table class="utab"><thead><tr><th>Serviço</th><th>A chave é montada com</th></tr></thead><tbody>'+PRC_REGRAS.map(([a,b])=>'<tr><td><b>'+esc(a)+'</b></td><td>'+esc(b)+'</td></tr>').join('')+'</tbody></table></div><p class="muted" style="margin:0;font-size:12px">As regras de montagem da chave fazem parte do cálculo do site e não são editáveis aqui. O que muda o valor é a tabela “Preços por chave”.</p>';
+  }else{
+    const E=[['pExsvgdis','Execução de OS de GDIS (EXSVGDIS) executada',PCFG.pExsvgdis,'Vale para OS da lista de GDIS ('+PCFG.gdisEx.length+' OS) quando executadas.'],['pMistec','Miscelânea técnica executada sem preço na tabela',PCFG.pMistec,'Usado quando a chave não tem preço na tabela.'],['pAtualizar','Emergencial · serviço executado - atualizar medidor',PCFG.pAtualizar,'Usado quando a chave não tem preço na tabela.']];
+    h+='<div class="tw"><table class="utab"><thead><tr><th>Regra especial</th><th class="n">Preço (R$)</th><th>Observação</th></tr></thead><tbody>'
+      +E.map(([k,t,v,ob])=>'<tr><td><b>'+esc(t)+'</b></td><td class="n">'+(adm?'<input type="number" step="0.01" min="0" class="rg-n" data-prce="'+k+'" value="'+(+(+v).toFixed(4))+'">':n2(v))+'</td><td class="muted">'+esc(ob)+'</td></tr>').join('')
+      +'<tr><td><b>Prefixos de Seed Money</b></td><td class="n">0,00</td><td class="muted">Equipes de Seed Money não geram produção em R$: '+PCFG.seed.map(x=>esc(x.replace(/^MA-/,''))).join(', ')+'.</td></tr></tbody></table></div>';
+  }
+  el.innerHTML=h+'</div>';
+  el.querySelectorAll('[data-prct]').forEach(b=>b.onclick=()=>{prcTab=b.dataset.prct;renderPrecos()});
+  const sv=$('prcSvc');if(sv)sv.onchange=()=>{prcSvc=sv.value;renderPrecos()};
+  const bq=$('prcBusca');if(bq)bq.oninput=()=>{prcBusca=bq.value;const pos=bq.selectionStart;renderPrecos();const n=$('prcBusca');n.focus();n.setSelectionRange(pos,pos)};
+  if(!adm){el.querySelectorAll('.rg-n').forEach(i=>i.remove());return}
+  const bad=()=>toast('Informe um preço válido (número maior ou igual a zero).');
+  el.querySelectorAll('[data-prck]').forEach(i=>i.onchange=()=>{const v=parseFloat(String(i.value).replace(',','.'));if(isNaN(v)||v<0){bad();renderPrecos();return}precoGravar(x=>{x.dp[i.dataset.prck]=v},'Preço atualizado.')});
+  el.querySelectorAll('[data-prce]').forEach(i=>i.onchange=()=>{const v=parseFloat(String(i.value).replace(',','.'));if(isNaN(v)||v<0){bad();renderPrecos();return}precoGravar(x=>{x.esp[i.dataset.prce]=v},'Preço atualizado.')});
+  el.querySelectorAll('[data-prcr]').forEach(b=>b.onclick=()=>precoGravar(x=>{delete x.dp[b.dataset.prcr]},'Preço restaurado.'));
+  el.querySelectorAll('[data-prcd]').forEach(b=>b.onclick=()=>{if(confirm('Excluir o preço desta chave? As atividades com essa chave passam a valer R$ 0,00 nos próximos envios.\n\n'+b.dataset.prcd))precoGravar(x=>{x.dp[b.dataset.prcd]=null},'Preço excluído.')});
+  const nb=$('b-prcNovo');if(nb)nb.onclick=()=>{const k=$('prcNK').value.trim().toLowerCase(),v=parseFloat(String($('prcNV').value).replace(',','.'));if(!k){toast('Informe a chave.');return}if(isNaN(v)||v<0){bad();return}if(k in PCFG.dePara){toast('Essa chave já existe. Altere a linha existente.');return}precoGravar(x=>{x.dp[k]=v},'Preço criado.')};
+  const rs=$('b-prcReset');if(rs)rs.onclick=()=>{if(confirm('Voltar todos os preços ao que está no Relatório de Produção? As alterações feitas aqui serão apagadas.'))precoGravar(x=>{x.dp={};x.esp={}},'Preços restaurados ao original.')};
+}
+/* linha do tempo da equipe no dia: todas as atividades (produção e não produção) em ordem de horário */
+async function prdTimeline(rec,d){
+  const x=prdLinhasDia(d).find(q=>q.pre===rec)||{};
+  abrirDet({tit:rec+' · '+semana(d)+', '+dataBR(d),kpis:[],semTab:true,aviso:'',extra:'<div id="prdTlBox"><p class="muted" style="margin:12px 0 0;font-size:12.5px">Carregando as atividades do dia…</p></div>'});
+  const box=()=>$('prdTlBox');
+  if(!bancoIdxDe('COI')[d]){if(box())box().innerHTML='<p class="muted" style="margin:12px 0 0;font-size:12.5px">Este dia ainda não está no banco SIGA, então não há detalhe por atividade. Envie o COI do dia em Atualizar com o SIGA.</p>';return}
+  const A=[];
+  try{const D=await bancoDia('COI',d),c=D.cols,ix=n=>c.indexOf(n),iR=ix('Recurso'),iS=ix('Status da Atividade');
+    if(iR>=0&&iS>=0){
+      const iK=ix('Tipo de Atividade (2)')>=0?ix('Tipo de Atividade (2)'):ix('Tipo de Atividade#2')>=0?ix('Tipo de Atividade#2'):ix('Tipo de Atividade'),iEx=ix('Tipo de Conclusão Executada'),iNe=ix('Tipo de Conclusão Não Executada'),iJ=ix('Local Religação'),iO=ix('Ordem de Serviço'),iI=ix('Início'),iF=ix('Fim'),iG=ix('Grupo Code'),iQ=ix('SubTipo de Causa - Text'),iM=ix('Abrangência'),iV=ix('Code'),iC=ix('Cidade'),iB=ix('Bairro');
+      const g=(r,i)=>i<0||r[i]==null?'':String(r[i]).trim(),interna=/^(checklist in[ií]cio|retorno [aà] base|intervalo para almo|indisponibilidade)/i;
+      for(const r of D.rows){if(String(r[iR]||'').trim().split(/\s+/)[0]!==rec)continue;const st=g(r,iS).toLowerCase();if(st!=='concluído'&&st!=='não concluído')continue;
+        const K=g(r,iK);let v=null;try{v=prdPreco(rec,g(r,iO),K,g(r,iEx),g(r,iNe),g(r,iJ),g(r,iG),g(r,iQ),st,g(r,iM),g(r,iV))}catch(e){}
+        const nao=interna.test(K);A.push({ini:Disp.parseHora(r[iI]),fim:Disp.parseHora(r[iF]),k:K,os:g(r,iO),st,v:nao?0:v,nao,loc:[g(r,iB),g(r,iC)].filter(Boolean).join(' · ')})}}
+  }catch(e){console.error('timeline',e)}
+  if(!box())return;
+  A.sort((a,b)=>(a.ini==null?1e9:a.ini)-(b.ini==null?1e9:b.ini)||(a.fim==null?1e9:a.fim)-(b.fim==null?1e9:b.fim));
+  const hm=t=>t==null?'–':hhmm(t),dur=(a,b)=>a==null||b==null?'–':(b<a?b+1440-a:b-a)+' min';
+  let ac=0,gapT=0,ult=null,nProd=0;const rows=[];
+  for(const a of A){
+    if(ult!=null&&a.ini!=null&&a.ini-ult>=15){gapT+=a.ini-ult;rows.push('<tr class="tl-gap"><td></td><td colspan="8" class="muted" style="font-size:12px">⏱ '+(a.ini-ult)+' min sem atividade registrada</td></tr>')}
+    const prod=!a.nao&&a.v>0&&a.st==='concluído';if(prod){ac+=a.v;nProd++}else if(!a.nao&&a.v>0)ac+=a.v;
+    const cor=a.nao?'#8a8a8a':a.st!=='concluído'?'#c8102e':a.v>0?'#2a8f30':'#d98a00',tp=a.nao?'Não produção':a.st!=='concluído'?'Não concluída':a.v>0?'Produção':'Sem valor';
+    rows.push('<tr style="box-shadow:inset 4px 0 0 '+cor+'"><td class="nw" style="padding-left:14px"><b>'+hm(a.ini)+'</b></td><td class="nw">'+hm(a.fim)+'</td><td class="n nw">'+dur(a.ini,a.fim)+'</td><td>'+esc(a.k)+(a.loc?'<small class="muted" style="display:block">'+esc(a.loc)+'</small>':'')+'</td><td class="nw">'+esc(a.os)+'</td><td><span class="pill" style="background:'+cor+'22;color:'+cor+'">'+tp+'</span></td><td class="n nw">'+(a.nao?'–':a.v==null?'–':brl(a.v))+'</td><td class="n nw">'+(a.nao?'':brl(ac))+'</td></tr>');
+    if(a.fim!=null)ult=a.fim<(a.ini||0)?a.fim+1440:a.fim;else if(a.ini!=null)ult=a.ini}
+  const tot=A.reduce((s,a)=>s+(a.v||0),0),pc=x.meta?x.real/x.meta:null;
+  const k=[['Meta do dia',x.meta!=null?brl(x.meta):'–'],['Realizado',x.real!=null?brl(x.real):'–'],['% da meta',pc!=null?Math.round(pc*100)+'%':'–'],['Atividades com valor',dN(nProd)],['Tempo entre atividades',gapT?hhmm(gapT):'–']];
+  box().innerHTML='<div class="md-k" style="grid-template-columns:repeat(5,minmax(0,1fr))">'+k.map(z=>'<div><span>'+z[0]+'</span><b>'+z[1]+'</b></div>').join('')+'</div>'
+    +'<p class="muted" style="margin:0 0 8px;font-size:12.5px">'+(x.est?esc(x.base||'')+' · '+esc(x.est)+' · ':'')+A.length+' atividade(s) em ordem de horário · verde = produção, âmbar = sem valor, vermelho = não concluída, cinza = não produção (checklist, almoço, retorno à base, indisponibilidade). “Acumulado” é a soma do valor ao longo do dia.</p>'
+    +'<div class="tw md-t"><table class="utab"><thead><tr><th>Início</th><th>Fim</th><th class="n">Duração</th><th>Atividade</th><th>Ordem de serviço</th><th>Situação</th><th class="n">Valor (R$)</th><th class="n">Acumulado</th></tr></thead><tbody>'+(rows.join('')||'<tr><td colspan="8" class="empty">Nenhuma atividade desta equipe neste dia.</td></tr>')+'</tbody></table></div>'
+    +(x.real!=null&&Math.abs(tot-x.real)>0.5?'<p class="muted" style="margin:6px 0 0;font-size:11.5px"><b>Atenção:</b> a soma das atividades ('+brl(tot)+') difere da produção do dia ('+brl(x.real)+'). Isso ocorre quando o dia no banco SIGA ainda está incompleto (ex.: dia em andamento) ou quando os preços foram alterados depois do envio do dia.</p>':'');
+}
 /* Regra de meta do dia (mesma da UPS, ver UPSCalc.fatorMeta): plantão todos os dias; LGN, SDM, plantão moto e corte
    seg a sex 1, sábado 0,5, domingo e feriado 0 */
 let _tdMap=null,_tdSrc=null;
@@ -6361,6 +6462,7 @@ function renderPrd(){
       +'<footer class="pv-ft"><span><i class="ok">✔</i>Bateu a meta (100% ou mais)</span><span><i class="par">●</i>Perto da meta (85% a 99%)</span><span><i class="mal">✖</i>Abaixo de 85%</span></footer></article>'};
   const bs2=Object.keys(grupos);
   $('pvCorpo').innerHTML=bs2.length?bs2.map(b=>folha(b,grupos[b])).join(''):'<div class="empty">Sem equipes neste filtro.</div>';
+  $('pvCorpo').querySelectorAll('tr[data-pre]').forEach(tr=>{tr.style.cursor='pointer';tr.title='Clique para ver a linha do tempo da equipe';tr.onclick=()=>per?toast('Escolha um único dia para ver a linha do tempo da equipe.'):prdTimeline(tr.dataset.pre,d)});
   $('pTabN').textContent=fb?'Base '+[...fb].join(' + ')+' · pronta para o print':'Todas as bases · escolha uma base para mandar só a dela';
 }
 function prdCurva(el,hora,meta,agora){
@@ -7110,6 +7212,57 @@ async function corteGravar(mut,msg){
   const o=Object.assign({},COVR||{});mut(o);for(const k in o)if(o[k]===MX_TC0[k]||(o[k]==null&&!(k in MX_TC0)))delete o[k];
   try{await db.collection('config').doc('corteRegras').set({itens:o,editadoEm:new Date().toISOString()});COVR=o;aplicarRegrasCorte();renderRgCorte();toast(msg||'Regra salva.');return true}catch(e){toast('Não foi possível salvar.');return false}
 }
+let mxPct=true,mxRk={k:'q',dir:-1,all:false};
+const mxHexA=(h,a)=>h+Math.round(a*255).toString(16).padStart(2,'0');
+/* ranking de equipes: cortes, % por local e R$ médio (todos os locais, independente do filtro de local) */
+function mxRanking(ds,okB){
+  const el=$('xcRk');if(!el)return;const rk={},bs={};
+  for(const d of ds){const o=MX.dias[d];for(const r in o.c){const b=mxBase(o,r);if(!okB(b,r))continue;const a=rk[r]||(rk[r]={r,b,q:0,v:0,qp:0,L:{}}),B=bs[b]||(bs[b]={q:0,n:0});
+    for(const L in o.c[r]){const e=o.c[r][L];a.q+=e[0];a.v+=e[1];a.qp+=e[2];a.L[L]=(a.L[L]||0)+e[0];B.q+=e[0];if(L==='N')B.n+=e[0]}}}
+  const R=Object.values(rk).filter(x=>x.q>0);
+  if(!R.length){el.innerHTML='<div class="empty">Sem cortes neste filtro.</div>';return}
+  const val=(x,k)=>k==='r'?x.r:k==='b'?x.b:k==='q'?x.q:k==='med'?(x.qp?x.v/x.qp:-1):(x.L[k]||0)/x.q;
+  R.sort((a,b)=>{const x=val(a,mxRk.k),y=val(b,mxRk.k);return (x<y?-1:x>y?1:0)*mxRk.dir||b.q-a.q});
+  const tq=R.reduce((s,x)=>s+x.q,0),max=mxRk.all?R.length:15,col=[['D','Disjuntor'],['M','Medidor'],['P','Poste'],['R','Ramal'],['G','Débito pago'],['N','Não executado']];
+  const th=(k,t,c)=>'<th'+(c?' class="'+c+'"':'')+' data-rks="'+k+'" style="cursor:pointer" title="Ordenar">'+t+(mxRk.k===k?(mxRk.dir>0?' ▲':' ▼'):'')+'</th>';
+  el.innerHTML='<div class="tw" style="max-height:none"><table class="utab"><thead><tr><th class="n">#</th>'+th('r','Equipe')+th('b','Base')+th('q','Cortes','n')+col.map(([k,n])=>th(k,n,'n')).join('')+th('med','R$ por corte','n')+'<th></th></tr></thead><tbody>'
+    +R.slice(0,max).map((x,i)=>{const B=bs[x.b],nB=B.q?B.n/B.q:0,pn=(x.L.N||0)/x.q,alto=x.q>=10&&pn>nB+.1;
+      return '<tr data-rkr="'+esc(x.r)+'" style="cursor:pointer" title="Ver os cortes desta equipe"><td class="n">'+(i+1)+'</td><td><b>'+esc(x.r.replace(/^MA-/,''))+'</b></td><td>'+esc(tMun(x.b))+'</td><td class="n"><b>'+dN(x.q)+'</b></td>'
+      +col.map(([k])=>{const v=(x.L[k]||0)/x.q;return '<td class="n"'+(v>0?' style="background:'+mxHexA(MX_LCOR[k],Math.min(.45,.06+v*.6))+'"':'')+'>'+(v>0?pct(v):'<span class="muted">–</span>')+'</td>'}).join('')
+      +'<td class="n">'+(x.qp?brl(x.v/x.qp):'–')+'</td><td class="nw">'+(alto?'<span class="pill nao" title="Não executado '+pct(pn)+' contra '+pct(nB)+' na base">não exec. acima da base</span>':'')+'</td></tr>'}).join('')
+    +'</tbody></table></div><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="muted" style="font-size:12px">'+R.length+' equipes · '+dN(tq)+' cortes · todos os locais, inclusive débito pago e não executado · cor mais forte = maior participação</span>'+(R.length>15?'<button type="button" class="btn sm" id="xcRkMais" style="margin-left:auto">'+(mxRk.all?'Mostrar só as 15 primeiras':'Ver todas as '+R.length)+'</button>':'')+'</div>';
+  el.querySelectorAll('th[data-rks]').forEach(h=>h.onclick=()=>{const k=h.dataset.rks;mxRk=mxRk.k===k?{...mxRk,dir:-mxRk.dir}:{...mxRk,k,dir:(k==='r'||k==='b')?1:-1};mxRanking(ds,okB)});
+  const mb=$('xcRkMais');if(mb)mb.onclick=()=>{mxRk.all=!mxRk.all;mxRanking(ds,okB)};
+  el.querySelectorAll('tr[data-rkr]').forEach(tr=>tr.onclick=()=>mxDetCortes(tr.dataset.rkr,ds));
+}
+/* detalhe de cortes de uma equipe (lê as atividades do banco SIGA, dia a dia) */
+async function mxDetCortes(rec,ds){
+  abrirDet({tit:rec+' · cortes no período',kpis:[],semTab:true,aviso:'',extra:'<div id="mxDetBox"><p class="muted" style="margin:12px 0 0;font-size:12.5px">Carregando os cortes…</p></div>'});
+  const L=[];let comDia=0;
+  try{for(const d of ds){if(!bancoIdxDe('COI')[d])continue;comDia++;const D=await bancoDia('COI',d),c=D.cols,ix=n=>c.indexOf(n),iR=ix('Recurso'),iS=ix('Status da Atividade');if(iR<0||iS<0)continue;
+      const iK=ix('Tipo de Atividade (2)')>=0?ix('Tipo de Atividade (2)'):ix('Tipo de Atividade#2')>=0?ix('Tipo de Atividade#2'):ix('Tipo de Atividade'),iEx=ix('Tipo de Conclusão Executada'),iNe=ix('Tipo de Conclusão Não Executada'),iT=ix('Tipo de Conclusão'),iJ=ix('Local Religação'),iO=ix('Ordem de Serviço'),iI=ix('Início'),iG=ix('Grupo Code'),iQ=ix('SubTipo de Causa - Text'),iM=ix('Abrangência'),iV=ix('Code');
+      const g=(r,i)=>i<0||r[i]==null?'':String(r[i]).trim();
+      for(const r of D.rows){if(String(r[iR]||'').trim().split(/\s+/)[0]!==rec)continue;const st=g(r,iS).toLowerCase();if(st!=='concluído'&&st!=='não concluído')continue;if(!/SUSPFORN/i.test(g(r,iK)))continue;
+        const R=g(r,iEx),U=g(r,iNe),BJ=g(r,iJ),T=iT<0?(R?'Executado':''):g(r,iT),t=T==='Executado'&&R==='SUSPENSÃO - AUTO RELIGADO'?BJ:T==='Executado'?R:U;let v=null;try{v=prdPreco(rec,g(r,iO),g(r,iK),R,U,BJ,g(r,iG),g(r,iQ),st,g(r,iM),g(r,iV))}catch(e){}
+        L.push({d,os:g(r,iO),i:g(r,iI),t:t||'(em branco)',loc:MX_TC[t],st,v})}}}
+  catch(e){console.error('cortes',e)}
+  const b=$('mxDetBox');if(!b)return;
+  const exe=L.filter(x=>x.v).length,sum=L.reduce((a,x)=>a+(x.v||0),0),sem=L.filter(x=>!x.loc).length;
+  const k=[['Cortes',dN(L.length)],['Com preço',dN(exe)],['Executado (R$)',brl(sum)],['Sem regra de local',dN(sem)]];
+  b.innerHTML='<div class="md-k" style="grid-template-columns:repeat(4,minmax(0,1fr))">'+k.map(x=>'<div><span>'+x[0]+'</span><b>'+x[1]+'</b></div>').join('')+'</div>'
+    +'<p class="muted" style="margin:0 0 8px;font-size:12.5px">'+(comDia?'Detalhe lido de '+comDia+' dia(s) do banco SIGA. Dias mais antigos só existem no consolidado e não aparecem aqui.':'Nenhum dia deste período está no banco SIGA, então não há detalhe por corte.')+'</p>'
+    +tabDet({cols:['wData','wOrdem de serviço','wInício','wTipo de conclusão','wLocal do corte','wStatus','nValor (R$)'],rows:L.map(x=>[dataBR(x.d),esc(x.os),esc(x.i),esc(x.t),x.loc?esc(MX_LOC[x.loc]):'<span class="pill nao">sem regra</span>',x.st==='concluído'?'Concluído':'<span class="pill par">Não concluído</span>',x.v==null?'–':brl(x.v)])});
+}
+/* aviso para o administrador: tipos de conclusão sem regra */
+function mxAviso(){
+  const el=$('xcAviso');if(!el)return;
+  const sem=ehAdm()&&MX_SEM?Object.entries(MX_SEM).filter(([k])=>!MX_TC[k]):[];
+  if(!sem.length){el.innerHTML='';return}
+  const n=sem.reduce((a,x)=>a+x[1],0);
+  el.innerHTML='<div class="note warn" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>⚠ <b>'+sem.length+' tipo(s) de conclusão sem regra</b> ('+dN(n)+' cortes dos últimos dias) não entram em nenhum local do corte: '+sem.slice(0,3).map(x=>esc(x[0])).join(', ')+(sem.length>3?'…':'')+'</span><button type="button" class="btn sm" id="b-xcRegras" style="margin-left:auto">Ver regras</button></div>';
+  $('b-xcRegras').onclick=()=>{const w=$('rgCorteW');if(w)w.scrollIntoView({behavior:'smooth',block:'start'})};
+}
+$('xcPct').onclick=()=>{mxPct=!mxPct;renderMix()};
 /* tipos de conclusão de cortes encontrados no banco SIGA (COI) que ainda não têm regra */
 let MX_SEM=null,mxSemVer='',mxSemOn=false;
 async function mxVarrerSem(){
@@ -7124,8 +7277,9 @@ async function mxVarrerSem(){
         const R=g(r,iR),U=g(r,iU),BJ=g(r,iJ),T=iT<0?(R?'Executado':''):g(r,iT);const t=T==='Executado'&&R==='SUSPENSÃO - AUTO RELIGADO'?BJ:T==='Executado'?R:U;
         if(t&&!MX_TC[t])m[t]=(m[t]||0)+1}}
     MX_SEM=m;mxSemVer=ver}catch(e){console.error('corte sem regra',e)}finally{mxSemOn=false}
-  renderRgCorte()}
+  renderRgCorte();mxAviso()}
 function renderRgCorte(){
+  setTimeout(()=>{try{mxAviso()}catch(e){}},0);
   const el=$('rgCorte');if(!el)return;const adm=ehAdm(),L=Object.entries(MX_TC).sort((a,b)=>a[1]<b[1]?-1:a[1]>b[1]?1:a[0]<b[0]?-1:1),o=COVR||{},nAlt=Object.keys(o).length;
   const opL=v=>Object.entries(MX_LOC).map(([k,n])=>'<option value="'+k+'"'+(k===v?' selected':'')+'>'+n+'</option>').join('');
   el.innerHTML='<div class="panel rgp"><div class="aviso-hd"><span class="ic i">'+AVI.i+'</span><div><h3>Como o local do corte é definido</h3><p>Para cada corte, o <b>tipo de conclusão</b> informado no SIGA (executada, não executada ou local de religação) define o <b>local do corte</b> usado no painel. Alterar uma regra vale para os <b>próximos arquivos enviados</b>; os dias já enviados guardam o local de quando foram processados.</p></div></div>'
@@ -7198,7 +7352,7 @@ function mxCols(it,o){
   if(!it.length||mx<=1e-9)return '<div class="empty">Sem dados neste filtro.</div>';
   return '<div class="mxc'+(o.cls?' '+o.cls:'')+'" style="--h:'+H+'px">'+it.map(x=>{const t=tot(x);
     return '<div class="mxc-c'+(o.sel&&o.sel===x.k?' cur':'')+'"'+(o.click?' data-mxk="'+esc(x.k)+'" role="button" tabindex="0"':'')+' title="'+esc(x.lab)+': '+fmt(t)+(x.tip?' · '+esc(x.tip):'')+'"><b class="mxc-t">'+(o.top?o.top(x,t):fmt(t))+'</b><div class="mxc-s" style="height:'+(o.pct?H:(t/mx*H)).toFixed(1)+'px">'
-      +x.segs.filter(s=>s.v>0).map(s=>{const hh=o.pct?s.v/t*H:s.v/mx*H;return '<i style="flex:'+s.v+';background:'+s.c+'" title="'+esc(s.n)+': '+fmt(s.v)+(t?' ('+pct(s.v/t)+')':'')+'">'+(hh>=(o.pct?26:16)&&(o.lbl!==false)?'<span>'+(o.pct?fmt(s.v)+'<small>'+pct(s.v/t)+'</small>':fmt(s.v))+'</span>':'')+'</i>'}).join('')
+      +x.segs.filter(s=>s.v>0).map(s=>{const hh=o.pct?s.v/t*H:s.v/mx*H;return '<i'+(s.k?' data-mxs="'+s.k+'" style="cursor:pointer;flex:':' style="flex:')+s.v+';background:'+s.c+'" title="'+esc(s.n)+': '+fmt(s.v)+(t?' ('+pct(s.v/t)+')':'')+(s.k?' · clique para filtrar':'')+'">'+(hh>=(o.pct?26:16)&&(o.lbl!==false)?'<span>'+(o.pct?fmt(s.v)+'<small>'+pct(s.v/t)+'</small>':fmt(s.v))+'</span>':'')+'</i>'}).join('')
       +'</div><span class="mxc-l">'+esc(x.lab)+'</span>'+(x.sub?'<small class="mxc-sub">'+x.sub+'</small>':'')+'</div>'}).join('')+'</div>';
 }
 function mxLeg(m){return '<div class="mxleg">'+Object.entries(m).map(([k,c])=>'<span><i style="background:'+c+'"></i>'+esc(k)+'</span>').join('')+'</div>'}
@@ -7261,16 +7415,19 @@ function renderMix(){
     const pm={},mc={},pb={},tl={};let tq=0,tp=0,tqp=0;
     for(const d of dsA){const o=MX.dias[d],m=d.slice(0,7);for(const r in o.c){const b=mxBase(o,r);if(!okB(b,r))continue;for(const L in o.c[r]){if(!ok(L))continue;const e=o.c[r][L];(pm[m]=pm[m]||{})[L]=(pm[m][L]||0)+e[0];const x=mc[m]||(mc[m]=[0,0]);x[0]+=e[1];x[1]+=e[2]}}}
     for(const d of ds){const o=MX.dias[d];for(const r in o.c){const b=mxBase(o,r);if(!okB(b,r))continue;for(const L in o.c[r]){if(!ok(L))continue;const e=o.c[r][L];tq+=e[0];tp+=e[1];tqp+=e[2];(pb[b]=pb[b]||{})[L]=(pb[b][L]||0)+e[0];tl[L]=(tl[L]||0)+e[0]}}}
-    const segs=o=>[...Ls].map(L=>({n:MX_LOC[L],v:(o||{})[L]||0,c:MX_LCOR[L]})).reverse();
+    const segs=o=>[...Ls].map(L=>({k:L,n:MX_LOC[L],v:(o||{})[L]||0,c:MX_LCOR[L]})).reverse();
     const lTop=Object.entries(tl).sort((a,b)=>b[1]-a[1])[0];
     $('xcKpis').innerHTML=dKpi({k:'total',t:'Cortes',v:dN(tq),dest:1,l:Object.entries(tl).sort((a,b)=>b[1]-a[1]).slice(0,2).map(([L,v])=>[MX_LOC[L],dN(v)+' · '+pct(v/tq)])})
       +dKpi({k:'moeda',t:'Média R$ por corte',v:tqp?brl(tp/tqp):'–',l:[['Executado (R$)',brl(tp)],['Cortes com preço',dN(tqp)]]})
       +dKpi({k:'mapa',t:'Local mais usado',v:lTop?MX_LOC[lTop[0]]:'–',l:[['Quantidade',lTop?dN(lTop[1]):'–'],['Participação',lTop&&tq?pct(lTop[1]/tq):'–']]})
       +dKpi({k:'bar',t:'Poste + ramal',v:tq?pct(((tl.P||0)+(tl.R||0))/tq):'–',l:[['Poste',dN(tl.P||0)],['Ramal',dN(tl.R||0)]]});
-    $('xcMes').innerHTML=mxCols(mesesV.map(m=>({k:m,lab:mlab(m),segs:segs(pm[m])})),{pct:1,h:300,sel:F.mes,click:1,top:(x,t)=>dN(t)})+mxLeg(Object.fromEntries([...Ls].map(L=>[MX_LOC[L],MX_LCOR[L]])));clickMes($('xcMes'));
+    $('xcPct').textContent=mxPct?'Ver em quantidade':'Ver em %';$('xcMes').innerHTML=mxCols(mesesV.map(m=>({k:m,lab:mlab(m),segs:segs(pm[m])})),{pct:mxPct,h:300,sel:F.mes,click:1,top:(x,t)=>dN(t)})+mxLeg(Object.fromEntries([...Ls].map(L=>[MX_LOC[L],MX_LCOR[L]])));clickMes($('xcMes'));
     $('xcMed').innerHTML=mxCols(mesesV.map(m=>{const x=mc[m]||[0,0];return{k:m,lab:mlab(m),segs:[{n:'R$ por corte',v:x[1]?x[0]/x[1]:0,c:'#711424'}]}}),{fmt:v=>v.toFixed(2).replace('.',','),sel:F.mes,click:1,h:180,lbl:false});clickMes($('xcMed'));
     const bo=Object.keys(pb).sort((a,b)=>Object.values(pb[b]).reduce((s,x)=>s+x,0)-Object.values(pb[a]).reduce((s,x)=>s+x,0));
-    $('xcBase').innerHTML=mxCols(bo.map(b=>({k:b,lab:tMun(b),segs:segs(pb[b])})),{pct:1,h:300,top:(x,t)=>dN(t)});
+    $('xcBase').innerHTML=mxCols(bo.map(b=>({k:b,lab:tMun(b),segs:segs(pb[b])})),{pct:mxPct,h:300,click:1,sel:F.base&&F.base.size===1?[...F.base][0]:null,top:(x,t)=>dN(t)});
+    $('xcBase').querySelectorAll('[data-mxk]').forEach(b=>{const f=()=>{const k=b.dataset.mxk,cur=msSel('x-base');$('x-base').value=cur&&cur.size===1&&cur.has(k)?'':k;renderMix()};b.onclick=f;b.onkeydown=e=>{if(e.key==='Enter')f()}});
+    [$('xcMes'),$('xcBase')].forEach(el=>el.querySelectorAll('i[data-mxs]').forEach(i=>i.onclick=e=>{e.stopPropagation();const L=i.dataset.mxs;$('x-loc').value=$('x-loc').value===L?'':L;$('x-loc').classList.toggle('on',!!$('x-loc').value);renderMix()}));
+    mxRanking(ds,okB);mxAviso();
   }
 }
 document.querySelectorAll('[data-xfunil]').forEach(b=>b.onclick=()=>abrirGaveta());
@@ -7486,7 +7643,7 @@ mostrarPagina();
 Promise.all([fetch('ups_config.json').then(r=>r.json()),fetch('historico_ups.json').then(r=>r.json())]).then(([c,h])=>{UCFG=c;UCFG0={tabups:Object.assign({},c.tabups),depara:Object.assign({},c.depara),regras:c.regras.slice(),base:c.base,processo:c.processo};UHIST=h;aplicarRegrasUps();montarUPS()}).catch(e=>console.error('UPS',e&&e.stack||e));
 fetch('ups_semclasse.json').then(r=>r.json()).then(j=>{SEMC=j;renderSemClasse()}).catch(()=>{});
 Promise.all([fetch('ini_config.json').then(r=>r.json()),fetch('historico_inicio.json').then(r=>r.json())]).then(([c,h])=>{ICFG=c;IHIST=h;montarIni()}).catch(()=>{});
-Promise.all([fetch('prod_config.json').then(r=>r.json()),fetch('historico_prod.json').then(r=>r.json())]).then(([c,h])=>{PCFG=c;PHIST=h;montarPrd();montarMix();montarTm()}).catch(()=>{});
+Promise.all([fetch('prod_config.json').then(r=>r.json()),fetch('historico_prod.json').then(r=>r.json())]).then(([c,h])=>{PCFG=c;PHIST=h;aplicarPrecos();montarPrd();montarMix();montarTm()}).catch(()=>{});
 fetch('historico_tm.json').then(r=>r.json()).then(h=>{TMH=h;montarTm()}).catch(()=>{});
 fetch('historico_mix.json').then(r=>r.json()).then(h=>{MH=h;montarMix()}).catch(()=>{});
 fetch('historico_trafo.json').then(r=>r.json()).then(h=>{TH=h;montarTrf()}).catch(()=>{});
@@ -7543,7 +7700,7 @@ montarTrf=cargaEmbrulhar('montarTrf',montarTrf);montarBanco=cargaEmbrulhar('mont
     {const bi=snap.docs.find(d=>d.id==='bancoIdx');if(bi){try{const v=JSON.parse(bi.data().j);for(const f of ['COI','MAN','FIS','OBRAS'])v[f]=v[f]||{};bancoIdx=v;montarBanco();if(pag().id==='mix-causa')acMostrar();if(pag().id==='mix-corte')mxVarrerSem()}catch(e){}}}
     let esc=null,escInfo=null,fu={};
     for(const d of snap.docs){const v=d.data();if(v&&v.itens&&n[d.id]!==undefined)n[d.id]=v.itens;if(d.id==='escala'&&v&&Array.isArray(v.itens)){esc=v.itens;escInfo=(v.arquivo||'')+(v.editadoEm?' em '+new Date(v.editadoEm).toLocaleDateString('pt-BR'):'')}if(d.id==='feriadosUps'&&v&&v.itens)fu=v.itens}
-    cad=n;try{aplicarMetas();aplicarListas()}catch(e){console.error('metas',e)}{const as=JSON.stringify(n.naoCgb);if(as!==ncAssin){ncAssin=as;setTimeout(()=>{try{hierRemontar()}catch(e){}},0)}}escalaDb=esc;escalaDbInfo=escInfo;ferUps=fu;const aa=snap.docs.find(d=>d.id==='aderAjuste');aderAjDb=aa?aa.data():null;const dt=snap.docs.find(d=>d.id==='defTatico');defTatDb=dt?dt.data():null;const dtc=snap.docs.find(d=>d.id==='defTecnicos');defTecDb=dtc?dtc.data():null;{const uh=snap.docs.find(d=>d.id==='upsHoje'),uv=uh&&uh.data();try{upsHojeDb=uv&&uv.data&&uv.eq?{data:uv.data,eq:JSON.parse(uv.eq),em:uv.enviadoEm,arquivo:uv.arquivo}:null}catch(e){upsHojeDb=null}}{const cr=snap.docs.find(d=>d.id==='corteRegras'),cd=cr&&cr.data();COVR=cd&&cd.itens||null;aplicarRegrasCorte();try{renderRgCorte()}catch(e){}}{const ur=snap.docs.find(d=>d.id==='upsRegras');UOVR=rgLer(ur?ur.data():null);aplicarRegrasUps();if(UCFG){montarUPS();renderRgUps()}}montar();try{montarPrd()}catch(e){}montarAder();montarDef();
+    cad=n;try{aplicarMetas();aplicarListas()}catch(e){console.error('metas',e)}{const as=JSON.stringify(n.naoCgb);if(as!==ncAssin){ncAssin=as;setTimeout(()=>{try{hierRemontar()}catch(e){}},0)}}escalaDb=esc;escalaDbInfo=escInfo;ferUps=fu;const aa=snap.docs.find(d=>d.id==='aderAjuste');aderAjDb=aa?aa.data():null;const dt=snap.docs.find(d=>d.id==='defTatico');defTatDb=dt?dt.data():null;const dtc=snap.docs.find(d=>d.id==='defTecnicos');defTecDb=dtc?dtc.data():null;{const uh=snap.docs.find(d=>d.id==='upsHoje'),uv=uh&&uh.data();try{upsHojeDb=uv&&uv.data&&uv.eq?{data:uv.data,eq:JSON.parse(uv.eq),em:uv.enviadoEm,arquivo:uv.arquivo}:null}catch(e){upsHojeDb=null}}{const pr=snap.docs.find(d=>d.id==='prodPrecos'),pd=pr&&pr.data();POVR=pd?{dp:pd.dp||{},esp:pd.esp||{},em:pd.editadoEm}:null;aplicarPrecos();try{renderPrecos()}catch(e){}}{const cr=snap.docs.find(d=>d.id==='corteRegras'),cd=cr&&cr.data();COVR=cd&&cd.itens||null;aplicarRegrasCorte();try{renderRgCorte()}catch(e){}}{const ur=snap.docs.find(d=>d.id==='upsRegras');UOVR=rgLer(ur?ur.data():null);aplicarRegrasUps();if(UCFG){montarUPS();renderRgUps()}}montar();try{montarPrd()}catch(e){}montarAder();montarDef();
   },()=>{});
   renderCadastros();
   if(pendentes.length)atualizarLocais();
