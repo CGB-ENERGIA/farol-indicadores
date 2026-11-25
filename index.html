@@ -4408,20 +4408,18 @@ async function bancoBackup(){
       resumo.push(f+': '+num(n)+' registro(s) em '+ds.length+' dia(s)');
       if(n!==esperado)alertas.push(f+': o arquivo tem '+num(n)+' registros e o índice do banco indica '+num(esperado)+'.');
     }
-    /* Defeitos: base histórica (um registro por intervalo em tratativa), entradas, fotos diárias e itens fora */
+    /* Defeitos: banco DEFEITOS (um registro por defeito da CGB) e o histórico (períodos e status) */
     m.textContent='Gravando as abas de Defeitos…';
-    if(typeof DHIST!=='undefined'&&DHIST){
-      const S=DHIST.s,ob=a=>defObj(a,S),dt=n=>n==null||n<0?'':dIso(n);
-      const cab=['ID','PEP','SIGLA','PRIORIDADE','TIPO','DESCRIÇÃO','RECOMENDAÇÃO','MUNICÍPIO','DISTRITAL','NOTA','CÓDIGO','DATA FISCALIZAÇÃO','DATA VENCIMENTO','STATUS'];
-      const campos=o=>[o.id,o.pep,o.sigla,o.pri,o.tipo,o.desc,o.recom,o.mun,o.dist,o.nota,o.cod,o.fisc||'',o.venc||'',o.st];
-      const n1=await xlsxAba(zip,abas,'DEFEITOS',cab.concat(['DATA INÍCIO','DATA FIM','VÁLIDO','QTD']),async function*(){for(const x of DHIST.iv){const o=ob(DHIST.a[x[0]]);yield campos(o).concat([dt(x[1]),dt(x[2]),x[3],x[4]])}});
-      const n2=await xlsxAba(zip,abas,'DEFEITOS_NV',['ID','DATA INÍCIO','DATA FIM'],async function*(){for(const x of (DHIST.nv||[]))yield [x[0],dt(x[1]),dt(x[2])]});
-      const docs=defDocs.slice().sort((a,b)=>a.data<b.data?-1:1);
-      const n3=await xlsxAba(zip,abas,'DEFEITOS_DIA',['Dia (banco)'].concat(cab,['VÁLIDO']),async function*(){for(const d of docs)for(const x of d.itens){const o=defObj(x);yield [d.data].concat(campos(o),[x[14]])}});
-      const n4=await xlsxAba(zip,abas,'DEFEITOS_FORA',['Dia (banco)','ID'],async function*(){for(const d of docs)for(const id of (d.fora||[]))yield [d.data,id]});
-      resumo.push('DEFEITOS: '+num(n1)+' intervalo(s), '+num(n3)+' item(ns) de '+docs.length+' foto(s) diária(s)');
-      if(n1!==DHIST.iv.length)alertas.push('DEFEITOS: '+num(n1)+' linhas contra '+num(DHIST.iv.length)+' no banco.');
-    }else alertas.push('A base de Defeitos ainda não foi carregada; abra a página de Defeitos e tente de novo.');
+    if(defBase){
+      const L=defBase.slice().sort((x,y)=>x.id<y.id?-1:1),colsS=[...new Set(L.flatMap(d=>Object.keys(d.sisco||{})))].sort(),colsP=[...new Set(L.flatMap(d=>Object.keys(d.pbi||{})))].filter(c=>!colsS.includes(c)).sort();
+      const cab=['ID','SITUAÇÃO','MOTIVO','STATUS ATUAL','FONTE DA SITUAÇÃO','SITUAÇÃO CONFIRMADA','DATA APARIÇÃO','DATA SAÍDA DA TRATATIVA','DATA RESOLUÇÃO','ORIGEM_REGISTRO','PEP','SIGLA','PRIORIDADE','TIPO','DESCRIÇÃO','RECOMENDAÇÃO','MUNICÍPIO','DISTRITAL','NOTA','CÓDIGO','DATA FISCALIZAÇÃO','DATA VENCIMENTO'];
+      const atual=d=>{const t=d.t.length?d.t[d.t.length-1][4]:d.versoes.length-1,v=d.versoes[Math.max(0,t)]||[];return [v[1],v[2],v[3],v[4],v[5],v[6],v[7],v[8],v[9],v[10],v[11],v[12]]};
+      const n1=await xlsxAba(zip,abas,'DEFEITOS',cab.concat(colsS.map(c=>'SISCO · '+c),colsP.map(c=>'POWER BI · '+c)),async function*(){for(const d of L)yield [d.id,d.situacao,d.motivo||'',d.status_atual||'',d.fonte_situacao||'',d.confirmado?'SIM':'NÃO',d.data_aparicao||'',d.data_saida_tratativa||'',d.data_resolucao||'',d.origem_registro||''].concat(atual(d),colsS.map(c=>(d.sisco||{})[c]),colsP.map(c=>(d.pbi||{})[c]))});
+      const n2=await xlsxAba(zip,abas,'DEFEITOS_HISTORICO',['ID','TIPO','DATA INÍCIO','DATA FIM','STATUS','VÁLIDO','QTD','FONTE'],async function*(){for(const d of L){for(const q of d.t)yield [d.id,'EM TRATATIVA',q[0],q[1]||'',(d.versoes[q[4]]||[])[13]||'',q[2],q[3],'banco'];for(const q of d.fora)yield [d.id,'FORA DA TRATATIVA (válido)',q[0],q[1]||'','','','','banco'];for(const l of (d.timeline||[]))yield [d.id,'STATUS · '+(l.situacao||''),l.ini||'',l.fim||'',l.status||'','','',l.fonte||'']}});
+      const por={};for(const d of L)por[d.situacao]=(por[d.situacao]||0)+1;
+      resumo.push('DEFEITOS: '+num(n1)+' defeito(s) da CGB ('+Object.entries(por).map(([k,v])=>num(v)+' '+k.toLowerCase()).join(', ')+') · '+num(n2)+' linha(s) de histórico');
+      if(n1!==L.length)alertas.push('DEFEITOS: '+num(n1)+' linhas contra '+num(L.length)+' no banco.');
+    }else alertas.push('O banco de Defeitos ainda não foi carregado; abra a página de Defeitos e tente de novo.');
     m.textContent='Compactando…';progSet('prog-imp',.95,'Finalizando o arquivo');
     await xlsxFecha(zip,abas);const blob=zip.fim();
     const a=new Date(),p2=x=>String(x).padStart(2,'0'),nome='BACKUP_BANCO_SIGA_'+p2(a.getDate())+'-'+p2(a.getMonth()+1)+'-'+a.getFullYear()+'_'+p2(a.getHours())+'-'+p2(a.getMinutes())+'.xlsx';
@@ -4485,7 +4483,7 @@ function lerArquivo(file){
     if(NN.includes('FISCALIZA')){const fr2=new FileReader();fr2.onload=()=>{try{
       if(!DCFG)throw new Error('Configuração de defeitos ainda carregando · tente de novo');
       const wb=XLSX.read(new Uint8Array(fr2.result),{type:'array',cellDates:false});
-      if(NN.includes('DEFEITO')){const r=defDeLinhas(wb);res({nome:file.name,fonte:'DEFEITOS',datas:[],data:hojeIso(),linhas:r.total,cgb:r.cgb,itens:r.itens,fora:r.fora})}
+      if(NN.includes('DEFEITO')){const r=defDeLinhas(wb);res({nome:file.name,fonte:'DEFEITOS',datas:[],data:hojeIso(),linhas:r.total,cgb:r.cgb,itens:r.itens,fora:r.fora,todos:r.todos})}
       else{const r=defTatDeLinhas(wb);res({nome:file.name,fonte:'FISCDEF',datas:[],linhas:r.linhas,tat:r.notas})}
     }catch(e){res({nome:file.name,fonte:NN.includes('DEFEITO')?'DEFEITOS':'FISCDEF',erro:e.message})}};fr2.onerror=()=>res({nome:file.name,fonte:'SISCO',erro:'Não foi possível ler o arquivo'});fr2.readAsArrayBuffer(file);return}
     const fonte=N.includes('AJUSTE')?'AJUSTE':N.includes('EQUIPES')?'ESCALA':(N.includes('RELAT')&&N.includes('PRODU'))?'PROD':Disp.fonteDoArquivo(file.name);
@@ -4565,7 +4563,7 @@ $('b-salvar').onclick=async()=>{
       if(p.banco)await bancoSalvar(p);
       if(p.upsHoje)await db.collection('config').doc('upsHoje').set({data:p.upsHoje.dia,eq:JSON.stringify(p.upsHoje.eq),arquivo:p.nome,enviadoEm:new Date().toISOString()});
       if(p.ct){try{const nm=/\.xlsx?$/i.test(p.nome)?p.nome:p.nome+'.xlsx';const rr=await ctApi('contingencia',{method:'POST',body:{arquivo:nm,cab:p.ct.cab,linhas:p.ct.linhas,nums:p.ct.nums}});ctAvisos.push('Contingência e Prazos: '+rr.meta.total+' atividades de hoje atualizadas.');CT.versao=0;CT.ajusta=true;try{await ctCarregar(false)}catch(e9){}}catch(e8){const pr=(e8&&(e8.problemas||(e8.dados&&e8.dados.problemas)))||[];ctAvisos.push('Contingência e Prazos NÃO foram atualizados ('+esc(pr.length?pr[0].mensagem+(pr[0].coluna?' · '+pr[0].coluna:'')+(pr[0].linha?' · linha '+pr[0].linha:''):(e8&&e8.message)||'falha de comunicação')+'). O SIGA foi salvo normalmente; a base anterior continua valendo.');console.error('ct COI',e8)}}
-      if(p.fonte==='DEFEITOS'){await db.collection('defeitos').doc(p.data).set({data:p.data,arquivo:p.nome,linhas:p.linhas,itens:p.itens.map(x=>JSON.stringify(x)),fora:p.fora,enviadoEm:new Date().toISOString()})}
+      if(p.fonte==='DEFEITOS'){await defBaseAtualiza(p)}
       if(p.prd)for(const d in p.prd.dias){await db.collection('prod').doc(d).set({data:d,arquivo:p.nome,eq:JSON.stringify(p.prd.dias[d]),ultFim:p.prd.ultFim?p.prd.ultFim.join('|'):'',enviadoEm:new Date().toISOString()})}
       if(p.tm)for(const d in p.tm){await db.collection('tm').doc(d).set({data:d,arquivo:p.nome,j:JSON.stringify(p.tm[d]),enviadoEm:new Date().toISOString()})}
       if(p.mix)for(const d in p.mix){await db.collection('mix').doc(d).set({data:d,arquivo:p.nome,j:JSON.stringify(p.mix[d]),enviadoEm:new Date().toISOString()})}
@@ -6598,7 +6596,7 @@ document.querySelectorAll('section[data-pag="contingencia"] .panel .phd,section[
 document.querySelectorAll('[data-pfunil]').forEach(b=>b.onclick=()=>abrirGaveta());
 
 /* ================= ATUALIZAÇÃO DE DEFEITOS (réplica do Power BI "Tratativa de Defeitos") ================= */
-let DCFG=null,DHIST=null,defDocs=[],defLocais={},defTatDb=null,defTatLocal=null,DR=null,ordemDL={k:'venc',dir:1};
+let DCFG=null,defBase=null,defBaseMeta=null,defBaseMap={},defLocais={},defTatDb=null,defTatLocal=null,DR=null,ordemDL={k:'venc',dir:1};
 const DF=['d-pri','d-dist','d-tipo','d-tat','d-ger','d-pep'];
 const DF_NOME={'d-pri':'Prioridade','d-dist':'Distrital','d-tipo':'Tipo de defeito','d-tat':'Prioridade de tratamento','d-ger':'Gerência','d-pep':'PEP'};
 const D_MS=86400000,D_0=Date.UTC(2024,0,1);
@@ -6615,6 +6613,47 @@ const defEmTrat=s=>{const u=String(s||'').trim().toLowerCase();return u==='conte
 const pct2=v=>v==null||isNaN(v)?'–':(v*100).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'%';
 const hojeIso=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 
+/* ---------- banco DEFEITOS: um documento por defeito da CGB (coleção defeitos_base) ----------
+   Situação pelas regras do Power BI: EM ABERTO = Contestação Parceira / Tratamento de Defeitos; EM VALIDAÇÃO = Corrigir, Juizado, Fiscalizadora,
+   Justificar...; RESOLVIDO = Capitalizado ou Inválido/Cancelado/Rejeitado. Só "em aberto" aparece como pendente. */
+const DEF_VALID=new Set(['FISCALIZADORA','JUIZADO','CORRIGIR','JUSTIFICAR','VALIDACAO DE CORRECAO','EM JULGAMENTO']),DEF_RESOL=new Set(['CAPITALIZADO','CAPITALIZACAO','FINALIZADO','DEFEITO INVALIDO/CANCELADO/REJEITADO']);
+const defNk=x=>String(x==null?'':x).trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+function defClassifica(st){const k=defNk(st);if(k==='CONTESTACAO PARCEIRA'||k==='TRATAMENTO DE DEFEITOS'||k==='TRATAMENTO DE DEFEITO')return['EM ABERTO',''];if(DEF_VALID.has(k))return['EM VALIDAÇÃO',''];if(DEF_RESOL.has(k))return['RESOLVIDO',k==='DEFEITO INVALIDO/CANCELADO/REJEITADO'?'INVÁLIDO/CANCELADO/REJEITADO':'CAPITALIZADO'];return[k?'PENDENTE DE CLASSIFICAÇÃO':'PÓS-TRATATIVA (STATUS FINAL NÃO INFORMADO)','']}
+const defDia=(iso,n)=>new Date(Date.parse(iso+'T00:00:00Z')+n*864e5).toISOString().slice(0,10);
+/* aplica o que o relatório do dia diz sobre UM defeito; devolve o documento novo, ou null se nada mudou */
+function defAplica(ant,x,dia){
+  const d=ant?JSON.parse(JSON.stringify(ant)):{id:x.id,cgb:true,versoes:[],t:[],fora:[],timeline:[],origem_registro:'SISCO',data_aparicao:dia};
+  const antes=JSON.stringify(d),vA=defDia(dia,-1),abT=d.t.find(q=>q[1]==null),abF=d.fora.find(q=>q[1]==null);
+  const fecha=(arr,q)=>{if(q[0]>vA)arr.splice(arr.indexOf(q),1);else q[1]=vA};
+  if(x.item){
+    const it=x.item,k=JSON.stringify(it.slice(0,14)),vi=(()=>{let i=d.versoes.findIndex(v=>JSON.stringify(v.slice(0,14))===k&&(v[14]==null||v[14]===it[14])&&(v[15]||'')===(it[15]||''));if(i<0){d.versoes.push(it);i=d.versoes.length-1}return i})();
+    if(abT&&abT[2]===it[14]&&abT[3]===1&&abT[4]===vi){/* segue igual */}
+    else{if(abT){if(abT[0]===dia){abT[2]=it[14];abT[3]=1;abT[4]=vi}else{fecha(d.t,abT);d.t.push([dia,null,it[14],1,vi])}}else d.t.push([dia,null,it[14],1,vi])}
+    if(abF)fecha(d.fora,abF);
+  }else{
+    if(abT)fecha(d.t,abT);
+    if(x.valido){if(!abF)d.fora.push([dia,null])}else if(abF)fecha(d.fora,abF);
+  }
+  const [sit,motivo]=x.item?['EM ABERTO','']:defClassifica(x.st);
+  if(d.status_atual!==x.st){const ab=d.timeline.find(l=>l.fim==null);if(ab)ab.fim=vA<ab.ini?ab.ini:vA;d.timeline.push({ini:dia,fim:null,status:x.st,situacao:x.item?'TRATATIVA':'PÓS-TRATATIVA',fonte:'SISCO '+dia});d.fonte_situacao='SISCO '+dia}
+  d.status_atual=x.st;d.situacao=sit;d.motivo=motivo;d.confirmado=true;
+  d.data_resolucao=sit==='RESOLVIDO'?(x.sisco.DATA_LIBERACAO||d.data_resolucao||null):null;
+  const fins=d.t.filter(q=>q[1]).map(q=>q[1]).sort();d.data_saida_tratativa=sit!=='EM ABERTO'&&fins.length?fins[fins.length-1]:null;
+  if(!String(d.origem_registro||'').includes('SISCO'))d.origem_registro=(d.origem_registro?d.origem_registro+',':'')+'SISCO';
+  if(JSON.stringify(d.sisco)!==JSON.stringify(x.sisco)){d.sisco=x.sisco;d.sisco_data=dia}
+  if(JSON.stringify(d)===antes)return null;
+  d.atualizado=new Date().toISOString();return d;
+}
+async function defBaseAtualiza(p){
+  const dia=p.data,vistos=new Set();let alt=0;
+  for(const x of p.todos){vistos.add(x.id);const nd=defAplica(defBaseMap[x.id]||null,x,dia);if(nd){await db.collection('defeitos_base').doc('D'+x.id).set(nd);alt++}}
+  /* defeito que tinha período aberto e não veio no relatório: o período termina na véspera (não vira "resolvido" só por sumir) */
+  for(const id in defBaseMap){if(vistos.has(id))continue;const ant=defBaseMap[id];if(!ant.t.some(q=>q[1]==null)&&!ant.fora.some(q=>q[1]==null))continue;
+    const d=JSON.parse(JSON.stringify(ant)),vA=defDia(dia,-1);for(const arr of [d.t,d.fora])for(const q of arr.slice())if(q[1]==null){if(q[0]>vA)arr.splice(arr.indexOf(q),1);else q[1]=vA}
+    d.situacao='PÓS-TRATATIVA (STATUS FINAL NÃO INFORMADO)';d.motivo='não veio no relatório de '+dia;d.atualizado=new Date().toISOString();await db.collection('defeitos_base').doc('D'+id).set(d);alt++}
+  await db.collection('defeitos_base').doc('META').set({ult:dia,arquivo:p.nome,linhas:p.linhas,cgb:p.cgb,atualizado:new Date().toISOString()});
+  toast('Banco DEFEITOS atualizado: '+alt+' defeito(s) alterado(s).');
+}
 /* Relatório de Defeitos do SISCO → defeitos da CGB em tratativa (o que a macro CONSOLIDAR guarda) */
 function defDeLinhas(wb){
   const ws=wb.Sheets['Relatório de Defeitos']||wb.Sheets[wb.SheetNames[0]];
@@ -6624,14 +6663,16 @@ function defDeLinhas(wb){
   const need=['DEFEITO_ID','PARCEIRO','PEP','STATUS_DEFEITO','DEFEITO_VALIDO','IDSTATUSFISCAL'];const f=need.filter(n=>ix(n)<0);if(f.length)throw new Error('Faltam colunas: '+f.join(', '));
   const parc=new Set(DCFG.parceiros.map(dUp)),excl=new Set(DCFG.excluirStatusFiscal.map(dUp));
   const g=(r,n)=>{const i=ix(n);return i<0?null:r[i]};
-  let total=0,cgb=0;const itens=[],fora=[];
+  let total=0,cgb=0;const itens=[],fora=[],todos=[];
   for(const r of rows.slice(hi+1)){if(!r||g(r,'DEFEITO_ID')==null||g(r,'DEFEITO_ID')==='')continue;total++;
     if(!parc.has(dUp(g(r,'PARCEIRO')))||excl.has(dUp(g(r,'IDSTATUSFISCAL'))))continue;cgb++;
-    const st=defTxt(g(r,'STATUS_DEFEITO'));if(!defEmTrat(st)){if(dUp(g(r,'DEFEITO_VALIDO'))==='SIM')fora.push(defTxt(g(r,'DEFEITO_ID')));continue}
+    const st=defTxt(g(r,'STATUS_DEFEITO')),raw={};H.forEach((h,k)=>{if(h&&r[k]!=null&&r[k]!=='')raw[h]=/^DATA/.test(h)?(defData(r[k])||defTxt(r[k])):(typeof r[k]==='number'&&Number.isInteger(r[k])?String(r[k]):r[k])});
+    const tdo={id:defTxt(g(r,'DEFEITO_ID')),st,valido:dUp(g(r,'DEFEITO_VALIDO'))==='SIM',sisco:raw,item:null};todos.push(tdo);
+    if(!defEmTrat(st)){if(tdo.valido)fora.push(tdo.id);continue}
     const pep=defPep(g(r,'PEP')),pc=DCFG.pepCid[pep],mun0=defTxt(g(r,'MUNICIPIO')),cid=pc?pc[0]:mun0;
     const dist=(pc&&pc[1])||DCFG.acDist[pep]||DCFG.cidDist[dUp(cid)]||'';
-    itens.push([defTxt(g(r,'DEFEITO_ID')),pep,defTxt(g(r,'SIGLA')),defTxt(g(r,'PRI_DESCRICAO')).replace('PRIORIDADE ','P'),defTxt(g(r,'TB_TP_DESCRICAO')),defTxt(g(r,'TB_DFM_DESCRICAO')).replace(/  /g,' '),defTxt(g(r,'RECOMENDAÇÃO')),cid,dist,DCFG.pepNota[pep]||defTxt(g(r,'NOTA')),defTxt(g(r,'CÓDIGO')),defData(g(r,'DATA_FISCALIZACAO')),defData(g(r,'DATA_VENCIMENTO')),st,dUp(g(r,'DEFEITO_VALIDO'))==='SIM'?1:0,defTxt(g(r,'BARRAMENTO'))])}
-  return {total,cgb,itens,fora};
+    tdo.item=[defTxt(g(r,'DEFEITO_ID')),pep,defTxt(g(r,'SIGLA')),defTxt(g(r,'PRI_DESCRICAO')).replace('PRIORIDADE ','P'),defTxt(g(r,'TB_TP_DESCRICAO')),defTxt(g(r,'TB_DFM_DESCRICAO')).replace(/  /g,' '),defTxt(g(r,'RECOMENDAÇÃO')),cid,dist,DCFG.pepNota[pep]||defTxt(g(r,'NOTA')),defTxt(g(r,'CÓDIGO')),defData(g(r,'DATA_FISCALIZACAO')),defData(g(r,'DATA_VENCIMENTO')),st,dUp(g(r,'DEFEITO_VALIDO'))==='SIM'?1:0,defTxt(g(r,'BARRAMENTO'))];itens.push(tdo.item)}
+  return {total,cgb,itens,fora,todos};
 }
 /* Relatório de Fiscalização do SISCO → notas do Tático de Projetos */
 function defTatDeLinhas(wb){
@@ -6673,16 +6714,20 @@ function defTecDeLinhas(wb){
 const defTatSet=()=>new Set((defTatLocal&&defTatLocal.notas)||(defTatDb&&defTatDb.notas)||DCFG.tatico);
 function defObj(a,S){return{id:a[0],pep:S?S[a[1]]:a[1],sigla:a[2],pri:a[3],tipo:S?S[a[4]]:a[4],desc:S?S[a[5]]:a[5],recom:S?S[a[6]]:a[6],mun:S?S[a[7]]:a[7],dist:S?S[a[8]]:a[8],nota:S?S[a[9]]:a[9],cod:S?S[a[10]]:a[10],fisc:S?(a[11]==null?null:dIso(a[11])):a[11],venc:S?(a[12]==null?null:dIso(a[12])):a[12],st:S?S[a[13]]:a[13],barr:S?'':(a[15]||'')}}
 function montarDef(){
-  if(!DCFG||!DHIST)return;
-  const S=DHIST.s,tat=defTatSet();
+  if(!DCFG||!defBase)return;
+  const tat=defTatSet();
   const fin=o=>{o.ger=DCFG.ger[o.pep]||'GOMAN';o.tat=tat.has(String(o.nota))?D_TAT:D_BR;o.prog=DCFG.prog[o.id]||null;defExtras(o);return o};
-  const A=DHIST.a.map(a=>fin(defObj(a,S)));
-  const iv=DHIST.iv.map(x=>({o:A[x[0]],i:x[1],f:x[2]<0?null:x[2],v:x[3],m:x[4],k:A[x[0]].id+'|'+x[1]+'|'+x[2]}));
-  const snaps={};for(const d of defDocs)if(d.data>=DHIST.ult)snaps[d.data]=d;for(const d in defLocais)if(d>=DHIST.ult)snaps[d]=defLocais[d];
+  /* cada período em tratativa de cada defeito vira uma linha, com os atributos da versão que valia naquele período */
+  const objs=new Map(),objDe=(d,vi)=>{const k=d.id+'|'+vi;let o=objs.get(k);if(!o){o=fin(defObj(d.versoes[vi]));objs.set(k,o)}return o};
+  const iv=[],nv=[];
+  for(const d of defBase){
+    for(const q of d.t){const i=dNum(q[0]),f=q[1]==null?null:dNum(q[1]);iv.push({o:objDe(d,q[4]),i,f,v:q[2],m:q[3],k:d.id+'|'+i+'|'+(f==null?-1:f)})}
+    for(const q of d.fora)nv.push({id:d.id,i:dNum(q[0]),f:q[1]==null?null:dNum(q[1])});
+  }
+  const snaps={};for(const d in defLocais)snaps[d]=defLocais[d]; /* envio ainda não salvo (só prévia na tela) */
   const sd=Object.keys(snaps).sort();
   const sn=sd.map(d=>({n:dNum(d),d,fora:new Set(snaps[d].fora||[]),rs:snaps[d].itens.map(x=>{const o=fin(defObj(x));return{o,v:x[14],m:1,k:o.id+'|S'+d}})}));
-  const nv=(DHIST.nv||[]).map(x=>({id:x[0],i:x[1],f:x[2]<0?null:x[2]}));
-  const ult=sd.length?sd[sd.length-1]:DHIST.ult;
+  const ult=sd.length?sd[sd.length-1]:((defBaseMeta&&defBaseMeta.ult)||dIso(Math.max(...iv.map(x=>x.i))));
   DR={iv,sn,nv,ult,cache:{},primeira:dIso(Math.min(...iv.map(x=>x.i)))};
   preencherFiltrosDef();if(indAtual()==='def')renderDef();renderInicio();
 }
@@ -7787,12 +7832,11 @@ montarTrf=cargaEmbrulhar('montarTrf',montarTrf);montarBanco=cargaEmbrulhar('mont
   db.collection('mix').onSnapshot(snap=>{mixDocs={};for(const x of snap.docs){const d=x.data();if(!d||!d.data||!d.j)continue;try{mixDocs[d.data]=JSON.parse(d.j)}catch(e){}}montarMix()},()=>{});
   db.collection('trafo').onSnapshot(snap=>{trfDocs={};trfAcDb=null;for(const x of snap.docs){const d=x.data();if(!d||!d.rows)continue;try{if(x.id==='acoes')trfAcDb=JSON.parse(d.rows);else if(d.m)trfDocs[d.m]=JSON.parse(d.rows)}catch(e){}}montarTrf()},()=>{});
   db.collection('prod').onSnapshot(snap=>{prdDocs={};for(const x of snap.docs){const d=x.data();if(!d||!d.data||!d.eq)continue;try{prdDocs[d.data]={eq:JSON.parse(d.eq),arquivo:d.arquivo,enviadoEm:d.enviadoEm,ultFim:d.ultFim?[d.ultFim.split('|')[0],+d.ultFim.split('|')[1]]:null}}catch(e){}}montarPrd()},()=>{});
-  db.collection('defeitos').onSnapshot(snap=>{defDocs=snap.docs.map(d=>d.data()).filter(d=>d&&d.data&&Array.isArray(d.itens)).map(d=>({data:d.data,fora:d.fora||[],itens:d.itens.map(x=>typeof x==='string'?JSON.parse(x):x)}));montarDef()},()=>{});
+  db.collection('defeitos_base').onSnapshot(snap=>{const L=[];defBaseMeta=null;defBaseMap={};for(const x of snap.docs){const d=x.data();if(!d)continue;if(x.id==='META'){defBaseMeta=d;continue}if(!d.id||!Array.isArray(d.versoes))continue;L.push(d);defBaseMap[d.id]=d}defBase=L;montarDef()},()=>{});
   /* históricos que têm forma própria: guardados no Neon em pedaços (um documento por dia, mês ou lote) */
   const ordenados=snap=>snap.docs.slice().sort((p,q)=>p.id<q.id?-1:p.id>q.id?1:0);
   db.collection('inicio_hist').onSnapshot(snap=>{const dias={};let fonte='';for(const x of snap.docs){const d=x.data();if(x.id==='meta'){fonte=(d&&d.fonte)||'';continue}if(!d||!d.data||!d.j)continue;try{dias[d.data]=JSON.parse(d.j)}catch(e){}}IHIST={fonte,dias};montarIni()},()=>{});
   db.collection('tm_hist').onSnapshot(snap=>{let meta=null;const m={};for(const x of snap.docs){const d=x.data();if(!d||!d.j)continue;try{if(x.id==='meta')meta=JSON.parse(d.j);else if(d.mes)m[d.mes]=JSON.parse(d.j)}catch(e){}}if(meta){TMH=Object.assign({},meta,{m});montarTm()}},()=>{});
-  db.collection('defeitos_hist').onSnapshot(snap=>{let meta=null;const a=[],iv=[],nv=[];for(const x of ordenados(snap)){const d=x.data();if(!d||!d.j)continue;try{const v=JSON.parse(d.j);if(x.id==='meta')meta=v;else if(x.id.startsWith('a_'))a.push(...v);else if(x.id.startsWith('iv_'))iv.push(...v);else if(x.id.startsWith('nv_'))nv.push(...v)}catch(e){}}if(meta){DHIST={d0:meta.d0,ult:meta.ult,s:meta.s,a,iv,nv};montarDef()}},()=>{});
   db.collection('trafo_hist').onSnapshot(snap=>{let meta=null;const notas=[],acoes=[];for(const x of ordenados(snap)){const d=x.data();if(!d||!d.j)continue;try{const v=JSON.parse(d.j);if(x.id==='meta')meta=v;else if(x.id.startsWith('notas_'))notas.push(...v);else if(x.id.startsWith('acoes_'))acoes.push(...v)}catch(e){}}if(meta){TH={notas,acoes,arquivo:meta.arquivo,ult:meta.ult};montarTrf()}},()=>{});
   db.collection('hierarquia').onSnapshot(snap=>{const d=snap.docs.find(x=>x.id==='equipes');HIER=d?d.data():null;hierPintar();if(hierAtivo())hierRemontar()},()=>{});
   db.collection('ader').onSnapshot(snap=>{aderDocs=snap.docs.map(d=>d.data()).filter(d=>d&&d.data&&d.eq);if(!psRecalcOn)montarAder()},()=>{});
