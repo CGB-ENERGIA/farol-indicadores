@@ -3263,11 +3263,11 @@ function render(){
     return '<tr class="click" data-est="'+esc(e.k)+'" title="Real '+horas(e.real)+' h · previsto '+horas(e.prev)+' h"><td class="wrap-t"><b>'+esc(e.k)+'</b></td><td class="n">'+pctCell(e.pct)+'</td><td class="n">'+delta(e.pct,antEst[e.k])+'</td><td class="barcell"><div class="barra" role="img" aria-label="'+pct(e.pct)+' contra meta de 93%"><i class="'+cls(e.pct)+'" style="width:'+w+'%"></i><em style="left:'+(METAS.dispMeta/escala*100)+'%"></em></div></td></tr>'}).join('')
     +'<tr class="tot"><td>Total geral</td><td class="n">'+pctCell(s.pct)+'</td><td class="n">'+delta(s.pct,sAntAc.pct)+'</td><td>'+pill(s.pct)+'</td></tr>'
     :'<tr><td colspan="4"><div class="empty">Nenhuma equipe nesse filtro.</div></td></tr>';
-  document.querySelectorAll('#t-est tr[data-est]').forEach(tr=>tr.onclick=()=>{$('f-tipo').value=tr.dataset.est;$('f-tipo').classList.add('on');render()});
+  document.querySelectorAll('#t-est tr[data-est]').forEach(tr=>tr.onclick=()=>alterna('f-tipo',tr.dataset.est));
 
   const bases=agrupar(rows,'base').sort((a,b)=>(b.pct??-1)-(a.pct??-1));const escalaB=Math.max(1.2,...bases.map(e=>e.pct||0));
   $('t-base').innerHTML=bases.map(e=>'<tr class="click" data-base="'+esc(e.k)+'"><td><b>'+esc(e.k)+'</b></td><td class="n">'+pctCell(e.pct)+'</td><td class="barcell"><div class="barra"><i class="'+cls(e.pct)+'" style="width:'+Math.min(100,(e.pct||0)/escalaB*100)+'%"></i><em style="left:'+(METAS.dispMeta/escalaB*100)+'%"></em></div></td></tr>').join('')||'<tr><td colspan="3"><div class="empty">–</div></td></tr>';
-  document.querySelectorAll('#t-base tr[data-base]').forEach(tr=>tr.onclick=()=>{$('f-base').value=tr.dataset.base;$('f-base').classList.add('on');render()});
+  document.querySelectorAll('#t-base tr[data-base]').forEach(tr=>tr.onclick=()=>alterna('f-base',tr.dataset.base));
 
   const ptsDia=agrupar(todosMes,'data').filter(x=>x.prev>0).sort((a,b)=>a.k<b.k?-1:1);
   const heatG={};for(const r of todosMes){const k=r.est+'|'+r.data;const a=heatG[k]||(heatG[k]=[0,0]);a[0]+=r.real;a[1]+=r.prev}
@@ -3916,6 +3916,8 @@ function fecharGaveta(){$('gaveta').hidden=true;$('gavFundo').hidden=true}
 $('b-filtros').onclick=abrirGaveta;$('b-periodo').onclick=abrirGaveta;
 $('b-fechag').onclick=fecharGaveta;$('gavFundo').onclick=fecharGaveta;$('b-verg').onclick=fecharGaveta;
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('gaveta').hidden)fecharGaveta()});
+/* clicar numa estrutura/base filtra; clicar de novo na mesma (e só nela) desfaz o filtro */
+function alterna(id,v){const el=$(id),st=el.msel;if(st&&st.sel.size===1&&st.sel.has(v)){el.value='';el.classList.remove('on')}else{el.value=v;el.classList.add('on')}render()}
 function grafico(pts,sel){
   const el=$('chart');
   pts=pts.filter(x=>x.prev>0);
@@ -3931,11 +3933,11 @@ function grafico(pts,sel){
   s+='<line class="meta" x1="'+L+'" x2="'+(W-R)+'" y1="'+y(METAS.dispMeta)+'" y2="'+y(METAS.dispMeta)+'"/>';
   const path=pts.map((p,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(p.pct).toFixed(1)).join(' ');
   s+='<path class="area" d="'+path+' L'+x(pts.length-1).toFixed(1)+' '+(H-B)+' L'+x(0).toFixed(1)+' '+(H-B)+' Z"/><path class="linha" d="'+path+'"/>';
-  const passo=Math.ceil(pts.length/16);
+  const passo=1,fs=pts.length>20?' style="font-size:'+(pts.length>28?9:10)+'px"':'';
   pts.forEach((p,i)=>{const c=cls(p.pct);const destaque=p.k===sel||(!sel&&i===pts.length-1);
     s+='<circle class="pt'+(c==='nao'||c==='par'?' nao':'')+'" cx="'+x(i).toFixed(1)+'" cy="'+y(p.pct).toFixed(1)+'" r="'+(destaque?5.5:3.5)+'"><title>'+dataBR(p.k)+': '+pct(p.pct)+'</title></circle>';
     if(destaque)s+='<text x="'+Math.max(L+20,Math.min(x(i),W-R-24))+'" y="'+(y(p.pct)-12)+'" text-anchor="middle" style="fill:var(--fg);font-weight:800;font-size:12px">'+pct(p.pct)+'</text>';
-    if(i%passo===0||i===pts.length-1)s+='<text x="'+x(i).toFixed(1)+'" y="'+(H-8)+'" text-anchor="'+(i===pts.length-1&&pts.length>1?'end':i===0&&pts.length>1?'start':'middle')+'">'+p.k.slice(8,10)+'/'+p.k.slice(5,7)+'</text>'});
+    if(i%passo===0||i===pts.length-1)s+='<text'+fs+' x="'+x(i).toFixed(1)+'" y="'+(H-8)+'" text-anchor="'+(i===pts.length-1&&pts.length>1?'end':i===0&&pts.length>1?'start':'middle')+'">'+p.k.slice(8,10)+'/'+p.k.slice(5,7)+'</text>'});
   el.innerHTML=s+'</svg>';
 }
 
@@ -4110,9 +4112,9 @@ async function gerarPrint(){
     const ga=c.createLinearGradient(0,yt,0,yb);ga.addColorStop(0,'rgba(113,20,36,.22)');ga.addColorStop(1,'rgba(113,20,36,0)');
     c.beginPath();pts.forEach((q,i)=>i?c.lineTo(X(i),Y(q.pct)):c.moveTo(X(i),Y(q.pct)));c.lineTo(X(pts.length-1),yb);c.lineTo(X(0),yb);c.closePath();c.fillStyle=ga;c.fill();
     c.beginPath();pts.forEach((q,i)=>i?c.lineTo(X(i),Y(q.pct)):c.moveTo(X(i),Y(q.pct)));c.strokeStyle='#711424';c.lineWidth=2.5;c.stroke();
-    const passo=Math.ceil(pts.length/16);
+    const passo=1;
     pts.forEach((q,i)=>{const cc=cls(q.pct),last=i===pts.length-1;c.beginPath();c.arc(X(i),Y(q.pct),last?5.5:3.5,0,Math.PI*2);c.fillStyle='#fff';c.fill();c.lineWidth=2;c.strokeStyle=(cc==='nao'||cc==='par')?corPal('disp','nao'):'#711424';c.stroke();
-      if(i%passo===0||last){c.fillStyle='#6b6a6a';c.font='600 11px '+F;c.textAlign=last&&pts.length>1?'right':i===0&&pts.length>1?'left':'center';c.fillText(q.k.slice(8,10)+'/'+q.k.slice(5,7),X(i),yb+22);c.textAlign='left'}
+      if(i%passo===0||last){c.fillStyle='#6b6a6a';c.font='600 '+(pts.length>28?9:pts.length>20?10:11)+'px '+F;c.textAlign=last&&pts.length>1?'right':i===0&&pts.length>1?'left':'center';c.fillText(q.k.slice(8,10)+'/'+q.k.slice(5,7),X(i),yb+22);c.textAlign='left'}
       if(last){c.fillStyle='#2b2a2a';c.font='800 13px '+F;c.textAlign='center';c.fillText(pct(q.pct),Math.min(X(i),x1-24),Y(q.pct)-12);c.textAlign='left'}});
   }
   // mapa de calor
