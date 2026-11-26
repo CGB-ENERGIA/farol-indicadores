@@ -341,6 +341,7 @@ button.ac-k{cursor:pointer}button.ac-k:hover,.ac-k.on{box-shadow:0 0 0 2px var(-
 .heat-leg span{display:inline-flex;align-items:center;gap:6px}
 .heat-leg i{width:14px;height:14px;border-radius:4px;display:inline-block}
 .bk-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:4px 0 10px}.bk-in{min-height:38px;border:1px solid var(--line);background:var(--surface);color:var(--text,inherit);border-radius:var(--r-sm);padding:6px 10px;font:inherit;font-size:13px}#bk-busca{flex:1;min-width:180px;width:auto}#bk-dia,#bk-mes{width:auto;min-width:150px}
+.bk-sel{display:flex;gap:6px 18px;flex-wrap:wrap}.bk-ck{display:inline-flex;gap:6px;align-items:center;font-size:13px;cursor:pointer}.bk-ck input{accent-color:var(--accent)}.bk-ck small{color:var(--muted)}
 .bk-hist{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 10px;font-size:12.5px}.bk-res{font-size:12.5px;color:var(--muted);margin-bottom:8px}.bk-tw{overflow:auto;max-height:520px;border:1px solid var(--line);border-radius:var(--r-sm)}.bk-t{border-collapse:collapse;font-size:12.5px;width:max-content;min-width:100%}.bk-t th{position:sticky;top:0;background:var(--accent-bg);color:#fff;text-align:left;padding:7px 10px;white-space:nowrap;font-weight:700}.bk-t td{padding:5px 10px;border-top:1px solid var(--line);white-space:nowrap;max-width:320px;overflow:hidden;text-overflow:ellipsis}
 .tabs{display:inline-flex;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:3px;gap:3px;flex-wrap:wrap}
 .tabs button{border:0;background:transparent;padding:7px 14px;border-radius:7px;font-weight:700;font-size:13px;color:var(--muted)}
@@ -2062,7 +2063,11 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
         <select id="bk-mes" class="bk-in"></select><select id="bk-dia" class="bk-in"></select>
         <input id="bk-busca" class="bk-in" type="search" placeholder="Buscar em todas as colunas">
         <button class="btn" id="bk-xls" type="button">Baixar Excel</button><button class="btn del" id="bk-del" type="button" hidden>Excluir este dia</button></div>
-      <div class="bk-hist" id="bk-bkp" hidden><button class="btn primary" id="bk-bkpb" type="button">Baixar backup do banco</button><span class="muted" id="bk-bkpm">Um arquivo Excel (.xlsx) com uma aba para cada fonte (COI, MAN, FIS e OBRAS) e as abas de Defeitos, com todos os registros históricos. É o backup dos dados operacionais do SIGA que alimentam os indicadores (não inclui usuários, cadastros nem regras). Guarde na pasta Backup de siga.</span></div>
+      <div class="bk-hist" id="bk-bkp" hidden style="flex-direction:column;align-items:stretch;gap:8px">
+        <div><b>Backup do banco</b> <span class="muted">· marque os bancos que você quer baixar (só o que for marcado é lido do Neon)</span></div>
+        <div class="bk-sel" id="bk-sel"></div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn primary" id="bk-bkpb" type="button" disabled>Baixar backup do banco</button><button class="btn sm" id="bk-selTodos" type="button">Marcar todos</button><button class="btn sm" id="bk-selNenhum" type="button">Limpar</button><span class="muted" id="bk-bkpm">Gera um arquivo Excel (.xlsx) com uma aba para cada fonte marcada. É o backup dos dados operacionais (não inclui usuários, cadastros nem regras). Guarde na pasta Backup de siga.</span></div>
+      </div>
       <div class="prog" id="prog-imp" hidden><div class="prog-t"></div><div class="prog-b"><i></i></div></div>
       <div class="bk-res" id="bk-res"></div>
       <div class="bk-tw"><table class="bk-t" id="bk-t"></table></div>
@@ -3946,15 +3951,6 @@ function tabelaPref(rows){
 }
 
 /* ---------- copiar resumo e baixar base ---------- */
-function textoResumo(){
-  const rows=filtrar(), s=soma(rows), Pd=perDisp(), d=Pd?perTxt(Pd):'', m=$('f-mes').value;
-  const per=d?d:mesNome(m)+(ultimaData&&ultimaData.startsWith(m)?' (até '+dataBR(ultimaData).slice(0,5)+')':'');
-  const marca=p=>({sup:'🟢',ate:'🟢',par:'🟡',nao:'🔴',nd:'⚪'})[cls(p)];
-  const filtros=[$('f-base').value,$('f-ger').value,$('f-est').value,$('f-tipo').value].filter(Boolean).join(' · ');
-  let t='*Disponibilidade · '+per+'*'+(filtros?'\n'+filtros:'')+'\nMeta: 93%\n\n';
-  agrupar(rows,'est').sort((a,b)=>(b.pct??-1)-(a.pct??-1)).forEach(e=>{t+=marca(e.pct)+' '+e.k+': *'+pct(e.pct)+'*\n'});
-  return t+'\n*Total geral: '+pct(s.pct)+'*';
-}
 /* ---------- cobrança do dia ---------- */
 let limCob=METAS.dispMeta, cobGrupos=[], cobDia=null;
 document.querySelectorAll('[data-lim]').forEach(b=>b.onclick=()=>{limCob=b.dataset.lim==='meta'?METAS.dispMeta:b.dataset.lim==='par'?METAS.dispPar:+b.dataset.lim;document.querySelectorAll('[data-lim]').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));render()});
@@ -4300,9 +4296,25 @@ async function bancoPeriodo(f,mes,dia){
   return bancoJunta(out);
 }
 const MESES_B=['','janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+/* bancos que o administrador pode escolher para o backup (só o que for marcado é lido) */
+const bkSel=new Set();
+function bkOpcoes(){
+  const n=x=>Number(x).toLocaleString('pt-BR'),soma=f=>Object.values(bancoIdx[f]||{}).reduce((a,x)=>a+x,0);
+  const trf=(typeof TH!=='undefined'&&TH)?trfNotasBrutas().length:null;
+  return [['COI','COI',n(soma('COI'))+' registros'],['MAN','MAN',n(soma('MAN'))+' registros'],['FIS','FIS',n(soma('FIS'))+' registros'],['OBRAS','OBRAS',n(soma('OBRAS'))+' registros'],
+    ['DEFEITOS','Defeitos',defBase?n(defBase.length)+' defeitos':'carregando…'],['TRAFOS','Trafos reincidentes',trf==null?'carregando…':n(trf)+' interrupções e '+n((trfAcDb||TH.acoes).length)+' ações']];
+}
+function bkMontaSel(){
+  const box=$('bk-sel');if(!box)return;
+  box.innerHTML=bkOpcoes().map(([k,t,d])=>'<label class="bk-ck"><input type="checkbox" value="'+k+'"'+(bkSel.has(k)?' checked':'')+'> '+t+' <small>· '+d+'</small></label>').join('');
+  const atu=()=>{$('bk-bkpb').disabled=!bkSel.size};
+  box.querySelectorAll('input').forEach(i=>i.onchange=()=>{if(i.checked)bkSel.add(i.value);else bkSel.delete(i.value);atu()});
+  $('bk-selTodos').onclick=()=>{bkOpcoes().forEach(o=>bkSel.add(o[0]));bkMontaSel()};$('bk-selNenhum').onclick=()=>{bkSel.clear();bkMontaSel()};
+  atu();
+}
 async function montarBanco(){
   const box=$('bk-tabs');if(!box)return;
-  $('bk-bkp').hidden=!ehAdm();$('bk-bkpb').onclick=bancoBackup;
+  $('bk-bkp').hidden=!ehAdm();$('bk-bkpb').onclick=bancoBackup;bkMontaSel();
   const F=['COI','MAN','FIS','OBRAS'];
   box.innerHTML=F.map(f=>{const n=Object.keys(bancoIdxDe(f)).length;return '<button type="button" data-f="'+f+'" aria-pressed="'+(bancoSel.fonte===f)+'">'+f+' · '+n+' dias</button>'}).join('');
   box.querySelectorAll('button').forEach(b=>b.onclick=()=>{bancoSel.fonte=b.dataset.f;bancoSel.dia='';montarBanco()});
@@ -4385,7 +4397,9 @@ async function bancoDiaCru(f,d){
 async function bancoColsDia(f,d){const sn=await db.collection('banco').doc(f+'_'+d+'_0').get();return sn.exists?(sn.data().cols||[]):[]}
 async function bancoBackup(){
   if(!ehAdm()||!db)return;
-  const b=$('bk-bkpb'),m=$('bk-bkpm'),F=['COI','MAN','FIS','OBRAS'],texto0=m.textContent;b.disabled=true;
+  const b=$('bk-bkpb'),m=$('bk-bkpm'),F=['COI','MAN','FIS','OBRAS'].filter(f=>bkSel.has(f)),texto0=m.textContent;
+  if(!bkSel.size){m.textContent='Marque pelo menos um banco para baixar.';return}
+  b.disabled=true;
   const num=v=>Number(v).toLocaleString('pt-BR');
   try{
     const zip=new ZipFluxo(),abas=[],resumo=[],alertas=[];
@@ -4409,7 +4423,7 @@ async function bancoBackup(){
       if(n!==esperado)alertas.push(f+': o arquivo tem '+num(n)+' registros e o índice do banco indica '+num(esperado)+'.');
     }
     /* Defeitos: banco DEFEITOS (um registro por defeito da CGB) e o histórico (períodos e status) */
-    m.textContent='Gravando as abas de Defeitos…';
+    if(bkSel.has('DEFEITOS')){m.textContent='Gravando as abas de Defeitos…';
     if(defBase){
       const L=defBase.slice().sort((x,y)=>x.id<y.id?-1:1),colsS=[...new Set(L.flatMap(d=>Object.keys(d.sisco||{})))].sort(),colsP=[...new Set(L.flatMap(d=>Object.keys(d.pbi||{})))].filter(c=>!colsS.includes(c)).sort();
       const cab=['ID','SITUAÇÃO','MOTIVO','STATUS ATUAL','FONTE DA SITUAÇÃO','SITUAÇÃO CONFIRMADA','DATA APARIÇÃO','DATA SAÍDA DA TRATATIVA','DATA RESOLUÇÃO','ORIGEM_REGISTRO','PEP','SIGLA','PRIORIDADE','TIPO','DESCRIÇÃO','RECOMENDAÇÃO','MUNICÍPIO','DISTRITAL','NOTA','CÓDIGO','DATA FISCALIZAÇÃO','DATA VENCIMENTO'];
@@ -4419,13 +4433,23 @@ async function bancoBackup(){
       const por={};for(const d of L)por[d.situacao]=(por[d.situacao]||0)+1;
       resumo.push('DEFEITOS: '+num(n1)+' defeito(s) da CGB ('+Object.entries(por).map(([k,v])=>num(v)+' '+k.toLowerCase()).join(', ')+') · '+num(n2)+' linha(s) de histórico');
       if(n1!==L.length)alertas.push('DEFEITOS: '+num(n1)+' linhas contra '+num(L.length)+' no banco.');
-    }else alertas.push('O banco de Defeitos ainda não foi carregado; abra a página de Defeitos e tente de novo.');
+    }else alertas.push('O banco de Defeitos ainda não foi carregado; abra a página de Defeitos e tente de novo.');}
+    /* Trafos reincidentes: interrupções (o que o indicador usa, já com os meses enviados pelo site) e ações de blindagem */
+    if(bkSel.has('TRAFOS')){m.textContent='Gravando as abas de Trafos…';
+    if(typeof TH!=='undefined'&&TH){
+      const por={};for(const x of TH.notas){const k=x[1].slice(0,7);(por[k]=por[k]||[]).push(x)}for(const k in trfDocs)por[k]=trfDocs[k];
+      const NT=Object.values(por).flat().sort((a,b)=>a[1]<b[1]?-1:a[1]>b[1]?1:0),AC=trfAcDb||TH.acoes,svs=[...new Set(AC.flatMap(a=>Object.keys(a.sv||{})))].sort();
+      const t1=await xlsxAba(zip,abas,'TRAFOS_INTERRUPCOES',['Ponto Elétrico (trafo)','Data Início','Data Fim','Clientes > 3 min','CHI','Município','Conjunto Elétrico','Causa','Sub Causa','NR/INC','Seccional','Abrangência'],async function*(){for(const x of NT)yield x});
+      const t2=await xlsxAba(zip,abas,'TRAFOS_ACOES',['ANO','TRAFO','LOCALIDADE','EQUIPE','DATA','STATUS','CHI','CLIENTES','REINC 90','AL'].concat(svs),async function*(){for(const a of AC)yield [a.a,a.t,a.loc,a.eq,a.d,a.st,a.chi,a.cli,a.r90,a.al].concat(svs.map(k=>(a.sv||{})[k]))});
+      resumo.push('TRAFOS: '+num(t1)+' interrupção(ões) e '+num(t2)+' ação(ões)');
+      if(t1!==NT.length)alertas.push('TRAFOS: '+num(t1)+' interrupções contra '+num(NT.length)+' no banco.');if(t2!==AC.length)alertas.push('TRAFOS: '+num(t2)+' ações contra '+num(AC.length)+' no banco.');
+    }else alertas.push('A base de Trafos ainda não foi carregada; abra a página de Trafos e tente de novo.');}
     m.textContent='Compactando…';progSet('prog-imp',.95,'Finalizando o arquivo');
     await xlsxFecha(zip,abas);const blob=zip.fim();
-    const a=new Date(),p2=x=>String(x).padStart(2,'0'),nome='BACKUP_BANCO_SIGA_'+p2(a.getDate())+'-'+p2(a.getMonth()+1)+'-'+a.getFullYear()+'_'+p2(a.getHours())+'-'+p2(a.getMinutes())+'.xlsx';
+    const a=new Date(),p2=x=>String(x).padStart(2,'0'),nome=(bkSel.size===6?'BACKUP_BANCO_SIGA':'BACKUP_'+['COI','MAN','FIS','OBRAS','DEFEITOS','TRAFOS'].filter(x=>bkSel.has(x)).join('-'))+'_'+p2(a.getDate())+'-'+p2(a.getMonth()+1)+'-'+a.getFullYear()+'_'+p2(a.getHours())+'-'+p2(a.getMinutes())+'.xlsx';
     const url=URL.createObjectURL(blob),l=document.createElement('a');l.href=url;l.download=nome;document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(url),120000);
     progSet('prog-imp',1,'Concluído');setTimeout(()=>progSet('prog-imp',false),2500);
-    m.innerHTML='<b>Backup pronto:</b> '+esc(nome)+' ('+(blob.size/1048576).toFixed(1).replace('.',',')+' MB). '+resumo.map(esc).join(' · ')+'.'+(alertas.length?' <b style="color:#b0122a">Atenção:</b> '+alertas.map(esc).join(' '):' Contagens conferidas com o banco.')+' Este arquivo é o backup dos dados operacionais do SIGA (não inclui usuários, cadastros nem regras).';
+    m.innerHTML='<b>Backup pronto:</b> '+esc(nome)+' ('+(blob.size/1048576).toFixed(1).replace('.',',')+' MB). '+resumo.map(esc).join(' · ')+'.'+(alertas.length?' <b style="color:#b0122a">Atenção:</b> '+alertas.map(esc).join(' '):' Contagens conferidas com o banco.')+' Este arquivo é o backup dos dados operacionais marcados (não inclui usuários, cadastros nem regras).';
   }catch(e){console.error(e);progSet('prog-imp',false);m.textContent='Não foi possível gerar o backup: '+(e.message||e)}
   finally{b.disabled=false}
 }
@@ -4601,7 +4625,6 @@ const CL_COR={A:'#40c746',B:'#f2e33a',C:'#ed7b24',D:'#f24141'};
 const n0=v=>Math.round(v||0).toLocaleString('pt-BR');
 const n1=v=>v==null?'–':(+v).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1});
 const clsPill=c=>c?'<span class="cl cl-'+c+'">'+c+'</span>':'<span class="pill nd">–</span>';
-const faixaCell=p=>'<span class="pct '+UPSCalc.faixaBase(p).cls+'">'+pct(p)+'</span>';
 const clsCell=p=>{const c=UPSCalc.classe(p);return '<span class="pct cl-p-'+(c||'x')+'">'+pct(p)+'</span>'};
 function indAtual(){const p=pag().id;if(p==='ups-regras'||p==='prd-precos')return null;if(p.startsWith('ups-'))return'ups';if(p.startsWith('ader-'))return'ader';if(p.startsWith('ini-'))return'ini';if(p.startsWith('def-'))return'def';if(p.startsWith('prd-'))return'prd';if(p.startsWith('trf-'))return'trf';if(p==='mix-causa')return null;if(p.startsWith('mix-'))return'mix';if(p.startsWith('tm-'))return'tm';if(['painel','prefixos','cobranca'].includes(p))return'disp';return null}
 
@@ -4730,7 +4753,6 @@ function renderUPS(){
   $('upsClasses').innerHTML=['A','B','C','D'].map(c=>'<div class="ck" style="--c:'+CL_COR[c]+'"><span>Classe '+c+'</span><b>'+cl[c]+'</b><small>'+pct(cl[c]/tt)+'</small></div>').join('');
   // bases
   const base=s=>S.teams.filter(t=>t.siglas.has(s));
-  const pctUB=sg=>{let u=0,mt=0;for(const l of L){if(!l.cod||!l.sigla||(sg&&l.sigla!==sg))continue;u+=l.ups;mt+=l.meta}return mt?u/mt:null}; /* mesmo número da tabela "UPS por mês": UPS ÷ meta */
   const bk=(nome,ts,geral)=>{const p=pctAB(ts),f=UPSCalc.faixaBase(p),c=contaClasses(ts),n=ts.length;
     const tip='<em class="bk-tip"><b>'+(geral?'Geral':nome)+'</b>Classe A: <b>'+c.A+'</b> · Classe B: <b>'+c.B+'</b><br>Total de equipes: <b>'+n+'</b><br><span>(A + B) ÷ total = '+pct(p)+'</span></em>';
     return '<div class="bk '+f.cls+(geral?' geral':'')+'" tabindex="0" aria-label="'+(geral?'Geral':nome)+': '+c.A+' equipes em A, '+c.B+' em B, '+n+' no total, '+pct(p)+'"><span>'+nome+'</span><b>'+pct(p)+'</b><small>'+f.txt.replace(' esperado','')+'</small>'+tip+'</div>'};
@@ -4867,15 +4889,6 @@ function semanaUps(){
 }
 
 /* atividades concluídas da equipe no dia, vindas do banco SIGA */
-async function atvConcluidas(rec,d){
-  const hm=t=>{const m=/(\d+):(\d+)\s*([AP]M)?/i.exec(t||'');if(!m)return 9999;let h=+m[1]%12;if(/PM/i.test(m[3]||''))h+=12;else if(!m[3])h=+m[1];return h*60+ +m[2]};
-  let temDia=false,out=[];
-  for(const f of ['COI','MAN','OBRAS','FIS']){if(!bancoIdxDe(f)[d])continue;temDia=true;const D=await bancoDia(f,d),c=D.cols,iR=c.indexOf('Recurso'),iS=c.indexOf('Status da Atividade');if(iR<0)continue;
-    const iT=c.indexOf('Tipo de Atividade (2)'),iT1=c.indexOf('Tipo de Atividade'),iO=c.indexOf('Ordem de Serviço'),iI=c.indexOf('Início'),iF=c.indexOf('Fim');
-    for(const r of D.rows)if(r[iR]===rec&&/conclu/i.test(r[iS]||'')&&!/^(checklist in[ií]cio|retorno [aà] base|intervalo para almo)/i.test((iT>=0&&r[iT])||(iT1>=0?r[iT1]:'')))out.push({t:(iT>=0&&r[iT])||(iT1>=0?r[iT1]:''),o:iO>=0?r[iO]:'',i:iI>=0?r[iI]:'',f:iF>=0?r[iF]:''})}
-  out.sort((a,b)=>hm(a.i)-hm(b.i));
-  return {temDia,out};
-}
 /* tabela única do dia na UPS: cada atividade com a classe, os pontos e o UPS (ou o motivo de não pontuar) */
 async function atvUnificada(rec,d,pt,u,pr){
   if(!bancoIdxDe('COI')[d])return null;
@@ -4885,7 +4898,7 @@ async function atvUnificada(rec,d,pt,u,pr){
   const col={Causa:ix('Tipo de Causa - Text'),Executada:ix('Tipo de Conclusão Executada'),NaoExecutada:ix('Tipo de Conclusão Não Executada'),Code:ix('Code'),LocalReligacao:ix('Local Religação'),GrupoCode:ix('Grupo Code'),Abrangencia:ix('Abrangência')};
   const limpa=x=>['📡',' ','🚎','🏍','🛵'].reduce((t,ch)=>t.split(ch).join(''),String(x==null?'':x));
   const hm=t=>{const m=/(\d+):(\d+)\s*([AP]M)?/i.exec(t||'');if(!m)return 9999;let h=+m[1]%12;if(/PM/i.test(m[3]||''))h+=12;else if(!m[3])h=+m[1];return h*60+ +m[2]};
-  const interna=/^(checklist in[ií]cio|retorno [aà] base|intervalo para almo|indisponibilidade)/i;
+  const interna={test:ehNaoProd};
   const L=[];
   for(const r of D.rows){
     if(limpa(r[iR])!==rec)continue;const st=String(r[iS]||'').trim().toLowerCase();if(st!=='concluído'&&st!=='não concluído')continue;
@@ -5881,31 +5894,18 @@ function renderVisaoGeral(){
 const VG_GER=[['GSTC','#711424'],['GOMAN','#1f5f8b'],['GERE','#4d7a1f']];
 let vgGerSel='';
 function vgGerDe(rec){const k=vgNorm(rec);const c=cfg&&cfg.prefixos&&(cfg.prefixos[k]||cfg.prefixos[rec]);if(c&&c.g)return String(c.g).toUpperCase();if(ICFG&&ICFG.equipes&&ICFG.equipes[k]&&ICFG.equipes[k][1])return String(ICFG.equipes[k][1]).toUpperCase();if(typeof UR!=='undefined'&&UR&&UR.cadastros&&UR.cadastros.some(x=>vgNorm(x.rec)===k))return 'GSTC';return ''}
-const vgGerTag=g=>{const x=VG_GER.find(v=>v[0]===g);return g?'<span class="vgg" style="--g:'+(x?x[1]:'#6b6a6a')+'">'+g+'</span>':'<span class="vgc vgc-nd">–</span>'};
-function renderGerencias(m,crit,rsM,uL,aL,iL){
-  const el=$('vgGer');if(!el)return;
-  const pre=cfg&&cfg.prefixos?cfg.prefixos:{};
-  el.innerHTML=VG_GER.map(([g,cor])=>{
-    const eqs=Object.entries(pre).filter(([k,v])=>String(v.g).toUpperCase()===g);
-    const est={};for(const [,v] of eqs)est[v.e]=(est[v.e]||0)+1;
-    const ests=Object.entries(est).sort((a,b)=>b[1]-a[1]);
-    const recs=new Set(eqs.map(([k])=>vgNorm(k)));
-    const sD=soma(rsM.filter(r=>String(r.ger||'').toUpperCase()===g));
-    const inds=[];
-    if(sD.prev)inds.push(['Disponibilidade',pct(sD.pct),vgTom(Disp.classificar(sD.pct).cls),'#painel']);
-    const uG=uL.filter(l=>recs.has(vgNorm(l.rec)));if(uG.length){let u=0,mt=0;for(const l of uG){u+=l.ups;mt+=l.meta}if(mt){const c=UPSCalc.classe(u/mt);inds.push(['UPS',pct(u/mt)+' · '+c,{A:'ok',B:'ok',C:'at',D:'mal'}[c],'#ups-painel'])}}
-    const aG=aL.filter(l=>recs.has(vgNorm(l.rec)));if(aG.length){const st=statsAder(aG);if(st.pct!=null)inds.push(['Aderência',pct(st.pct),vgTom(aClass(st.pct).cls),'#ader-painel'])}
-    const iG=iL.filter(l=>recs.has(vgNorm(l.rec)));if(iG.length){const md=iMed(iG);inds.push(['Início médio',aHM(md),{g:'ok',y:'at',r:'mal'}[I_COR(md)],'#ini-painel'])}
-    const nc=crit.filter(e=>e.ger===g).length;
-    return '<article class="vgg-card" style="--g:'+cor+'"><header><span class="vgg-s">'+g+'</span><span class="vgg-n"><b>'+eqs.length+'</b> equipes cadastradas</span></header>'
-      +'<div class="vgg-sec"><small>O que fazem</small><div class="vgg-est">'+ests.map(([e,n])=>'<span>'+esc(e.charAt(0)+e.slice(1).toLowerCase())+' <b>'+n+'</b></span>').join('')+'</div></div>'
-      +'<div class="vgg-sec"><small>Indicadores acompanhados · '+mesNome(m)+'</small><div class="vgg-ind">'+(inds.length?inds.map(i=>'<a href="'+i[3]+'"><span>'+i[0]+'</span><span class="vgc vgc-'+i[2]+'">'+i[1]+'</span></a>').join(''):'<span class="muted">Sem dados no mês.</span>')+'</div></div>'
-      +'<footer><span>'+(nc?'<b>'+nc+'</b> equipes com 2 ou mais indicadores abaixo do esperado':'Nenhuma equipe com 2 ou mais indicadores abaixo')+'</span>'+(nc?'<button type="button" class="vgg-ver" data-vgger="'+g+'">Ver equipes →</button>':'')+'</footer></article>'}).join('');
-  el.querySelectorAll('[data-vgger]').forEach(b=>b.onclick=()=>{vgGerSel=b.dataset.vgger;renderVisaoGeral();const t=$('vgCrit');if(t)t.closest('.panel').scrollIntoView({behavior:'smooth',block:'start'})});
-}
 $('vgCritMais').onclick=()=>{vgTodas=!vgTodas;renderVisaoGeral()};
 /* ---------- atividades fora do DE_PARA: ver o que foi apontado, ir para a regra ou ignorar (administrador) ---------- */
-let IGN={},scOrigem=null;const fdpCache={};
+let IGN={},scOrigem=null;let fdpCache={};
+/* serviços que o administrador marcou como "não produção" (além de checklist, retorno à base, almoço e indisponibilidade) */
+let NAOPROD={};const npChave=x=>String(x==null?'':x).trim().replace(/\s+/g,' ').toUpperCase();
+const INTERNA_RE=/^(checklist in[ií]cio|retorno [aà] base|intervalo para almo|indisponibilidade)/i;
+const ehNaoProd=serv=>INTERNA_RE.test(String(serv||''))||!!NAOPROD[npChave(serv)];
+async function npGravar(servs,marca,motivo){
+  if(!db||!ehAdm()){toast('Só administradores podem marcar não produção.');return false}
+  const it=Object.assign({},NAOPROD);for(const k of servs){const c=npChave(k);if(marca)it[c]={em:new Date().toISOString(),motivo:motivo||'',nome:String(k).trim()};else delete it[c]}
+  try{await db.collection('config').doc('upsNaoProducao').set({itens:it,editadoEm:new Date().toISOString()});NAOPROD=it;fdpCache={};return true}catch(e){toast('Não foi possível salvar.');return false}
+}
 async function fdpAtividades(d){
   if(fdpCache[d]&&fdpCache[d].ver===(bancoIdxDe('COI')[d]||0)&&fdpCache[d].dp===UCFG.depara)return fdpCache[d].L;
   const L=[];if(!bancoIdxDe('COI')[d])return L;
@@ -5914,7 +5914,7 @@ async function fdpAtividades(d){
   const col={Causa:ix('Tipo de Causa - Text'),Executada:ix('Tipo de Conclusão Executada'),NaoExecutada:ix('Tipo de Conclusão Não Executada'),Code:ix('Code'),LocalReligacao:ix('Local Religação'),GrupoCode:ix('Grupo Code'),Abrangencia:ix('Abrangência')};
   for(const r of D.rows){const rec=String(r[iR]==null?'':r[iR]).replace(/[📡🚎🏍🛵\s]/g,''),st=String(r[iS]||'').trim().toLowerCase();if(st!=='concluído'&&st!=='não concluído')continue;
     const a={Servico:String(iSv>=0&&r[iSv]||''),Status:st,TipoConclusao:''};for(const k in col)a[k]=col[k]>=0&&r[col[k]]!=null?String(r[col[k]]):'';a.TipoConclusao=a.NaoExecutada?'Não Executado':(a.Executada?'Executado':'');
-    const {k,cl}=UPSCalc.classificar(UCFG,a);if(cl!=null||k==null)continue;
+    const {k,cl}=UPSCalc.classificar(UCFG,a);if(cl!=null||k==null||ehNaoProd(a.Servico))continue;
     L.push({d,rec,serv:a.Servico,os:iO>=0&&r[iO]!=null?String(r[iO]):'',ini:iI>=0&&r[iI]!=null?String(r[iI]):'',fim:iF>=0&&r[iF]!=null?String(r[iF]):'',chave:k,ex:a.Executada,nex:a.NaoExecutada,st})}
   fdpCache[d]={ver:bancoIdxDe('COI')[d]||0,dp:UCFG.depara,L};return L;
 }
@@ -5984,13 +5984,14 @@ function scSemDetalhe(comSc){
 function renderSemClasse(){
   const el=$('scUps');if(!el||!SEMC||!UR)return;
   const {lista:lista0,comSc}=scGrupos(),sd=scSemDetalhe(comSc);
-  const resolvida=g=>{const d=UCFG.depara[String(g.id).toUpperCase()];return g.cat==='foradp'&&d&&d.c},ignorada=g=>!!IGN[g.id];
-  const lista=lista0.filter(g=>!ignorada(g)&&!resolvida(g)),listaIgn=lista0.filter(ignorada);
+  const resolvida=g=>{const d=UCFG.depara[String(g.id).toUpperCase()];return g.cat==='foradp'&&d&&d.c},ignorada=g=>!!IGN[g.id],naoprod=g=>!!NAOPROD[npChave(g.serv)];
+  const lista=lista0.filter(g=>!ignorada(g)&&!naoprod(g)&&!resolvida(g)),listaIgn=lista0.filter(g=>ignorada(g)&&!naoprod(g)),listaNp=lista0.filter(naoprod);
   const totAt=UR.linhas.reduce((s,l)=>s+(l.n||0),0)||1,tot=lista.reduce((s,g)=>s+g.n,0);
-  const cont={todos:lista.length,ignoradas:listaIgn.length};for(const c in SC_MOT)cont[c]=lista.filter(g=>g.cat===c).length;
+  const cont={todos:lista.length,ignoradas:listaIgn.length,naoprod:listaNp.length};for(const c in SC_MOT)cont[c]=lista.filter(g=>g.cat===c).length;
   const q=scBusca.trim().toUpperCase();
   const chOr=scOrigem?new Set(scOrigem.chaves):null;
-  const f=(scFiltro==='ignoradas'?listaIgn:lista).filter(g=>(scFiltro==='todos'||scFiltro==='ignoradas'||g.cat===scFiltro)&&(!chOr||chOr.has(g.id))&&(!q||(g.serv+' '+g.id+' '+g.ex+' '+g.causa).toUpperCase().includes(q)));
+  const base=scFiltro==='ignoradas'?listaIgn:scFiltro==='naoprod'?listaNp:lista,totBase=base.reduce((x,y)=>x+y.n,0)||1;
+  const f=base.filter(g=>(scFiltro==='todos'||scFiltro==='ignoradas'||scFiltro==='naoprod'||g.cat===scFiltro)&&(!chOr||chOr.has(g.id))&&(!q||(g.serv+' '+g.id+' '+g.ex+' '+g.causa).toUpperCase().includes(q)));
   const det=g=>{if(g.cat==='semregra')return [g.tc,g.causa,g.ex].filter(Boolean).join(' · ')||'—';const r=g.id.startsWith(g.serv)?g.id.slice(g.serv.length):g.id;return r||'—'};
   const bs=g=>{const b={};for(const r in g.recs){const p=r.split('-');b[p[1]||'?']=(b[p[1]||'?']||0)+g.recs[r]}return Object.entries(b).sort((a,b)=>b[1]-a[1])};
   el.innerHTML='<div class="vhead"><div><h3 class="sec-t">Serviços sem classificação UPS</h3></div></div><div class="panel scp cf-card" data-cf-k="sc" data-cf-t="1" data-cf-n="'+lista.length+'">'
@@ -5998,14 +5999,16 @@ function renderSemClasse(){
    +'<div class="sc-k"><div><span>Atividades sem pontuar</span><b>'+tot.toLocaleString('pt-BR')+'</b></div><div><span>% de todas as atividades</span><b>'+(100*tot/totAt).toFixed(1).replace('.',',')+'%</b></div><div><span>Serviços diferentes</span><b>'+lista.length+'</b></div></div>'
    +(sd.n?'<div class="note warn" style="margin:0">Em '+sd.dias.length+' dia(s) ('+dataBR(sd.dias[0])+(sd.dias.length>1?' a '+dataBR(sd.dias[sd.dias.length-1]):'')+') há <b>'+sd.n.toLocaleString('pt-BR')+'</b> atividades sem classe, mas esses envios foram feitos antes deste painel e não guardaram o nome do serviço. Reenvie o COI desses dias para detalhar.</div>':'')
    +(scOrigem?'<div class="note warn" style="margin:0;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>Filtro aplicado pela Conferência: <b>'+esc(scOrigem.rec)+'</b> em <b>'+dataBR(scOrigem.d)+'</b> · '+scOrigem.chaves.length+' chave(s) fora do DE_PARA ('+scOrigem.itens.length+' atividade(s)).</span><button type="button" class="btn sm" id="b-scSemOrigem" style="margin-left:auto">Remover filtro</button></div>':'')
-   +'<div class="sc-bar"><div class="tabs" role="group" aria-label="Motivo">'+[['todos','Todos']].concat(Object.entries(SC_MOT).map(([k,v])=>[k,v[0]]),[['ignoradas','Ignoradas']]).map(([k,t])=>'<button type="button" data-scf="'+k+'" aria-pressed="'+(scFiltro===k)+'">'+t+' <small>'+cont[k]+'</small></button>').join('')+'</div><input type="search" id="scBusca" placeholder="Buscar serviço ou chave" value="'+esc(scBusca)+'"><button class="btn sm" type="button" id="b-scXls">Baixar lista em Excel</button></div>'
+   +'<div class="sc-bar"><div class="tabs" role="group" aria-label="Motivo">'+[['todos','Todos']].concat(Object.entries(SC_MOT).map(([k,v])=>[k,v[0]]),[['ignoradas','Ignoradas'],['naoprod','Não produção']]).map(([k,t])=>'<button type="button" data-scf="'+k+'" aria-pressed="'+(scFiltro===k)+'">'+t+' <small>'+cont[k]+'</small></button>').join('')+'</div><input type="search" id="scBusca" placeholder="Buscar serviço ou chave" value="'+esc(scBusca)+'"><button class="btn sm" type="button" id="b-scXls">Baixar lista em Excel</button></div>'
    +'<div class="tw"><table class="utab" id="t-sc"><thead><tr><th>Motivo</th><th>Serviço</th><th>Detalhe / chave</th><th class="n">Atividades</th><th class="n">% do total</th><th>Bases</th><th>Período</th>'+(ehAdm()?'<th>Ação</th>':'')+'</tr></thead><tbody>'
-   +(f.length?f.map((g,i)=>'<tr data-sci="'+i+'" class="clk"><td><span class="sc-tag sc-'+g.cat+'" title="'+esc(SC_MOT[g.cat][1])+'">'+SC_MOT[g.cat][0]+'</span></td><td><b>'+esc(g.serv||'—')+'</b></td><td class="sc-d" title="'+esc(g.id)+'">'+esc(det(g))+'</td><td class="n"><b>'+g.n.toLocaleString('pt-BR')+'</b></td><td class="n">'+(100*g.n/(scFiltro==='ignoradas'?(listaIgn.reduce((x,y)=>x+y.n,0)||1):tot)).toFixed(1).replace('.',',')+'%</td><td>'+bs(g).slice(0,4).map(([b,n])=>b+' <small class="muted">'+n+'</small>').join(' · ')+'</td><td class="nw">'+(g.d0?dataBR(g.d0).slice(0,5)+' a '+dataBR(g.d1).slice(0,5):'')+'</td>'+(ehAdm()?'<td class="nw">'+(scFiltro==='ignoradas'?'<button type="button" class="btn sm" data-screa="'+i+'">Reativar</button>':(g.cat==='semregra'?'<span class="muted" title="Serviço sem regra de chave: crie a regra em Regras da UPS > Regras de chave">sem regra de chave</span> ':'<button type="button" class="btn sm primary" data-scnova="'+i+'">Cadastrar regra</button> ')+'<button type="button" class="btn sm" data-scign="'+i+'" title="Não criar regra: a ocorrência deixa de ser pendência">Ignorar</button>')+'</td>':'')+'</tr>').join(''):'<tr><td colspan="8" class="empty">Nenhum serviço com esse filtro.</td></tr>')
+   +(f.length?f.map((g,i)=>'<tr data-sci="'+i+'" class="clk"><td><span class="sc-tag sc-'+g.cat+'" title="'+esc(SC_MOT[g.cat][1])+'">'+SC_MOT[g.cat][0]+'</span></td><td><b>'+esc(g.serv||'—')+'</b></td><td class="sc-d" title="'+esc(g.id)+'">'+esc(det(g))+'</td><td class="n"><b>'+g.n.toLocaleString('pt-BR')+'</b></td><td class="n">'+(100*g.n/(scFiltro==='ignoradas'||scFiltro==='naoprod'?totBase:(tot||1))).toFixed(1).replace('.',',')+'%</td><td>'+bs(g).slice(0,4).map(([b,n])=>b+' <small class="muted">'+n+'</small>').join(' · ')+'</td><td class="nw">'+(g.d0?dataBR(g.d0).slice(0,5)+' a '+dataBR(g.d1).slice(0,5):'')+'</td>'+(ehAdm()?'<td class="nw">'+(scFiltro==='naoprod'?'<button type="button" class="btn sm" data-scnpoff="'+i+'" title="Voltar a tratar como serviço de produção">Reativar</button>':scFiltro==='ignoradas'?'<button type="button" class="btn sm" data-screa="'+i+'">Reativar</button>':(g.cat==='semregra'?'<span class="muted" title="Serviço sem regra de chave: crie a regra em Regras da UPS > Regras de chave">sem regra de chave</span> ':'<button type="button" class="btn sm primary" data-scnova="'+i+'">Cadastrar regra</button> ')+'<button type="button" class="btn sm" data-scign="'+i+'" title="Não criar regra: a ocorrência deixa de ser pendência">Ignorar</button> <button type="button" class="btn sm" data-scnp="'+i+'" title="Atividade que não é produção (não pontua nem gera valor): sai da lista">Não produção</button>')+'</td>':'')+'</tr>').join(''):'<tr><td colspan="8" class="empty">Nenhum serviço com esse filtro.</td></tr>')
    +'</tbody></table></div><p class="muted" style="margin:0;font-size:12px">Clique em uma linha para ver as equipes que executaram o serviço.</p></div>';
   el.querySelectorAll('[data-scf]').forEach(b=>b.onclick=()=>{scFiltro=b.dataset.scf;renderSemClasse()});
   const so=$('b-scSemOrigem');if(so)so.onclick=()=>{scOrigem=null;renderSemClasse()};
   el.querySelectorAll('[data-scnova]').forEach(b=>b.onclick=e=>{e.stopPropagation();const g=f[+b.dataset.scnova];rgForm('depara',null,g.id)});
   el.querySelectorAll('[data-scign]').forEach(b=>b.onclick=async e=>{e.stopPropagation();const g=f[+b.dataset.scign];const rs=await dlg({tit:'Ignorar regra',html:'<p>A chave abaixo deixa de aparecer como pendência. <b>Nenhuma regra é criada e o DE_PARA não muda.</b> Você pode reativar depois na aba <b>Ignoradas</b>.</p><p><code style="font-size:12px">'+esc(g.id)+'</code></p><p class="muted" style="font-size:12.5px">'+g.n.toLocaleString('pt-BR')+' atividade(s) · '+esc(g.serv||'')+'</p>'+dlgMotivo,ok:'Ignorar'});if(!rs)return;if(await ignGravar([g.id],true,rs.motivo)){toast('Ocorrência ignorada.');renderSemClasse();fdpRefina()}});
+  el.querySelectorAll('[data-scnp]').forEach(b=>b.onclick=async e=>{e.stopPropagation();const g=f[+b.dataset.scnp];const rs=await dlg({tit:'Marcar como não produção',html:'<p>O serviço <b>'+esc(g.serv||g.id)+'</b> passa a ser tratado como <b>não produção</b>, como checklist, retorno à base e almoço: sai desta lista, aparece em cinza na linha do tempo da equipe e não conta como atividade de produção.</p><p class="muted" style="font-size:12.5px">Vale para todas as chaves desse serviço ('+g.n.toLocaleString('pt-BR')+' atividade(s) nesta linha). Você pode reativar depois na aba <b>Não produção</b>.</p>'+dlgMotivo,ok:'Marcar'});if(!rs)return;if(await npGravar([g.serv||g.id],true,rs.motivo)){toast('Serviço marcado como não produção.');renderSemClasse();fdpRefina()}});
+  el.querySelectorAll('[data-scnpoff]').forEach(b=>b.onclick=async e=>{e.stopPropagation();const g=f[+b.dataset.scnpoff];if(await npGravar([g.serv||g.id],false)){toast('Serviço voltou a ser produção.');renderSemClasse();fdpRefina()}});
   el.querySelectorAll('[data-screa]').forEach(b=>b.onclick=async e=>{e.stopPropagation();const g=f[+b.dataset.screa];if(await ignGravar([g.id],false)){toast('Ocorrência reativada.');renderSemClasse();fdpRefina()}});
   const bq=$('scBusca');bq.oninput=()=>{scBusca=bq.value;const pos=bq.selectionStart;renderSemClasse();const n=$('scBusca');n.focus();n.setSelectionRange(pos,pos)};
   el.querySelectorAll('tr[data-sci]').forEach(tr=>tr.onclick=()=>{const g=f[+tr.dataset.sci];
@@ -6406,7 +6409,7 @@ async function prdTimeline(rec,d){
   try{const D=await bancoDia('COI',d),c=D.cols,ix=n=>c.indexOf(n),iR=ix('Recurso'),iS=ix('Status da Atividade');
     if(iR>=0&&iS>=0){
       const iK=ix('Tipo de Atividade (2)')>=0?ix('Tipo de Atividade (2)'):ix('Tipo de Atividade#2')>=0?ix('Tipo de Atividade#2'):ix('Tipo de Atividade'),iEx=ix('Tipo de Conclusão Executada'),iNe=ix('Tipo de Conclusão Não Executada'),iJ=ix('Local Religação'),iO=ix('Ordem de Serviço'),iI=ix('Início'),iF=ix('Fim'),iG=ix('Grupo Code'),iQ=ix('SubTipo de Causa - Text'),iM=ix('Abrangência'),iV=ix('Code'),iC=ix('Cidade'),iB=ix('Bairro');
-      const g=(r,i)=>i<0||r[i]==null?'':String(r[i]).trim(),interna=/^(checklist in[ií]cio|retorno [aà] base|intervalo para almo|indisponibilidade)/i;
+      const g=(r,i)=>i<0||r[i]==null?'':String(r[i]).trim(),interna={test:ehNaoProd};
       for(const r of D.rows){if(String(r[iR]||'').trim().split(/\s+/)[0]!==rec)continue;const st=g(r,iS).toLowerCase();if(st!=='concluído'&&st!=='não concluído')continue;
         const K=g(r,iK);let v=null;try{v=prdPreco(rec,g(r,iO),K,g(r,iEx),g(r,iNe),g(r,iJ),g(r,iG),g(r,iQ),st,g(r,iM),g(r,iV))}catch(e){}
         const nao=interna.test(K);A.push({ini:Disp.parseHora(r[iI]),fim:Disp.parseHora(r[iF]),k:K,os:g(r,iO),st,v:nao?0:v,nao,loc:[g(r,iB),g(r,iC)].filter(Boolean).join(' · ')})}}
@@ -6415,23 +6418,22 @@ async function prdTimeline(rec,d){
   A.sort((a,b)=>(a.ini==null?1e9:a.ini)-(b.ini==null?1e9:b.ini)||(a.fim==null?1e9:a.fim)-(b.fim==null?1e9:b.fim));
   const hm=t=>t==null?'–':hhmm(t),dur=(a,b)=>a==null||b==null?'–':(b<a?b+1440-a:b-a)+' min';
   let ac=0,gapT=0,ult=null,nProd=0;const rows=[];
-  for(const a of A){
+  let ultAc=-1;A.forEach((a,i)=>{if(!a.nao)ultAc=i});
+  for(const [ia,a] of A.entries()){
     if(ult!=null&&a.ini!=null&&a.ini-ult>=15){gapT+=a.ini-ult;rows.push('<tr class="ptl-gap"><td></td><td colspan="8">⏱ Sem atividade registrada · '+((g0)=>g0>=60?Math.floor(g0/60)+' h'+(g0%60?' '+String(g0%60).padStart(2,'0')+' min':''):g0+' min')(a.ini-ult)+'</td></tr>')}
     const prod=!a.nao&&a.v>0&&a.st==='concluído';if(prod){ac+=a.v;nProd++}else if(!a.nao&&a.v>0)ac+=a.v;
     const cor=a.nao?'#8a8a8a':a.st!=='concluído'?'#c8102e':a.v>0?'#2a8f30':'#d98a00',tp=a.nao?'Não produção':a.st!=='concluído'?'Não concluída':a.v>0?'Produção':'Sem valor';
-    rows.push('<tr style="box-shadow:inset 4px 0 0 '+cor+'"><td class="nw" style="padding-left:14px"><b>'+hm(a.ini)+'</b></td><td class="nw">'+hm(a.fim)+'</td><td class="n nw">'+dur(a.ini,a.fim)+'</td><td>'+esc(a.k)+(a.loc?'<small class="muted" style="display:block">'+esc(a.loc)+'</small>':'')+'</td><td class="nw">'+esc(a.os)+'</td><td><span class="pill" style="background:'+cor+'22;color:'+cor+'">'+tp+'</span></td><td class="n nw">'+(a.nao?'–':a.v==null?'–':brl(a.v))+'</td><td class="n nw">'+(a.nao?'':brl(ac))+'</td></tr>');
+    rows.push('<tr style="box-shadow:inset 4px 0 0 '+cor+'"><td class="nw" style="padding-left:14px"><b>'+hm(a.ini)+'</b></td><td class="nw">'+hm(a.fim)+'</td><td class="n nw">'+dur(a.ini,a.fim)+'</td><td>'+esc(a.k)+(a.loc?'<small class="muted" style="display:block">'+esc(a.loc)+'</small>':'')+'</td><td class="nw">'+esc(a.os)+'</td><td><span class="pill" style="background:'+cor+'22;color:'+cor+'">'+tp+'</span></td><td class="n nw">'+(a.nao?'–':a.v==null?'–':brl(a.v))+'</td><td class="n nw">'+(a.nao?'':ia===ultAc&&x.meta>0?(()=>{const pr=ac/x.meta,cl=prdCls(pr),cc={ok:'#2a8f30',par:'#d98a00',mal:'#c8102e'}[cl];return '<span style="color:'+cc+';font-weight:800"><span class="pv-st '+cl+'" title="'+(cl==='ok'?'Bateu a meta':cl==='par'?'Perto da meta':'Abaixo de 85%')+'">'+(cl==='ok'?'✔':cl==='par'?'●':'✖')+'</span>'+brl(ac)+' <small>· '+Math.round(pr*100)+'%</small></span>'})():brl(ac))+'</td></tr>');
     if(a.fim!=null)ult=a.fim<(a.ini||0)?a.fim+1440:a.fim;else if(a.ini!=null)ult=a.ini}
   const tot=A.reduce((s,a)=>s+(a.v||0),0),pc=x.meta?x.real/x.meta:null;
   const k=[['Meta do dia',x.meta!=null?brl(x.meta):'–'],['Realizado',x.real!=null?brl(x.real):'–'],['% da meta',pc!=null?Math.round(pc*100)+'%':'–'],['Atividades com valor',dN(nProd)],['Tempo entre atividades',gapT?hhmm(gapT):'–']];
   box().innerHTML='<div class="md-k" style="grid-template-columns:repeat(5,minmax(0,1fr))">'+k.map(z=>'<div><span>'+z[0]+'</span><b>'+z[1]+'</b></div>').join('')+'</div>'
-    +'<p class="muted" style="margin:0 0 8px;font-size:12.5px">'+(x.est?esc(x.base||'')+' · '+esc(x.est)+' · ':'')+A.length+' atividade(s) em ordem de horário · verde = produção, âmbar = sem valor, vermelho = não concluída, cinza = não produção (checklist, almoço, retorno à base, indisponibilidade). “Acumulado” é a soma do valor ao longo do dia.</p>'
+    +'<p class="muted" style="margin:0 0 8px;font-size:12.5px">'+(x.est?esc(x.base||'')+' · '+esc(x.est)+' · ':'')+A.length+' atividade(s) em ordem de horário · verde = produção, âmbar = sem valor, vermelho = não concluída, cinza = não produção (checklist, almoço, retorno à base, indisponibilidade). “Acumulado” é a soma do valor ao longo do dia; na última linha ele mostra o % da meta: <b style="color:#2a8f30">✔ bateu a meta (100% ou mais)</b> · <b style="color:#d98a00">● perto da meta (85% a 99%)</b> · <b style="color:#c8102e">✖ abaixo de 85%</b>.</p>'
     +'<div class="tw md-t"><table class="utab"><thead><tr><th>Início</th><th>Fim</th><th class="n">Duração</th><th>Atividade</th><th>Ordem de serviço</th><th>Situação</th><th class="n">Valor (R$)</th><th class="n">Acumulado</th></tr></thead><tbody>'+(rows.join('')||'<tr><td colspan="8" class="empty">Nenhuma atividade desta equipe neste dia.</td></tr>')+'</tbody></table></div>'
     +(x.real!=null&&Math.abs(tot-x.real)>0.5?'<p class="muted" style="margin:6px 0 0;font-size:11.5px"><b>Atenção:</b> a soma das atividades ('+brl(tot)+') difere da produção do dia ('+brl(x.real)+'). Isso ocorre quando o dia no banco SIGA ainda está incompleto (ex.: dia em andamento) ou quando os preços foram alterados depois do envio do dia.</p>':'');
 }
 /* Regra de meta do dia (mesma da UPS, ver UPSCalc.fatorMeta): plantão todos os dias; LGN, SDM, plantão moto e corte
    seg a sex 1, sábado 0,5, domingo e feriado 0 */
-let _tdMap=null,_tdSrc=null;
-function prdTdias(pre){const src=(typeof escalaLocal!=='undefined'&&escalaLocal)||(typeof escalaDb!=='undefined'&&escalaDb)||(UCFG&&UCFG.escala)||[];if(_tdSrc!==src){_tdSrc=src;_tdMap={};for(const e of src)if(e&&e.rec)_tdMap[e.rec]=String(e.tdias||'').toUpperCase()}return _tdMap[pre]||'TODOS OS DIAS'}
 /* meta diária em R$ do prefixo na data (o período pode ter meta própria) */
 function prdMetaV(pre,d,padrao){const v=prefEm(pre,d);return v&&v.pm!=null?v.pm:padrao}
 function prdFator(pre,d){
@@ -6907,7 +6909,6 @@ function dLinha(el,pts,series,H,lab){
 /* ---------- Defeitos · evolução: períodos maiores e comparativo mensal ---------- */
 let evModo='mes';
 const evMesesAsc=()=>{const r=[],i=dNum(DR.primeira),f=dNum(DR.ult);for(let n=i;n<=f;n++){const m=dIso(n).slice(0,7);if(!r.includes(m))r.push(m)}return r};
-const mesAdd=(m,k)=>{const d=new Date(m+'-01T12:00:00Z');d.setUTCMonth(d.getUTCMonth()+k);return d.toISOString().slice(0,7)};
 function evAplicar(modo){
   evModo=modo;const ult=DR.ult,pri=dIso(dNum(DR.primeira)+1),m=$('d-mes').value||ult.slice(0,7);let de,ate;
   if(modo==='mes'){de=m+'-01';ate=dIso(Math.min(dNum(m+'-01')+new Date(+m.slice(0,4),+m.slice(5),0).getDate()-1,dNum(ult)))}
@@ -7586,7 +7587,6 @@ const T_ACENTO={'maranhao':'Maranhão','coroata':'Coroatá','ines':'Inês','sao'
 const tMun=s=>{s=String(s||'').trim().replace(/[’']/g,'').replace(/\s+/g,' ');if(!s)return '';const k=s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/ do ma$/,' do maranhao').replace(/^olho dagua/,'olho dagua').replace(/^alto alegre$/,'alto alegre do maranhao');
   return k.split(' ').map((w,i)=>w==='dagua'?'d’Água':i&&['de','do','da','das','dos'].includes(w)?w:T_ACENTO[w]||w.charAt(0).toUpperCase()+w.slice(1)).join(' ')};
 const tTrafo=t=>{t=String(t==null?'':t).trim();if(/\.0$/.test(t))t=t.slice(0,-2);return t?t.padStart(7,'0'):''};
-const tNum=v=>{if(typeof v==='number')return v;const x=parseFloat(String(v==null?'':v).replace(/\./g,'').replace(',','.'));return isNaN(x)?0:x};
 const tNum2=v=>{if(typeof v==='number')return v;const s=String(v==null?'':v).trim();const x=parseFloat(s.includes(',')?s.replace(/\./g,'').replace(',','.'):s);return isNaN(x)?0:x};
 function tDt(v){
   if(v==null||v==='')return '';
@@ -7832,12 +7832,12 @@ montarTrf=cargaEmbrulhar('montarTrf',montarTrf);montarBanco=cargaEmbrulhar('mont
   db.collection('mix').onSnapshot(snap=>{mixDocs={};for(const x of snap.docs){const d=x.data();if(!d||!d.data||!d.j)continue;try{mixDocs[d.data]=JSON.parse(d.j)}catch(e){}}montarMix()},()=>{});
   db.collection('trafo').onSnapshot(snap=>{trfDocs={};trfAcDb=null;for(const x of snap.docs){const d=x.data();if(!d||!d.rows)continue;try{if(x.id==='acoes')trfAcDb=JSON.parse(d.rows);else if(d.m)trfDocs[d.m]=JSON.parse(d.rows)}catch(e){}}montarTrf()},()=>{});
   db.collection('prod').onSnapshot(snap=>{prdDocs={};for(const x of snap.docs){const d=x.data();if(!d||!d.data||!d.eq)continue;try{prdDocs[d.data]={eq:JSON.parse(d.eq),arquivo:d.arquivo,enviadoEm:d.enviadoEm,ultFim:d.ultFim?[d.ultFim.split('|')[0],+d.ultFim.split('|')[1]]:null}}catch(e){}}montarPrd()},()=>{});
-  db.collection('defeitos_base').onSnapshot(snap=>{const L=[];defBaseMeta=null;defBaseMap={};for(const x of snap.docs){const d=x.data();if(!d)continue;if(x.id==='META'){defBaseMeta=d;continue}if(!d.id||!Array.isArray(d.versoes))continue;L.push(d);defBaseMap[d.id]=d}defBase=L;montarDef()},()=>{});
+  db.collection('defeitos_base').onSnapshot(snap=>{const L=[];defBaseMeta=null;defBaseMap={};for(const x of snap.docs){const d=x.data();if(!d)continue;if(x.id==='META'){defBaseMeta=d;continue}if(!d.id||!Array.isArray(d.versoes))continue;L.push(d);defBaseMap[d.id]=d}defBase=L;montarDef();try{bkMontaSel()}catch(e){}},()=>{});
   /* históricos que têm forma própria: guardados no Neon em pedaços (um documento por dia, mês ou lote) */
   const ordenados=snap=>snap.docs.slice().sort((p,q)=>p.id<q.id?-1:p.id>q.id?1:0);
   db.collection('inicio_hist').onSnapshot(snap=>{const dias={};let fonte='';for(const x of snap.docs){const d=x.data();if(x.id==='meta'){fonte=(d&&d.fonte)||'';continue}if(!d||!d.data||!d.j)continue;try{dias[d.data]=JSON.parse(d.j)}catch(e){}}IHIST={fonte,dias};montarIni()},()=>{});
   db.collection('tm_hist').onSnapshot(snap=>{let meta=null;const m={};for(const x of snap.docs){const d=x.data();if(!d||!d.j)continue;try{if(x.id==='meta')meta=JSON.parse(d.j);else if(d.mes)m[d.mes]=JSON.parse(d.j)}catch(e){}}if(meta){TMH=Object.assign({},meta,{m});montarTm()}},()=>{});
-  db.collection('trafo_hist').onSnapshot(snap=>{let meta=null;const notas=[],acoes=[];for(const x of ordenados(snap)){const d=x.data();if(!d||!d.j)continue;try{const v=JSON.parse(d.j);if(x.id==='meta')meta=v;else if(x.id.startsWith('notas_'))notas.push(...v);else if(x.id.startsWith('acoes_'))acoes.push(...v)}catch(e){}}if(meta){TH={notas,acoes,arquivo:meta.arquivo,ult:meta.ult};montarTrf()}},()=>{});
+  db.collection('trafo_hist').onSnapshot(snap=>{let meta=null;const notas=[],acoes=[];for(const x of ordenados(snap)){const d=x.data();if(!d||!d.j)continue;try{const v=JSON.parse(d.j);if(x.id==='meta')meta=v;else if(x.id.startsWith('notas_'))notas.push(...v);else if(x.id.startsWith('acoes_'))acoes.push(...v)}catch(e){}}if(meta){TH={notas,acoes,arquivo:meta.arquivo,ult:meta.ult};montarTrf();try{bkMontaSel()}catch(e){}}},()=>{});
   db.collection('hierarquia').onSnapshot(snap=>{const d=snap.docs.find(x=>x.id==='equipes');HIER=d?d.data():null;hierPintar();if(hierAtivo())hierRemontar()},()=>{});
   db.collection('ader').onSnapshot(snap=>{aderDocs=snap.docs.map(d=>d.data()).filter(d=>d&&d.data&&d.eq);if(!psRecalcOn)montarAder()},()=>{});
   db.collection('config').onSnapshot(snap=>{
@@ -7845,7 +7845,7 @@ montarTrf=cargaEmbrulhar('montarTrf',montarTrf);montarBanco=cargaEmbrulhar('mont
     {const bi=snap.docs.find(d=>d.id==='bancoIdx');if(bi){try{const v=JSON.parse(bi.data().j);for(const f of ['COI','MAN','FIS','OBRAS'])v[f]=v[f]||{};bancoIdx=v;montarBanco();if(pag().id==='mix-causa')acMostrar();if(pag().id==='mix-corte')mxVarrerSem()}catch(e){}}}
     let esc=null,escInfo=null,fu={};
     for(const d of snap.docs){const v=d.data();if(v&&v.itens&&n[d.id]!==undefined)n[d.id]=v.itens;if(d.id==='escala'&&v&&Array.isArray(v.itens)){esc=v.itens;escInfo=(v.arquivo||'')+(v.editadoEm?' em '+new Date(v.editadoEm).toLocaleDateString('pt-BR'):'')}if(d.id==='feriadosUps'&&v&&v.itens)fu=v.itens}
-    cad=n;try{aplicarMetas();aplicarListas()}catch(e){console.error('metas',e)}{const as=JSON.stringify(n.naoCgb);if(as!==ncAssin){ncAssin=as;setTimeout(()=>{try{hierRemontar()}catch(e){}},0)}}escalaDb=esc;escalaDbInfo=escInfo;ferUps=fu;const aa=snap.docs.find(d=>d.id==='aderAjuste');aderAjDb=aa?aa.data():null;const dt=snap.docs.find(d=>d.id==='defTatico');defTatDb=dt?dt.data():null;const dtc=snap.docs.find(d=>d.id==='defTecnicos');defTecDb=dtc?dtc.data():null;{const uh=snap.docs.find(d=>d.id==='upsHoje'),uv=uh&&uh.data();try{upsHojeDb=uv&&uv.data&&uv.eq?{data:uv.data,eq:JSON.parse(uv.eq),em:uv.enviadoEm,arquivo:uv.arquivo}:null}catch(e){upsHojeDb=null}}{const de=snap.docs.find(d=>d.id==='dispExpurgos'),dv=de&&de.data();window.DISP_EXPURGO=(dv&&dv.itens)||{}}{const ig=snap.docs.find(d=>d.id==='upsIgnorados'),igd=ig&&ig.data();IGN=(igd&&igd.itens)||{}}{const sc=snap.docs.find(d=>d.id==='upsSemClasse'),scd=sc&&sc.data();if(scd&&scd.j){try{SEMC=JSON.parse(scd.j)}catch(e){}}}{const pr=snap.docs.find(d=>d.id==='prodPrecos'),pd=pr&&pr.data();POVR=pd?{dp:pd.dp||{},esp:pd.esp||{},em:pd.editadoEm}:null;aplicarPrecos();try{renderPrecos()}catch(e){}}{const cr=snap.docs.find(d=>d.id==='corteRegras'),cd=cr&&cr.data();COVR=cd&&cd.itens||null;aplicarRegrasCorte();try{renderRgCorte()}catch(e){}}{const ur=snap.docs.find(d=>d.id==='upsRegras');UOVR=rgLer(ur?ur.data():null);aplicarRegrasUps();if(UCFG){montarUPS();renderRgUps()}}montar();try{montarPrd()}catch(e){}montarAder();montarDef();
+    cad=n;try{aplicarMetas();aplicarListas()}catch(e){console.error('metas',e)}{const as=JSON.stringify(n.naoCgb);if(as!==ncAssin){ncAssin=as;setTimeout(()=>{try{hierRemontar()}catch(e){}},0)}}escalaDb=esc;escalaDbInfo=escInfo;ferUps=fu;const aa=snap.docs.find(d=>d.id==='aderAjuste');aderAjDb=aa?aa.data():null;const dt=snap.docs.find(d=>d.id==='defTatico');defTatDb=dt?dt.data():null;const dtc=snap.docs.find(d=>d.id==='defTecnicos');defTecDb=dtc?dtc.data():null;{const uh=snap.docs.find(d=>d.id==='upsHoje'),uv=uh&&uh.data();try{upsHojeDb=uv&&uv.data&&uv.eq?{data:uv.data,eq:JSON.parse(uv.eq),em:uv.enviadoEm,arquivo:uv.arquivo}:null}catch(e){upsHojeDb=null}}{const de=snap.docs.find(d=>d.id==='dispExpurgos'),dv=de&&de.data();window.DISP_EXPURGO=(dv&&dv.itens)||{}}{const ig=snap.docs.find(d=>d.id==='upsIgnorados'),igd=ig&&ig.data();IGN=(igd&&igd.itens)||{}}{const np=snap.docs.find(d=>d.id==='upsNaoProducao'),npd=np&&np.data();NAOPROD=(npd&&npd.itens)||{}}{const sc=snap.docs.find(d=>d.id==='upsSemClasse'),scd=sc&&sc.data();if(scd&&scd.j){try{SEMC=JSON.parse(scd.j)}catch(e){}}}{const pr=snap.docs.find(d=>d.id==='prodPrecos'),pd=pr&&pr.data();POVR=pd?{dp:pd.dp||{},esp:pd.esp||{},em:pd.editadoEm}:null;aplicarPrecos();try{renderPrecos()}catch(e){}}{const cr=snap.docs.find(d=>d.id==='corteRegras'),cd=cr&&cr.data();COVR=cd&&cd.itens||null;aplicarRegrasCorte();try{renderRgCorte()}catch(e){}}{const ur=snap.docs.find(d=>d.id==='upsRegras');UOVR=rgLer(ur?ur.data():null);aplicarRegrasUps();if(UCFG){montarUPS();renderRgUps()}}montar();try{montarPrd()}catch(e){}montarAder();montarDef();
   },()=>{});
   renderCadastros();
   if(pendentes.length)atualizarLocais();

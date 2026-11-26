@@ -544,7 +544,7 @@
     function formUsuario(u) {
       var novo = !u;
       var m = el('<div class="fp-mod"><form class="fp-m"><h2>' + (novo ? 'Novo usuário' : 'Editar usuário') + '</h2>' +
-        '<label>Nome completo<input class="fp-in" name="nome" value="' + esc(u ? u.nome : '') + '"></label><div class="fp-lin"><label>Usuário<input class="fp-in" name="usuario" value="' + esc(u ? u.usuario : '') + '"' + (novo ? '' : ' disabled') + '></label><label>Matrícula<input class="fp-in" name="matricula" value="' + esc(u && u.matricula || '') + '"></label></div>' +
+        '<label>Nome completo<input class="fp-in" name="nome" value="' + esc(u ? u.nome : '') + '"></label><div class="fp-lin"><label>Usuário<input class="fp-in" name="usuario" value="' + esc(u ? u.usuario : '') + '"></label><label>Matrícula<input class="fp-in" name="matricula" value="' + esc(u && u.matricula || '') + '"></label></div>' +
         '<div class="fp-lin"><label>Setor<input class="fp-in" name="setor" value="' + esc(u && u.setor || '') + '"></label><label>Nível de acesso<select class="fp-in" name="nivel">' + optNiveis(u ? u.nivel : 'SUPERVISOR') + '</select></label></div>' +
         (novo ? '' : '<label>Situação<select class="fp-in" name="ativo"><option value="1"' + (u.ativo ? ' selected' : '') + '>Ativo</option><option value="0"' + (!u.ativo ? ' selected' : '') + '>Desativado (sem acesso)</option></select></label>') +
         '<label>' + (novo ? 'Senha (mínimo 8 caracteres)' : 'Nova senha (deixe em branco para manter)') + '<input class="fp-in" name="senha" type="password" autocomplete="new-password"></label><div class="fp-erro" id="fp-e" hidden></div><div class="fp-ac"><button class="fp-b pri" type="submit">Salvar</button><button class="fp-b" type="button" data-nao>Cancelar</button></div></form></div>');
@@ -552,7 +552,7 @@
       m.querySelector('form').onsubmit = function (ev) {
         ev.preventDefault(); var f = ev.target, v = function (n) { return f.elements[n] ? f.elements[n].value : undefined; };
         var corpoReq = { nome: v('nome'), matricula: v('matricula'), setor: v('setor'), nivel: v('nivel'), senha: v('senha') };
-        if (novo) corpoReq.usuario = v('usuario'); else { corpoReq.id = u.id; corpoReq.ativo = v('ativo') === '1'; }
+        corpoReq.usuario = v('usuario'); if (!novo) { corpoReq.id = u.id; corpoReq.ativo = v('ativo') === '1'; }
         api('usuarios', { method: novo ? 'POST' : 'PATCH', body: corpoReq }).then(function () { m.remove(); return carregar(); }).catch(function (e) { var x = m.querySelector('#fp-e'); x.textContent = e.message; x.hidden = false; });
       };
     }
