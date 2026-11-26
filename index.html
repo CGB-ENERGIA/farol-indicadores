@@ -5441,7 +5441,7 @@ function aderDeLinhas(rows){
   const h=rows[0].map(x=>x==null?'':String(x).trim());
   const iR=h.indexOf('Recurso'),iD=h.indexOf('Data'),iS=h.indexOf('Status da Atividade'),iI=h.indexOf('Início'),iFm=h.indexOf('Fim'),iTI=h.indexOf('Tipo de Indisponibilidade'),iOb=h.indexOf('Observação');
   const tps=h.map((x,i)=>x==='Tipo de Atividade'?i:-1).filter(i=>i>=0);
-  const iT=h.indexOf('Tipo de Atividade2')>=0?h.indexOf('Tipo de Atividade2'):tps.length>1?tps[1]:tps[0];
+  const iT=h.indexOf('Tipo de Atividade2')>=0?h.indexOf('Tipo de Atividade2'):h.indexOf('Tipo de Atividade (2)')>=0?h.indexOf('Tipo de Atividade (2)'):tps.length>1?tps[1]:tps[0]; /* o banco SIGA guarda a 2ª coluna como "Tipo de Atividade (2)" */
   if([iR,iD,iS,iI,iT].some(i=>i==null||i<0))throw new Error('Colunas da aderência não encontradas');
   const out={},sv={};
   for(let r=1;r<rows.length;r++){const row=rows[r];if(!row||row[iR]==null)continue;
@@ -5673,9 +5673,12 @@ function psLim(l){
   return l.lim}
 let aModo='ader';try{aModo=localStorage.getItem('aModo')==='ps'?'ps':'ader'}catch(e){}
 let ordemPS={k:'pct',dir:-1};let PS_TOL=30;try{const v=localStorage.getItem('psTol');if(v!=null&&[0,15,30].includes(+v))PS_TOL=+v}catch(e){}
-const PS_ST={DENTRO:['Dentro da meta','ate'],FORA:['Fora da meta','nao'],INT:['Interjornada','par'],SEM:['Sem atividade','nd'],PEND:['Aguardando recálculo','nd'],LIVRE:['Folga / sem turno','nd'],DOM:['Domingo','nd']};
+const PS_ST={DENTRO:['Dentro da meta','ate'],FORA:['Fora da meta','nao'],INT:['Indisponibilidade / interjornada','par'],SEM:['Sem atividade','nd'],PEND:['Aguardando recálculo','nd'],LIVRE:['Folga / sem turno','nd'],DOM:['Domingo','nd']};
 const psDow=d=>new Date(d+'T12:00:00Z').getUTCDay();
-const psInter=l=>!!l.inter||(l.mot||[]).some(m=>/interjornada/i.test(m.k));
+/* amarelo: interjornada, ou indisponibilidade apontada antes do 1º serviço (o horário considerado continua sendo o do 1º serviço depois dela) */
+const psIndisp=l=>(l.mot||[]).filter(m=>m.o==='COI'&&(l.ps==null||m.i==null||m.i<l.ps));
+const psInter=l=>!!l.inter||(l.mot||[]).some(m=>/interjornada/i.test(m.k))||psIndisp(l).length>0;
+const psMotTxt=l=>{const a=psIndisp(l).map(m=>m.k+(m.t&&m.t!==m.k?' – '+m.t:''));if(l.inter&&!a.some(x=>/interjornada/i.test(x)))a.push('Interjornada');return a.join(' | ')};
 function psSt(l){
   if(psDow(l.data)===0)return 'DOM';
   if(l.lim==null)return 'LIVRE';
@@ -5725,7 +5728,7 @@ function gradePS(L,m){
     const s=statsPS(Object.values(linha));
     h+='<tr><td class="nm" data-psn="'+esc(r)+'" title="Clique para ver o mês de '+esc(r)+'">'+esc(r)+'</td>'+dias.map(d=>{const l=linha[d];if(!l)return'<td class="c"></td>';
       const st=psSt(l);if(st==='DOM'||st==='LIVRE')return'<td class="c"></td>';
-      const tip=esc(r)+' · '+dataBR(d)+' · prazo '+aHM(psLim(l))+(l.ps!=null?' · 1º serviço '+aHM(l.ps)+' ('+psDf(l)+')':' · sem atividade')+(st==='INT'?' · INTERJORNADA: não entra na conta':'')+(l.just?' · '+esc(l.just):'');
+      const tip=esc(r)+' · '+dataBR(d)+' · prazo '+aHM(psLim(l))+(l.ps!=null?' · 1º serviço '+aHM(l.ps)+' ('+psDf(l)+')':' · sem atividade')+(st==='INT'?' · INDISPONIBILIDADE/INTERJORNADA'+(psMotTxt(l)?' ('+psMotTxt(l)+')':'')+': não entra na conta':'')+(l.just?' · '+esc(l.just):'');
       if(st==='PEND')return '<td class="c ps-sem" title="'+esc(r)+' · '+dataBR(d)+' · 1º serviço ainda não calculado para este dia (Banco SIGA → Recalcular 1º serviço)">…</td>';
       if(st==='SEM')return '<td class="c ps-sem" data-ps="'+esc(r)+'|'+d+'" title="'+tip+'">–</td>';
       const cl=st==='DENTRO'?'ps-in':st==='FORA'?'ps-fora':'ps-int';
@@ -5764,15 +5767,28 @@ function psDet(rec,d){
   const m=$('a-mes').value;
   const Ls=AR.linhas.filter(l=>l.rec===rec&&(d?l.data===d:l.mes===m)).sort((a,b)=>a.data<b.data?-1:1);
   if(!Ls.length)return;
-  const S=statsPS(Ls),l0=Ls[0];
-  const kp=d?[['Prazo',l0.lim!=null?aHM(psLim(l0)):'–'],['1º serviço',l0.first!=null?aHM(l0.first):'–'],['Diferença',psDf(l0),psSt(l0)==='FORA'?'mal':''],['Situação',PS_ST[psSt(l0)][0]]]
-    :[['Dentro da meta',pct(S.pct)],['Turnos dentro',S.dentro+' de '+S.tot],['Interjornadas',S.inter],['Média 1º serviço',S.media==null?'–':aHM(S.media)]];
-  abrirDet({tit:rec+' · 1º serviço · '+(d?semana(d)+', '+dataBR(d):mesNome(m).replace(/^./,c=>c.toUpperCase())),
-    kpis:kp,aviso:esc(l0.base)+' · '+esc(l0.est)+(l0.coord?' · coord. '+esc(l0.coord):''),
-    cols:['wDia','nPrazo','n1º serviço','nDiferença','cSituação','wObservação'],
-    rows:Ls.map(l=>[dataBR(l.data)+' <span class="muted">'+semana(l.data).slice(0,3)+'</span>',l.lim!=null?aHM(psLim(l)):'–',l.ps!=null?aHM(l.ps):'–',psDf(l),psPill(l),esc([l.just||'',psInter(l)&&!l.just?'Interjornada':''].filter(Boolean).join(' | '))||'<span class="muted">–</span>']),
-    rodape:'Dentro da meta: 1ª atividade do dia (entre 05:00 e 23:00) até o horário de início da escala'+(PS_TOL?' + '+PS_TOL+' min de tolerância':'')+'. Interjornada não entra na conta.',
-    filtra:{txt:'Filtrar o painel em '+rec,fn:()=>{$('a-rec').value=rec;$('a-rec').classList.add('on');renderAder()}}});
+  const S=statsPS(Ls),l0=Ls[0],aviso=esc(l0.base)+' · '+esc(l0.est)+(l0.coord?' · coord. '+esc(l0.coord):'');
+  const filtra={txt:'Filtrar o painel em '+rec,fn:()=>{$('a-rec').value=rec;$('a-rec').classList.add('on');renderAder()}};
+  const rodape='1º serviço = primeira atividade de serviço apontada depois do checklist (indisponibilidade, almoço e retorno à base não contam), entre 05:00 e 23:00. Dentro da meta: até o horário de início da escala'+(PS_TOL?' + '+PS_TOL+' min de tolerância':'')+'. Com indisponibilidade ou interjornada antes dele, o turno fica amarelo e não entra na conta.';
+  if(d){
+    const st=psSt(l0),cor=st==='DENTRO'?'#2a8f30':st==='FORA'?'#c8102e':'#d98a00';
+    const ev=[];
+    if(l0.chk!=null)ev.push({t:l0.chk,k:'Checklist de início do turno',x:'',c:'#6b6a6a'});
+    for(const mo of (l0.mot||[])){const ind=mo.o==='COI';ev.push({t:mo.i,k:ind?'Indisponibilidade':mo.k,x:[ind?mo.k:'',mo.t&&mo.t!==mo.k?mo.t:'',mo.d!=null?mo.d+' min':''].filter(Boolean).join(' · '),c:'#d98a00'})}
+    if(l0.ps!=null)ev.push({t:l0.ps,k:'1º serviço',x:'Horário considerado no indicador',c:cor,b:1});
+    ev.sort((a,b)=>(a.t==null?1e9:a.t)-(b.t==null?1e9:b.t));
+    const linhas=ev.map(e=>'<tr style="box-shadow:inset 4px 0 0 '+e.c+(e.b?';background:var(--accent-soft)':'')+'"><td class="nw" style="padding-left:14px"><b>'+(e.t!=null?aHM(e.t):'–')+'</b></td><td>'+esc(e.k)+(e.b?' <span class="pill '+({DENTRO:'ate',FORA:'nao'}[st]||'par')+'">'+PS_ST[st][0]+'</span>':'')+'</td><td class="muted">'+esc(e.x)+'</td></tr>').join('');
+    abrirDet({tit:rec+' · 1º serviço · '+semana(d)+', '+dataBR(d),
+      kpis:[['Prazo',l0.lim!=null?aHM(psLim(l0)):'–'],['Checklist',l0.chk!=null?aHM(l0.chk):'–'],['1º serviço',l0.ps!=null?aHM(l0.ps):'–'],['Diferença',psDf(l0),st==='FORA'?'mal':''],['Situação',PS_ST[st][0]]],
+      aviso,semTab:true,
+      extra:'<div class="tw md-t"><table class="utab"><thead><tr><th>Horário</th><th>Registro</th><th>Detalhe</th></tr></thead><tbody>'+(linhas||'<tr><td colspan="3" class="empty">Sem registros neste dia.</td></tr>')+'</tbody></table></div>'+(l0.chk==null&&l0.tem?'<p class="muted" style="margin:8px 0 0;font-size:12px">Sem checklist de início do turno registrado: vale o primeiro serviço do dia.</p>':'')+'<p class="muted" style="margin:8px 0 0;font-size:11.5px">'+esc(rodape)+'</p>',
+      filtra});
+    return}
+  abrirDet({tit:rec+' · 1º serviço · '+mesNome(m).replace(/^./,c=>c.toUpperCase()),
+    kpis:[['Dentro da meta',pct(S.pct)],['Turnos dentro',S.dentro+' de '+S.tot],['Indisp. / interjornada',S.inter],['Média 1º serviço',S.media==null?'–':aHM(S.media)]],aviso,
+    cols:['wDia','nPrazo','nChecklist','n1º serviço','nDiferença','cSituação','wObservação'],
+    rows:Ls.map(l=>[dataBR(l.data)+' <span class="muted">'+semana(l.data).slice(0,3)+'</span>',l.lim!=null?aHM(psLim(l)):'–',l.chk!=null?aHM(l.chk):'–',l.ps!=null?aHM(l.ps):'–',psDf(l),psPill(l),esc([l.just||'',psMotTxt(l)].filter(Boolean).join(' | '))||'<span class="muted">–</span>']),
+    rodape,filtra});
 }
 function setAModo(mo){
   aModo=mo==='ps'?'ps':'ader';try{localStorage.setItem('aModo',aModo)}catch(e){}
