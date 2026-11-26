@@ -5775,7 +5775,7 @@ function psDet(rec,d){
       if(ind.length)for(const a of ind){const mo=(l0.mot||[]).find(q=>q.o==='COI'&&q.i===a.ini);ev.push({t:a.ini,f:a.fim,k:'Indisponibilidade',os:a.os,x:[mo?mo.k:'',mo&&mo.t&&mo.t!==mo.k?mo.t:'',dur(a.ini,a.fim)].filter(Boolean).join(' · '),c:'#d98a00'})}
       else for(const mo of (l0.mot||[]).filter(q=>q.o==='COI'))ev.push({t:mo.i,f:mo.i!=null&&mo.d!=null?(mo.i+mo.d)%1440:null,k:'Indisponibilidade',x:[mo.k,mo.t&&mo.t!==mo.k?mo.t:'',mo.d!=null?mo.d+' min':''].filter(Boolean).join(' · '),c:'#d98a00'});
       for(const mo of (l0.mot||[]).filter(q=>q.o!=='COI'))ev.push({t:mo.i,k:mo.k,x:mo.t,c:'#d98a00'});
-      if(l0.ps!=null){const sv=(A||[]).find(a=>a.ini===l0.ps&&!NAOS.test(a.tipo));ev.push({t:l0.ps,f:sv?sv.fim:null,k:'1º serviço'+(sv&&sv.tipo?' · '+sv.tipo:''),os:sv?sv.os:'',x:sv?[[sv.bai,sv.cid].filter(Boolean).join(' · '),'horário considerado no indicador'].filter(Boolean).join(' · '):'Horário considerado no indicador',c:cor,b:1})}
+      if(l0.ps!=null){const sv=(A||[]).find(a=>a.ini===l0.ps&&!NAOS.test(a.tipo));ev.push({t:l0.ps,f:sv?sv.fim:null,k:'1º serviço'+(sv&&sv.tipo?' · '+sv.tipo:''),os:sv?sv.os:'',x:sv&&sv.cid?sv.cid:'',c:cor,b:1})}
       ev.sort((a,b)=>(a.t==null?1e9:a.t)-(b.t==null?1e9:b.t));
       return ev.map(linha).join('')||'<tr><td colspan="5" class="empty">Sem registros neste dia.</td></tr>'};
     abrirDet({tit:rec+' · 1º serviço · '+semana(d)+', '+dataBR(d),
