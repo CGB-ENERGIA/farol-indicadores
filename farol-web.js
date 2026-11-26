@@ -63,12 +63,38 @@
         ouvintes.push({ ok: ok });
         if (carregou) { ok(snap()); }
         else puxar().then(function () { avisar(); }).catch(function (e) { if (erro) erro(e); });
-        if (!timer) timer = setInterval(function () { if (!sessao || document.hidden) return; puxar().then(function (m) { if (m) avisar(); }).catch(function () {}); }, 20000);
+        vigiar();
         return function () { ouvintes = ouvintes.filter(function (o) { return o.ok !== ok; }); };
       }
     };
+    /* usado pelo ciclo de atualização: só baixa se o último horário no banco for diferente do que já veio */
+    obj._ultimo = function () { return cur ? cur.a : null; };
+    obj._ouvindo = function () { return carregou && ouvintes.length > 0; };
+    obj._atualizar = function () { if (!carregou) return Promise.resolve(); return puxar().then(function (m) { if (m) avisar(); }); };
     colecoes[c] = obj;
     return obj;
+  }
+  /* ciclo único de atualização (a cada 30 s): 1 pedido pergunta o que mudou; só as coleções alteradas são baixadas.
+     Para com a aba escondida ou sem uso há 15 min (o banco pode "dormir") e volta na hora em que a pessoa mexe. */
+  var ciclo = null, ultUso = Date.now(), parado = false, ultCheca = 0, OCIOSO = 15 * 60 * 1000;
+  function checar() {
+    if (!sessao || document.hidden) return;
+    if (Date.now() - ultUso > OCIOSO) { parado = true; return; }
+    if (Date.now() - ultCheca < 10000) return; /* nunca mais de uma checagem a cada 10 s */
+    ultCheca = Date.now();
+    var nomes = Object.keys(colecoes).filter(function (c) { return colecoes[c]._ouvindo(); }); /* só as que a tela acompanha */
+    if (!nomes.length) return;
+    api('mudancas?c=' + nomes.join(',')).then(function (r) {
+      var u = (r && r.ultimo) || {};
+      nomes.forEach(function (c) { if (u[c] && u[c] !== colecoes[c]._ultimo()) colecoes[c]._atualizar().catch(function () {}); });
+    }).catch(function () {});
+  }
+  function usou() { ultUso = Date.now(); if (parado) { parado = false; checar(); } }
+  function vigiar() {
+    if (ciclo) return;
+    ciclo = setInterval(checar, 30000);
+    ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(function (ev) { window.addEventListener(ev, usou, { passive: true }); });
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) { ultUso = Date.now(); parado = false; checar(); } });
   }
 
   /* ---------- window.claude ---------- */

@@ -2258,7 +2258,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
 <div class="modal" id="modalLote" hidden><div class="modal-c mlote"><div class="modal-hd"><h3 id="ltTit">Cadastrar em lote</h3><button class="fecha" id="b-fechaLote" type="button" aria-label="Fechar"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="modal-bd" id="ltCorpo"></div><div class="modal-ft"><span class="muted" id="ltMsg" style="margin-right:auto;font-size:12.5px"></span><button class="btn" id="b-ltCancela" type="button">Cancelar</button><button class="btn primary" id="b-ltSalva" type="button">Salvar cadastros</button></div></div></div>
 <div id="toast" class="toast" hidden></div>
 
-<script async src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha384-vtjasyidUo0kW94K5MXDXntzOJpQgBKXmE7e2Ga4LG0skTTLeBi97eFAXsqewJjw" crossorigin="anonymous"></script>
 <script>
 /* Cálculo da UPS — réplica do Power BI "Produção UPS" */
 (function (root) {
@@ -2828,8 +2828,8 @@ function ctRenderC(){
 }
 function ctLeaflet(cb){
   if(window.L)return cb();if(CT.lf)return CT.lf.push(cb);CT.lf=[cb];
-  const l=document.createElement('link');l.rel='stylesheet';l.href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';document.head.appendChild(l);
-  const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';s.onload=()=>{const f=CT.lf;CT.lf=null;f.forEach(x=>x())};s.onerror=()=>{CT.lf=null;if($('ctMapaN'))$('ctMapaN').textContent='mapa indisponível (sem acesso à internet)'};document.head.appendChild(s);
+  const l=document.createElement('link');l.rel='stylesheet';l.href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';l.integrity='sha384-c6Rcwz4e4CITMbu/NBmnNS8yN2sC3cUElMEMfP3vqqKFp7GOYaaBBCqmaWBjmkjb';l.crossOrigin='anonymous';document.head.appendChild(l);
+  const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';s.integrity='sha384-NElt3Op+9NBMCYaef5HxeJmU4Xeard/Lku8ek6hoPTvYkQPh3zLIrJP7KiRocsxO';s.crossOrigin='anonymous';s.onload=()=>{const f=CT.lf;CT.lf=null;f.forEach(x=>x())};s.onerror=()=>{CT.lf=null;if($('ctMapaN'))$('ctMapaN').textContent='mapa indisponível (sem acesso à internet)'};document.head.appendChild(s);
 }
 function ctMapa(f,ag){
   const gps=f.filter(r=>typeof r.lat==='number'&&typeof r.lon==='number'&&(r.lat||r.lon)),pts=gps.filter(r=>r.lat>-15&&r.lat<5&&r.lon>-55&&r.lon<-35); /* descarta coordenadas fora do Nordeste (erro de GPS) */
@@ -4200,7 +4200,7 @@ $('b-zoomPrint').onclick=zoomPrint;
 $('b-fechaPrint').onclick=()=>$('modalPrint').hidden=true;
 $('modalPrint').onclick=e=>{if(e.target.id==='modalPrint')$('modalPrint').hidden=true};
 let H2I=null;
-const carregarH2I=()=>window.htmlToImage?Promise.resolve(window.htmlToImage):(H2I||(H2I=new Promise((ok,er)=>{const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/html-to-image@1.11.13/dist/html-to-image.js';sc.onload=()=>ok(window.htmlToImage);sc.onerror=()=>{H2I=null;er(new Error('Não foi possível carregar o gerador de imagem'))};document.head.appendChild(sc)})));
+const carregarH2I=()=>window.htmlToImage?Promise.resolve(window.htmlToImage):(H2I||(H2I=new Promise((ok,er)=>{const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/html-to-image@1.11.13/dist/html-to-image.js';sc.integrity='sha384-Tha/42qsYmpYmQ07pX+nJzkKumO0BzKJxK/uzVc7xyBQxVCUgQBhQIG8L7vXK+9C';sc.crossOrigin='anonymous';sc.onload=()=>ok(window.htmlToImage);sc.onerror=()=>{H2I=null;er(new Error('Não foi possível carregar o gerador de imagem'))};document.head.appendChild(sc)})));
 /* print genérico: fotografa a página aberta como está (filtros e zoom incluídos) */
 async function gerarPrintPagina(alvo){
   const temaAnt=document.documentElement.getAttribute('data-tema');document.documentElement.removeAttribute('data-tema'); /* print sempre no tema claro */
@@ -4295,13 +4295,24 @@ async function gz(str){const cs=new CompressionStream('gzip'),w=cs.writable.getW
 async function ungz(b64){const bin=atob(b64),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);const ds=new DecompressionStream('gzip'),w=ds.writable.getWriter();w.write(u);w.close();return await new Response(ds.readable).text()}
 function bancoChunks(rows){const out=[];let cur=[],n=0;for(const r of rows){const l=JSON.stringify(r).length+1;if(cur.length&&n+l>600000){out.push(cur);cur=[];n=0}cur.push(r);n+=l}if(cur.length||!out.length)out.push(cur);return out}
 let bancoIdx={COI:{},MAN:{},FIS:{},OBRAS:{}},bancoMem={},bancoLocal={},bancoSel={fonte:'COI',mes:'',dia:'',q:''},bancoTk=0;
-async function bancoGravaIdx(){await db.collection('config').doc('bancoIdx').set({j:JSON.stringify(bancoIdx),editadoEm:new Date().toISOString()})}
+/* o índice é um documento só e várias pessoas enviam ao mesmo tempo: antes de gravar, lê a versão do banco e aplica só
+   o que esta tela mudou (assim um envio não apaga os dias que outra pessoa acabou de enviar) */
+let bancoIdxMud=[];
+const bancoIdxMarca=(f,d,n)=>{bancoIdxMud.push([f,d,n]);if(n==null){if(bancoIdx[f])delete bancoIdx[f][d]}else(bancoIdx[f]=bancoIdx[f]||{})[d]=n};
+async function bancoGravaIdx(){
+  const ref=db.collection('config').doc('bancoIdx');let base={};
+  try{const sn=await ref.get();if(sn.exists&&sn.data().j)base=JSON.parse(sn.data().j)}catch(e){base=JSON.parse(JSON.stringify(bancoIdx))}
+  for(const f of ['COI','MAN','FIS','OBRAS'])base[f]=base[f]||{};
+  for(const [f,d,n] of bancoIdxMud){if(n==null)delete base[f][d];else base[f][d]=n}
+  bancoIdxMud=[];bancoIdx=base;
+  await ref.set({j:JSON.stringify(base),editadoEm:new Date().toISOString()});
+}
 async function bancoSalvar(p,semIdx){
   const b=p.banco;if(!b)return;
   for(const d in b.dias){const ch=bancoChunks(b.dias[d]);
     for(let k=0;k<ch.length;k++)await db.collection('banco').doc(p.fonte+'_'+d+'_'+k).set({fonte:p.fonte,data:d,k,nk:ch.length,cols:b.cols,z:await gz(JSON.stringify(ch[k])),arquivo:p.nome,enviadoEm:new Date().toISOString()});
     for(let k=ch.length;k<ch.length+40;k++){const ref=db.collection('banco').doc(p.fonte+'_'+d+'_'+k);const sn=await ref.get();if(!sn.exists)break;await ref.delete()}
-    (bancoIdx[p.fonte]=bancoIdx[p.fonte]||{})[d]=b.dias[d].length;delete bancoMem[p.fonte+'|'+d]}
+    bancoIdxMarca(p.fonte,d,b.dias[d].length);delete bancoMem[p.fonte+'|'+d]}
   if(!semIdx)await bancoGravaIdx();
 }
 function bancoIdxDe(f){const o=Object.assign({},bancoIdx[f]||{});const l=bancoLocal[f];if(l)for(const d in l.dias)o[d]=l.dias[d].length;return o}
@@ -4309,9 +4320,12 @@ async function bancoDia(f,d){ /* {cols,rows} de uma fonte num dia: arquivo ainda
   const l=bancoLocal[f];if(l&&l.dias[d])return {cols:l.cols,rows:l.dias[d]};
   const key=f+'|'+d;if(bancoMem[key])return bancoMem[key];
   if(!db||!(bancoIdx[f]||{})[d])return {cols:[],rows:[]};
-  let cols=[],rows=[],nk=1;
-  for(let k=0;k<nk;k++){const sn=await db.collection('banco').doc(f+'_'+d+'_'+k).get();if(!sn.exists)break;const x=sn.data();nk=x.nk||1;cols=x.cols||cols;try{rows=rows.concat(JSON.parse(x.z?await ungz(x.z):x.j))}catch(e){}}
-  return bancoMem[key]={cols,rows};
+  /* guarda o pedido em andamento: telas que pedem o mesmo dia ao mesmo tempo usam um só download */
+  const p=bancoMem[key]=(async()=>{let cols=[],rows=[],nk=1;
+    for(let k=0;k<nk;k++){const sn=await db.collection('banco').doc(f+'_'+d+'_'+k).get();if(!sn.exists)break;const x=sn.data();nk=x.nk||1;cols=x.cols||cols;try{rows=rows.concat(JSON.parse(x.z?await ungz(x.z):x.j))}catch(e){}}
+    return {cols,rows}})();
+  p.catch(()=>{if(bancoMem[key]===p)delete bancoMem[key]});
+  return p;
 }
 function bancoJunta(lista){ /* une dias que podem ter colunas diferentes */
   let cols=[];for(const x of lista)for(const c of x.cols)if(!cols.includes(c))cols.push(c);
@@ -4496,7 +4510,7 @@ async function bancoExcluirDia(){
     await apaga('dias',d+'_'+f);await apaga('inicio',d+'_'+f);
     if(!outras.length){for(const c of ['ups','ader','prod','tm','mix'])await apaga(c,d);
       if(upsHojeDb&&upsHojeDb.data===d)await apaga('config','upsHoje')}
-    if(bancoIdx[f])delete bancoIdx[f][d];delete bancoMem[f+'|'+d];await bancoGravaIdx();
+    bancoIdxMarca(f,d,null);delete bancoMem[f+'|'+d];await bancoGravaIdx();
     alert('Relatório '+f+' de '+dataBR(d)+' excluído.');
   }catch(e){console.error(e);alert('Não consegui excluir: '+((e&&e.message)||'falha de comunicação')+'\nO que já foi apagado continua apagado; tente de novo.')}
   b.disabled=false;b.textContent='Excluir este dia';bancoSel.dia='';montarBanco();

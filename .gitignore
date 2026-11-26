@@ -15,7 +15,7 @@ farol/
 *.xlsx
 index_MESCLADO_*.html
 
-# ---- DADOS: o repositório é PÚBLICO, então nada disso sobe. Os dados ficam no Neon (npm run importar-dados-site) ----
+# ---- DADOS: o repositório é PÚBLICO, então nada disso sobe. Os dados ficam só no Neon ----
 historico*.json
 config.json
 *_config.json
