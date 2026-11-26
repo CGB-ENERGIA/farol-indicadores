@@ -798,6 +798,8 @@ textarea.copia{width:100%;height:220px;font:13px var(--body);border:1px solid va
 .dmz{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#f1eeeb;flex:1;display:flex}
 .dmz>svg{width:100%;height:100%;min-height:420px;display:block;touch-action:none;cursor:grab;user-select:none}.dmz>svg.arr{cursor:grabbing}
 .dm-sea{fill:#f1eeeb}.dm-mun{fill:#fbfaf8;stroke:#cdc6c7;stroke-width:.9;stroke-linejoin:round;vector-effect:non-scaling-stroke;cursor:pointer;transition:fill .15s}.dm-mun.on{stroke:#b39198}.dm-mun:hover{stroke:var(--accent);stroke-width:1.6}
+.dm-mun.sel{fill:rgba(31,134,224,.24)!important;stroke:#1f86e0;stroke-width:2.2}.dm-mun.dim{opacity:.5}.dm-b{transition:opacity .2s}.dm-b.dim{opacity:.32}.dm-b.sel .dm-st{stroke:#1f86e0;stroke-width:3.2}
+.dm-rk{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}.dm-ck{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:4px 10px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.dm-ck b{color:var(--accent)}.dm-ck:hover{border-color:var(--accent)}.dm-ck.sel{background:#1f86e0;border-color:#1f86e0;color:#fff}.dm-ck.sel b{color:#fff}.dm-ck.lim{border-style:dashed;color:var(--muted)}
 .dm-b{cursor:pointer}.dm-st{stroke:#fff;stroke-width:1.6}.dm-nv{font-size:10.5px;font-weight:900;fill:#fff;pointer-events:none}
 .dm-l{pointer-events:none}.dm-t{font-size:11px;font-weight:800;fill:var(--fg);paint-order:stroke;stroke:rgba(255,255,255,.95);stroke-width:3.5px;stroke-linejoin:round}
 .dmz-c{position:absolute;top:10px;right:10px;display:grid;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--sh-1);overflow:hidden}
@@ -1553,6 +1555,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     <div class="fld"><label for="d-tipo">Tipo de defeito</label><div class="msel" id="d-tipo" data-todos="Todos" data-nome="tipo(s)"></div></div>
     <div class="fld"><label for="d-ger">Gerência</label><div class="msel" id="d-ger" data-todos="Todas" data-nome="gerência(s)"></div></div>
     <div class="fld"><label for="d-pep">PEP</label><div class="msel" id="d-pep" data-todos="Todos" data-nome="PEP(s)"></div></div>
+    <div class="fld"><label for="d-mun">Município</label><div class="msel" id="d-mun" data-todos="Todos" data-nome="município(s)"></div></div>
     </div>
     <div id="fUps" style="display:grid;gap:14px" hidden>
     <div class="grp">Período</div>
@@ -2604,6 +2607,8 @@ let cfg=null, hist=null, dbDocs=[], locais=[], resumo=[], ultimaData=null, fonte
 const METAS_PAD={dispMeta:.93,dispSup:.98,dispPar:.85,upsMeta:.75,aderSup:.90,aderMeta:.85,aderPar:.75,iniOk:540,iniAt:570};
 const METAS=window.METAS=Object.assign(window.METAS||{},METAS_PAD); /* também em window: o cálculo da disponibilidade (script separado) lê as metas daqui */
 /* cores das faixas por indicador (Cadastros > Metas e faixas de cor); sem escolha, valem as cores de fábrica */
+/* almoço acima de 120 min é destacado nas telas que mostram os horários */
+const ALM_MAX=120,almLongo=(k,ini,fim)=>/^intervalo para almo/i.test(k||'')&&ini!=null&&fim!=null&&((fim<ini?fim+1440:fim)-ini)>ALM_MAX,ALM_PILL='<span class="pill nao" title="Intervalo de almoço acima de 120 minutos">Almoço acima de 2h</span>';
 const COR4={sup:'#2b7a0f',ate:'#3C9E18',par:'#a35a00',nao:'#C00000'};
 const PAL_PAD={disp:Object.assign({},COR4),ups:Object.assign({},COR4),ader:Object.assign({},COR4),ini:{g:'#00A86B',y:'#FFB703',r:'#D90429'}};
 const PAL={disp:{},ups:{},ader:{},ini:{}};
@@ -3175,7 +3180,7 @@ function msInit(el){
 function msSel(id){const st=$(id).msel;return st&&st.sel.size?st.sel:null}
 function msTxt(id){const s=msSel(id);return s?[...s].join(', '):''}
 document.addEventListener('click',()=>document.querySelectorAll('.msel-p').forEach(p=>p.hidden=true));document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.msel-p').forEach(p=>p.hidden=true)});
-['f-dia','f-base','f-ger','f-est','f-tipo','p-ger','p-ct','p-base','p-tipo','p-rec','u-mes','a-ger','a-base','a-est','a-tipo','a-rec','i-base','i-tipo','i-rec','q-base','q-tipo','x-base','x-tipo','t-mun','t-ef','d-pri','d-tat','d-dist','d-tipo','d-ger','d-pep','u-base','u-tipo','u-coord','u-rec'].forEach(id=>msInit($(id)));
+['f-dia','f-base','f-ger','f-est','f-tipo','p-ger','p-ct','p-base','p-tipo','p-rec','u-mes','a-ger','a-base','a-est','a-tipo','a-rec','i-base','i-tipo','i-rec','q-base','q-tipo','x-base','x-tipo','t-mun','t-ef','d-pri','d-tat','d-dist','d-tipo','d-ger','d-pep','d-mun','u-base','u-tipo','u-coord','u-rec'].forEach(id=>msInit($(id)));
 function opts(sel,vals,todos,lbl){
   if(sel.msel){sel.msel.setOpts(vals,lbl);return}
   const atual=sel.value;
@@ -3309,7 +3314,7 @@ function abrirDiaEst(rows,e,d){
   $('mdTit').textContent=e+' · '+semana(d)+', '+dataBR(d);
   const ord=L.slice().sort((a,b)=>{const x=a.prev?a.real/a.prev:9,y=b.prev?b.real/b.prev:9;return x-y||a.rec.localeCompare(b.rec)});
   const linha=r=>{const p=r.prev?r.real/r.prev:null,sit=!r.ativo||(!r.real&&r.ini==null)?'<span class="pill nao">Sem atividade</span>':r.exp?'<span class="pill nd" title="Expurgado pelo administrador'+(r.exp.motivo?': '+esc(r.exp.motivo):'')+'. O dia da equipe não entra na conta.">Expurgado</span>':(r.ativo&&r.ini!=null&&r.fim!=null&&r.disp===0&&r.fim<r.ini)?'<span class="pill par" title="O fim registrado é anterior ao início (atividade encerrada fora do dia ou dado errado no SIGA). O turno não é contado.">Fim inconsistente</span>':!r.prev?'<span class="pill nd">Sem previsto</span>':'<span class="pill '+cls(p)+'">'+Disp.classificar(p).txt+'</span>';
-    return '<tr><td class="nw"><b class="mono">'+esc(r.rec)+'</b></td><td class="nw">'+esc(r.base)+'</td><td class="n">'+(r.ini!=null&&r.ativo?hhmm(r.ini):'–')+'</td><td class="n">'+(r.fim!=null&&r.ativo?hhmm(r.fim)+(r.noite?' <small class="muted" title="O turno terminou no dia seguinte">+1 dia</small>':''):'–')+'</td><td class="n">'+(r.alm?hhmm(r.alm):'–')+'</td><td class="n">'+(r.ind?hhmm(r.ind):'–')+'</td><td class="n"><b>'+hhmm(r.real)+'</b></td><td class="n">'+hhmm(r.prev)+'</td><td class="n"><b>'+(p==null?'–':pct(p))+'</b></td><td>'+sit+(r.noite&&!r.exp?' <span class="pill nd" title="Turno que terminou no dia seguinte: as horas foram contadas">Virou o dia</span>':'')+'</td>'+(ehAdm()?'<td class="nw"><button type="button" class="btn sm'+(r.exp?'':' del')+'" data-expu="'+esc(r.rec)+'" title="'+(r.exp?'Voltar a contar este dia':'Tirar este dia da conta (os horários continuam visíveis)')+'">'+(r.exp?'Restaurar':'Expurgar')+'</button></td>':'')+'</tr>'};
+    return '<tr><td class="nw"><b class="mono">'+esc(r.rec)+'</b></td><td class="nw">'+esc(r.base)+'</td><td class="n">'+(r.ini!=null&&r.ativo?hhmm(r.ini):'–')+'</td><td class="n">'+(r.fim!=null&&r.ativo?hhmm(r.fim)+(r.noite?' <small class="muted" title="O turno terminou no dia seguinte">+1 dia</small>':''):'–')+'</td><td class="n"'+(r.alm>ALM_MAX?' style="background:var(--nao-soft);color:var(--nao);font-weight:800" title="Almoço acima de 120 minutos"':'')+'>'+(r.alm?hhmm(r.alm)+(r.alm>ALM_MAX?' ▲':''):'–')+'</td><td class="n">'+(r.ind?hhmm(r.ind):'–')+'</td><td class="n"><b>'+hhmm(r.real)+'</b></td><td class="n">'+hhmm(r.prev)+'</td><td class="n"><b>'+(p==null?'–':pct(p))+'</b></td><td>'+sit+(r.noite&&!r.exp?' <span class="pill nd" title="Turno que terminou no dia seguinte: as horas foram contadas">Virou o dia</span>':'')+'</td>'+(ehAdm()?'<td class="nw"><button type="button" class="btn sm'+(r.exp?'':' del')+'" data-expu="'+esc(r.rec)+'" title="'+(r.exp?'Voltar a contar este dia':'Tirar este dia da conta (os horários continuam visíveis)')+'">'+(r.exp?'Restaurar':'Expurgar')+'</button></td>':'')+'</tr>'};
   $('mdCorpo').innerHTML='<div class="md-k"><div><span>Disponibilidade</span><b class="'+(pp==null?'':cls(pp))+'">'+(pp==null?'–':pct(pp))+'</b></div><div><span>Turno real</span><b>'+hhmm(R)+'</b></div><div><span>Previsto</span><b>'+hhmm(P)+'</b></div><div><span>Equipes</span><b>'+L.length+'</b></div><div><span>Sem atividade</span><b>'+semAt+'</b></div></div>'
     +(fer?'<p class="muted" style="margin:0 0 8px;font-size:12.5px">Feriado / folga: '+esc(fer.feriado)+'</p>':'')
     +'<div class="tw md-t"><table class="utab"><thead><tr><th>Prefixo</th><th>Base</th><th class="n">Início</th><th class="n">Fim</th><th class="n">Almoço</th><th class="n">Indisp.</th><th class="n">Turno real</th><th class="n">Previsto</th><th class="n">%</th><th>Situação</th>'+(ehAdm()?'<th></th>':'')+'</tr></thead><tbody>'
@@ -3958,7 +3963,7 @@ let limCob=METAS.dispMeta, cobGrupos=[], cobDia=null;
 document.querySelectorAll('[data-lim]').forEach(b=>b.onclick=()=>{limCob=b.dataset.lim==='meta'?METAS.dispMeta:b.dataset.lim==='par'?METAS.dispPar:+b.dataset.lim;document.querySelectorAll('[data-lim]').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));render()});
 function motivo(r){
   if(!r.ativo) return '<span class="sem">Sem atividade no SIGA</span>';
-  return 'Início '+hhmm(r.ini)+' · fim '+hhmm(r.fim)+(r.ti!=null&&r.tf!=null?' · previsto '+hhmm(r.ti)+'–'+hhmm(r.tf)+(r.dentro!=null&&r.disp>0&&r.dentro<r.disp?' (fora do horário: só '+hhmm(r.dentro)+' de '+hhmm(r.disp)+' contam)':''):'')+(r.alm?' · almoço '+hhmm(r.alm):'')+(r.ind?' · indisp. '+hhmm(r.ind):'');
+  return 'Início '+hhmm(r.ini)+' · fim '+hhmm(r.fim)+(r.ti!=null&&r.tf!=null?' · previsto '+hhmm(r.ti)+'–'+hhmm(r.tf)+(r.dentro!=null&&r.disp>0&&r.dentro<r.disp?' (fora do horário: só '+hhmm(r.dentro)+' de '+hhmm(r.disp)+' contam)':''):'')+(r.alm?' · '+(r.alm>ALM_MAX?'<b style="color:var(--nao)">almoço '+hhmm(r.alm)+' (acima de 2h)</b>':'almoço '+hhmm(r.alm)):'')+(r.ind?' · indisp. '+hhmm(r.ind):'');
 }
 function renderCobranca(todosMes,diaRef){
   cobDia=diaRef;
@@ -5351,7 +5356,8 @@ async function iniDia(ik){
   for(const a of A.slice(0,80)){
     if(ult!=null&&a.ini!=null&&a.ini-ult>=15)rows.push('<tr class="ptl-gap"><td></td><td colspan="7">⏱ Sem atividade registrada · '+tmin(a.ini-ult)+'</td></tr>');
     const nao=ehNaoProd(a.tipo),stl=String(a.st||'').toLowerCase(),cor=nao?'#8a8a8a':stl==='concluído'?'#2a8f30':/cancel|não conclu/.test(stl)?'#c8102e':'#d98a00',eh1=a===prim;
-    rows.push('<tr style="box-shadow:inset 4px 0 0 '+cor+(eh1?';background:var(--accent-soft)':'')+'"><td class="nw" style="padding-left:14px"><b>'+hm(a.ini)+'</b></td><td class="nw">'+hm(a.fim)+'</td><td class="n nw">'+dur(a.ini,a.fim)+'</td><td>'+esc(a.tipo)+(eh1?' <span class="pill ate">1ª atividade</span>':'')+(a.cid||a.bai?'<small class="muted" style="display:block">'+esc([a.bai,a.cid].filter(Boolean).join(' · '))+'</small>':'')+'</td><td class="nw">'+esc(a.os)+'</td><td>'+(nao||!a.st?'':'<span class="pill" style="background:'+cor+'22;color:'+cor+'">'+esc(a.st.toUpperCase())+'</span>')+'</td><td class="n nw">'+esc(a.desl||'–')+'</td></tr>');
+    const al=almLongo(a.tipo,a.ini,a.fim);
+    rows.push('<tr style="box-shadow:inset 4px 0 0 '+(al?'#c8102e':cor)+(al?';background:var(--nao-soft)':eh1?';background:var(--accent-soft)':'')+'"><td class="nw" style="padding-left:14px"><b>'+hm(a.ini)+'</b></td><td class="nw">'+hm(a.fim)+'</td><td class="n nw"'+(al?' style="color:var(--nao);font-weight:800"':'')+'>'+dur(a.ini,a.fim)+'</td><td>'+esc(a.tipo)+(eh1?' <span class="pill ate">1ª atividade</span>':'')+(a.cid||a.bai?'<small class="muted" style="display:block">'+esc([a.bai,a.cid].filter(Boolean).join(' · '))+'</small>':'')+'</td><td class="nw">'+esc(a.os)+'</td><td>'+(al?ALM_PILL:nao||!a.st?'':'<span class="pill" style="background:'+cor+'22;color:'+cor+'">'+esc(a.st.toUpperCase())+'</span>')+'</td><td class="n nw">'+esc(a.desl||'–')+'</td></tr>');
     if(a.fim!=null)ult=a.fim<(a.ini||0)?a.fim+1440:a.fim;else if(a.ini!=null)ult=a.ini}
   $('iAtvIni').innerHTML=bloco+'<h4 style="margin:10px 0 6px;font-size:13.5px">Atividades do dia · '+A.length+' em ordem de horário</h4><div class="tw md-t"><table class="utab"><thead><tr><th>Início</th><th>Fim</th><th class="n">Duração</th><th>Atividade</th><th>Ordem / nota</th><th>Situação</th><th class="n">Deslocamento (SIGA)</th></tr></thead><tbody>'+rows.join('')+'</tbody></table></div>'+(A.length>80?'<p class="muted" style="font-size:11.5px;margin:6px 0 0">Mostrando as 80 primeiras.</p>':'')
 }
@@ -6432,7 +6438,7 @@ async function prdTimeline(rec,d){
     if(ult!=null&&a.ini!=null&&a.ini-ult>=15){gapT+=a.ini-ult;rows.push('<tr class="ptl-gap"><td></td><td colspan="8">⏱ Sem atividade registrada · '+((g0)=>g0>=60?Math.floor(g0/60)+' h'+(g0%60?' '+String(g0%60).padStart(2,'0')+' min':''):g0+' min')(a.ini-ult)+'</td></tr>')}
     const prod=!a.nao&&a.v>0&&a.st==='concluído';if(prod){ac+=a.v;nProd++}else if(!a.nao&&a.v>0)ac+=a.v;
     const cor=a.nao?'#8a8a8a':a.st!=='concluído'?'#c8102e':a.v>0?'#2a8f30':'#d98a00',tp=a.nao?'Não produção':a.st!=='concluído'?'Não concluída':a.v>0?'Produção':'Sem valor';
-    rows.push('<tr style="box-shadow:inset 4px 0 0 '+cor+'"><td class="nw" style="padding-left:14px"><b>'+hm(a.ini)+'</b></td><td class="nw">'+hm(a.fim)+'</td><td class="n nw">'+dur(a.ini,a.fim)+'</td><td>'+esc(a.k)+(a.just?'<small class="muted" style="display:block">Justificativa: '+esc(a.just)+'</small>':'')+(a.loc?'<small class="muted" style="display:block">'+esc(a.loc)+'</small>':'')+'</td><td class="nw">'+esc(a.os)+'</td><td>'+(a.nao?'':'<span class="pill" style="background:'+cor+'22;color:'+cor+'">'+tp+'</span>')+'</td><td class="n nw">'+(a.nao?'–':a.v==null?'–':brl(a.v))+'</td><td class="n nw">'+(a.nao?'':ia===ultAc&&x.meta>0?(()=>{const pr=ac/x.meta,cl=prdCls(pr),cc={ok:'#2a8f30',par:'#d98a00',mal:'#c8102e'}[cl];return '<span style="color:'+cc+';font-weight:800"><span class="pv-st '+cl+'" title="'+(cl==='ok'?'Bateu a meta':cl==='par'?'Perto da meta':'Abaixo de 85%')+'">'+(cl==='ok'?'✔':cl==='par'?'●':'✖')+'</span>'+brl(ac)+' <small>· '+Math.round(pr*100)+'%</small></span>'})():brl(ac))+'</td></tr>');
+    const al=almLongo(a.k,a.ini,a.fim);rows.push('<tr style="box-shadow:inset 4px 0 0 '+(al?'#c8102e':cor)+(al?';background:var(--nao-soft)':'')+'"><td class="nw" style="padding-left:14px"><b>'+hm(a.ini)+'</b></td><td class="nw">'+hm(a.fim)+'</td><td class="n nw"'+(al?' style="color:var(--nao);font-weight:800"':'')+'>'+dur(a.ini,a.fim)+'</td><td>'+esc(a.k)+(a.just?'<small class="muted" style="display:block">Justificativa: '+esc(a.just)+'</small>':'')+(a.loc?'<small class="muted" style="display:block">'+esc(a.loc)+'</small>':'')+'</td><td class="nw">'+esc(a.os)+'</td><td>'+(a.nao?(al?ALM_PILL:''):'<span class="pill" style="background:'+cor+'22;color:'+cor+'">'+tp+'</span>')+'</td><td class="n nw">'+(a.nao?'–':a.v==null?'–':brl(a.v))+'</td><td class="n nw">'+(a.nao?'':ia===ultAc&&x.meta>0?(()=>{const pr=ac/x.meta,cl=prdCls(pr),cc={ok:'#2a8f30',par:'#d98a00',mal:'#c8102e'}[cl];return '<span style="color:'+cc+';font-weight:800"><span class="pv-st '+cl+'" title="'+(cl==='ok'?'Bateu a meta':cl==='par'?'Perto da meta':'Abaixo de 85%')+'">'+(cl==='ok'?'✔':cl==='par'?'●':'✖')+'</span>'+brl(ac)+' <small>· '+Math.round(pr*100)+'%</small></span>'})():brl(ac))+'</td></tr>');
     if(a.fim!=null)ult=a.fim<(a.ini||0)?a.fim+1440:a.fim;else if(a.ini!=null)ult=a.ini}
   const tot=A.reduce((s,a)=>s+(a.v||0),0),pc=x.meta?x.real/x.meta:null;
   const k=[['Meta do dia',x.meta!=null?brl(x.meta):'–'],['Realizado',x.real!=null?brl(x.real):'–'],['% da meta',pc!=null?Math.round(pc*100)+'%':'–'],['Atividades com valor',dN(nProd)],['Tempo entre atividades',gapT?hhmm(gapT):'–']];
@@ -6621,8 +6627,8 @@ document.querySelectorAll('[data-pfunil]').forEach(b=>b.onclick=()=>abrirGaveta(
 
 /* ================= ATUALIZAÇÃO DE DEFEITOS (réplica do Power BI "Tratativa de Defeitos") ================= */
 let DCFG=null,defBase=null,defBaseMeta=null,defBaseMap={},defLocais={},defTatDb=null,defTatLocal=null,DR=null,ordemDL={k:'venc',dir:1};
-const DF=['d-pri','d-dist','d-tipo','d-tat','d-ger','d-pep'];
-const DF_NOME={'d-pri':'Prioridade','d-dist':'Distrital','d-tipo':'Tipo de defeito','d-tat':'Prioridade de tratamento','d-ger':'Gerência','d-pep':'PEP'};
+const DF=['d-pri','d-dist','d-tipo','d-tat','d-ger','d-pep','d-mun'];
+const DF_NOME={'d-pri':'Prioridade','d-dist':'Distrital','d-tipo':'Tipo de defeito','d-tat':'Prioridade de tratamento','d-ger':'Gerência','d-pep':'PEP','d-mun':'Município'};
 const D_MS=86400000,D_0=Date.UTC(2024,0,1);
 const dIso=n=>new Date(D_0+n*D_MS).toISOString().slice(0,10);
 const dNum=iso=>Math.round((Date.parse(iso+'T00:00:00Z')-D_0)/D_MS);
@@ -6764,8 +6770,8 @@ function defAtivos(D){
   else r=DR.iv.filter(x=>x.i<=D&&(x.f==null||x.f>=D));
   return DR.cache[D]=r;
 }
-function defFiltro(){const v={};for(const id of DF){const x=msSel(id);if(x)v[id]=x}
-  return o=>(!v['d-pri']||v['d-pri'].has(o.pri))&&(!v['d-dist']||v['d-dist'].has(o.dist))&&(!v['d-tipo']||v['d-tipo'].has(o.tipo))&&(!v['d-tat']||v['d-tat'].has(o.tat))&&(!v['d-ger']||v['d-ger'].has(o.ger))&&(!v['d-pep']||v['d-pep'].has(o.pep))}
+function defFiltro(skip){const v={};for(const id of DF){if(id===skip)continue;const x=msSel(id);if(x)v[id]=x}
+  return o=>(!v['d-pri']||v['d-pri'].has(o.pri))&&(!v['d-dist']||v['d-dist'].has(o.dist))&&(!v['d-tipo']||v['d-tipo'].has(o.tipo))&&(!v['d-tat']||v['d-tat'].has(o.tat))&&(!v['d-ger']||v['d-ger'].has(o.ger))&&(!v['d-pep']||v['d-pep'].has(o.pep))&&(!v['d-mun']||v['d-mun'].has(o.mun))}
 /* TOTAL TRATATIVA, DEFEITOS ENTRANTES e DEFEITOS RESOLVIDOS do Power BI */
 function defStats(D,F){
   const A=defAtivos(D).filter(r=>r.v&&F(r.o)),P=defAtivos(D-1).filter(r=>r.v&&F(r.o));
@@ -6785,7 +6791,7 @@ function preencherFiltrosDef(){
   const A=defAtivos(fim).concat(defAtivos(Math.max(ini,fim-60)));
   const keep=(id,vals,todos)=>{const v=$(id).value;opts($(id),vals,todos);if(v&&vals.includes(v))$(id).value=v};
   const u=fn=>[...new Set(A.map(r=>fn(r.o)).filter(Boolean))].sort();
-  keep('d-pri',u(o=>o.pri),'Todas');keep('d-dist',u(o=>o.dist),'Todas');keep('d-tipo',u(o=>o.tipo),'Todos');keep('d-tat',[D_TAT,D_BR],'Todas');keep('d-ger',u(o=>o.ger),'Todas');keep('d-pep',u(o=>o.pep),'Todos');
+  keep('d-pri',u(o=>o.pri),'Todas');keep('d-dist',u(o=>o.dist),'Todas');keep('d-tipo',u(o=>o.tipo),'Todos');keep('d-tat',[D_TAT,D_BR],'Todas');keep('d-ger',u(o=>o.ger),'Todas');keep('d-pep',u(o=>o.pep),'Todos');keep('d-mun',u(o=>o.mun),'Todos');
 }
 function preencherDiasDef(){
   const m=$('d-mes').value,pd=$('d-dia').value,fim=DR.ult,dias=[];
@@ -6851,6 +6857,7 @@ function dMapa(el,L,LT){
   const M=dMapaBase(),nk=M.nk,cnt={};let sem=0;
   for(const r of L){const m=M.idx[nk(r.o.mun)];if(!m){sem+=r.m;continue}const o=cnt[m.k]||(cnt[m.k]={m,n:0,t:0,tp:{},ds:{}});o.n+=r.m;if(r.o.tat===D_TAT)o.t+=r.m;o.tp[r.o.tipo]=(o.tp[r.o.tipo]||0)+r.m;o.ds[r.o.dist]=(o.ds[r.o.dist]||0)+r.m}
   const pts=Object.values(cnt);if(!pts.length){el.innerHTML='<div class="empty">Sem defeitos com município localizado.</div>';return}
+  const selRaw=msSel('d-mun'),selK=new Set(selRaw?[...selRaw].map(nk):[]);
   /* enquadramento fixo pelo dia (sem filtros), para o zoom não pular ao filtrar */
   const base=[...new Set(LT.map(r=>M.idx[nk(r.o.mun)]).filter(Boolean))];
   let x0=Math.min(...base.map(m=>m.x0)),x1=Math.max(...base.map(m=>m.x1)),y0=Math.min(...base.map(m=>m.y0)),y1=Math.max(...base.map(m=>m.y1));
@@ -6858,19 +6865,21 @@ function dMapa(el,L,LT){
   const X=x=>(x-x0)/(x1-x0)*W,Y=y=>(y1-y)/(y1-y0)*H,mx=Math.max(...pts.map(p=>p.n)),R=n=>6+Math.sqrt(n/mx)*19;
   const tom=n=>'rgba(113,20,36,'+(0.07+Math.sqrt(n/mx)*0.26).toFixed(3)+')';
   const chave=[x0,x1,y0,y1].map(v=>v.toFixed(2)).join();if(!DMV||DMV.chave!==chave)DMV={chave,z:1,cx:W/2,cy:H/2};
+  if(!selK.size&&DMV.hadSel){DMV.z=1;DMV.cx=W/2;DMV.cy=H/2}DMV.hadSel=selK.size>0;
   let s='<div class="dmz"><svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Mapa de defeitos por município"><defs><filter id="dmsh" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="1" stdDeviation="1.3" flood-opacity=".3"/></filter></defs><rect x="-2000" y="-2000" width="5000" height="5000" class="dm-sea"/><g class="dm-ms">';
   for(const m of M){if(m.x1<x0-1||m.x0>x1+1||m.y1<y0-1||m.y0>y1+1)continue;const o=cnt[m.k];
-    s+='<path data-k="'+m.k+'" d="'+m.polys.map(p=>dSuave(p.map(q=>[X(q[0]),Y(q[1])]))).join('')+'" class="dm-mun'+(o?' on':'')+'"'+(o?' style="fill:'+tom(o.n)+'"':'')+'/>'}
+    s+='<path data-k="'+m.k+'" d="'+m.polys.map(p=>dSuave(p.map(q=>[X(q[0]),Y(q[1])]))).join('')+'" class="dm-mun'+(o?' on':'')+(selK.has(m.k)?' sel':selK.size?' dim':'')+'"'+(o&&!selK.has(m.k)?' style="fill:'+tom(o.n)+'"':'')+'/>'}
   s+='</g><g class="dm-bs">';
   pts.sort((a,b)=>b.n-a.n);
   for(const o of pts.slice().reverse()){const r=R(o.n),fr=o.t/o.n;o.x=X(o.m.c[0]);o.y=Y(o.m.c[1]);o.r=r;
-    let g='<g class="dm-b" data-k="'+o.m.k+'" data-x="'+o.x.toFixed(1)+'" data-y="'+o.y.toFixed(1)+'" filter="url(#dmsh)">';
+    let g='<g class="dm-b'+(selK.has(o.m.k)?' sel':selK.size?' dim':'')+'" data-k="'+o.m.k+'" data-x="'+o.x.toFixed(1)+'" data-y="'+o.y.toFixed(1)+'" filter="url(#dmsh)">';
     if(fr<=0||fr>=1)g+='<circle r="'+r.toFixed(1)+'" fill="'+(fr>=1?D_AZUL:'#711424')+'"/>';
     else{const a=fr*2*Math.PI;g+='<circle r="'+r.toFixed(1)+'" fill="#711424"/><path d="M0 0L0 '+(-r).toFixed(1)+'A'+r.toFixed(1)+' '+r.toFixed(1)+' 0 '+(fr>.5?1:0)+' 1 '+(r*Math.sin(a)).toFixed(1)+' '+(-r*Math.cos(a)).toFixed(1)+'Z" fill="'+D_AZUL+'"/>'}
     g+='<circle r="'+r.toFixed(1)+'" fill="none" class="dm-st"/>'+(r>=12?'<text y="4" text-anchor="middle" class="dm-nv">'+o.n+'</text>':'')+'</g>';s+=g}
   s+='</g><g class="dm-ls">'+pts.map(o=>'<g class="dm-l" data-k="'+o.m.k+'" data-x="'+o.x.toFixed(1)+'" data-y="'+o.y.toFixed(1)+'" data-r="'+o.r.toFixed(1)+'"><text x="'+(o.r+5).toFixed(1)+'" y="4" class="dm-t">'+esc(o.m.n.replace(/ do Maranhão$/,''))+'</text></g>').join('')+'</g></svg>'
     +'<div class="dmz-c"><button type="button" data-z="in" aria-label="Aproximar" title="Aproximar">+</button><button type="button" data-z="out" aria-label="Afastar" title="Afastar">−</button><button type="button" data-z="reset" aria-label="Enquadrar tudo" title="Enquadrar tudo"><svg class="ico" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button></div>'
-    +'<div class="dmz-h">Role ou use + / − para dar zoom · arraste para mover · clique num município para aproximar</div></div>';
+    +'<div class="dmz-h">Clique num município para filtrar e de novo para remover (Ctrl ou Shift soma mais de um) · role ou use + / − para o zoom · arraste para mover</div></div>'
+    +'<div class="dm-rk">'+pts.slice().sort((a,b)=>b.n-a.n).slice(0,14).map(o=>'<button type="button" class="dm-ck'+(selK.has(o.m.k)?' sel':'')+'" data-k="'+o.m.k+'">'+esc(o.m.n.replace(/ do Maranhão$/,''))+' <b>'+o.n+'</b></button>').join('')+(selK.size?'<button type="button" class="dm-ck lim" data-limpa="1">✕ Limpar município</button>':'')+'</div>';
   el.innerHTML=s+'<p class="muted dm-n">Limites municipais: IBGE (malha simplificada). Bolha no centro do município'+(sem?' · '+sem+' defeito(s) sem município reconhecido':'')+'.</p>';
   const svg=el.querySelector('svg'),bs=[...svg.querySelectorAll('.dm-b')],ls=[...svg.querySelectorAll('.dm-l')];
   const byK={};for(const o of pts)byK[o.m.k]=o;
@@ -6893,14 +6902,23 @@ function dMapa(el,L,LT){
   svg.addEventListener('pointerdown',e=>{svg.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,[e.clientX,e.clientY]);mov=0;arr=[e.clientX,e.clientY,DMV.cx,DMV.cy,svg.getScreenCTM().a];if(ptrs.size===2){const [a,b]=[...ptrs.values()];pin=[Math.hypot(a[0]-b[0],a[1]-b[1]),DMV.z]}});
   svg.addEventListener('pointermove',e=>{
     if(!ptrs.has(e.pointerId)){const g=e.target.closest('[data-k]');if(g&&byK[g.dataset.k]){const o=byK[g.dataset.k],tp=Object.entries(o.tp).sort((a,b)=>b[1]-a[1]).slice(0,3),ds=Object.entries(o.ds).sort((a,b)=>b[1]-a[1])[0];
-        dTipShow(e,'<b>'+esc(o.m.n)+'</b><small>'+esc(ds?ds[0]:'')+'</small><div class="dtip-g"><span>Defeitos</span><b>'+o.n+'</b><span><i style="background:'+D_AZUL+'"></i>Prioridade Tático</span><b>'+o.t+'</b><span><i style="background:#711424"></i>Sem prioridade</span><b>'+(o.n-o.t)+'</b></div><div class="dtip-s">'+tp.map(t=>esc(t[0])+' '+t[1]).join(' · ')+'</div>')}
+        dTipShow(e,'<b>'+esc(o.m.n)+'</b><small>'+esc(ds?ds[0]:'')+'</small><div class="dtip-g"><span>Defeitos</span><b>'+o.n+'</b><span><i style="background:'+D_AZUL+'"></i>Prioridade Tático</span><b>'+o.t+'</b><span><i style="background:#711424"></i>Sem prioridade</span><b>'+(o.n-o.t)+'</b></div><div class="dtip-s">'+tp.map(t=>esc(t[0])+' '+t[1]).join(' · ')+'</div><div class="dtip-s">'+(selK.has(g.dataset.k)?'Clique para remover o filtro':'Clique para filtrar')+'</div>')}
       else if(g){dTipShow(e,'<b>'+esc((M.idx[g.dataset.k]||{}).n||'')+'</b><small>Sem defeitos neste filtro</small>')}else dTipHide();return}
     ptrs.set(e.pointerId,[e.clientX,e.clientY]);dTipHide();
     if(ptrs.size===2&&pin){const [a,b]=[...ptrs.values()];DMV.z=Math.min(14,Math.max(1,pin[1]*Math.hypot(a[0]-b[0],a[1]-b[1])/pin[0]));aplicar();mov=9;return}
     const dx=e.clientX-arr[0],dy=e.clientY-arr[1];mov=Math.max(mov,Math.abs(dx)+Math.abs(dy));
     if(DMV.z>1){DMV.cx=arr[2]-dx/arr[4];DMV.cy=arr[3]-dy/arr[4];aplicar();svg.classList.add('arr')}});
   const fim=e=>{ptrs.delete(e.pointerId);if(ptrs.size<2)pin=null;svg.classList.remove('arr');
-    if(e.type==='pointerup'&&mov<4){const g=e.target.closest('[data-k]');if(g){const m=M.idx[g.dataset.k];if(m){DMV.cx=X(m.c[0]);DMV.cy=Y(m.c[1]);DMV.z=Math.max(DMV.z*1.8,3.2);if(DMV.z>14)DMV.z=14;aplicar()}}}};
+    if(e.type==='pointerup'&&mov<4){const g=e.target.closest('[data-k]');if(g)alternaMun(g.dataset.k,e)}};
+  /* clicar filtra o município (e aproxima); clicar de novo no mesmo remove o filtro */
+  function alternaMun(k,ev){const o=cnt[k],st=$('d-mun').msel;if(!o||!st)return;
+    const raw=[...new Set(L.filter(r=>nk(r.o.mun)===k).map(r=>r.o.mun).filter(Boolean))],soEste=raw.length&&st.sel.size===raw.length&&raw.every(x=>st.sel.has(x)),multi=ev&&(ev.shiftKey||ev.ctrlKey||ev.metaKey);
+    if(multi){if(raw.every(x=>st.sel.has(x)))raw.forEach(x=>st.sel.delete(x));else raw.forEach(x=>st.sel.add(x))}
+    else if(soEste)st.sel.clear();else{st.sel.clear();raw.forEach(x=>st.sel.add(x))}
+    if(!st.sel.size){DMV.z=1;DMV.cx=W/2;DMV.cy=H/2}
+    else{const ms=[...new Set([...st.sel].map(nk))].map(x=>M.idx[x]).filter(Boolean),bx0=Math.min(...ms.map(m=>X(m.x0))),bx1=Math.max(...ms.map(m=>X(m.x1))),by0=Math.min(...ms.map(m=>Y(m.y1))),by1=Math.max(...ms.map(m=>Y(m.y0)));DMV.z=Math.max(1,Math.min(10,.7*Math.min(W/Math.max(bx1-bx0,1),H/Math.max(by1-by0,1))));DMV.cx=(bx0+bx1)/2;DMV.cy=(by0+by1)/2}
+    dTipHide();st.emit()}
+  el.querySelectorAll('.dm-ck').forEach(b=>b.onclick=ev=>{if(b.dataset.limpa){const st=$('d-mun').msel;st.sel.clear();DMV.z=1;DMV.cx=W/2;DMV.cy=H/2;st.emit()}else alternaMun(b.dataset.k,ev)});
   svg.addEventListener('pointerup',fim);svg.addEventListener('pointercancel',fim);svg.addEventListener('pointerleave',()=>{if(!ptrs.size)dTipHide()});
   el.querySelector('[data-z="in"]').onclick=()=>zoomEm(1.6);el.querySelector('[data-z="out"]').onclick=()=>zoomEm(1/1.6);el.querySelector('[data-z="reset"]').onclick=()=>{DMV.z=1;DMV.cx=W/2;DMV.cy=H/2;aplicar()};
   aplicar();
@@ -7030,7 +7048,7 @@ function renderDef(){
     $('dPri').innerHTML=dPrior(defConta(L,o=>o.pri));
     $('dTatDist').innerHTML=dBarrasH(defConta(L.filter(r=>r.o.tat===D_TAT),o=>o.dist),D_AZUL);
     $('dDist').innerHTML=dColunas(L);
-    dMapa($('dMapa'),L,defAtivos(D).filter(r=>r.v));
+    dMapa($('dMapa'),defStats(D,defFiltro('d-mun')).A,defAtivos(D).filter(r=>r.v));
   }else if(p==='def-evolucao'){
     $('dTipo').innerHTML=dBarrasH(defConta(L,o=>o.tipo),'#711424');
     const dias0=[];for(let k=dNum(m+'-01');k<=dNum(DR.ult)&&dIso(k).slice(0,7)===m;k++)dias0.push(dIso(k));
