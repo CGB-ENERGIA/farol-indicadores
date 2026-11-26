@@ -1711,7 +1711,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
   <section data-pag="ader-painel" class="upbi" hidden>
     <div class="ubar">
       <div class="ubar-t"><h2 id="abarT">Aderência à escala · Regional Centro</h2><span id="abarSub"></span></div>
-      <div class="ubar-r"><div class="ubar-r-x" style="display:contents"><select class="pstol" data-modo="ps" hidden aria-label="Tolerância do primeiro serviço" title="Tolerância depois do início da escala"><option value="0">Tol. 0 min</option><option value="15">Tol. 15 min</option><option value="30">Tol. 30 min</option></select></div><div class="seg amodo" role="group" aria-label="Visão do indicador"><button type="button" data-amodo="ader" aria-pressed="true">Aderência</button><button type="button" data-amodo="ps" aria-pressed="false">Primeiro serviço</button></div><button type="button" class="ufunil" data-afunil aria-label="Abrir filtros" title="Filtros"><svg class="ico" viewBox="0 0 24 24"><path d="M3 5h18l-7 8.5V19l-4 2v-7.5z"/></svg><span class="ufn" data-afn hidden></span></button></div>
+      <div class="ubar-r"><div class="ubar-r-x" style="display:contents"><select class="pstol" data-modo="ps" hidden aria-label="Tolerância do primeiro serviço" title="Tolerância extra, além dos 30 min depois do início previsto"><option value="0">Tol. 0 min</option><option value="15">Tol. 15 min</option><option value="30">Tol. 30 min</option></select></div><div class="seg amodo" role="group" aria-label="Visão do indicador"><button type="button" data-amodo="ader" aria-pressed="true">Aderência</button><button type="button" data-amodo="ps" aria-pressed="false">Primeiro serviço</button></div><button type="button" class="ufunil" data-afunil aria-label="Abrir filtros" title="Filtros"><svg class="ico" viewBox="0 0 24 24"><path d="M3 5h18l-7 8.5V19l-4 2v-7.5z"/></svg><span class="ufn" data-afn hidden></span></button></div>
     </div>
     <div class="ativos" id="ativosA"></div>
     <div class="agrid" data-modo="ader">
@@ -1738,7 +1738,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     <div class="panel" data-modo="ps" hidden>
       <div class="phd"><h3>Primeiro serviço · 1ª atividade de serviço depois do checklist × início da escala</h3><div class="busca" style="display:flex;gap:8px;align-items:center"><input type="search" id="ps-busca" placeholder="Buscar prefixo…" aria-label="Buscar prefixo"><button type="button" class="btn sm" id="b-psgr" title="Ver todos os prefixos em tela grande"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>Expandir</span></button></div></div>
       <div id="psAviso" hidden style="margin:2px 0 10px;padding:10px 14px;border:1px solid #f0d58a;background:#fff7e0;color:#5a4300;border-radius:12px;font-size:13px;font-weight:600"></div>
-      <div class="heat-leg" id="psLeg"><span><i style="background:#3ae007"></i>Dentro da meta (1ª atividade até o início da escala)</span><span><i style="background:#f50c05"></i>Fora da meta</span><span><i style="background:#f7f225"></i>Interjornada (não entra na conta)</span></div>
+      <div class="heat-leg" id="psLeg"><span><i style="background:#3ae007"></i>Dentro da meta (1ª atividade até 30 min depois do início previsto)</span><span><i style="background:#f50c05"></i>Fora da meta</span><span><i style="background:#f7f225"></i>Interjornada (não entra na conta)</span></div>
       <div class="tw diario-w"><table class="diario agr" id="psGrade"></table></div>
     </div>
     <div class="panel" data-modo="ps" hidden>
@@ -1752,7 +1752,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
   <section data-pag="ader-ranking" class="upbi" hidden>
     <div class="ubar">
       <div class="ubar-t"><h2 id="abarTR">Ranking de aderência</h2><span id="abarSubR"></span></div>
-      <div class="ubar-r"><div class="ubar-r-x" style="display:contents"><select class="pstol" data-modo="ps" hidden aria-label="Tolerância do primeiro serviço" title="Tolerância depois do início da escala"><option value="0">Tol. 0 min</option><option value="15">Tol. 15 min</option><option value="30">Tol. 30 min</option></select></div><div class="seg amodo" role="group" aria-label="Visão do indicador"><button type="button" data-amodo="ader" aria-pressed="true">Aderência</button><button type="button" data-amodo="ps" aria-pressed="false">Primeiro serviço</button></div><button type="button" class="ufunil" data-afunil aria-label="Abrir filtros" title="Filtros"><svg class="ico" viewBox="0 0 24 24"><path d="M3 5h18l-7 8.5V19l-4 2v-7.5z"/></svg><span class="ufn" data-afn hidden></span></button></div>
+      <div class="ubar-r"><div class="ubar-r-x" style="display:contents"><select class="pstol" data-modo="ps" hidden aria-label="Tolerância do primeiro serviço" title="Tolerância extra, além dos 30 min depois do início previsto"><option value="0">Tol. 0 min</option><option value="15">Tol. 15 min</option><option value="30">Tol. 30 min</option></select></div><div class="seg amodo" role="group" aria-label="Visão do indicador"><button type="button" data-amodo="ader" aria-pressed="true">Aderência</button><button type="button" data-amodo="ps" aria-pressed="false">Primeiro serviço</button></div><button type="button" class="ufunil" data-afunil aria-label="Abrir filtros" title="Filtros"><svg class="ico" viewBox="0 0 24 24"><path d="M3 5h18l-7 8.5V19l-4 2v-7.5z"/></svg><span class="ufn" data-afn hidden></span></button></div>
     </div>
     <div class="ativos" id="ativosAR"></div>
     <div class="rgrid" data-modo="ader">
@@ -4949,17 +4949,13 @@ async function atvUnificada(rec,d,pt,u,pr){
   /* só produção: checklist, almoço, retorno à base e indisponibilidade não contam */
   {const prod=L.filter(x=>x.cat!=='interna'),kc=$('dkC'),kn=$('dkN');if(kc)kc.textContent=n0(prod.filter(x=>x.st==='concluído'&&x.cat!=='improd').length);if(kn)kn.textContent=n0(prod.filter(x=>x.st!=='concluído'||x.cat==='improd').length)}
   const diff=u!=null&&Math.abs(tot-u)>0.05,diffV=pr&&Math.abs(vt-pr[0])>0.5;
-  /* grupos: uma linha de resumo por classe (como a tabela por tipo) e, embaixo, cada atividade com ordem de serviço, horário e valor */
-  const G={};for(const x of L){const k=pontua(x)?'c:'+x.cl:'m:'+x.cat;const g=G[k]||(G[k]={k,nome:pontua(x)?x.cl:MOT[x.cat][0],dica:pontua(x)?'':MOT[x.cat][1],cat:pontua(x)?'ok':x.cat,imp:x.cat==='improd',it:[],ups:0,v:0});g.it.push(x);g.v+=x.v||0;if(pontua(x))g.ups+=x.pts}
-  const ordem=g=>g.cat==='ok'?0:g.cat==='interna'?2:1;
-  const grupos=Object.values(G).sort((a,b)=>ordem(a)-ordem(b)||b.ups-a.ups||b.it.length-a.it.length);
-  const lin=grupos.map((g,gi)=>{
-    const sem=g.cat!=='ok'&&g.cat!=='interna',tp=g.cat==='ok'?'ok':'sem',bg=sem?' style="background:var(--accent-soft)"':'';
-    const un=g.cat==='ok'?g.it[0].pts:null;
-    return '<tr data-uc="'+tp+'" data-gi="'+gi+'" class="uc-g" title="Clique para recolher ou expandir"'+bg+'><td colspan="4"><span class="uc-seta">▾</span> <b>'+esc(g.nome)+'</b>'+(g.imp?' <span class="pill nao">improdutiva</span>':'')+(sem?' <span class="pill nao" title="'+esc(g.dica)+'">não soma UPS</span>':'')+'</td><td class="n"><b>'+g.it.length+'</b></td><td class="n">'+(un==null?'–':n1(un))+'</td><td class="n"><b>'+(g.cat==='ok'?n1(g.ups):'0,0')+'</b></td><td class="n">'+(g.cat==='ok'&&tot?pct(g.ups/tot):'–')+'</td><td class="n"><b>'+brl(g.v)+'</b></td></tr>'
-    +g.it.map(x=>'<tr data-uc="'+tp+'" data-gf="'+gi+'" data-u="'+(pontua(x)?x.pts:0)+'" data-v="'+(x.v||0)+'"'+bg+'><td style="padding-left:22px">'+esc(x.s)+(x.st!=='concluído'?' <span class="pill par">não concluída</span>':'')+'</td><td>'+esc(x.o)+'</td><td class="nw">'+esc(x.i)+'</td><td class="nw">'+esc(x.f)+'</td><td class="n">1</td><td class="n">'+(pontua(x)?n1(x.pts):'–')+'</td><td class="n">'+(pontua(x)?n1(x.pts):'0,0')+'</td><td class="n">'+(pontua(x)&&tot?pct(x.pts/tot):'–')+'</td><td class="n">'+(x.v==null?'–':brl(x.v))+'</td></tr>').join('')}).join('');
-  return '<div class="sc-bar" style="margin:16px 0 8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><h4 style="margin:0;font-size:13.5px">Atividades do dia · '+L.length+'</h4><div class="tabs" role="group" aria-label="Filtro"><button type="button" data-ucf="todas" aria-pressed="true">Todas</button><button type="button" data-ucf="sem" aria-pressed="false">Sem pontuar'+(nSem?' · '+nSem:'')+'</button><button type="button" data-ucf="ok" aria-pressed="false">Pontuam</button></div><span style="margin-left:auto;display:flex;gap:6px"><button class="btn sm" type="button" data-ucr="1">Recolher tudo</button><button class="btn sm" type="button" data-ucr="0">Expandir tudo</button></span></div>'
-    +'<div class="tw md-t"><table class="utab"><thead><tr><th>Tipo de atividade</th><th>Ordem de serviço</th><th>Início</th><th>Fim</th><th class="n">Qtd.</th><th class="n">Pontos</th><th class="n">UPS</th><th class="n">Participação</th><th class="n">Valor (R$)</th></tr></thead><tbody>'+(lin||'<tr><td colspan="9" class="empty">Nenhuma atividade desta equipe nesse dia.</td></tr>')+'</tbody><tfoot><tr><td colspan="4"><b id="ucTotT">Total do dia</b></td><td class="n"><b id="ucTotQ">'+L.length+'</b></td><td></td><td class="n"><b id="ucTotU">'+n1(tot)+'</b></td><td></td><td class="n"><b id="ucTotV">'+brl(vt)+'</b></td></tr></tfoot></table></div>'
+  /* linha do tempo do dia: cada atividade em ordem de horário, com ordem de serviço, classe, pontos, UPS e valor */
+  const lin=L.map((x,xi)=>{
+    const ok=pontua(x),sem=!ok&&x.cat!=='interna',tp=ok?'ok':'sem',bg=sem?' style="background:var(--accent-soft)"':x.cat==='interna'?' style="color:var(--muted)"':'';
+    const classe=ok?esc(x.cl):esc(MOT[x.cat][0]);
+    return '<tr data-uc="'+tp+'" data-gf="'+xi+'" data-u="'+(ok?x.pts:0)+'" data-v="'+(x.v||0)+'"'+bg+'><td class="nw" style="padding-left:14px"><b>'+esc(x.i)+'</b></td><td class="nw">'+esc(x.f)+'</td><td>'+esc(x.s)+(x.st!=='concluído'?' <span class="pill par">não concluída</span>':'')+'</td><td class="nw">'+esc(x.o)+'</td><td>'+classe+(x.cat==='improd'?' <span class="pill nao">improdutiva</span>':'')+(sem?' <span class="pill nao" title="'+esc(MOT[x.cat][1])+'">não soma UPS</span>':'')+'</td><td class="n">'+(ok?n1(x.pts):'–')+'</td><td class="n">'+(ok?n1(x.pts):'0,0')+'</td><td class="n">'+(ok&&tot?pct(x.pts/tot):'–')+'</td><td class="n">'+(x.v==null?'–':brl(x.v))+'</td></tr>'}).join('');
+  return '<div class="sc-bar" style="margin:16px 0 8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><h4 style="margin:0;font-size:13.5px">Atividades do dia · '+L.length+'</h4><div class="tabs" role="group" aria-label="Filtro"><button type="button" data-ucf="todas" aria-pressed="true">Todas</button><button type="button" data-ucf="sem" aria-pressed="false">Sem pontuar'+(nSem?' · '+nSem:'')+'</button><button type="button" data-ucf="ok" aria-pressed="false">Pontuam</button></div><span class="muted" style="margin-left:auto;font-size:12px">em ordem de horário</span></div>'
+    +'<div class="tw md-t"><table class="utab"><thead><tr><th>Início</th><th>Fim</th><th>Atividade</th><th>Ordem de serviço</th><th>Classe</th><th class="n">Pontos</th><th class="n">UPS</th><th class="n">Participação</th><th class="n">Valor (R$)</th></tr></thead><tbody>'+(lin||'<tr><td colspan="9" class="empty">Nenhuma atividade desta equipe nesse dia.</td></tr>')+'</tbody><tfoot><tr><td colspan="4"><b id="ucTotT">Total do dia</b></td><td><b id="ucTotQ">'+L.length+'</b> atividades</td><td></td><td class="n"><b id="ucTotU">'+n1(tot)+'</b></td><td></td><td class="n"><b id="ucTotV">'+brl(vt)+'</b></td></tr></tfoot></table></div>'
     +'<p class="muted" style="margin:6px 0 0;font-size:11.5px">UPS = quantidade × pontos de cada classe. Linhas destacadas não somam UPS. O valor (R$) segue a regra de preços da Produção. Concluídas e não concluídas entram na conta, como no cálculo da UPS.'+(diff?' <b>Atenção:</b> a classe aqui foi refeita a partir do banco SIGA e o total ('+n1(tot)+') difere do UPS calculado ('+n1(u)+'); dias antigos podem não ter todas as colunas.':'')+(diffV?' <b>Atenção:</b> a soma dos valores ('+brl(vt)+') difere da produção do dia ('+brl(pr[0])+').':'')+'</p>';
 }
 function atvFiltra(box){
@@ -5659,20 +5655,15 @@ function aderDet(rec,d){
 
 /* ---------- Primeiro serviço (Kaizen) — visão dentro da Aderência ----------
    1º serviço = primeira atividade de serviço depois do checklist, entre 05:00 e 23:00 (l.ps; o checklist e o que não é serviço não contam).
-   Prazo = psLim(l): regra fixa por tipo de equipe (ver abaixo); sem regra, ou com horário ajustado à mão, vale o início da escala (l.lim).
-   Dentro da meta: 1º serviço <= limite (+ tolerância opcional de 0, 15 ou 30 min). Interjornada não entra na conta (amarelo).
+   Prazo = psLim(l) = início previsto do turno (l.lim) + 30 min, para todas as equipes.
+   Dentro da meta: 1º serviço <= prazo (+ tolerância extra opcional de 0, 15 ou 30 min). Interjornada não entra na conta (amarelo).
    Média do horário: não conta domingo, e no sábado só conta 1º serviço até 12:00 (regra do GOMAN). */
 /* Prazo do 1º serviço (indicador Primeiro serviço): plantão 16H manhã (final 001M/002M) 07:30 e tarde (001T/002T) 15:30;
    ligação nova, corte, seed money e plantão moto 08:30. Demais estruturas e dias com horário ajustado à mão seguem a escala (l.lim). */
-function psLim(l){
-  if(l.lim==null)return l.lim;
-  if(l.ov)return l.lim+30; /* horário ajustado à mão: prazo = início do turno + 30 min (13:00 → 13:30) */
-  const pv=prefEm(l.rec,l.data),g=pv?aderGrupo(pv.e):'';
-  if(g==='16H'){const m=/(?:001|002)([MT])$/.exec(String(l.rec).toUpperCase());return m?(m[1]==='M'?450:930):l.lim}
-  if(g==='LGN'||g==='CORTE'||g==='SEED'||g==='MOTO')return 510;
-  return l.lim}
+const PS_PRAZO=30; /* o 1º serviço tem até 30 min depois do início previsto do turno (cadastro da equipe, ajuste ou justificativa) */
+function psLim(l){return l.lim==null?l.lim:l.lim+PS_PRAZO}
 let aModo='ader';try{aModo=localStorage.getItem('aModo')==='ps'?'ps':'ader'}catch(e){}
-let ordemPS={k:'pct',dir:-1};let PS_TOL=30;try{const v=localStorage.getItem('psTol');if(v!=null&&[0,15,30].includes(+v))PS_TOL=+v}catch(e){}
+let ordemPS={k:'pct',dir:-1};let PS_TOL=0;try{const v=localStorage.getItem('psTol2');if(v!=null&&[0,15,30].includes(+v))PS_TOL=+v}catch(e){}
 const PS_ST={DENTRO:['Dentro da meta','ate'],FORA:['Fora da meta','nao'],INT:['Indisponibilidade / interjornada','par'],SEM:['Sem atividade','nd'],PEND:['Aguardando recálculo','nd'],LIVRE:['Folga / sem turno','nd'],DOM:['Domingo','nd']};
 const psDow=d=>new Date(d+'T12:00:00Z').getUTCDay();
 /* amarelo: interjornada, ou indisponibilidade apontada antes do 1º serviço (o horário considerado continua sendo o do 1º serviço depois dela) */
@@ -5769,20 +5760,30 @@ function psDet(rec,d){
   if(!Ls.length)return;
   const S=statsPS(Ls),l0=Ls[0],aviso=esc(l0.base)+' · '+esc(l0.est)+(l0.coord?' · coord. '+esc(l0.coord):'');
   const filtra={txt:'Filtrar o painel em '+rec,fn:()=>{$('a-rec').value=rec;$('a-rec').classList.add('on');renderAder()}};
-  const rodape='1º serviço = primeira atividade de serviço apontada depois do checklist (indisponibilidade, almoço e retorno à base não contam), entre 05:00 e 23:00. Dentro da meta: até o horário de início da escala'+(PS_TOL?' + '+PS_TOL+' min de tolerância':'')+'. Com indisponibilidade ou interjornada antes dele, o turno fica amarelo e não entra na conta.';
+  const rodape='1º serviço = primeira atividade de serviço apontada depois do checklist (indisponibilidade, almoço e retorno à base não contam), entre 05:00 e 23:00. Dentro da meta: até 30 min depois do início previsto do turno'+(PS_TOL?' + '+PS_TOL+' min de tolerância extra':'')+'. Com indisponibilidade ou interjornada antes dele, o turno fica amarelo e não entra na conta.';
   if(d){
     const st=psSt(l0),cor=st==='DENTRO'?'#2a8f30':st==='FORA'?'#c8102e':'#d98a00';
-    const ev=[];
-    if(l0.chk!=null)ev.push({t:l0.chk,k:'Checklist de início do turno',x:'',c:'#6b6a6a'});
-    for(const mo of (l0.mot||[])){const ind=mo.o==='COI';ev.push({t:mo.i,k:ind?'Indisponibilidade':mo.k,x:[ind?mo.k:'',mo.t&&mo.t!==mo.k?mo.t:'',mo.d!=null?mo.d+' min':''].filter(Boolean).join(' · '),c:'#d98a00'})}
-    if(l0.ps!=null)ev.push({t:l0.ps,k:'1º serviço',x:'Horário considerado no indicador',c:cor,b:1});
-    ev.sort((a,b)=>(a.t==null?1e9:a.t)-(b.t==null?1e9:b.t));
-    const linhas=ev.map(e=>'<tr style="box-shadow:inset 4px 0 0 '+e.c+(e.b?';background:var(--accent-soft)':'')+'"><td class="nw" style="padding-left:14px"><b>'+(e.t!=null?aHM(e.t):'–')+'</b></td><td>'+esc(e.k)+(e.b?' <span class="pill '+({DENTRO:'ate',FORA:'nao'}[st]||'par')+'">'+PS_ST[st][0]+'</span>':'')+'</td><td class="muted">'+esc(e.x)+'</td></tr>').join('');
+    const pillSt='<span class="pill '+({DENTRO:'ate',FORA:'nao'}[st]||'par')+'">'+PS_ST[st][0]+'</span>';
+    const cab='<thead><tr><th>Início</th><th>Fim</th><th>Registro</th><th>Ordem de serviço</th><th>Detalhe</th></tr></thead>';
+    const linha=e=>'<tr style="box-shadow:inset 4px 0 0 '+e.c+(e.b?';background:var(--accent-soft)':'')+'"><td class="nw" style="padding-left:14px"><b>'+(e.t!=null?aHM(e.t):'–')+'</b></td><td class="nw">'+(e.f!=null?aHM(e.f):'–')+'</td><td>'+esc(e.k)+(e.b?' '+pillSt:'')+'</td><td class="nw">'+esc(e.os||'')+'</td><td class="muted">'+esc(e.x||'')+'</td></tr>';
+    const NAOS=/^(checklist in[ií]cio|indisponibilidade|intervalo para almo|retorno [aà] base)/i,dur=(a,b)=>a==null||b==null?'':(b<a?b+1440-a:b-a)+' min';
+    /* com as atividades do banco SIGA: início, fim e ordem de cada registro; sem elas, só os horários guardados na aderência */
+    const montar=A=>{const ev=[];
+      const ck=(A||[]).filter(a=>/^checklist in[ií]cio/i.test(a.tipo)&&a.ini!=null).sort((x,y)=>x.ini-y.ini)[0];
+      if(ck)ev.push({t:ck.ini,f:ck.fim,k:'Checklist de início do turno',os:ck.os,c:'#6b6a6a'});else if(l0.chk!=null)ev.push({t:l0.chk,k:'Checklist de início do turno',c:'#6b6a6a'});
+      const ind=(A||[]).filter(a=>/^indisponibilidade/i.test(a.tipo));
+      if(ind.length)for(const a of ind){const mo=(l0.mot||[]).find(q=>q.o==='COI'&&q.i===a.ini);ev.push({t:a.ini,f:a.fim,k:'Indisponibilidade',os:a.os,x:[mo?mo.k:'',mo&&mo.t&&mo.t!==mo.k?mo.t:'',dur(a.ini,a.fim)].filter(Boolean).join(' · '),c:'#d98a00'})}
+      else for(const mo of (l0.mot||[]).filter(q=>q.o==='COI'))ev.push({t:mo.i,f:mo.i!=null&&mo.d!=null?(mo.i+mo.d)%1440:null,k:'Indisponibilidade',x:[mo.k,mo.t&&mo.t!==mo.k?mo.t:'',mo.d!=null?mo.d+' min':''].filter(Boolean).join(' · '),c:'#d98a00'});
+      for(const mo of (l0.mot||[]).filter(q=>q.o!=='COI'))ev.push({t:mo.i,k:mo.k,x:mo.t,c:'#d98a00'});
+      if(l0.ps!=null){const sv=(A||[]).find(a=>a.ini===l0.ps&&!NAOS.test(a.tipo));ev.push({t:l0.ps,f:sv?sv.fim:null,k:'1º serviço'+(sv&&sv.tipo?' · '+sv.tipo:''),os:sv?sv.os:'',x:sv?[[sv.bai,sv.cid].filter(Boolean).join(' · '),'horário considerado no indicador'].filter(Boolean).join(' · '):'Horário considerado no indicador',c:cor,b:1})}
+      ev.sort((a,b)=>(a.t==null?1e9:a.t)-(b.t==null?1e9:b.t));
+      return ev.map(linha).join('')||'<tr><td colspan="5" class="empty">Sem registros neste dia.</td></tr>'};
     abrirDet({tit:rec+' · 1º serviço · '+semana(d)+', '+dataBR(d),
       kpis:[['Prazo',l0.lim!=null?aHM(psLim(l0)):'–'],['Checklist',l0.chk!=null?aHM(l0.chk):'–'],['1º serviço',l0.ps!=null?aHM(l0.ps):'–'],['Diferença',psDf(l0),st==='FORA'?'mal':''],['Situação',PS_ST[st][0]]],
       aviso,semTab:true,
-      extra:'<div class="tw md-t"><table class="utab"><thead><tr><th>Horário</th><th>Registro</th><th>Detalhe</th></tr></thead><tbody>'+(linhas||'<tr><td colspan="3" class="empty">Sem registros neste dia.</td></tr>')+'</tbody></table></div>'+(l0.chk==null&&l0.tem?'<p class="muted" style="margin:8px 0 0;font-size:12px">Sem checklist de início do turno registrado: vale o primeiro serviço do dia.</p>':'')+'<p class="muted" style="margin:8px 0 0;font-size:11.5px">'+esc(rodape)+'</p>',
+      extra:'<div class="tw md-t"><table class="utab" id="psSeq">'+cab+'<tbody>'+montar(null)+'</tbody></table></div>'+(l0.chk==null&&l0.tem?'<p class="muted" style="margin:8px 0 0;font-size:12px">Sem checklist de início do turno registrado: vale o primeiro serviço do dia.</p>':'')+'<p class="muted" style="margin:8px 0 0;font-size:11.5px">'+esc(rodape)+'</p>',
       filtra});
+    const tit0=$('mdTit').textContent;iniAtividadesDia(rec,d).then(A=>{const t=$('psSeq');if(!t||$('mdTit').textContent!==tit0||!A.length)return;t.querySelector('tbody').innerHTML=montar(A)}).catch(()=>{});
     return}
   abrirDet({tit:rec+' · 1º serviço · '+mesNome(m).replace(/^./,c=>c.toUpperCase()),
     kpis:[['Dentro da meta',pct(S.pct)],['Turnos dentro',S.dentro+' de '+S.tot],['Indisp. / interjornada',S.inter],['Média 1º serviço',S.media==null?'–':aHM(S.media)]],aviso,
@@ -5799,7 +5800,7 @@ function setAModo(mo){
   if(AR)renderAder();
 }
 document.querySelectorAll('[data-amodo]').forEach(b=>b.onclick=()=>setAModo(b.dataset.amodo));
-document.querySelectorAll('.pstol').forEach(x=>{x.value=String(PS_TOL);x.onchange=()=>{PS_TOL=+x.value;try{localStorage.setItem('psTol',String(PS_TOL))}catch(e){}document.querySelectorAll('.pstol').forEach(y=>y.value=String(PS_TOL));if(AR&&aModo==='ps')renderAder()}});
+document.querySelectorAll('.pstol').forEach(x=>{x.value=String(PS_TOL);x.onchange=()=>{PS_TOL=+x.value;try{localStorage.setItem('psTol2',String(PS_TOL))}catch(e){}document.querySelectorAll('.pstol').forEach(y=>y.value=String(PS_TOL));if(AR&&aModo==='ps')renderAder()}});
 $('ps-busca').addEventListener('input',()=>{if(AR&&aModo==='ps')gradePS(filtrarAder(),$('a-mes').value)});
 document.querySelectorAll('th.sortps').forEach(th=>th.addEventListener('click',()=>{const k=th.dataset.k;ordemPS=ordemPS.k===k?{k,dir:-ordemPS.dir}:{k,dir:['rank','rec','base','est'].includes(k)?1:-1};renderAder()}));
 ['psGrade','psRankE','psAtrT'].forEach(id=>$(id).addEventListener('click',ev=>{const c=ev.target.closest('[data-ps]');if(c){const [r,d]=c.dataset.ps.split('|');psDet(r,d);return}const n=ev.target.closest('[data-psn]');if(n)psDet(n.dataset.psn,null)}));
