@@ -1607,6 +1607,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     <div class="fld"><label for="d-ger">Gerência</label><div class="msel" id="d-ger" data-todos="Todas" data-nome="gerência(s)"></div></div>
     <div class="fld"><label for="d-pep">PEP</label><div class="msel" id="d-pep" data-todos="Todos" data-nome="PEP(s)"></div></div>
     <div class="fld"><label for="d-mun">Município</label><div class="msel" id="d-mun" data-todos="Todos" data-nome="município(s)"></div></div>
+    <div class="fld"><label for="d-resp">Responsável</label><div class="msel" id="d-resp" data-todos="Todos" data-nome="responsável(is)"></div></div>
     </div>
     <div id="fUps" style="display:grid;gap:14px" hidden>
     <div class="grp">Período</div>
@@ -3696,7 +3697,7 @@ function msInit(el){
 function msSel(id){const st=$(id).msel;return st&&st.sel.size?st.sel:null}
 function msTxt(id){const s=msSel(id);return s?[...s].join(', '):''}
 document.addEventListener('click',()=>document.querySelectorAll('.msel-p').forEach(p=>p.hidden=true));document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.msel-p').forEach(p=>p.hidden=true)});
-['f-dia','f-base','f-ger','f-est','f-tipo','p-ger','p-ct','p-base','p-tipo','p-rec','u-mes','a-ger','a-base','a-est','a-tipo','a-rec','i-base','i-tipo','i-rec','q-base','q-tipo','x-base','x-tipo','t-mun','t-ef','d-pri','d-tat','d-dist','d-tipo','d-ger','d-pep','d-mun','u-base','u-tipo','u-coord','u-rec'].forEach(id=>msInit($(id)));
+['f-dia','f-base','f-ger','f-est','f-tipo','p-ger','p-ct','p-base','p-tipo','p-rec','u-mes','a-ger','a-base','a-est','a-tipo','a-rec','i-base','i-tipo','i-rec','q-base','q-tipo','x-base','x-tipo','t-mun','t-ef','d-pri','d-tat','d-dist','d-tipo','d-ger','d-pep','d-mun','d-resp','u-base','u-tipo','u-coord','u-rec'].forEach(id=>msInit($(id)));
 function opts(sel,vals,todos,lbl){
   if(sel.msel){sel.msel.setOpts(vals,lbl);return}
   const atual=sel.value;
@@ -5082,11 +5083,11 @@ function lerArquivo(file){
         if(mm&&nAt===0){const d=(mm[3].length===2?'20'+mm[3]:mm[3])+'-'+mm[2]+'-'+mm[1];r.dias[d]={};datas=[d];vazio=true}
         else throw new Error(nAt?'Nenhuma atividade concluída ou não concluída encontrada':'Arquivo vazio e sem data no nome · renomeie como no SIGA (ex.: _08_11_26)')}
       let ups=null,ader=null,ini=null;if((fonte==='MAN'||fonte==='OBRAS')&&ICFG){try{ini=iniDeLinhas(rowsA)}catch(e){ini=null}}let upsSc=null;if(fonte==='COI'&&UCFG){try{const ua=UPSCalc.agregarArquivo(UCFG,rowsA,Disp.parseData);ups=ua.dias;upsSc=ua.sc}catch(e){ups=null}try{ader=aderDeLinhas(rowsA)}catch(e){ader=null}}let prd=null,mix=null,tm=null;if(fonte==='COI'&&PCFG){try{prd=prdDeLinhas(rowsA)}catch(e){prd=null}try{mix=mixDeLinhas(rowsA).dias}catch(e){mix=null}try{tm=tmDeLinhas(rowsA).dias}catch(e){tm=null}}
-      /* COI do dia de hoje (dia ainda aberto): atualiza a Produção do dia, o Mix e o TME/TMD (só contam atividades já concluídas ou não concluídas, então o parcial do dia é válido e o COI seguinte o substitui); UPS e aderência esperam o dia fechar */
+      /* COI do dia de hoje (dia ainda aberto): atualiza a Produção do dia, o Mix e o TME/TMD (só contam atividades já concluídas ou não concluídas, então o parcial do dia é válido e o COI seguinte o substitui); a aderência também entra: equipe sem atividade no dia aparece como "Sem atividade" e não conta, então só pesa quem já tem checklist ou atividade; a UPS fica no parcial "upsHoje" */
       let banco=null;try{banco=bancoDeLinhas(rowsA,fonte)}catch(e){banco=null}
       let parcial=null,upsHoje=null,ct=null;const hj=hojeIso();
       if(fonte==='COI'){try{ct=ctDeCOI(rowsA,hj)}catch(e){console.error('ctDeCOI',e);ct=null}}
-      if(fonte==='COI'&&datas.includes(hj)){parcial=hj;if(ups&&ups[hj])upsHoje={dia:hj,eq:ups[hj]};delete r.dias[hj];datas=datas.filter(d=>d!==hj);if(ups)delete ups[hj];if(upsSc)delete upsSc[hj];if(ader)delete ader[hj]}
+      if(fonte==='COI'&&datas.includes(hj)){parcial=hj;if(ups&&ups[hj])upsHoje={dia:hj,eq:ups[hj]};delete r.dias[hj];datas=datas.filter(d=>d!==hj);if(ups)delete ups[hj];if(upsSc)delete upsSc[hj];}
       res({nome:file.name,fonte,datas,datasUps:ups?Object.keys(ups).sort():[],linhas:r.linhas,dias:r.dias,ups,upsSc,ader,ini,prd,mix,tm,vazio,parcial,banco,upsHoje,ct});
     }catch(e){res({nome:file.name,fonte,erro:e.message})}};
     fr.onerror=()=>res({nome:file.name,fonte,erro:'Não foi possível ler o arquivo'});
@@ -6055,7 +6056,7 @@ function preencherFiltrosAder(){
   recAderOpts();
   preencherDiaAder();
 }
-function preencherDiaAder(){const m=$('a-mes').value,v=$('a-dia').value;const ds=Object.keys(AR.dias).filter(d=>d.startsWith(m)).sort().reverse();opts($('a-dia'),ds,'Mês inteiro',d=>dataBR(d)+' · '+semana(d).slice(0,3));if(v&&ds.includes(v))$('a-dia').value=v}
+function preencherDiaAder(){const m=$('a-mes').value,v=$('a-dia').value;const ds=Object.keys(AR.dias).filter(d=>d.startsWith(m)).sort().reverse();opts($('a-dia'),ds,'Mês inteiro',d=>dataBR(d)+' · '+semana(d).slice(0,3)+(d===hojeIso()?' · parcial (em andamento)':''));if(v&&ds.includes(v))$('a-dia').value=v}
 function recAderOpts(){if(!AR)return;const g=msSel('a-ger'),b=msSel('a-base'),e=msSel('a-est'),t=msSel('a-tipo');recOpts('a-rec',[...new Set(AR.linhas.filter(l=>(!g||g.has(vgGerDe(l.rec)))&&(!b||b.has(l.base))&&(!e||e.has(l.est))&&(!t||t.has(tipoDe(l.rec,l.data)))).map(l=>l.rec))].sort(),'Todos')}
 function filtrarAder(semMes){const m=$('a-mes').value,dia=$('a-dia').value,g=msSel('a-ger'),b=msSel('a-base'),e=msSel('a-est'),t=msSel('a-tipo'),r=msSel('a-rec');
   return AR.linhas.filter(l=>(semMes||l.mes===m)&&(semMes||!dia||l.data===dia)&&(!g||g.has(vgGerDe(l.rec)))&&(!b||b.has(l.base))&&(!e||e.has(l.est))&&(!t||t.has(tipoDe(l.rec,l.data)))&&(!r||r.has(l.rec)))}
@@ -7196,8 +7197,8 @@ document.querySelectorAll('[data-pfunil]').forEach(b=>b.onclick=()=>abrirGaveta(
 
 /* ================= ATUALIZAÇÃO DE DEFEITOS (réplica do Power BI "Tratativa de Defeitos") ================= */
 let DCFG=null,defBase=null,defBaseMeta=null,defBaseMap={},defLocais={},defTatDb=null,defTatLocal=null,DR=null,ordemDL={k:'venc',dir:1};
-const DF=['d-pri','d-dist','d-tipo','d-tat','d-ger','d-pep','d-mun'];
-const DF_NOME={'d-pri':'Prioridade','d-dist':'Distrital','d-tipo':'Tipo de defeito','d-tat':'Prioridade de tratamento','d-ger':'Gerência','d-pep':'PEP','d-mun':'Município'};
+const DF=['d-pri','d-dist','d-tipo','d-tat','d-ger','d-pep','d-mun','d-resp'];
+const DF_NOME={'d-pri':'Prioridade','d-dist':'Distrital','d-tipo':'Tipo de defeito','d-tat':'Prioridade de tratamento','d-ger':'Gerência','d-pep':'PEP','d-mun':'Município','d-resp':'Responsável'};
 const D_MS=86400000,D_0=Date.UTC(2024,0,1);
 const dIso=n=>new Date(D_0+n*D_MS).toISOString().slice(0,10);
 const dNum=iso=>Math.round((Date.parse(iso+'T00:00:00Z')-D_0)/D_MS);
@@ -7343,7 +7344,7 @@ function defAtivos(D){
   return DR.cache[D]=r;
 }
 function defFiltro(skip){const v={};for(const id of DF){if(id===skip)continue;const x=msSel(id);if(x)v[id]=x}
-  return o=>(!v['d-pri']||v['d-pri'].has(o.pri))&&(!v['d-dist']||v['d-dist'].has(o.dist))&&(!v['d-tipo']||v['d-tipo'].has(o.tipo))&&(!v['d-tat']||v['d-tat'].has(o.tat))&&(!v['d-ger']||v['d-ger'].has(o.ger))&&(!v['d-pep']||v['d-pep'].has(o.pep))&&(!v['d-mun']||v['d-mun'].has(o.mun))}
+  return o=>(!v['d-pri']||v['d-pri'].has(o.pri))&&(!v['d-dist']||v['d-dist'].has(o.dist))&&(!v['d-tipo']||v['d-tipo'].has(o.tipo))&&(!v['d-tat']||v['d-tat'].has(o.tat))&&(!v['d-ger']||v['d-ger'].has(o.ger))&&(!v['d-pep']||v['d-pep'].has(o.pep))&&(!v['d-mun']||v['d-mun'].has(o.mun))&&(!v['d-resp']||v['d-resp'].has(o.resp||D_BR))}
 /* TOTAL TRATATIVA, DEFEITOS ENTRANTES e DEFEITOS RESOLVIDOS do Power BI */
 function defStats(D,F){
   const A=defAtivos(D).filter(r=>r.v&&F(r.o)),P=defAtivos(D-1).filter(r=>r.v&&F(r.o));
@@ -7367,7 +7368,7 @@ function preencherFiltrosDef(){
   const A=defAtivos(fim).concat(defAtivos(Math.max(ini,fim-60)));
   const keep=(id,vals,todos)=>{const v=$(id).value;opts($(id),vals,todos);if(v&&vals.includes(v))$(id).value=v};
   const u=fn=>[...new Set(A.map(r=>fn(r.o)).filter(Boolean))].sort();
-  keep('d-pri',u(o=>o.pri),'Todas');keep('d-dist',u(o=>o.dist),'Todas');keep('d-tipo',u(o=>o.tipo),'Todos');keep('d-tat',[D_TAT,D_BR],'Todas');keep('d-ger',u(o=>o.ger),'Todas');keep('d-pep',u(o=>o.pep),'Todos');keep('d-mun',u(o=>o.mun),'Todos');
+  keep('d-pri',u(o=>o.pri),'Todas');keep('d-dist',u(o=>o.dist),'Todas');keep('d-tipo',u(o=>o.tipo),'Todos');keep('d-tat',[D_TAT,D_BR],'Todas');keep('d-ger',u(o=>o.ger),'Todas');keep('d-pep',u(o=>o.pep),'Todos');keep('d-mun',u(o=>o.mun),'Todos');keep('d-resp',u(o=>o.resp||D_BR),'Todos');
 }
 function preencherDiasDef(){
   const m=$('d-mes').value,pd=$('d-dia').value,fim=DR.ult,dias=[];
