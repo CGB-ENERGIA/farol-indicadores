@@ -364,6 +364,48 @@ section[data-pag="cadastros"]>.cad-menu{grid-column:1;grid-row:2/span 40;positio
 .cad-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 .tag-site{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border-radius:5px;padding:1px 6px;margin-left:6px}
 .form-in{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;align-items:end}
+/* Reincidentes · cadastro de blindagem */
+.rei-grid{display:grid;grid-template-columns:minmax(280px,1fr) minmax(0,2fr);gap:16px;align-items:stretch}
+@media (max-width:900px){.rei-grid{grid-template-columns:minmax(0,1fr)}}
+.rei-bl h3{display:flex;align-items:center;gap:10px;font-size:14px;letter-spacing:.04em;text-transform:uppercase}
+.rei-n{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:800;flex:none}
+.rei-campos{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:12px}
+.rei-campos .fld.lg{grid-column:span 2}
+@media (max-width:520px){.rei-campos .fld.lg{grid-column:auto}}
+.rei-ob{color:var(--nao);font-style:normal;margin-left:2px}
+.rei-bl input[type=number]{width:100%;min-width:0;border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:7px 10px;min-height:38px}
+.rei-bl [aria-invalid="true"],.rei-bl .seg[aria-invalid="true"]{border-color:var(--nao)!important;box-shadow:0 0 0 2px var(--nao-soft)}
+.rei-bl .seg{display:flex}.rei-bl .seg button{flex:1;min-height:30px}
+.rei-al{display:grid;grid-template-columns:minmax(0,1fr) 110px 38px;gap:8px;align-items:center}
+.rei-alh{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.rei-rm{display:inline-grid;place-items:center;width:38px;height:38px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--muted)}
+.rei-rm:hover{border-color:var(--nao);color:var(--nao)}.rei-rm .ico{width:16px;height:16px}
+.rei-pe{display:flex;gap:10px;justify-content:flex-end;align-items:center;flex-wrap:wrap}
+.rei-msg ul{margin:6px 0 0;padding-left:18px}
+.rei-chips{display:flex;flex-wrap:wrap;gap:4px}.rei-chip{font-size:11.5px;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.rei-tab td{vertical-align:top}.rei-tab tr[data-id]{cursor:pointer}.rei-tab tr[data-id]:hover td{background:var(--accent-soft)}
+.rei-tab .acs{display:flex;gap:6px;justify-content:flex-end}
+/* Reincidentes · painel */
+.dkg.rp-kg{grid-template-columns:repeat(5,minmax(0,1fr))}
+@media (max-width:1250px){.dkg.rp-kg{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:760px){.dkg.rp-kg{grid-template-columns:minmax(0,1fr)}}
+#rpBlocos .dch{flex-wrap:wrap}.rp-fil .fld{max-width:230px}.rp-fil .fld.lg{max-width:none}
+.rp-ec{font-size:11px;color:var(--muted);font-weight:700;white-space:nowrap;display:block}
+.rp-sem{font-weight:800;font-size:12.5px;padding:3px 9px;border-radius:999px;white-space:nowrap}.rp-sem.ok{background:var(--sup-soft);color:var(--sup)}.rp-sem.re{background:var(--nao-soft);color:var(--nao)}
+#rpTab tr[data-t],#rpRk tr[data-t]{cursor:pointer}#rpTab tr[data-t]:hover td,#rpRk tr[data-t]:hover td{background:var(--accent-soft)}
+#rpTab th[data-o=asc]::after{content:' \25B2'}#rpTab th[data-o=desc]::after{content:' \25BC'}
+#rpRk tr.rp-alerta td{background:var(--nao-soft)}#rpRk tr.rp-bl td:nth-child(2){box-shadow:inset 3px 0 0 var(--sup)}#rpRk tr.rp-alerta td:nth-child(2){box-shadow:inset 3px 0 0 var(--nao)}
+.rp-leg{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--muted)}.rp-leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.rp-arv{display:grid;gap:2px;max-height:560px;overflow:auto}
+.rp-c,.rp-s{display:grid;grid-template-columns:28px minmax(140px,1.2fr) minmax(80px,2fr) 48px 52px;gap:8px;align-items:center;padding:4px 6px;border-radius:8px}
+.rp-s{grid-template-columns:minmax(140px,1.2fr) minmax(80px,2fr) 48px 52px;margin-left:36px}
+.rp-c:hover,.rp-s:hover{background:var(--sunken)}.rp-c.sel,.rp-s.sel{background:var(--accent-soft)}
+.rp-cx{width:28px;height:28px;border:0;background:transparent;border-radius:6px;display:grid;place-items:center;color:var(--muted)}.rp-cx svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.4;transition:transform .15s}.rp-c.ab .rp-cx svg{transform:rotate(90deg)}
+.rp-cn{border:0;background:transparent;text-align:left;font-weight:700;font-size:12.5px;color:var(--fg);padding:2px 0;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rp-s .rp-cn{font-weight:600;color:var(--muted)}.rp-cn:hover{color:var(--accent);text-decoration:underline}
+.rp-bar{height:10px;background:var(--sunken);border-radius:999px;overflow:hidden}.rp-bar i{display:block;height:100%;background:var(--accent-bg);border-radius:999px}.rp-s .rp-bar i{background:var(--accent-2);opacity:.6}
+.rp-q{text-align:right;font-variant-numeric:tabular-nums}.rp-p{text-align:right;color:var(--muted);font-size:11px}
+.rp-ss{display:grid;gap:2px;margin-bottom:4px}
+@media (max-width:640px){.rp-c{grid-template-columns:28px minmax(0,1fr) 40px}.rp-c .rp-bar,.rp-c .rp-p{display:none}.rp-s{grid-template-columns:minmax(0,1fr) 40px;margin-left:20px}.rp-s .rp-bar,.rp-s .rp-p{display:none}}
 input[type=text],input[type=date],input[type=time]{width:100%;min-width:0;border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:7px 10px;min-height:38px}
 .fld:has(>#f-est),.fld:has(>#a-est){display:none}
 #gavCad{width:min(620px,100vw)}#gavCad .gaveta-bd{overflow-x:hidden}.hist-row *{min-width:0}.hist-row input,.hist-row select{max-width:100%;box-sizing:border-box}
@@ -776,6 +818,14 @@ textarea.copia{width:100%;height:220px;font:13px var(--body);border:1px solid va
 .dcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh-1);padding:16px 18px;display:grid;gap:14px;align-content:start;min-width:0}
 .dch{display:flex;align-items:center;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--line)}.dch-i{width:28px;height:28px;border-radius:8px;background:var(--accent-bg);color:#fff;display:grid;place-items:center;flex:none}.dch-i .ico{width:15px;height:15px}
 .dch h4{margin:0;font-size:13.5px;font-weight:900;letter-spacing:.02em;text-transform:uppercase;color:var(--fg)}.dch small{display:block;font-size:11.5px;color:var(--muted);margin-top:1px}.dch .dleg{margin-left:auto}
+.dtv{display:grid;gap:4px}
+.dtv-r{display:grid;grid-template-columns:22px minmax(120px,1.2fr) minmax(70px,1.6fr) max-content;gap:10px;align-items:center;width:100%;text-align:left;border:0;background:transparent;border-radius:8px;padding:6px 8px;font:inherit;color:inherit;cursor:pointer}
+.dtv-r:hover{background:var(--accent-soft)}
+.dtv-c{display:grid;place-items:center;color:var(--muted)}.dtv-c svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.4;transition:transform .15s}.dtv-g.ab>.dtv-p .dtv-c svg{transform:rotate(90deg)}
+.dtv-k{font-size:12.5px;font-weight:800;min-width:0}.dtv-k small{display:block;font-size:10.5px;font-weight:700;color:var(--muted)}
+.dtv-s{display:grid;gap:1px;margin:2px 0 8px 30px;padding-left:10px;border-left:2px solid var(--line-accent)}
+.dtv-d{grid-template-columns:minmax(0,1fr) max-content;grid-template-areas:"k v" "b b";gap:4px 10px;padding:5px 8px}.dtv-d .dtv-k{grid-area:k;font-weight:600;font-size:12px;line-height:1.25}.dtv-d .hb-t{grid-area:b;height:8px}.dtv-d .hb-v{grid-area:v}
+@media (max-width:640px){.dtv-p{grid-template-columns:22px minmax(0,1fr) max-content}.dtv-p .hb-t{display:none}.dtv-s{margin-left:16px}}
 .hb{display:grid;grid-template-columns:max-content minmax(0,1fr) max-content;gap:9px 10px;align-items:center}.hb-r{display:contents}
 .hb-k{font-size:12.5px;font-weight:800;max-width:170px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hb-t{height:16px;background:var(--sunken);border-radius:999px;overflow:hidden;display:block}.hb-t i{display:block;height:100%;min-width:4px;border-radius:999px;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 78%,#fff),var(--c))}
@@ -1839,7 +1889,7 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
     <div class="ativos ativosD"></div>
     <div class="devo" id="dEvoRes"></div>
     <div class="dgrid2">
-      <div class="dcard"><div class="dch"><span class="dch-i"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><div><h4>Defeitos por tipo</h4><small>Situação no dia selecionado</small></div></div><div id="dTipo"></div></div>
+      <div class="dcard"><div class="dch"><span class="dch-i"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><div><h4>Defeitos por tipo e causa</h4><small>Situação no dia selecionado · clique no tipo para abrir as causas (campo Defeito da base)</small></div><button type="button" class="btn sm" id="b-dTipoAb" style="margin-left:auto">Abrir todos</button></div><div id="dTipo"></div></div>
       <div class="dstack">
         <div class="dcard"><div class="dch"><span class="dch-i"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></span><div><h4>Defeitos totais por data</h4><small id="evInfo1">Em tratativa em cada dia do mês</small></div></div><div class="evf"><input type="hidden" id="ev1-i"><input type="hidden" id="ev1-f"><div class="evcal-w"><button type="button" class="evcal-b" id="ev1-cal" aria-label="Abrir calendário"><svg class="ico" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Calendário</button><div class="evcal" id="ev1CalP" hidden></div></div></div><div class="dlin" id="dLin1"></div></div>
         <div class="dcard"><div class="dch"><span class="dch-i"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></span><div><h4>Resolvidos e entrantes por data</h4><small id="evInfo">Saídas e entradas na tratativa</small></div><div class="dleg"><span><i style="background:#2a8f30"></i>Resolvidos</span><span><i style="background:#711424"></i>Entrantes</span></div></div><div class="evf"><input type="hidden" id="ev-i"><input type="hidden" id="ev-f"><input type="hidden" id="ev-gr" value="auto"><div class="evcal-w"><button type="button" class="evcal-b" id="ev-cal" aria-label="Abrir calendário"><svg class="ico" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Calendário</button><div class="evcal" id="evCalP" hidden></div></div></div><div class="dlin" id="dLin2"></div></div>
@@ -2158,6 +2208,102 @@ html:not([data-tema="escuro"]){--surface:#fcfafb!important}
   <section data-pag="ups-regras" class="upbi" hidden>
     <div class="ubar"><div class="ubar-t"><h2>Regras da UPS</h2><span>Pontuação, DE_PARA e regras de chave usadas no cálculo · consulta para todos, só o administrador altera</span></div></div>
     <div id="rgUps" style="display:grid;gap:16px"></div>
+  </section>
+
+  <!-- PÁGINA: REINCIDENTES · PAINEL -->
+  <section data-pag="rei-painel" style="display:grid;gap:16px;min-width:0" hidden>
+    <div class="ubar"><div class="ubar-t"><h2>Trafos Reincidentes</h2><span id="rpSub0">Blindagens × reincidências</span></div></div>
+    <div class="panel" style="padding:14px 16px">
+      <div class="cad-fil rp-fil" style="margin:0">
+        <div class="fld"><label for="rpSec">Seccional</label><select id="rpSec"></select></div>
+        <div class="fld"><label for="rpMun">Município</label><select id="rpMun"></select></div>
+        <div class="fld"><label for="rpCj">Conjunto</label><select id="rpCj"></select></div>
+        <div class="fld"><label for="rpSt">Status</label><select id="rpSt"><option value="">Todos</option><option value="CONCLUIDO">Concluído</option><option value="PARCIAL">Parcial</option></select></div>
+        <div class="fld"><label for="rpDe">De</label><input type="date" id="rpDe"></div>
+        <div class="fld"><label for="rpAte">Até</label><input type="date" id="rpAte"></div>
+        <div class="fld"><label for="rpCau">Causa</label><select id="rpCau"></select></div>
+        <div class="fld"><label for="rpSub">Subcausa</label><select id="rpSub"></select></div>
+        <div class="fld"><label id="rpTrabL">Trafos</label><div class="seg" id="rpTrab" role="group" aria-labelledby="rpTrabL"><button type="button" data-v="s" aria-pressed="false">Trabalhados</button><button type="button" data-v="n" aria-pressed="false">Não trabalhados</button></div></div>
+        <div class="fld lg" style="flex:1;min-width:180px"><label for="rpBusca">Transformador</label><input type="search" id="rpBusca" placeholder="Ponto elétrico, município…"></div>
+        <button class="btn" type="button" id="b-rpLimpar">Limpar filtros</button>
+      </div>
+      <div class="ativos" id="rpChips" style="margin-top:6px"></div>
+    </div>
+    <div id="rpCarga"></div>
+    <div id="rpBlocos" style="display:grid;gap:16px;min-width:0" hidden>
+      <div class="dkg rp-kg" id="rpKpis"></div>
+      <div id="rpAviso"></div>
+      <div class="dcard"><div class="dch"><span class="dch-i"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></span><div><h4>Acompanhamento das blindagens</h4><small id="rpTabSub"></small></div></div>
+        <div class="rp-leg"><span><i style="background:var(--sup-soft);border:1px solid var(--sup)"></i>0 = prazo completo sem reincidência</span><span><i style="background:var(--nao-soft);border:1px solid var(--nao)"></i>reincidências no prazo</span><span><i style="background:var(--sunken);border:1px solid var(--line)"></i>em curso = a base ainda não cobre o prazo todo</span></div>
+        <div class="tw" style="max-height:560px"><table class="utab" id="rpTab"><thead><tr><th>Seccional</th><th class="sorta" data-k="mun">Município</th><th>Conjunto</th><th class="sorta" data-k="t">Transformador</th><th class="sorta" data-k="d">Data da blindagem</th><th>Status</th><th class="n sorta" data-k="j30">Reinc. 30 dias</th><th class="n sorta" data-k="j60">Reinc. 60 dias</th><th class="n sorta" data-k="j90">Reinc. 90 dias</th><th class="sorta" data-k="sem">Dias sem reincidência</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="dcard"><div class="dch"><span class="dch-i"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v12M6 15a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM18 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM18 9c0 6-12 3-12 6"/></svg></span><div><h4>Árvore de causas e subcausas</h4><small id="rpArvSub"></small></div><div class="seg" id="rpModo" role="group" aria-label="O que contar" style="margin-left:auto"><button type="button" data-v="re" aria-pressed="true">Reincidências</button><button type="button" data-v="tudo" aria-pressed="false">Todas as interrupções</button></div></div>
+        <div class="rp-arv" id="rpArv"></div>
+      </div>
+      <div class="dcard"><div class="dch"><span class="dch-i"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><div><h4>Principais transformadores reincidentes</h4><small id="rpRkSub"></small></div><div class="fld" style="margin-left:auto;min-width:110px"><select id="rpTop" aria-label="Quantos mostrar"><option value="20">Top 20</option><option value="50">Top 50</option><option value="100">Top 100</option><option value="100000">Todos</option></select></div></div>
+        <div class="rp-leg"><span><i style="background:var(--surface);box-shadow:inset 3px 0 0 var(--sup);border:1px solid var(--line)"></i>já blindado</span><span><i style="background:var(--nao-soft);box-shadow:inset 3px 0 0 var(--nao)"></i>continua reincidindo depois da blindagem</span></div>
+        <div class="tw" style="max-height:560px"><table class="utab" id="rpRk"><thead><tr><th class="n">#</th><th>Transformador</th><th>Município</th><th>Seccional</th><th>Conjunto</th><th class="n">Reincidências</th><th class="n">Interrupções</th><th>Causa predominante</th><th>Subcausa predominante</th><th>Última ocorrência</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <p class="muted" style="font-size:11.5px;margin:0">Regras: base = todas as interrupções de trafo, com qualquer quantidade de clientes · ligação pelo Componente do cadastro = Ponto Elétrico da base · reincidência após a blindagem = interrupção a partir do dia seguinte à execução e antes da próxima intervenção no trafo · prazos de 30, 60 e 90 dias acumulados · no ranking e na árvore, reincidência = 2ª interrupção ou mais em até 90 dias da anterior · clique num trafo para ver o histórico.</p>
+    </div>
+  </section>
+
+  <!-- PÁGINA: REINCIDENTES · CADASTRO DE BLINDAGEM -->
+  <section data-pag="rei-cadastro" style="display:grid;gap:16px;min-width:0" hidden>
+    <div class="ubar"><div class="ubar-t"><h2>Cadastro de blindagem</h2><span>Trafo trabalhado, data da intervenção e ações executadas</span></div></div>
+    <div class="note warn" id="reiEdit" hidden></div>
+    <form id="reiForm" autocomplete="off" novalidate style="display:grid;gap:16px">
+      <div class="rei-grid">
+        <div class="panel rei-bl"><h3><span class="rei-n">1</span>Localização</h3>
+          <div class="rei-campos">
+            <div class="fld"><label for="reiSec">Seccional<i class="rei-ob">*</i></label><select id="reiSec" required></select></div>
+            <div class="fld"><label for="reiMun">Município<i class="rei-ob">*</i></label><select id="reiMun" required></select></div>
+            <div class="fld lg" id="reiMunOutroW" hidden><label for="reiMunOutro">Nome do município<i class="rei-ob">*</i></label><input type="text" id="reiMunOutro" maxlength="80" placeholder="Digite o município"></div>
+          </div>
+        </div>
+        <div class="panel rei-bl"><h3><span class="rei-n">2</span>Identificação do transformador</h3>
+        <div class="rei-campos">
+          <div class="fld"><label for="reiComp">Componente<i class="rei-ob">*</i></label><input type="text" id="reiComp" maxlength="40" required></div>
+          <div class="fld"><label for="reiChi">CHI</label><input type="number" id="reiChi" min="0" step="any" inputmode="decimal"></div>
+          <div class="fld"><label for="reiAl">AL</label><input type="text" id="reiAl" maxlength="40"></div>
+          <div class="fld"><label for="reiTipo">Tipo de equipamento</label><input type="text" id="reiTipo" maxlength="60" list="reiTipoL"><datalist id="reiTipoL"></datalist></div>
+          <div class="fld"><label for="reiCj">Conjunto</label><input type="text" id="reiCj" maxlength="80" list="reiCjL"><datalist id="reiCjL"></datalist></div>
+          <div class="fld"><label for="reiCli">Quant. clientes</label><input type="number" id="reiCli" min="0" step="1" inputmode="numeric"></div>
+          <div class="fld"><label id="reiInspL">Inspecionado<i class="rei-ob">*</i></label><div class="seg" id="reiInsp" role="group" aria-labelledby="reiInspL"><button type="button" data-v="1" aria-pressed="false">Sim</button><button type="button" data-v="0" aria-pressed="false">Não</button></div></div>
+        </div>
+      </div>
+        <div class="panel rei-bl"><h3><span class="rei-n">3</span>Informações da intervenção</h3>
+          <div class="rei-campos">
+            <div class="fld"><label for="reiDia">Dia execução<i class="rei-ob">*</i></label><input type="date" id="reiDia" required></div>
+            <div class="fld"><label for="reiSt">Status<i class="rei-ob">*</i></label><select id="reiSt" required><option value="">Escolha…</option><option value="CONCLUIDO">Concluído</option><option value="PARCIAL">Parcial</option></select></div>
+          </div>
+        </div>
+        <div class="panel rei-bl"><h3><span class="rei-n">4</span>Ações executadas<i class="rei-ob">*</i></h3><small class="muted" style="margin-top:-6px">Adicione só as ações feitas. Ação fora da lista = não executada · quantidade 0 = executada sem quantidade.</small>
+        <div id="reiAcoes" style="display:grid;gap:8px"></div>
+        <div><button class="btn" type="button" id="b-reiAdd"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Adicionar ação</button></div>
+      </div>
+      </div>
+      <div class="rei-msg" id="reiMsg" aria-live="polite"></div>
+      <div class="rei-pe"><small class="muted"><i class="rei-ob">*</i> campos obrigatórios</small><span style="flex:1"></span><button class="btn" type="button" id="b-reiLimpar">Limpar formulário</button><button class="btn primary" type="submit" id="b-reiSalvar"><svg class="ico" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>Salvar cadastro</button></div>
+    </form>
+  </section>
+
+  <!-- PÁGINA: REINCIDENTES · CADASTROS REALIZADOS -->
+  <section data-pag="rei-consulta" style="display:grid;gap:16px;min-width:0" hidden>
+    <div class="ubar"><div class="ubar-t"><h2>Cadastros realizados</h2><span id="reiConsSub">Intervenções de blindagem registradas</span></div><div class="ubar-r"><a class="btn primary" href="#rei-cadastro" id="b-reiNovo"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Novo cadastro</a></div></div>
+    <div class="panel">
+      <div class="cad-fil" id="reiFil">
+        <div class="fld"><label for="rfSec">Seccional</label><select id="rfSec"></select></div>
+        <div class="fld"><label for="rfMun">Município</label><select id="rfMun"></select></div>
+        <div class="fld"><label for="rfCj">Conjunto</label><select id="rfCj"></select></div>
+        <div class="fld"><label for="rfSt">Status</label><select id="rfSt"><option value="">Todos</option><option value="CONCLUIDO">Concluído</option><option value="PARCIAL">Parcial</option></select></div>
+        <div class="fld"><label for="rfDe">De</label><input type="date" id="rfDe"></div>
+        <div class="fld"><label for="rfAte">Até</label><input type="date" id="rfAte"></div>
+        <div class="fld" style="flex:1;min-width:200px"><label for="rfBusca">Transformador</label><input type="search" id="rfBusca" placeholder="Componente, AL ou conjunto…"></div>
+        <button class="btn" type="button" id="b-rfLimpar">Limpar filtros</button>
+      </div>
+      <div class="tw" style="max-height:640px"><table class="utab rei-tab" id="reiTab"><thead><tr><th>Dia execução</th><th>Seccional</th><th>Município</th><th>Componente</th><th>AL</th><th>Conjunto</th><th>Status</th><th>Ações executadas</th><th>Cadastro</th><th></th></tr></thead><tbody></tbody></table></div>
+    </div>
   </section>
 
   <!-- PÁGINA: CADASTROS -->
@@ -2655,7 +2801,7 @@ const pctCell=p=>'<span class="pct '+cls(p)+'">'+pct(p)+'</span>';
 /* ---------- menu lateral (páginas) ---------- */
 const ICON={relogio:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6M12 2v3"/>',mix:'<rect x="3" y="3" width="8" height="10" rx="1.5"/><rect x="13" y="3" width="8" height="6" rx="1.5"/><rect x="13" y="11" width="8" height="10" rx="1.5"/><rect x="3" y="15" width="8" height="6" rx="1.5"/>',raio:'<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',home:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>',alerta:'<path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/>',cad:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',sono:'<path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/>',cobra:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',painel:'<path d="M4 15a8 8 0 0 1 16 0"/><path d="M12 15l4-4"/><path d="M3 19h18"/>',lista:'<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/>',upload:'<path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v4h16v-4"/>',moeda:'<circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.5-1.2-1.7-1.8-3-1.8-1.7 0-3 .9-3 2.2 0 3 6 1.6 6 4.6 0 1.3-1.3 2.3-3 2.3-1.4 0-2.6-.7-3.1-1.9M12 6v1.7M12 16.8v1.7"/>',chave:'<path d="M14.7 6.3a4 4 0 0 0-5.4 5.2L3 17.8V21h3.2l6.3-6.3a4 4 0 0 0 5.2-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/>'};
 const ico=n=>'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">'+ICON[n]+'</svg>';
-const PAGINAS=[{id:'inicio',nm:'Visão geral',sub:'Resumo de todos os indicadores',ic:'home',g:'Geral'},{id:'painel',nm:'Painel',sub:'Estrutura, base e dia a dia',ic:'painel',g:'Disponibilidade'},{id:'prefixos',nm:'Por prefixo',sub:'Equipe por equipe',ic:'lista',g:'Disponibilidade'},{id:'cobranca',nm:'Cobrança do dia',sub:'Equipes abaixo da meta',ic:'cobra',g:'Disponibilidade'},{id:'ups-painel',nm:'Painel',sub:'Classes, bases e ritmo',ic:'painel',g:'UPS'},{id:'ups-prefixos',nm:'Por equipe',sub:'UPS, meta e classe',ic:'lista',g:'UPS'},{id:'ups-diario',nm:'Diário',sub:'Equipe × dia',ic:'cal',g:'UPS'},{id:'ups-cobranca',nm:'Cobrança',sub:'Equipes classe C e D',ic:'cobra',g:'UPS'},{id:'ups-regras',nm:'Regras da UPS',sub:'Pontuação, DE_PARA e regras',ic:'chave',g:'UPS'},{id:'ader-painel',nm:'Painel',sub:'Checklist × horário da escala',ic:'cal',g:'Aderência à escala'},{id:'ader-ranking',nm:'Ranking',sub:'Bases e equipes',ic:'lista',g:'Aderência à escala'},{id:'ini-painel',nm:'Painel',sub:'1ª atividade após o checklist',ic:'cal',g:'Início das atividades'},{id:'prd-dia',nm:'Visão diária',sub:'Meta x realizado em R$, em tempo real',ic:'painel',g:'Produção do dia'},{id:'prd-precos',nm:'Preços das atividades',sub:'Regras e valor de cada atividade',ic:'chave',g:'Produção do dia'},{id:'def-painel',nm:'Tratamento',sub:'Total, entrantes e resolvidos',ic:'painel',g:'Atualização de defeitos'},{id:'def-evolucao',nm:'Evolução',sub:'Tipos e dia a dia do mês',ic:'cal',g:'Atualização de defeitos'},{id:'def-lista',nm:'Lista de defeitos',sub:'Banco de dados para cobrança',ic:'lista',g:'Atualização de defeitos'},{id:'tm-geral',nm:'Visão geral',sub:'TME e TMD por mês, base e atividade',ic:'painel',g:'TME / TMD'},{id:'tm-prefixo',nm:'Por prefixo',sub:'Prefixo × tipo de atividade',ic:'lista',g:'TME / TMD'},{id:'tm-detalhe',nm:'Detalhamento',sub:'Abrangência, conclusão e code',ic:'cal',g:'TME / TMD'},{id:'mix-normal',nm:'OS Normal',sub:'Quantidade por mês, base, dia e equipe',ic:'painel',g:'Mix GSTC'},{id:'mix-mistec',nm:'Miscelânea técnica',sub:'R$ executado por mês, base e equipe',ic:'lista',g:'Mix GSTC'},{id:'mix-corte',nm:'Tipo de corte',sub:'Local do corte e R$ por corte',ic:'cal',g:'Mix GSTC'},{id:'mix-causa',nm:'Auditoria de causas',sub:'Emergencial e assistências por causa',ic:'alerta',g:'Mix GSTC'},{id:'trf-painel',nm:'Blindagem',sub:'Efetividade dos trafos trabalhados',ic:'painel',g:'Trafos reincidentes'},{id:'trf-indice',nm:'Índice de reincidência',sub:'Mês a mês e trafos p/ blindagem',ic:'lista',g:'Trafos reincidentes'},{id:'contingencia',nm:'Painel',sub:'Atividades, clientes afetados e acima de 24 h',ic:'alerta',g:'Gestão de Contingência'},{id:'prazos',nm:'Painel',sub:'Prazos regulatórios',ic:'cobra',g:'Farol de Prazos'},{id:'atualizar',nm:'Atualizar com o SIGA',sub:'Enviar os 4 relatórios',ic:'upload',g:'Administração',adm:true},{id:'conferencia',nm:'Conferência',sub:'Avisos da base',ic:'alerta',g:'Administração',adm:true},{id:'cadastros',nm:'Cadastros',sub:'Prefixos, escala e feriados',ic:'cad',g:'Administração',adm:true}];
+const PAGINAS=[{id:'inicio',nm:'Visão geral',sub:'Resumo de todos os indicadores',ic:'home',g:'Geral'},{id:'painel',nm:'Painel',sub:'Estrutura, base e dia a dia',ic:'painel',g:'Disponibilidade'},{id:'prefixos',nm:'Por prefixo',sub:'Equipe por equipe',ic:'lista',g:'Disponibilidade'},{id:'cobranca',nm:'Cobrança do dia',sub:'Equipes abaixo da meta',ic:'cobra',g:'Disponibilidade'},{id:'ups-painel',nm:'Painel',sub:'Classes, bases e ritmo',ic:'painel',g:'UPS'},{id:'ups-prefixos',nm:'Por equipe',sub:'UPS, meta e classe',ic:'lista',g:'UPS'},{id:'ups-diario',nm:'Diário',sub:'Equipe × dia',ic:'cal',g:'UPS'},{id:'ups-cobranca',nm:'Cobrança',sub:'Equipes classe C e D',ic:'cobra',g:'UPS'},{id:'ups-regras',nm:'Regras da UPS',sub:'Pontuação, DE_PARA e regras',ic:'chave',g:'UPS'},{id:'ader-painel',nm:'Painel',sub:'Checklist × horário da escala',ic:'cal',g:'Aderência à escala'},{id:'ader-ranking',nm:'Ranking',sub:'Bases e equipes',ic:'lista',g:'Aderência à escala'},{id:'ini-painel',nm:'Painel',sub:'1ª atividade após o checklist',ic:'cal',g:'Início das atividades'},{id:'prd-dia',nm:'Visão diária',sub:'Meta x realizado em R$, em tempo real',ic:'painel',g:'Produção do dia'},{id:'prd-precos',nm:'Preços das atividades',sub:'Regras e valor de cada atividade',ic:'chave',g:'Produção do dia'},{id:'def-painel',nm:'Tratamento',sub:'Total, entrantes e resolvidos',ic:'painel',g:'Atualização de defeitos'},{id:'def-evolucao',nm:'Evolução',sub:'Tipos e dia a dia do mês',ic:'cal',g:'Atualização de defeitos'},{id:'def-lista',nm:'Lista de defeitos',sub:'Banco de dados para cobrança',ic:'lista',g:'Atualização de defeitos'},{id:'tm-geral',nm:'Visão geral',sub:'TME e TMD por mês, base e atividade',ic:'painel',g:'TME / TMD'},{id:'tm-prefixo',nm:'Por prefixo',sub:'Prefixo × tipo de atividade',ic:'lista',g:'TME / TMD'},{id:'tm-detalhe',nm:'Detalhamento',sub:'Abrangência, conclusão e code',ic:'cal',g:'TME / TMD'},{id:'mix-normal',nm:'OS Normal',sub:'Quantidade por mês, base, dia e equipe',ic:'painel',g:'Mix GSTC'},{id:'mix-mistec',nm:'Miscelânea técnica',sub:'R$ executado por mês, base e equipe',ic:'lista',g:'Mix GSTC'},{id:'mix-corte',nm:'Tipo de corte',sub:'Local do corte e R$ por corte',ic:'cal',g:'Mix GSTC'},{id:'mix-causa',nm:'Auditoria de causas',sub:'Emergencial e assistências por causa',ic:'alerta',g:'Mix GSTC'},{id:'trf-painel',nm:'Blindagem',sub:'Efetividade dos trafos trabalhados',ic:'painel',g:'Trafos reincidentes'},{id:'trf-indice',nm:'Índice de reincidência',sub:'Mês a mês e trafos p/ blindagem',ic:'lista',g:'Trafos reincidentes'},{id:'contingencia',nm:'Painel',sub:'Atividades, clientes afetados e acima de 24 h',ic:'alerta',g:'Gestão de Contingência'},{id:'prazos',nm:'Painel',sub:'Prazos regulatórios',ic:'cobra',g:'Farol de Prazos'},{id:'atualizar',nm:'Atualizar com o SIGA',sub:'Enviar os 4 relatórios',ic:'upload',g:'Administração',adm:true},{id:'conferencia',nm:'Conferência',sub:'Avisos da base',ic:'alerta',g:'Administração',adm:true},{id:'cadastros',nm:'Cadastros',sub:'Prefixos, escala e feriados',ic:'cad',g:'Administração',adm:true},{id:'rei-painel',nm:'Painel',sub:'Blindagens, reincidências e causas',ic:'painel',g:'Reincidentes',adm:true},{id:'rei-cadastro',nm:'Cadastro de blindagem',sub:'Trafo e ações executadas',ic:'cad',g:'Reincidentes',adm:true},{id:'rei-consulta',nm:'Cadastros realizados',sub:'Consulta, edição e exclusão',ic:'lista',g:'Reincidentes',adm:true}];
 /* ---------- hierarquia das equipes (gerente / coordenador / supervisor): filtro global dos indicadores por prefixo ---------- */
 let HIER=null,HF={ger:'',coo:'',sup:''};
 try{Object.assign(HF,JSON.parse(localStorage.getItem('hier.f')||'{}'))}catch(e){}
@@ -3006,8 +3152,8 @@ let modoEquipe=false;
 const ehAdm=()=>podeSalvar&&!modoEquipe;
 const visiveis=()=>PAGINAS.filter(p=>!p.adm||ehAdm()||(p.id==='atualizar'&&podeEnviar&&!podeSalvar));window.visiveis=visiveis; /* o Operador só enxerga a página de envio do SIGA */
 const pag=()=>{const h=location.hash.slice(1);return visiveis().find(p=>p.id===h)||PAGINAS[0]};
-const GRUPO_ICO={'Disponibilidade':'painel','UPS':'lista','Aderência à escala':'cal','Início das atividades':'sono','Produção do dia':'moeda','Atualização de defeitos':'chave','TME / TMD':'relogio','Mix GSTC':'mix','Trafos reincidentes':'raio','Gestão de Contingência':'alerta','Farol de Prazos':'cobra','Administração':'cad'};
-const GRUPO_SUB={'Disponibilidade':'Painel, prefixos e cobrança','UPS':'Painel, equipes, diário e cobrança','Aderência à escala':'Painel e ranking','Início das atividades':'Horário da 1ª atividade','Produção do dia':'Meta x realizado em tempo real','Atualização de defeitos':'Tratamento, evolução e lista','TME / TMD':'Execução e deslocamento','Mix GSTC':'OS Normal, miscelânea, corte e auditoria','Trafos reincidentes':'Blindagem e índice de reincidência','Gestão de Contingência':'Atividades em campo e clientes afetados','Farol de Prazos':'Prazos regulatórios por atividade','Administração':'Envio, conferência e cadastros'};
+const GRUPO_ICO={'Disponibilidade':'painel','UPS':'lista','Aderência à escala':'cal','Início das atividades':'sono','Produção do dia':'moeda','Atualização de defeitos':'chave','TME / TMD':'relogio','Mix GSTC':'mix','Trafos reincidentes':'raio','Gestão de Contingência':'alerta','Farol de Prazos':'cobra','Administração':'cad','Reincidentes':'raio'};
+const GRUPO_SUB={'Disponibilidade':'Painel, prefixos e cobrança','UPS':'Painel, equipes, diário e cobrança','Aderência à escala':'Painel e ranking','Início das atividades':'Horário da 1ª atividade','Produção do dia':'Meta x realizado em tempo real','Atualização de defeitos':'Tratamento, evolução e lista','TME / TMD':'Execução e deslocamento','Mix GSTC':'OS Normal, miscelânea, corte e auditoria','Trafos reincidentes':'Blindagem e índice de reincidência','Gestão de Contingência':'Atividades em campo e clientes afetados','Farol de Prazos':'Prazos regulatórios por atividade','Administração':'Envio, conferência e cadastros','Reincidentes':'Painel, cadastro e consulta de blindagens'};
 let railAberto=null;
 const SEC_DE={'Geral':'','Administração':'Administração'};
 function renderRail(){
@@ -3079,6 +3225,342 @@ function pintarPerfil(){
 }
 $('b-perfil').onclick=()=>{if(!podeSalvar)return;modoEquipe=!modoEquipe;mostrarPagina();toast(modoEquipe?'Agora você vê o site como a equipe.':'Modo administrador.')};
 $('b-voltaAdm').onclick=()=>{modoEquipe=false;mostrarPagina();toast('Modo administrador.')};
+/* ---------- Reincidentes · cadastro de blindagem (só administrador) ----------
+   Os registros ficam nas tabelas blindagem e blindagem_acao do Neon (rota /api/blindagem).
+   Ação que não está na lista = não executada; ação com quantidade 0 = executada com quantidade zero. */
+const REI={regs:null,acoes:['QT DE ESPAÇADOR','QTD DE VÃO','CHECK DE ELO','RETIRADA OBJETO REDE','PODAS DE BT','PODAS DE MT','RETIRADA GAMBIARRA','ALTERAR TAP','BALANCEAMENTO','PARA RAIO BT'],edit:null,ini:false,carregando:null};
+const REI_ST={CONCLUIDO:['Concluído','sup'],PARCIAL:['Parcial','par']};
+const REI_OUTRAS='__OUTRAS__';
+const reiNk=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toUpperCase().replace(/[^A-Z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+const reiStPill=s=>{const x=REI_ST[s]||[s||'–','nd'];return '<span class="pill '+x[1]+'">'+x[0]+'</span>'};
+const reiSecNome=k=>{const b=VG_BASES.find(x=>x[2]===k);return b?b[1]:k};
+async function reiApi(met,url,corpo){
+  const r=await fetch('/api/blindagem'+(url||''),{method:met,credentials:'same-origin',headers:corpo?{'Content-Type':'application/json'}:{},body:corpo?JSON.stringify(corpo):undefined});
+  let j={};try{j=await r.json()}catch(e){}
+  if(!r.ok)throw Object.assign(new Error(j.erro||('Erro '+r.status)),{problemas:j.problemas,status:r.status});
+  return j;
+}
+function reiCarregar(forca){
+  if(REI.regs&&!forca)return Promise.resolve(REI.regs);
+  if(REI.carregando)return REI.carregando;
+  return REI.carregando=reiApi('GET').then(j=>{REI.regs=j.registros||[];if(j.acoes)REI.acoes=j.acoes;
+    const ix=t=>{const i=REI.acoes.indexOf(t);return i<0?99:i};REI.regs.forEach(r=>(r.acoes||[]).sort((a,b)=>ix(a.tipo)-ix(b.tipo))); /* ações na ordem da lista padrão */
+    return REI.regs}).finally(()=>{REI.carregando=null});
+}
+/* municípios da seccional (relação cidade → seccional do cadastro de Defeitos), com o nome oficial do IBGE */
+/* municípios atendidos (lista definida pela área). Com a seccional escolhida, os dela vêm primeiro (relação cidade → seccional do cadastro de Defeitos) */
+const REI_MUN="ALTAMIRA DO MARANHAO|ALTO ALEGRE DO MARANHAO|ALTO ALEGRE DO PINDARE|ANAJATUBA|ARAGUANA|ARARI|BACABAL|BARRA DO CORDA|BELA VISTA DO MARANHAO|BERNARDO DO MEARIM|BOM JARDIM|BOM LUGAR|BREJO DE AREIA|CANTANHEDE|CAPINZAL DO NORTE|CONCEICAO DO LAGO ACU|COROATA|DOM PEDRO|ESPERANTINOPOLIS|FERNANDO FALCAO|FORTUNA|GONCALVES DIAS|GOVERNADOR ARCHER|GOV. EUGENIO BARROS|GOVERNADOR LUIZ ROCHA|GOVERNADOR NEWTON BELLO|GRACA ARANHA|IGARAPE DO MEIO|IGARAPE GRANDE|ITAPECURU MIRIM|JENIPAPO DOS VIEIRAS|JOSELANDIA|LAGO DA PEDRA|LAGO DO JUNCO|LAGO DOS RODRIGUES|LAGO VERDE|LAGOA GRANDE DO MARANHAO|LIMA CAMPOS|MARAJA DO SENA|MATOES DO NORTE|MIRANDA DO NORTE|MONCAO|NINA RODRIGUES|OLHO D'AGUA DAS CUNHAS|PAULO RAMOS|PEDREIRAS|PERITORO|PINDARE MIRIM|PIO XII|PIRAPEMAS|POCAO DE PEDRAS|PRESIDENTE DUTRA|PRESIDENTE VARGAS|SANTA FILOMENA DO MARANHAO|SANTA INES|SANTA LUZIA DO TIDE|SANTO ANTONIO DOS LOPES|SAO DOMINGOS DO MARANHAO|SAO JOAO DO CARU|SAO JOSE DOS BASILIOS|SAO LUIS GONZAGA DO MA|SAO MATEUS DO MARANHAO|SAO RAIMUNDO DO DOCA BEZERRA|SAO ROBERTO|SATUBINHA|SENADOR ALEXANDRE COSTA|TRIZIDELA DO VALE|TUFILANDIA|TUNTUM|VARGEM GRANDE|VITORIA DO MEARIM|VITORINO FREIRE|ZE DOCA|TIMON".split('|');
+function reiMunicipios(sec){
+  const alias=k=>k.replace(/^GOV /,'GOVERNADOR ').replace(/ DO MA$/,' DO MARANHAO');
+  const dist={};for(const [c,x] of Object.entries((DCFG&&DCFG.cidDist)||{}))dist[alias(reiNk(c))]=x;
+  const secDe=m=>{const k=alias(reiNk(m));if(dist[k])return dist[k];const p=Object.keys(dist).find(d=>k.startsWith(d+' ')||d.startsWith(k+' '));return p?dist[p]:null};
+  const todos=[...REI_MUN].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+  const da=sec?todos.filter(m=>secDe(m)===sec):[];
+  return {da,outros:todos.filter(m=>!da.includes(m)),todos};
+}
+function reiPintarMun(manter){
+  const sec=$('reiSec').value,M=reiMunicipios(sec),sel=$('reiMun'),v=manter!=null?manter:sel.value;
+  const op=L=>L.map(m=>'<option>'+esc(m)+'</option>').join('');
+  sel.innerHTML='<option value="">Escolha…</option>'+(M.da.length?'<optgroup label="Seccional '+esc(reiSecNome(sec))+'">'+op(M.da)+'</optgroup><optgroup label="Outros municípios">'+op(M.outros)+'</optgroup>':op(M.todos))+'<option value="'+REI_OUTRAS+'">OUTRAS</option>';
+  const achado=v&&v!==REI_OUTRAS?M.todos.find(m=>reiNk(m)===reiNk(v)):null;
+  if(v&&v!==REI_OUTRAS&&!achado){sel.value=REI_OUTRAS;$('reiMunOutro').value=v}else sel.value=achado||v||'';
+  $('reiMunOutroW').hidden=sel.value!==REI_OUTRAS;
+}
+function reiLinhaAcao(tipo,qtd){
+  const d=document.createElement('div');d.className='rei-al';
+  d.innerHTML='<select aria-label="Ação executada" data-a="tipo"></select><input type="number" min="0" step="1" inputmode="numeric" aria-label="Quantidade" placeholder="Qtd." data-a="qtd"><button type="button" class="rei-rm" title="Remover ação" aria-label="Remover ação"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>';
+  d.querySelector('[data-a=tipo]').dataset.v=tipo||'';d.querySelector('[data-a=qtd]').value=qtd==null?'':qtd;
+  d.querySelector('.rei-rm').onclick=()=>{d.remove();reiPintarAcoes()};
+  d.querySelector('[data-a=tipo]').onchange=e=>{e.target.dataset.v=e.target.value;e.target.removeAttribute('aria-invalid');reiPintarAcoes()};
+  d.querySelector('[data-a=qtd]').oninput=e=>e.target.removeAttribute('aria-invalid');
+  $('reiAcoes').appendChild(d);return d;
+}
+/* cada linha só oferece as ações que ainda não foram usadas nas outras (sem ação duplicada) */
+function reiPintarAcoes(){
+  const L=[...$('reiAcoes').querySelectorAll('.rei-al:not(.rei-alh-w)')],usadas=L.map(l=>l.querySelector('[data-a=tipo]').dataset.v).filter(Boolean);
+  for(const l of L){const s=l.querySelector('[data-a=tipo]'),v=s.dataset.v;
+    s.innerHTML='<option value="">Escolha a ação…</option>'+REI.acoes.filter(a=>a===v||!usadas.includes(a)).map(a=>'<option'+(a===v?' selected':'')+'>'+esc(a)+'</option>').join('')}
+  const hd=$('reiAcoes').querySelector('.rei-alh-w');
+  if(!L.length){$('reiAcoes').innerHTML='<div class="empty" style="padding:16px">Nenhuma ação adicionada. Clique em <b>Adicionar ação</b> para registrar o que foi executado.</div>'}
+  else{const e=$('reiAcoes').querySelector('.empty');if(e)e.remove();if(!hd){const h=document.createElement('div');h.className='rei-al rei-alh-w';h.innerHTML='<span class="rei-alh">Ação executada</span><span class="rei-alh">Quantidade</span><span></span>';$('reiAcoes').prepend(h)}}
+  $('b-reiAdd').disabled=L.length>=REI.acoes.length;
+}
+function reiInsp(v){$('reiInsp').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===v)));$('reiInsp').dataset.v=v==null?'':v;$('reiInsp').removeAttribute('aria-invalid')}
+function reiLimpar(manterLocal){
+  const sec=$('reiSec').value,mun=$('reiMun').value,mo=$('reiMunOutro').value;
+  $('reiForm').reset();REI.edit=null;$('reiEdit').hidden=true;$('b-reiSalvar').lastChild.textContent='Salvar cadastro';
+  $('reiForm').querySelectorAll('[aria-invalid]').forEach(x=>x.removeAttribute('aria-invalid'));
+  if(manterLocal){$('reiSec').value=sec;reiPintarMun(mun===REI_OUTRAS?mo:mun)}else reiPintarMun('');
+  reiInsp(null);$('reiAcoes').innerHTML='';reiPintarAcoes();
+}
+function reiDatalists(){
+  const R=REI.regs||[],uniq=f=>[...new Set(R.map(f).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+  $('reiTipoL').innerHTML=uniq(r=>r.tipo_equip).map(v=>'<option value="'+esc(v)+'">').join('');
+  $('reiCjL').innerHTML=uniq(r=>r.conjunto).map(v=>'<option value="'+esc(v)+'">').join('');
+}
+function reiCadIniciar(){
+  if(REI.ini)return;REI.ini=true;
+  $('reiSec').innerHTML='<option value="">Escolha…</option>'+VG_BASES.map(b=>'<option value="'+esc(b[2])+'">'+esc(b[1])+'</option>').join('');
+  $('reiSec').onchange=()=>{$('reiSec').removeAttribute('aria-invalid');reiPintarMun('')};
+  $('reiMun').onchange=()=>{$('reiMun').removeAttribute('aria-invalid');$('reiMunOutroW').hidden=$('reiMun').value!==REI_OUTRAS;if(!$('reiMunOutroW').hidden)$('reiMunOutro').focus()};
+  $('reiInsp').querySelectorAll('button').forEach(b=>b.onclick=()=>reiInsp(b.dataset.v));
+  $('reiForm').querySelectorAll('input,select').forEach(x=>x.addEventListener('input',()=>x.removeAttribute('aria-invalid')));
+  $('b-reiAdd').onclick=()=>{const d=reiLinhaAcao();reiPintarAcoes();d.querySelector('select').focus()};
+  $('b-reiLimpar').onclick=()=>{reiLimpar(false);$('reiMsg').innerHTML=''};
+  $('reiForm').onsubmit=e=>{e.preventDefault();reiSalvar()};
+  reiLimpar(false);
+}
+function reiCadMostrar(){
+  reiCadIniciar();$('reiDia').max=hojeIso();
+  if(!$('reiMun').options.length||$('reiMun').options.length<3)reiPintarMun($('reiMun').value===REI_OUTRAS?$('reiMunOutro').value:$('reiMun').value);
+  reiCarregar().then(reiDatalists).catch(()=>{});
+}
+/* lê o formulário e confere no navegador (o servidor confere de novo) */
+function reiLer(){
+  const P=[],bad=el=>{el.setAttribute('aria-invalid','true');return el};
+  const outro=$('reiMun').value===REI_OUTRAS,mun=outro?$('reiMunOutro').value.trim():$('reiMun').value;
+  if(!$('reiSec').value)P.push([bad($('reiSec')),'Escolha a seccional.']);
+  if(!mun)P.push([bad(outro?$('reiMunOutro'):$('reiMun')),outro?'Digite o nome do município.':'Escolha o município.']);
+  if(!$('reiComp').value.trim())P.push([bad($('reiComp')),'Informe o componente.']);
+  const num=(el,int,nm)=>{const v=el.value.trim();if(!v){if(el.validity&&el.validity.badInput){P.push([bad(el),nm+': valor inválido.']);return null}return null}const n=Number(v.replace(',','.'));if(!Number.isFinite(n)||n<0||(int&&!Number.isInteger(n))){P.push([bad(el),nm+' deve ser um número '+(int?'inteiro ':'')+'igual ou maior que zero.']);return null}return n};
+  const chi=num($('reiChi'),false,'CHI'),cli=num($('reiCli'),true,'Quant. clientes');
+  const insp=$('reiInsp').dataset.v;if(insp!=='1'&&insp!=='0')P.push([bad($('reiInsp')),'Marque se o trafo foi inspecionado (Sim ou Não).']);
+  const dia=$('reiDia').value;if(!dia)P.push([bad($('reiDia')),'Informe o dia da execução.']);else if(dia>hojeIso())P.push([bad($('reiDia')),'O dia da execução não pode ser depois de hoje.']);
+  if(!$('reiSt').value)P.push([bad($('reiSt')),'Escolha o status (Concluído ou Parcial).']);
+  const acoes=[];
+  for(const l of $('reiAcoes').querySelectorAll('.rei-al:not(.rei-alh-w)')){const s=l.querySelector('[data-a=tipo]'),q=l.querySelector('[data-a=qtd]');
+    if(!s.value){P.push([bad(s),'Escolha a ação em todas as linhas (ou remova a linha vazia).']);continue}
+    const v=q.value.trim(),n=Number(v);if(v===''||!Number.isInteger(n)||n<0){P.push([bad(q),'Informe a quantidade de '+s.value+' (número inteiro, 0 ou mais).']);continue}
+    acoes.push({tipo:s.value,qtd:n})}
+  if(!acoes.length&&!$('reiAcoes').querySelector('.rei-al:not(.rei-alh-w)'))P.push([$('b-reiAdd'),'Adicione pelo menos uma ação executada.']);
+  return {P,dados:{seccional:$('reiSec').value,municipio:mun,municipio_outro:outro,componente:$('reiComp').value.trim(),chi,al:$('reiAl').value.trim(),tipo_equip:$('reiTipo').value.trim(),conjunto:$('reiCj').value.trim(),qtd_clientes:cli,inspecionado:insp==='1'?true:insp==='0'?false:null,dia_execucao:dia,status:$('reiSt').value,acoes}};
+}
+const reiErros=(tit,L)=>'<div class="note err"><b>'+esc(tit)+'</b><ul>'+L.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ul></div>';
+async function reiSalvar(){
+  const {P,dados}=reiLer(),msg=$('reiMsg');
+  if(P.length){msg.innerHTML=reiErros('Confira o cadastro:',P.map(x=>x[1]));if(P[0][0]&&P[0][0].focus)P[0][0].focus();return}
+  const b=$('b-reiSalvar');b.disabled=true;msg.innerHTML='<div class="note">Salvando…</div>';
+  try{
+    const ed=REI.edit;
+    if(ed)await reiApi('PUT','',Object.assign({id:ed},dados));else await reiApi('POST','',dados);
+    await reiCarregar(true);reiDatalists();
+    msg.innerHTML='<div class="note ok"><b>Cadastro '+(ed?'atualizado':'salvo')+'.</b> '+esc(dados.componente.toUpperCase())+' · '+dataBR(dados.dia_execucao)+' · '+dados.acoes.length+' ação(ões) executada(s). <a href="#rei-consulta">Ver cadastros realizados</a></div>';
+    toast(ed?'Cadastro atualizado':'Cadastro salvo');
+    reiLimpar(!ed);
+  }catch(e){msg.innerHTML=e.problemas?reiErros(e.message,e.problemas):'<div class="note err">'+esc(e.message)+'</div>'}
+  finally{b.disabled=false}
+}
+function reiEditar(id){
+  const r=(REI.regs||[]).find(x=>x.id===id);if(!r)return;
+  location.hash='#rei-cadastro';reiCadIniciar();reiLimpar(false);REI.edit=id;
+  $('reiSec').value=r.seccional;reiPintarMun(r.municipio);
+  $('reiComp').value=r.componente;$('reiChi').value=r.chi==null?'':r.chi;$('reiAl').value=r.al||'';$('reiTipo').value=r.tipo_equip||'';$('reiCj').value=r.conjunto||'';$('reiCli').value=r.qtd_clientes==null?'':r.qtd_clientes;
+  reiInsp(r.inspecionado?'1':'0');$('reiDia').value=r.dia_execucao;$('reiSt').value=r.status;
+  $('reiAcoes').innerHTML='';(r.acoes||[]).forEach(a=>reiLinhaAcao(a.tipo,a.qtd));reiPintarAcoes();
+  $('reiEdit').innerHTML='Editando o cadastro de <b>'+esc(r.componente)+'</b> · '+dataBR(r.dia_execucao)+'. <button class="btn sm" type="button" id="b-reiCancEd">Cancelar edição</button>';$('reiEdit').hidden=false;
+  $('b-reiCancEd').onclick=()=>{reiLimpar(false);$('reiMsg').innerHTML=''};
+  $('b-reiSalvar').lastChild.textContent='Salvar alterações';$('reiMsg').innerHTML='';window.scrollTo({top:0,behavior:'smooth'});
+}
+async function reiExcluir(id){
+  const r=(REI.regs||[]).find(x=>x.id===id);if(!r)return;
+  if(!confirm('Excluir o cadastro de '+r.componente+' ('+dataBR(r.dia_execucao)+') com '+r.acoes.length+' ação(ões)?\n\nIsso não pode ser desfeito.'))return;
+  try{await reiApi('DELETE','?id='+id);await reiCarregar(true);reiConsPintar();toast('Cadastro excluído')}catch(e){alert(e.message)}
+}
+const reiAcoesTxt=r=>(r.acoes||[]).map(a=>'<span class="rei-chip">'+esc(a.tipo)+' · '+a.qtd+'</span>').join('');
+const reiQuando=t=>{if(!t)return '';const d=new Date(t.replace(' ','T').replace(/([+-]\d\d)$/,'$1:00'));return isNaN(d)?t:d.toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})};
+function reiDet(id){
+  const r=(REI.regs||[]).find(x=>x.id===id);if(!r)return;
+  const hist=(REI.regs||[]).filter(x=>x.componente===r.componente).sort((a,b)=>b.dia_execucao.localeCompare(a.dia_execucao));
+  const campo=(k,v)=>'<div><small class="muted">'+k+'</small><div><b>'+(v==null||v===''?'–':v)+'</b></div></div>';
+  abrirDet({tit:'Transformador '+r.componente,
+    kpis:[['Data da blindagem',dataBR(r.dia_execucao)],['Status',(REI_ST[r.status]||[r.status])[0]],['Ações executadas',r.acoes.length],['Intervenções no trafo',hist.length]],
+    aviso:'<span style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px">'+campo('Seccional',esc(reiSecNome(r.seccional)))+campo('Município',esc(r.municipio)+(r.municipio_outro?' <small class="muted">(digitado)</small>':''))+campo('Conjunto',esc(r.conjunto))+campo('AL',esc(r.al))+campo('CHI',r.chi==null?null:String(r.chi).replace('.',','))+campo('Tipo de equipamento',esc(r.tipo_equip))+campo('Quant. clientes',r.qtd_clientes)+campo('Inspecionado',r.inspecionado?'Sim':'Não')+'</span>',
+    cols:['wAção executada','nQuantidade'],rows:r.acoes.map(a=>[esc(a.tipo),String(a.qtd)]),
+    rodape:'Cadastrado por '+esc(r.criado_nome||r.criado_por)+' em '+reiQuando(r.criado_em)+(r.editado_em?' · editado por '+esc(r.editado_por)+' em '+reiQuando(r.editado_em):''),
+    extra:hist.length>1?'<h4 style="margin:14px 0 6px;font-size:13px">Todas as intervenções neste trafo</h4><div class="tw"><table class="utab"><thead><tr><th>Dia execução</th><th>Status</th><th>Ações executadas</th></tr></thead><tbody>'+hist.map(h=>'<tr'+(h.id===r.id?' style="font-weight:700"':'')+'><td class="nw">'+dataBR(h.dia_execucao)+'</td><td>'+reiStPill(h.status)+'</td><td><div class="rei-chips">'+reiAcoesTxt(h)+'</div></td></tr>').join('')+'</tbody></table></div>':''});
+}
+function reiFiltrados(){
+  const f={sec:$('rfSec').value,mun:$('rfMun').value,cj:$('rfCj').value,st:$('rfSt').value,de:$('rfDe').value,ate:$('rfAte').value,q:reiNk($('rfBusca').value)};
+  return (REI.regs||[]).filter(r=>(!f.sec||r.seccional===f.sec)&&(!f.mun||r.municipio===f.mun)&&(!f.cj||(r.conjunto||'')===f.cj)&&(!f.st||r.status===f.st)&&(!f.de||r.dia_execucao>=f.de)&&(!f.ate||r.dia_execucao<=f.ate)&&(!f.q||reiNk([r.componente,r.al,r.conjunto].join(' ')).includes(f.q)));
+}
+function reiOpcoes(el,vals,todos,nome){const v=el.value;el.innerHTML='<option value="">'+todos+'</option>'+vals.map(x=>'<option value="'+esc(x)+'">'+esc(nome?nome(x):x)+'</option>').join('');el.value=vals.includes(v)?v:'';el.classList.toggle('on',!!el.value)}
+function reiConsPintar(){
+  const R=REI.regs||[],u=f=>[...new Set(R.map(f).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+  reiOpcoes($('rfSec'),u(r=>r.seccional),'Todas',reiSecNome);reiOpcoes($('rfMun'),u(r=>r.municipio),'Todos');reiOpcoes($('rfCj'),u(r=>r.conjunto),'Todos');
+  ['rfSt','rfDe','rfAte'].forEach(id=>$(id).classList.toggle('on',!!$(id).value));
+  const L=reiFiltrados(),tb=$('reiTab').querySelector('tbody');
+  const trafos=new Set(L.map(r=>r.componente)).size,nAc=L.reduce((s,r)=>s+r.acoes.length,0);
+  $('reiConsSub').textContent=L.length+' intervenção(ões) · '+trafos+' trafo(s) · '+nAc+' ação(ões) executada(s)'+(L.length!==R.length?' · filtrado de '+R.length:'');
+  tb.innerHTML=L.length?L.map(r=>'<tr data-id="'+r.id+'"><td class="nw">'+dataBR(r.dia_execucao)+'</td><td class="nw">'+esc(reiSecNome(r.seccional))+'</td><td>'+esc(r.municipio)+'</td><td class="nw"><b class="mono">'+esc(r.componente)+'</b></td><td class="nw">'+esc(r.al||'–')+'</td><td>'+esc(r.conjunto||'–')+'</td><td>'+reiStPill(r.status)+'</td><td><div class="rei-chips">'+reiAcoesTxt(r)+'</div></td><td class="nw"><small>'+esc(r.criado_nome||r.criado_por)+'<br><span class="muted">'+reiQuando(r.criado_em)+'</span></small></td><td><div class="acs"><button class="btn sm" type="button" data-ed="'+r.id+'">Editar</button><button class="btn sm" type="button" data-ex="'+r.id+'">Excluir</button></div></td></tr>').join('')
+    :'<tr><td colspan="10"><div class="empty">'+(R.length?'Nenhum cadastro com esses filtros.':'Nenhum cadastro ainda. Use <a href="#rei-cadastro">Cadastro de blindagem</a> para registrar a primeira intervenção.')+'</div></td></tr>';
+}
+let reiConsIni=false;
+function reiConsMostrar(){
+  if(!reiConsIni){reiConsIni=true;
+    ['rfSec','rfMun','rfCj','rfSt','rfDe','rfAte'].forEach(id=>$(id).onchange=reiConsPintar);$('rfBusca').oninput=reiConsPintar;
+    $('b-rfLimpar').onclick=()=>{['rfSec','rfMun','rfCj','rfSt','rfDe','rfAte','rfBusca'].forEach(id=>$(id).value='');reiConsPintar()};
+    $('b-reiNovo').onclick=()=>{if(REI.ini){reiLimpar(false);$('reiMsg').innerHTML=''}};
+    $('reiTab').addEventListener('click',e=>{const ed=e.target.closest('[data-ed]'),ex=e.target.closest('[data-ex]');if(ed)return reiEditar(+ed.dataset.ed);if(ex)return reiExcluir(+ex.dataset.ex);const tr=e.target.closest('tr[data-id]');if(tr&&!e.target.closest('a'))reiDet(+tr.dataset.id)});
+  }
+  const tb=$('reiTab').querySelector('tbody');if(!REI.regs)tb.innerHTML='<tr><td colspan="10"><div class="empty">Carregando…</div></td></tr>';
+  reiCarregar(true).then(reiConsPintar).catch(e=>{tb.innerHTML='<tr><td colspan="10"><div class="note err">'+esc(e.message)+'</div></td></tr>'});
+}
+
+/* ---------- Reincidentes · painel: cadastro de blindagem × base de interrupções de trafo (trafo_hist) ----------
+   Regras:
+   - base: todas as interrupções de trafo (qualquer quantidade de clientes);
+   - ligação: Componente do cadastro = Ponto Elétrico da base (sem zeros à esquerda);
+   - reincidência após a blindagem: interrupção do trafo a partir do dia seguinte à execução e antes da próxima intervenção nele;
+   - 30/60/90 dias acumulados; prazo que a base ainda não cobre aparece "em curso" (não vira zero);
+   - nota reincidente (ranking e árvore): 2ª ou mais no mesmo trafo em até 90 dias da anterior (regra do sistema). */
+const RP={fil:{sec:'',mun:'',cj:'',st:'',de:'',ate:'',cau:'',sub:'',trab:'',q:''},abertas:new Set(),modo:'re',ord:{k:'d',d:-1},ini:false};
+const rpTk=t=>String(t==null?'':t).trim().toUpperCase().replace(/\.0$/,'').replace(/^0+(?=\d)/,'');
+const rpMunK=s=>reiNk(String(s||'').replace(/['’]/g,'')).replace(/^GOV /,'GOVERNADOR ').replace(/ DO MA$/,' DO MARANHAO').replace(/ LAGOA ACU$/,' LAGO ACU');
+const rpCjK=s=>reiNk(s);
+const rpDias=(a,b)=>Math.round((Date.parse(b+'T00:00:00Z')-Date.parse(a+'T00:00:00Z'))/T_DIA);
+/* base de interrupções já tratada (a mesma do indicador de trafos) */
+function rpNotas(){
+  if(!TH)return null;
+  const N=trfNotasBrutas().filter(n=>n[0]&&!/^(N\/?D|-+|0+)$/i.test(String(n[0]).trim())).map(n=>({t:tTrafo(n[0]),k:rpTk(n[0]),i:n[1],d:n[1].slice(0,10),cl:n[3],chi:n[4]||0,mun:tMun(n[5]),munK:rpMunK(tMun(n[5])),cj:String(n[6]||'').trim(),cjK:rpCjK(n[6]),cau:String(n[7]||'').trim()||'(sem causa)',sub:String(n[8]||'').trim()||'(sem subcausa)',nr:n[9]||'',sec:String(n[10]||'').trim().toUpperCase(),prog:/PROGRAMAD/i.test(n[7])}));
+  N.sort((a,b)=>a.i<b.i?-1:a.i>b.i?1:0);
+  /* tira repetidas (mesma ocorrência e mesmo trafo) para não contar duas vezes */
+  const vis=new Set(),U=[];for(const n of N){const c=n.k+'|'+n.i+'|'+n.nr;if(vis.has(c))continue;vis.add(c);U.push(n)}
+  const P={};for(const n of U)(P[n.k]=P[n.k]||[]).push(n);
+  for(const k in P){let prev=null,progJa=false;for(const n of P[k]){const w=!!prev&&tMs(n.i)-tMs(prev.i)<=90*T_DIA;if(n.prog){n.re=w&&progJa;progJa=true}else{n.re=w;progJa=false}prev=n}}
+  return {N:U,P,cob:U.length?U[U.length-1].d:null};
+}
+/* uma linha por intervenção, com as reincidências depois dela */
+function rpInterv(B){
+  const R=(REI.regs||[]).slice().sort((a,b)=>a.dia_execucao.localeCompare(b.dia_execucao));
+  const porK={};for(const r of R)(porK[rpTk(r.componente)]=porK[rpTk(r.componente)]||[]).push(r);
+  return R.map(r=>{
+    const k=rpTk(r.componente),L=B.P[k]||[],irm=porK[k],prox=irm.find(x=>x.dia_execucao>r.dia_execucao),fim=prox?prox.dia_execucao:null;
+    const pos=L.filter(n=>n.d>r.dia_execucao&&(!fim||n.d<fim)),cob=B.cob;
+    /* janela (execução, execução+N]; uma nova intervenção no meio encerra a janela desta */
+    const jan=N=>{const lim=tIsoAdd(r.dia_execucao,N),fimJ=fim&&fim<=lim?tIsoAdd(fim,-1):lim;return {n:pos.filter(x=>x.d<=fimJ).length,completo:!!cob&&cob>=fimJ,acomp:cob?Math.max(0,Math.min(N,rpDias(r.dia_execucao,cob))):0}};
+    let sem;if(!cob||r.dia_execucao>=cob)sem={tipo:'sem'};else if(pos.length)sem={tipo:'re',dias:rpDias(r.dia_execucao,pos[0].d),d:pos[0].d};else{const ate=fim&&fim<cob?fim:cob;sem={tipo:'ok',dias:rpDias(r.dia_execucao,ate),ate,nova:!!(fim&&fim<cob)}}
+    const base0=L[0]||{};
+    return {r,k,L,pos,j30:jan(30),j60:jan(60),j90:jan(90),sem,match:L.length>0,ultima:!prox,
+      mun:r.municipio,munK:rpMunK(r.municipio),cj:r.conjunto||base0.cj||'',cjK:rpCjK(r.conjunto||base0.cj)};
+  });
+}
+function rpFiltrosNotas(B,f,ks){
+  return B.N.filter(n=>(!f.sec||n.sec===f.sec)&&(!f.mun||n.munK===f.mun)&&(!f.cj||n.cjK===f.cj)&&(!f.de||n.d>=f.de)&&(!f.ate||n.d<=f.ate)
+    &&(!f.cau||n.cau===f.cau)&&(!f.sub||n.sub===f.sub)&&(!f.trab||(f.trab==='s'?ks.has(n.k):!ks.has(n.k)))&&(!f.q||n.k.includes(rpTk(f.q))||reiNk(n.mun+' '+n.cj).includes(reiNk(f.q))));
+}
+function rpFiltrosInterv(I,f,B){
+  const cauOk=x=>{if(!f.cau&&!f.sub)return true;return x.L.some(n=>(!f.cau||n.cau===f.cau)&&(!f.sub||n.sub===f.sub))};
+  return I.filter(x=>f.trab!=='n'&&(!f.sec||x.r.seccional===f.sec)&&(!f.mun||x.munK===f.mun)&&(!f.cj||x.cjK===f.cj)&&(!f.st||x.r.status===f.st)
+    &&(!f.de||x.r.dia_execucao>=f.de)&&(!f.ate||x.r.dia_execucao<=f.ate)&&(!f.q||x.k.includes(rpTk(f.q))||reiNk(x.mun+' '+x.cj+' '+(x.r.al||'')).includes(reiNk(f.q)))&&cauOk(x));
+}
+const rpJanCel=(j,N)=>j.completo?(j.n?'<span class="pill nao">'+j.n+'</span>':'<span class="pill sup">0</span>')
+  :(j.n?'<span class="pill nao">'+j.n+'</span><small class="rp-ec">em curso</small>':'<span class="rp-ec" title="A base cobre '+j.acomp+' dos '+N+' dias">em curso · '+j.acomp+'/'+N+' d</span>');
+const rpSemCel=s=>s.tipo==='sem'?'<span class="rp-ec" title="Blindagem depois do último dia da base">sem base ainda</span>'
+  :s.tipo==='re'?'<span class="rp-sem re" title="1ª reincidência em '+dataBR(s.d)+'">reincidiu em '+s.dias+' d</span>'
+  :'<span class="rp-sem ok" title="Sem reincidência até '+dataBR(s.ate)+(s.nova?' (nova intervenção nesse dia)':'')+'">'+s.dias+' dias</span>';
+function rpOpc(el,pares,todos){const v=el.value;el.innerHTML='<option value="">'+todos+'</option>'+pares.map(([k,n])=>'<option value="'+esc(k)+'">'+esc(n)+'</option>').join('');el.value=pares.some(p=>p[0]===v)?v:'';el.classList.toggle('on',!!el.value)}
+function reiPainelPintar(){
+  if(pag().id!=='rei-painel')return;
+  const B=rpNotas(),carga=$('rpCarga');
+  if(!B||!REI.regs){carga.innerHTML='<div class="empty">'+(!B?'Carregando a base de interrupções…':'Carregando os cadastros de blindagem…')+'</div>';$('rpBlocos').hidden=true;return}
+  carga.innerHTML='';$('rpBlocos').hidden=false;
+  const f=RP.fil,I=rpInterv(B),ks=new Set(I.map(x=>x.k));
+  /* opções dos filtros (base + cadastro) */
+  const mp=new Map(),cp=new Map(),sp=new Map();
+  for(const n of B.N){if(n.munK)mp.set(n.munK,mp.get(n.munK)||n.mun.toUpperCase());if(n.cjK)cp.set(n.cjK,cp.get(n.cjK)||n.cj);if(n.sec)sp.set(n.sec,reiSecNome(n.sec))}
+  for(const x of I){if(x.munK)mp.set(x.munK,x.mun);if(x.cjK)cp.set(x.cjK,cp.get(x.cjK)||x.cj);sp.set(x.r.seccional,reiSecNome(x.r.seccional))}
+  const srt=m=>[...m.entries()].sort((a,b)=>a[1].localeCompare(b[1],'pt-BR'));
+  rpOpc($('rpSec'),srt(sp),'Todas');rpOpc($('rpMun'),srt(mp),'Todos');rpOpc($('rpCj'),srt(cp),'Todos');
+  const cs=new Map();for(const n of B.N)cs.set(n.cau,n.cau);rpOpc($('rpCau'),srt(cs),'Todas');
+  const ss=new Map();for(const n of B.N)if(!f.cau||n.cau===f.cau)ss.set(n.sub,n.sub);rpOpc($('rpSub'),srt(ss),'Todas');
+  f.sec=$('rpSec').value;f.mun=$('rpMun').value;f.cj=$('rpCj').value;f.cau=$('rpCau').value;f.sub=$('rpSub').value;
+  ['rpSt','rpDe','rpAte'].forEach(id=>$(id).classList.toggle('on',!!$(id).value));
+  $('rpTrab').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===f.trab)));
+  const NF=rpFiltrosNotas(B,f,ks),IF=rpFiltrosInterv(I,f,B);
+  $('rpSub0').innerHTML='Base de interrupções até <b>'+dataBR(B.cob)+'</b>'+(TH.arquivo?' · '+esc(TH.arquivo):'')+' · '+REI.regs.length+' cadastro(s) de blindagem';
+  /* chips dos filtros ativos */
+  const nomes={sec:['Seccional',v=>reiSecNome(v)],mun:['Município',v=>mp.get(v)||v],cj:['Conjunto',v=>cp.get(v)||v],st:['Status',v=>(REI_ST[v]||[v])[0]],de:['De',dataBR],ate:['Até',dataBR],cau:['Causa',v=>v],sub:['Subcausa',v=>v],trab:['Trafos',v=>v==='s'?'Trabalhados':'Não trabalhados'],q:['Busca',v=>v]};
+  $('rpChips').innerHTML=Object.keys(nomes).filter(k=>f[k]).map(k=>'<span class="chipf"><small>'+nomes[k][0]+'</small>'+esc(nomes[k][1](f[k]))+'<button type="button" data-rpx="'+k+'" aria-label="Tirar filtro">×</button></span>').join('');
+  /* BLOCO 1 · visão geral (pela última intervenção de cada trafo) */
+  const ult=IF.filter(x=>x.ultima||!IF.some(y=>y.k===x.k&&y.r.dia_execucao>x.r.dia_execucao));
+  const trafos=new Set(IF.map(x=>x.k)),reinc=new Set(IF.filter(x=>x.pos.length).map(x=>x.k));
+  const comBase=ult.filter(x=>x.sem.tipo!=='sem'),semRe=comBase.filter(x=>x.sem.tipo==='ok').length,totPos=IF.reduce((s,x)=>s+x.pos.length,0);
+  const semMatch=IF.filter(x=>!x.match);
+  $('rpKpis').innerHTML=dKpi({k:'total',t:'Trafos blindados',v:trafos.size,l:[['Concluídos',new Set(IF.filter(x=>x.r.status==='CONCLUIDO').map(x=>x.k)).size],['Parciais',new Set(IF.filter(x=>x.r.status==='PARCIAL').map(x=>x.k)).size]]})
+    +dKpi({k:'lista',t:'Intervenções realizadas',v:IF.length,l:[['Ações executadas',IF.reduce((s,x)=>s+x.r.acoes.length,0)],['Trafos com 2+ intervenções',[...trafos].filter(k=>IF.filter(x=>x.k===k).length>1).length]]})
+    +dKpi({k:'ent',t:'Trafos que reincidiram',v:reinc.size,l:[['Após a blindagem','até '+dataBR(B.cob)],['Sem ligação com a base',semMatch.length]]})
+    +dKpi({k:'res',t:'Sem reincidência',v:comBase.length?pct(semRe/comBase.length):'–',l:[['Trafos sem reincidir',semRe+' de '+comBase.length],['Sem base ainda',ult.length-comBase.length]]})
+    +dKpi({k:'bar',t:'Reincidências após intervenções',v:totPos,l:[['Em até 30 dias',IF.reduce((s,x)=>s+x.j30.n,0)],['Em até 90 dias',IF.reduce((s,x)=>s+x.j90.n,0)]]});
+  $('rpAviso').innerHTML=semMatch.length?'<div class="note warn"><b>'+semMatch.length+' intervenção(ões) sem ligação com a base de interrupções</b> (o componente não aparece como Ponto Elétrico em nenhuma interrupção): '+[...new Set(semMatch.map(x=>x.r.componente))].map(esc).join(', ')+'. Confira o componente digitado ou se o trafo é de outra seccional.</div>':'';
+  /* BLOCO 2 · acompanhamento das blindagens */
+  const o=RP.ord,val=x=>({d:x.r.dia_execucao,t:x.k,mun:x.mun,j30:x.j30.n,j60:x.j60.n,j90:x.j90.n,sem:x.sem.tipo==='re'?-1e6+x.sem.dias:x.sem.tipo==='ok'?x.sem.dias:-2e6}[o.k]);
+  const T=IF.slice().sort((a,b)=>{const va=val(a),vb=val(b);return (va<vb?-1:va>vb?1:0)*o.d||b.r.dia_execucao.localeCompare(a.r.dia_execucao)});
+  $('rpTab').querySelectorAll('th[data-k]').forEach(th=>th.dataset.o=th.dataset.k===o.k?(o.d>0?'asc':'desc'):'');
+  $('rpTabSub').textContent=IF.length+' intervenção(ões) em '+trafos.size+' trafo(s) · reincidência = interrupção a partir do dia seguinte à execução, até a próxima intervenção no trafo';
+  $('rpTab').querySelector('tbody').innerHTML=T.length?T.map(x=>'<tr data-t="'+esc(x.k)+'" class="'+(x.pos.length?'rp-ruim':'')+'"><td class="nw">'+esc(reiSecNome(x.r.seccional))+'</td><td>'+esc(x.mun)+'</td><td>'+esc(x.cj||'–')+'</td><td class="nw"><b class="mono">'+esc(x.r.componente)+'</b>'+(x.match?'':'<small class="tal" style="color:var(--par)">sem ligação</small>')+'</td><td class="nw">'+dataBR(x.r.dia_execucao)+'</td><td>'+reiStPill(x.r.status)+'</td><td class="n">'+rpJanCel(x.j30,30)+'</td><td class="n">'+rpJanCel(x.j60,60)+'</td><td class="n">'+rpJanCel(x.j90,90)+'</td><td class="nw">'+rpSemCel(x.sem)+'</td></tr>').join('')
+    :'<tr><td colspan="10"><div class="empty">'+(f.trab==='n'?'Filtro "Não trabalhados": não há blindagens para mostrar.':REI.regs.length?'Nenhuma blindagem com esses filtros.':'Nenhum cadastro de blindagem ainda. Use <a href="#rei-cadastro">Cadastro de blindagem</a>.')+'</div></td></tr>';
+  /* BLOCO 3 · árvore de causas → subcausas */
+  const NA=RP.modo==='re'?NF.filter(n=>n.re):NF,arv={};
+  for(const n of NA){const c=arv[n.cau]=arv[n.cau]||{n:0,s:{}};c.n++;c.s[n.sub]=(c.s[n.sub]||0)+1}
+  const CA=Object.entries(arv).sort((a,b)=>b[1].n-a[1].n),mx=CA.length?CA[0][1].n:1,tot=NA.length;
+  $('rpModo').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===RP.modo)));
+  $('rpArvSub').textContent=tot+' '+(RP.modo==='re'?'reincidência(s)':'interrupção(ões)')+' · clique na causa para abrir as subcausas; no nome, para filtrar o painel';
+  $('rpArv').innerHTML=CA.length?CA.map(([c,v])=>{const ab=RP.abertas.has(c)||f.cau===c;const S=Object.entries(v.s).sort((a,b)=>b[1]-a[1]);
+    return '<div class="rp-c'+(ab?' ab':'')+(f.cau===c?' sel':'')+'"><button type="button" class="rp-cx" data-ab="'+esc(c)+'" aria-expanded="'+ab+'" aria-label="Abrir subcausas"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>'
+      +'<button type="button" class="rp-cn" data-cau="'+esc(c)+'" title="Filtrar por esta causa">'+esc(c)+'</button><span class="rp-bar"><i style="width:'+(v.n/mx*100).toFixed(1)+'%"></i></span><b class="rp-q">'+v.n+'</b><small class="rp-p">'+pct(v.n/tot)+'</small></div>'
+      +(ab?'<div class="rp-ss">'+S.map(([s,q])=>'<div class="rp-s'+(f.sub===s&&f.cau===c?' sel':'')+'"><button type="button" class="rp-cn" data-cau="'+esc(c)+'" data-sub="'+esc(s)+'" title="Filtrar por esta subcausa">'+esc(s)+'</button><span class="rp-bar"><i style="width:'+(q/v.n*100).toFixed(1)+'%"></i></span><b class="rp-q">'+q+'</b><small class="rp-p">'+pct(q/v.n)+'</small></div>').join('')+'</div>':'')}).join('')
+    :'<div class="empty">Sem '+(RP.modo==='re'?'reincidências':'interrupções')+' com esses filtros.</div>';
+  /* BLOCO 4 · principais reincidentes */
+  const porT={};for(const n of NF)(porT[n.k]=porT[n.k]||[]).push(n);
+  const iPor={};for(const x of I)(iPor[x.k]=iPor[x.k]||[]).push(x);
+  const top=(L,f2)=>{const c={};for(const n of L){const v=f2(n);c[v]=(c[v]||0)+1}return Object.entries(c).sort((a,b)=>b[1]-a[1])[0]||['–',0]};
+  const RK=Object.entries(porT).map(([k,L])=>{const re=L.filter(n=>n.re),base=re.length?re:L,cau=top(base,n=>n.cau)[0],sub=top(base.filter(n=>n.cau===cau),n=>n.sub)[0],iv=iPor[k]||[],uI=iv.length?iv[iv.length-1]:null;
+    return {k,t:L[0].t,mun:L[L.length-1].mun,cj:L[L.length-1].cj,sec:L[L.length-1].sec,n:L.length,re:re.length,cau,sub,ult:L[L.length-1].d,bl:!!uI,dBl:uI?uI.r.dia_execucao:null,pos:uI?uI.pos.length:0}})
+    .filter(x=>x.re>0).sort((a,b)=>b.re-a.re||b.n-a.n||b.ult.localeCompare(a.ult));
+  const lim=+$('rpTop').value||20;
+  $('rpRkSub').textContent=RK.length+' trafo(s) com reincidência nos filtros · '+RK.filter(x=>x.bl).length+' já blindado(s) · '+RK.filter(x=>x.bl&&x.pos).length+' reincidindo depois da blindagem';
+  $('rpRk').querySelector('tbody').innerHTML=RK.length?RK.slice(0,lim).map((x,i)=>'<tr data-t="'+esc(x.k)+'" class="'+(x.bl&&x.pos?'rp-alerta':x.bl?'rp-bl':'')+'"><td class="n muted">'+(i+1)+'</td><td class="nw"><b class="mono">'+esc(x.t)+'</b>'+(x.bl?'<small class="tal">'+(x.pos?'<span style="color:var(--nao)">blindado em '+dataBR(x.dBl)+' · '+x.pos+' após</span>':'blindado em '+dataBR(x.dBl))+'</small>':'')+'</td><td>'+esc(x.mun)+'</td><td class="nw">'+esc(reiSecNome(x.sec))+'</td><td>'+esc(x.cj)+'</td><td class="n"><b>'+x.re+'</b></td><td class="n">'+x.n+'</td><td>'+esc(x.cau)+'</td><td>'+esc(x.sub)+'</td><td class="nw">'+dataBR(x.ult)+'</td></tr>').join('')
+    :'<tr><td colspan="10"><div class="empty">Nenhum trafo reincidente com esses filtros.</div></td></tr>';
+  RP.ultB=B;RP.ultI=I;
+}
+/* BLOCO 5 · detalhe do trafo: histórico de interrupções e todas as blindagens com as ações */
+function rpDetTrafo(k){
+  const B=RP.ultB,I=RP.ultI||[];if(!B)return;
+  const L=(B.P[k]||[]).slice().reverse(),iv=I.filter(x=>x.k===k).slice().reverse(),t=(L[0]&&L[0].t)||(iv[0]&&iv[0].r.componente)||k;
+  abrirDet({tit:'Transformador '+t,
+    kpis:[['Interrupções',L.length],['Reincidentes',L.filter(n=>n.re).length,L.some(n=>n.re)?'mal':''],['Blindagens',iv.length],['Após a última blindagem',iv.length?iv[0].pos.length:'–',iv.length&&iv[0].pos.length?'mal':'']],
+    aviso:(L[0]?esc(L[0].mun)+' · conjunto '+esc(L[0].cj)+' · seccional '+esc(reiSecNome(L[0].sec))+' · ':'')+'base até '+dataBR(B.cob),
+    cols:['wData','wHora','wCausa','wSubcausa','nClientes','nCHI','wNR/INC','wReincidente'],
+    rows:L.map(n=>{const bl=iv.find(x=>x.pos.includes(n));return [dataBR(n.d),n.i.slice(11,16),esc(n.cau),esc(n.sub),String(n.cl),(+n.chi).toLocaleString('pt-BR',{maximumFractionDigits:1}),esc(n.nr),(n.re?'<span class="pill nao">sim</span>':'<span class="muted">não</span>')+(bl?' <small class="muted">após blindagem de '+dataBR(bl.r.dia_execucao)+'</small>':'')]}),
+    rodape:'Todas as interrupções do trafo (qualquer quantidade de clientes) · reincidente = 2ª ou mais em até 90 dias da anterior',
+    extra:'<h4 style="margin:14px 0 6px;font-size:13px">Blindagens neste trafo</h4>'+(iv.length?'<div class="tw"><table class="utab"><thead><tr><th>Dia execução</th><th>Status</th><th>Ações executadas</th><th class="n">Reinc. após</th><th>Dias sem reincidência</th></tr></thead><tbody>'+iv.map(x=>'<tr><td class="nw">'+dataBR(x.r.dia_execucao)+'</td><td>'+reiStPill(x.r.status)+'</td><td><div class="rei-chips">'+reiAcoesTxt(x.r)+'</div></td><td class="n">'+x.pos.length+'</td><td class="nw">'+rpSemCel(x.sem)+'</td></tr>').join('')+'</tbody></table></div>':'<div class="empty" style="padding:14px">Este trafo ainda não recebeu blindagem.</div>')});
+}
+function reiPainelIniciar(){
+  if(RP.ini)return;RP.ini=true;
+  const pint=()=>reiPainelPintar();
+  const map={rpSec:'sec',rpMun:'mun',rpCj:'cj',rpSt:'st',rpDe:'de',rpAte:'ate',rpCau:'cau',rpSub:'sub'};
+  for(const id in map)$(id).onchange=()=>{RP.fil[map[id]]=$(id).value;if(id==='rpCau')RP.fil.sub='';pint()};
+  $('rpBusca').oninput=()=>{RP.fil.q=$('rpBusca').value.trim();pint()};
+  $('rpTrab').onclick=e=>{const b=e.target.closest('button');if(!b)return;RP.fil.trab=RP.fil.trab===b.dataset.v?'':b.dataset.v;pint()};
+  $('b-rpLimpar').onclick=()=>{Object.keys(RP.fil).forEach(k=>RP.fil[k]='');['rpSec','rpMun','rpCj','rpSt','rpDe','rpAte','rpCau','rpSub','rpBusca'].forEach(id=>$(id).value='');pint()};
+  const sec=document.querySelector('[data-pag=rei-painel]');
+  sec.addEventListener('click',e=>{
+    const x=e.target.closest('[data-rpx]');if(x){const k=x.dataset.rpx;RP.fil[k]='';const id={sec:'rpSec',mun:'rpMun',cj:'rpCj',st:'rpSt',de:'rpDe',ate:'rpAte',cau:'rpCau',sub:'rpSub',q:'rpBusca'}[k];if(id)$(id).value='';if(k==='cau'){RP.fil.sub='';$('rpSub').value=''}return pint()}
+    const ab=e.target.closest('[data-ab]');if(ab){const c=ab.dataset.ab;RP.abertas.has(c)?RP.abertas.delete(c):RP.abertas.add(c);return pint()}
+    const cn=e.target.closest('.rp-cn');if(cn){const c=cn.dataset.cau,s=cn.dataset.sub||'';
+      if(s){const mesmo=RP.fil.cau===c&&RP.fil.sub===s;RP.fil.cau=mesmo?'':c;RP.fil.sub=mesmo?'':s}else{const mesmo=RP.fil.cau===c&&!RP.fil.sub;RP.fil.cau=mesmo?'':c;RP.fil.sub='';RP.abertas.add(c)}
+      $('rpCau').value=RP.fil.cau;$('rpSub').value=RP.fil.sub;return pint()}
+    const md=e.target.closest('#rpModo button');if(md){RP.modo=md.dataset.v;return pint()}
+    const th=e.target.closest('#rpTab th[data-k]');if(th){const k=th.dataset.k;RP.ord=RP.ord.k===k?{k,d:-RP.ord.d}:{k,d:k==='mun'||k==='t'?1:-1};return pint()}
+    const tr=e.target.closest('tr[data-t]');if(tr)return rpDetTrafo(tr.dataset.t);
+  });
+  $('rpTop').onchange=pint;
+}
+function reiPainelMostrar(){
+  reiPainelIniciar();reiPainelPintar();
+  reiCarregar(true).then(reiPainelPintar).catch(e=>{$('rpCarga').innerHTML='<div class="note err">'+esc(e.message)+'</div>'});
+}
+
 function mostrarPagina(){
   pintarPerfil();railAberto=pag().g;hierPintar();
   const p=pag().id;
@@ -3092,6 +3574,7 @@ function mostrarPagina(){
   if(p==='atualizar'){try{montarBanco()}catch(e){}$('opNota').hidden=!(podeEnviar&&!podeSalvar)}
   if(p==='contingencia'||p==='prazos')ctMostrar();else if(p==='conferencia')ctCarregar(false);
   if(p==='mix-causa')acMostrar();
+  if(p==='rei-painel')reiPainelMostrar();if(p==='rei-cadastro')reiCadMostrar();if(p==='rei-consulta')reiConsMostrar();
   if(p==='ups-regras')renderRgUps();if(p==='prd-precos')renderPrecos();if(p==='conferencia'){Object.keys(cfMin).forEach(k=>delete cfMin[k]);cfAplicar()}if(p==='mix-corte'){renderRgCorte();mxVarrerSem()}
   if(matchMedia('(max-width:1000px)').matches){document.body.classList.remove('rail-on');$('railFundo').hidden=true}
 }
@@ -7109,7 +7592,7 @@ function renderDef(){
     $('dDist').innerHTML=dColunas(L);
     dMapa($('dMapa'),defStats(D,defFiltro('d-mun')).A,defAtivos(D).filter(r=>r.v));
   }else if(p==='def-evolucao'){
-    $('dTipo').innerHTML=dBarrasH(defConta(L,o=>o.tipo),'#711424');
+    DEFL=L;$('dTipo').innerHTML=dArvTipo(L);
     const dias0=[];for(let k=dNum(m+'-01');k<=dNum(DR.ult)&&dIso(k).slice(0,7)===m;k++)dias0.push(dIso(k));
     const st0=dias0.map(d=>defStats(dNum(d),F));
     if(ev1Modo==='custom'&&$('ev1-i').value&&$('ev1-f').value){let de=$('ev1-i').value,ate=$('ev1-f').value;if(de>ate)[de,ate]=[ate,de];
@@ -7162,19 +7645,43 @@ function abrirDet(o){
   $('modalDia').hidden=false;
 }
 let DEFL=null;
-function defDet(campo,k,soTat){
+function defDet(campo,k,soTat,tipo){
   const hj=dNum(hojeIso());
-  const R=(DEFL||[]).filter(r=>(r.o[campo]||D_BR)===k&&(!soTat||r.o.tat===D_TAT)).map(r=>({...r.o,m:r.m,dv:r.o.venc?dNum(r.o.venc)-hj:null}));
+  const R=(DEFL||[]).filter(r=>(r.o[campo]||D_BR)===k&&(!tipo||(r.o.tipo||D_BR)===tipo)&&(!soTat||r.o.tat===D_TAT)).map(r=>({...r.o,m:r.m,dv:r.o.venc?dNum(r.o.venc)-hj:null}));
   R.sort((a,b)=>(a.dv==null?1e9:a.dv)-(b.dv==null?1e9:b.dv)||String(a.id).localeCompare(String(b.id)));
   const n=R.reduce((s,r)=>s+r.m,0),tat=R.filter(r=>r.tat===D_TAT).reduce((s,r)=>s+r.m,0),venc=R.filter(r=>r.dv!=null&&r.dv<0).length,sem=R.filter(r=>!r.prog).length;
   const pc={P1:'nao',P2:'par',P3:'ate',P4:'nd'};
-  abrirDet({tit:(soTat?'Prioridade Tático · ':'')+({sigla:'PI ',dist:'Distrital ',pri:'Prioridade '}[campo]||'')+k,
+  abrirDet({tit:(soTat?'Prioridade Tático · ':'')+({sigla:'PI ',dist:'Distrital ',pri:'Prioridade ',tipo:'Tipo '}[campo]||'')+(tipo?tipo+' · ':'')+k,
     kpis:[['Defeitos',n],['Prioridade Tático',tat],['Vencidos',venc,venc?'mal':''],['Sem programação',sem,sem?'mal':'']],
     cols:['wDefeito','wPI','wDistrital','wMunicípio','wPrioridade','wNota do Tático','nVencimento','nProgramação'],
     rows:R.map(o=>['<b>'+esc(o.id)+'</b>',esc(o.sigla||'–'),esc(o.dist||'–'),esc(o.mun||'–'),'<span class="pill '+(pc[o.pri]||'nd')+'">'+esc(o.pri||'–')+'</span>',esc(o.nota||'–'),o.dv==null?'–':(o.dv<0?'<span class="dl-vc">'+Math.abs(o.dv)+' d vencido</span>':o.dv===0?'hoje':o.dv+' d'),o.prog?dataBR(o.prog):'<span class="muted">sem</span>']),
     rodape:'Ordenado do mais vencido para o menos urgente · situação em '+dataBR($('d-dia').value||DR.ult),
     filtra:(campo==='dist'||campo==='pri')?{txt:'Filtrar o painel em '+k,fn:()=>{const id=campo==='dist'?'d-dist':'d-pri';$(id).value=k;$(id).classList.add('on');renderDef()}}:null});
 }
+/* ranking por tipo com árvore de causas: tipo → defeito (campo "Defeito" da base, ex.: Poste com ferragem exposta) */
+const DT_AB=new Set();let DT_TODOS=false;
+function dArvTipo(L){
+  const T={};for(const r of L){const t=r.o.tipo||D_BR,d=r.o.desc||D_BR,x=T[t]||(T[t]={n:0,d:{}});x.n+=r.m;x.d[d]=(x.d[d]||0)+r.m}
+  const e=Object.entries(T).sort((a,b)=>b[1].n-a[1].n||(a[0]<b[0]?-1:1));
+  if(!e.length)return '<div class="empty">Sem defeitos neste filtro.</div>';
+  const mx=Math.max(1,...e.map(x=>x[1].n)),tot=e.reduce((s,x)=>s+x[1].n,0);
+  const b=$('b-dTipoAb');if(b)b.textContent=e.every(x=>DT_AB.has(x[0]))?'Recolher todos':'Abrir todos';
+  return '<div class="dtv">'+e.map(([t,x])=>{
+    const ab=DT_AB.has(t),ds=Object.entries(x.d).sort((a,b)=>b[1]-a[1]||(a[0]<b[0]?-1:1)),mxd=Math.max(1,...ds.map(y=>y[1]));
+    return '<div class="dtv-g'+(ab?' ab':'')+'"><button type="button" class="dtv-r dtv-p" data-tx="'+esc(t)+'" aria-expanded="'+ab+'" title="'+esc(t)+': '+x.n+' defeitos em '+ds.length+' causa(s) · clique para '+(ab?'recolher':'abrir')+'">'
+      +'<span class="dtv-c"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span><span class="dtv-k">'+esc(t)+'<small>'+ds.length+' causa'+(ds.length>1?'s':'')+'</small></span>'
+      +'<span class="hb-t"><i style="width:'+(x.n/mx*100).toFixed(1)+'%;--c:#711424"></i></span><span class="hb-v"><b>'+x.n+'</b><small>'+pct(x.n/tot)+'</small></span></button>'
+      +(ab?'<div class="dtv-s">'+ds.map(([d,q])=>'<button type="button" class="dtv-r dtv-d" data-t="'+esc(t)+'" data-d="'+esc(d)+'" title="'+esc(d)+': '+q+' ('+pct(q/x.n)+' do tipo) · clique para ver os defeitos"><span class="dtv-k">'+esc(d)+'</span><span class="hb-t"><i style="width:'+(q/mxd*100).toFixed(1)+'%;--c:#a5485b"></i></span><span class="hb-v"><b>'+q+'</b><small>'+pct(q/x.n)+'</small></span></button>').join('')+'</div>':'')+'</div>'}).join('')+'</div>';
+}
+document.addEventListener('click',ev=>{
+  const el=$('dTipo');if(!el)return;
+  const ab=ev.target.closest('#b-dTipoAb');
+  if(ab){const ks=[...DEFL_TIPOS()];const todos=ks.length&&ks.every(k=>DT_AB.has(k));ks.forEach(k=>todos?DT_AB.delete(k):DT_AB.add(k));renderDef();return}
+  if(!el.contains(ev.target))return;
+  const d=ev.target.closest('.dtv-d');if(d){defDet('desc',d.dataset.d,0,d.dataset.t);return}
+  const g=ev.target.closest('.dtv-p');if(g){const t=g.dataset.tx;DT_AB.has(t)?DT_AB.delete(t):DT_AB.add(t);renderDef()}
+});
+const DEFL_TIPOS=()=>new Set((DEFL||[]).map(r=>r.o.tipo||D_BR));
 [['dPI','sigla',0],['dTatDist','dist',1],['dPri','pri',0],['dDist','dist',0]].forEach(([id,c,t])=>{const el=$(id);el.addEventListener('click',ev=>{const x=ev.target.closest('[data-k]');if(x&&el.contains(x))defDet(c,x.dataset.k,t)})});
 
 /* =================== TME / TMD (aba TME_TMD do Relatório de Produção) =================== */
@@ -7937,7 +8444,7 @@ montarTrf=cargaEmbrulhar('montarTrf',montarTrf);montarBanco=cargaEmbrulhar('mont
   const ordenados=snap=>snap.docs.slice().sort((p,q)=>p.id<q.id?-1:p.id>q.id?1:0);
   db.collection('inicio_hist').onSnapshot(snap=>{const dias={};let fonte='';for(const x of snap.docs){const d=x.data();if(x.id==='meta'){fonte=(d&&d.fonte)||'';continue}if(!d||!d.data||!d.j)continue;try{dias[d.data]=JSON.parse(d.j)}catch(e){}}IHIST={fonte,dias};montarIni()},()=>{});
   db.collection('tm_hist').onSnapshot(snap=>{let meta=null;const m={};for(const x of snap.docs){const d=x.data();if(!d||!d.j)continue;try{if(x.id==='meta')meta=JSON.parse(d.j);else if(d.mes)m[d.mes]=JSON.parse(d.j)}catch(e){}}if(meta){TMH=Object.assign({},meta,{m});montarTm()}},()=>{});
-  db.collection('trafo_hist').onSnapshot(snap=>{let meta=null;const notas=[],acoes=[];for(const x of ordenados(snap)){const d=x.data();if(!d||!d.j)continue;try{const v=JSON.parse(d.j);if(x.id==='meta')meta=v;else if(x.id.startsWith('notas_'))notas.push(...v);else if(x.id.startsWith('acoes_'))acoes.push(...v)}catch(e){}}if(meta){TH={notas,acoes,arquivo:meta.arquivo,ult:meta.ult};montarTrf();try{bkMontaSel()}catch(e){}}},()=>{});
+  db.collection('trafo_hist').onSnapshot(snap=>{let meta=null;const notas=[],acoes=[];for(const x of ordenados(snap)){const d=x.data();if(!d||!d.j)continue;try{const v=JSON.parse(d.j);if(x.id==='meta')meta=v;else if(x.id.startsWith('notas_'))notas.push(...v);else if(x.id.startsWith('acoes_'))acoes.push(...v)}catch(e){}}if(meta){TH={notas,acoes,arquivo:meta.arquivo,ult:meta.ult};montarTrf();if(pag().id==='rei-painel')reiPainelPintar();try{bkMontaSel()}catch(e){}}},()=>{});
   db.collection('hierarquia').onSnapshot(snap=>{const d=snap.docs.find(x=>x.id==='equipes');HIER=d?d.data():null;hierPintar();if(hierAtivo())hierRemontar()},()=>{});
   db.collection('ader').onSnapshot(snap=>{aderDocs=snap.docs.map(d=>d.data()).filter(d=>d&&d.data&&d.eq);if(!psRecalcOn)montarAder()},()=>{});
   db.collection('config').onSnapshot(snap=>{

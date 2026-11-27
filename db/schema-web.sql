@@ -51,3 +51,34 @@ create table if not exists contingencia_base (
   linhas        jsonb       not null,
   total         int         not null
 );
+
+-- Reincidentes · cadastro de blindagem: cada intervenção num trafo (data de execução) e, ligada a ela, uma linha por ação executada.
+-- Ação que não está na lista = não executada. Ação na lista com quantidade 0 = executada com quantidade zero.
+create table if not exists blindagem (
+  id               serial      primary key,
+  seccional        text        not null,
+  municipio        text        not null,
+  municipio_outro  boolean     not null default false,
+  componente       text        not null,
+  chi              numeric,
+  al               text,
+  tipo_equip       text,
+  conjunto         text,
+  qtd_clientes     int,
+  inspecionado     boolean     not null,
+  dia_execucao     date        not null,
+  status           text        not null check (status in ('CONCLUIDO', 'PARCIAL')),
+  criado_por       text        not null,
+  criado_nome      text,
+  criado_em        timestamptz not null default now(),
+  editado_por      text,
+  editado_em       timestamptz
+);
+-- o mesmo trafo pode ter várias intervenções, mas só uma por dia de execução
+create unique index if not exists ux_blindagem_trafo_dia on blindagem (upper(componente), dia_execucao);
+create table if not exists blindagem_acao (
+  intervencao_id  int  not null references blindagem (id) on delete cascade,
+  tipo            text not null,
+  qtd             int  not null check (qtd >= 0),
+  primary key (intervencao_id, tipo)
+);
