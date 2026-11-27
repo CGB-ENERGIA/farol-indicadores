@@ -59,6 +59,18 @@
           delete: function () { return api('doc?c=' + c + '&id=' + encodeURIComponent(id), { method: 'DELETE' }).then(function () { docs.delete(id); if (carregou) avisar(); }); }
         };
       },
+      /* grava vários de uma vez: um pedido por 200 documentos e um único aviso no fim (antes: 1 pedido e 1 redesenho por documento) */
+      setMany: function (lista) {
+        var i = 0;
+        function prox() {
+          if (i >= lista.length) { if (carregou) avisar(); return Promise.resolve(); }
+          var parte = lista.slice(i, i + 200); i += 200;
+          return api('doc?c=' + c, { method: 'POST', body: { lote: parte.map(function (x) { return { id: String(x.id), dados: x.dados }; }) } }).then(function () {
+            parte.forEach(function (x) { docs.set(String(x.id), JSON.parse(JSON.stringify(x.dados))); }); return prox();
+          });
+        }
+        return prox();
+      },
       onSnapshot: function (ok, erro) {
         ouvintes.push({ ok: ok });
         if (carregou) { ok(snap()); }

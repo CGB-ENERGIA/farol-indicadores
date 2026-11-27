@@ -3562,6 +3562,36 @@ function reiPainelMostrar(){
   reiCarregar(true).then(reiPainelPintar).catch(e=>{$('rpCarga').innerHTML='<div class="note err">'+esc(e.message)+'</div>'});
 }
 
+/* "Dados até" no topo: data e hora da última atualização do banco do indicador aberto (último envio de relatório daquele indicador) */
+const TOPO_COL={disp:['dias'],ups:['ups'],ader:['ader'],ini:['inicio'],def:['defeitos_base'],prd:['prod'],trf:['trafo'],mix:['mix'],tm:['tm']};
+let TOPO_AT={},TOPO_T=0,TOPO_P=null;
+function topoFmt(t){
+  const d=new Date(String(t).replace(' ','T').replace(/([+-]\d\d)$/,'$1:00').replace(/\+00:00$/,'Z'));if(isNaN(d))return '';
+  const f=new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Sao_Paulo',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(d).reduce((o,x)=>(o[x.type]=x.value,o),{});
+  return f.day+'/'+f.month+'/'+f.year+' '+f.hour+':'+f.minute;
+}
+function topoCarrega(){
+  if(Date.now()-TOPO_T<30000)return TOPO_P||Promise.resolve();
+  TOPO_T=Date.now();
+  const cs=[...new Set(Object.values(TOPO_COL).flat())].join(',');
+  TOPO_P=fetch('/api/mudancas?c='+cs,{credentials:'same-origin'}).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.ultimo)TOPO_AT=j.ultimo}).catch(()=>{});
+  return TOPO_P;
+}
+function topoValor(p,ind){
+  let t=null;
+  if(p==='contingencia'||p==='prazos')t=CT&&CT.meta&&CT.meta.importado_em;
+  else if(ind&&TOPO_COL[ind])t=TOPO_COL[ind].map(c=>TOPO_AT[c]).filter(Boolean).sort().pop();
+  else if(p==='inicio')t=Object.values(TOPO_AT).filter(Boolean).sort().pop();
+  return t?topoFmt(t):'';
+}
+function topoAtualizar(){
+  const v=$('topAtualV');if(!v)return;
+  const p=pag().id,ind=indAtual(),x=topoValor(p,ind);
+  if(x){v.textContent=x;v.dataset.h='1'}
+  else{delete v.dataset.h;const fb=document.querySelector('#inicioAte b');if(fb)v.textContent=fb.textContent}
+  topoCarrega().then(()=>{const y=topoValor(p,ind),w=$('topAtualV');if(y&&w&&pag().id===p){w.textContent=y;w.dataset.h='1'}});
+}
+setInterval(()=>{if(!document.hidden)try{topoAtualizar()}catch(e){}},60000);
 function mostrarPagina(){
   pintarPerfil();railAberto=pag().g;hierPintar();
   const p=pag().id;
@@ -3571,7 +3601,7 @@ function mostrarPagina(){
   $('fDisp').hidden=ind!=='disp';$('fUps').hidden=ind!=='ups';$('fAder').hidden=ind!=='ader';$('fIni').hidden=ind!=='ini';$('fDef').hidden=ind!=='def';$('fPrd').hidden=ind!=='prd';$('fTrf').hidden=ind!=='trf';$('fMix').hidden=ind!=='mix';$('fTm').hidden=ind!=='tm';{const pc=p==='contingencia'||p==='prazos';if(pc){$('b-filtros').hidden=false;$('b-copiar').hidden=false}$('fCt').hidden=p!=='contingencia';$('fPz').hidden=p!=='prazos'}
   if(ind==='def'&&indAnt!=='def'&&DR)defDataRecente();indAnt=ind;
   if(ind==='ups'){pintarTopoUps();renderUPS()}else if(ind==='disp'){pintarAtivos()}else if(ind==='ader'){renderAder()}else if(ind==='ini'){renderIni()}else if(ind==='def'){renderDef()}else if(ind==='prd'){renderPrd()}else if(ind==='trf'){renderTrf()}else if(ind==='mix'){renderMix()}else if(ind==='tm'){renderTm()}
-  renderRail();
+  renderRail();try{topoAtualizar()}catch(e){}
   if(p==='atualizar'){try{montarBanco()}catch(e){}$('opNota').hidden=!(podeEnviar&&!podeSalvar)}
   if(p==='contingencia'||p==='prazos')ctMostrar();else if(p==='conferencia')ctCarregar(false);
   if(p==='mix-causa')acMostrar();
@@ -7215,11 +7245,14 @@ function defAplica(ant,x,dia){
 }
 async function defBaseAtualiza(p){
   const dia=p.data,vistos=new Set();let alt=0;
-  for(const x of p.todos){vistos.add(x.id);const nd=defAplica(defBaseMap[x.id]||null,x,dia);if(nd){await db.collection('defeitos_base').doc('D'+x.id).set(nd);alt++}}
+  const lote=[],grava=async()=>{if(!lote.length)return;const l=lote.splice(0);const col=db.collection('defeitos_base');if(col.setMany)await col.setMany(l);else for(const y of l)await col.doc(y.id).set(y.dados)};
+  for(const x of p.todos){vistos.add(x.id);const nd=defAplica(defBaseMap[x.id]||null,x,dia);if(nd){lote.push({id:'D'+x.id,dados:nd});alt++}}
+  await grava();
   /* defeito que tinha período aberto e não veio no relatório: o período termina na véspera (não vira "resolvido" só por sumir) */
   for(const id in defBaseMap){if(vistos.has(id))continue;const ant=defBaseMap[id];if(!ant.t.some(q=>q[1]==null)&&!ant.fora.some(q=>q[1]==null))continue;
     const d=JSON.parse(JSON.stringify(ant)),vA=defDia(dia,-1);for(const arr of [d.t,d.fora])for(const q of arr.slice())if(q[1]==null){if(q[0]>vA)arr.splice(arr.indexOf(q),1);else q[1]=vA}
-    d.situacao='PÓS-TRATATIVA (STATUS FINAL NÃO INFORMADO)';d.motivo='não veio no relatório de '+dia;d.atualizado=new Date().toISOString();await db.collection('defeitos_base').doc('D'+id).set(d);alt++}
+    d.situacao='PÓS-TRATATIVA (STATUS FINAL NÃO INFORMADO)';d.motivo='não veio no relatório de '+dia;d.atualizado=new Date().toISOString();lote.push({id:'D'+id,dados:d});alt++}
+  await grava();
   await db.collection('defeitos_base').doc('META').set({ult:dia,arquivo:p.nome,linhas:p.linhas,cgb:p.cgb,atualizado:new Date().toISOString()});
   toast('Banco DEFEITOS atualizado: '+alt+' defeito(s) alterado(s).');
 }
@@ -8490,7 +8523,7 @@ montarTrf=cargaEmbrulhar('montarTrf',montarTrf);montarBanco=cargaEmbrulhar('mont
   document.getElementById('enTr').innerHTML=it+it;
   const g=document.getElementById('enSaud');if(g)g.firstChild.textContent=hd();
   const at2=document.getElementById('vghData');const v=document.getElementById('topAtualV');
-  const eb=document.querySelector('.en-eb');const fb0=document.querySelector('#inicioAte b');if(eb&&fb0)eb.innerHTML='<i></i>Dados ao vivo · atualizados em '+fb0.textContent;enRede();enConta();const fb=document.querySelector('#inicioAte b');if(v&&fb)v.textContent=fb.textContent;
+  const eb=document.querySelector('.en-eb');const fb0=document.querySelector('#inicioAte b');if(eb&&fb0)eb.innerHTML='<i></i>Dados ao vivo · atualizados em '+fb0.textContent;enRede();enConta();const fb=document.querySelector('#inicioAte b');if(v&&fb&&!v.dataset.h)v.textContent=fb.textContent;try{topoAtualizar()}catch(e){}
  }
  window.enHero=hero;try{hero()}catch(e){}
 
