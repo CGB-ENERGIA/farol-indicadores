@@ -3580,7 +3580,7 @@ function topoCarrega(){
 function topoValor(p,ind){
   let t=null;
   if(p==='contingencia'||p==='prazos')t=CT&&CT.meta&&CT.meta.importado_em;
-  else if(ind&&TOPO_COL[ind])t=TOPO_COL[ind].map(c=>TOPO_AT[c]).filter(Boolean).sort().pop();
+  else if(ind&&TOPO_COL[ind]){const L=TOPO_COL[ind].map(c=>TOPO_AT[c]).filter(Boolean);if(ind==='ups'&&upsHojeDb&&upsHojeDb.enviadoEm)L.push(new Date(upsHojeDb.enviadoEm).toISOString().replace('T',' ').replace('Z','+00')); /* UPS do dia aberto fica em config/upsHoje */t=L.sort().pop()}
   else if(p==='inicio')t=Object.values(TOPO_AT).filter(Boolean).sort().pop();
   return t?topoFmt(t):'';
 }
@@ -5082,11 +5082,11 @@ function lerArquivo(file){
         if(mm&&nAt===0){const d=(mm[3].length===2?'20'+mm[3]:mm[3])+'-'+mm[2]+'-'+mm[1];r.dias[d]={};datas=[d];vazio=true}
         else throw new Error(nAt?'Nenhuma atividade concluída ou não concluída encontrada':'Arquivo vazio e sem data no nome · renomeie como no SIGA (ex.: _08_11_26)')}
       let ups=null,ader=null,ini=null;if((fonte==='MAN'||fonte==='OBRAS')&&ICFG){try{ini=iniDeLinhas(rowsA)}catch(e){ini=null}}let upsSc=null;if(fonte==='COI'&&UCFG){try{const ua=UPSCalc.agregarArquivo(UCFG,rowsA,Disp.parseData);ups=ua.dias;upsSc=ua.sc}catch(e){ups=null}try{ader=aderDeLinhas(rowsA)}catch(e){ader=null}}let prd=null,mix=null,tm=null;if(fonte==='COI'&&PCFG){try{prd=prdDeLinhas(rowsA)}catch(e){prd=null}try{mix=mixDeLinhas(rowsA).dias}catch(e){mix=null}try{tm=tmDeLinhas(rowsA).dias}catch(e){tm=null}}
-      /* COI do dia de hoje (dia ainda aberto): atualiza só a Produção do dia; o resto espera o dia fechar */
+      /* COI do dia de hoje (dia ainda aberto): atualiza a Produção do dia, o Mix e o TME/TMD (só contam atividades já concluídas ou não concluídas, então o parcial do dia é válido e o COI seguinte o substitui); UPS e aderência esperam o dia fechar */
       let banco=null;try{banco=bancoDeLinhas(rowsA,fonte)}catch(e){banco=null}
       let parcial=null,upsHoje=null,ct=null;const hj=hojeIso();
       if(fonte==='COI'){try{ct=ctDeCOI(rowsA,hj)}catch(e){console.error('ctDeCOI',e);ct=null}}
-      if(fonte==='COI'&&datas.includes(hj)){parcial=hj;if(ups&&ups[hj])upsHoje={dia:hj,eq:ups[hj]};delete r.dias[hj];datas=datas.filter(d=>d!==hj);if(ups)delete ups[hj];if(upsSc)delete upsSc[hj];if(ader)delete ader[hj];if(mix)delete mix[hj];if(tm)delete tm[hj]}
+      if(fonte==='COI'&&datas.includes(hj)){parcial=hj;if(ups&&ups[hj])upsHoje={dia:hj,eq:ups[hj]};delete r.dias[hj];datas=datas.filter(d=>d!==hj);if(ups)delete ups[hj];if(upsSc)delete upsSc[hj];if(ader)delete ader[hj]}
       res({nome:file.name,fonte,datas,datasUps:ups?Object.keys(ups).sort():[],linhas:r.linhas,dias:r.dias,ups,upsSc,ader,ini,prd,mix,tm,vazio,parcial,banco,upsHoje,ct});
     }catch(e){res({nome:file.name,fonte,erro:e.message})}};
     fr.onerror=()=>res({nome:file.name,fonte,erro:'Não foi possível ler o arquivo'});
